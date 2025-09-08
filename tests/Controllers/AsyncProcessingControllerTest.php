@@ -30,7 +30,7 @@ class AsyncProcessingControllerTest extends BaseTestController
         self::$controller = parent::getClient()->getAsyncProcessingController();
     }
 
-    public function testTestStatusCheck()
+    public function testStatusCheck()
     {
         // Parameters for the API call
         $statusCode = '406c66c3-21cb-47fb-80fc-843bc42507fb';

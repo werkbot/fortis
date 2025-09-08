@@ -110,28 +110,54 @@ The following parameters are configurable for the API Client:
 
 | Parameter | Type | Description |
 |  --- | --- | --- |
-| `environment` | Environment | The API environment. <br> **Default: `Environment.SANDBOX`** |
-| `timeout` | `int` | Timeout for API calls in seconds.<br>*Default*: `0` |
-| `enableRetries` | `bool` | Whether to enable retries and backoff feature.<br>*Default*: `false` |
-| `numberOfRetries` | `int` | The number of retries to make.<br>*Default*: `0` |
-| `retryInterval` | `float` | The retry time interval between the endpoint calls.<br>*Default*: `1` |
-| `backOffFactor` | `float` | Exponential backoff factor to increase interval between retries.<br>*Default*: `2` |
-| `maximumRetryWaitTime` | `int` | The maximum wait time in seconds for overall retrying requests.<br>*Default*: `0` |
-| `retryOnTimeout` | `bool` | Whether to retry on request timeout.<br>*Default*: `true` |
-| `httpStatusCodesToRetry` | `array` | Http status codes to retry against.<br>*Default*: `408, 413, 429, 500, 502, 503, 504, 521, 522, 524` |
-| `httpMethodsToRetry` | `array` | Http methods to retry against.<br>*Default*: `'GET', 'PUT'` |
-| `userId` | `string` | User ID |
-| `userApiKey` | `string` | User API Key |
-| `developerId` | `string` | Developer ID |
+| environment | `Environment` | The API environment. <br> **Default: `Environment.SANDBOX`** |
+| timeout | `int` | Timeout for API calls in seconds.<br>*Default*: `0` |
+| enableRetries | `bool` | Whether to enable retries and backoff feature.<br>*Default*: `false` |
+| numberOfRetries | `int` | The number of retries to make.<br>*Default*: `0` |
+| retryInterval | `float` | The retry time interval between the endpoint calls.<br>*Default*: `1` |
+| backOffFactor | `float` | Exponential backoff factor to increase interval between retries.<br>*Default*: `2` |
+| maximumRetryWaitTime | `int` | The maximum wait time in seconds for overall retrying requests.<br>*Default*: `0` |
+| retryOnTimeout | `bool` | Whether to retry on request timeout.<br>*Default*: `true` |
+| httpStatusCodesToRetry | `array` | Http status codes to retry against.<br>*Default*: `408, 413, 429, 500, 502, 503, 504, 521, 522, 524` |
+| httpMethodsToRetry | `array` | Http methods to retry against.<br>*Default*: `'GET', 'PUT'` |
+| proxyConfiguration | [`ProxyConfigurationBuilder`](doc/proxy-configuration-builder.md) | Represents the proxy configurations for API calls |
+| userIdCredentials | [`UserIdCredentials`](doc/auth/custom-header-signature.md) | The Credentials Setter for Custom Header Signature |
+| userApiKeyCredentials | [`UserApiKeyCredentials`](doc/auth/custom-header-signature-1.md) | The Credentials Setter for Custom Header Signature |
+| developerIdCredentials | [`DeveloperIdCredentials`](doc/auth/custom-header-signature-2.md) | The Credentials Setter for Custom Header Signature |
+| accessTokenCredentials | [`AccessTokenCredentials`](doc/auth/custom-header-signature-3.md) | The Credentials Setter for Custom Header Signature |
 
 The API client can be initialized as follows:
 
 ```php
-$client = FortisAPILib\FortisAPIClientBuilder::init()
-    ->userId('user-id')
-    ->userApiKey('user-api-key')
-    ->developerId('developer-id')
-    ->environment('sandbox')
+use FortisAPILib\Environment;
+use FortisAPILib\Authentication\UserIdCredentialsBuilder;
+use FortisAPILib\Authentication\UserApiKeyCredentialsBuilder;
+use FortisAPILib\Authentication\DeveloperIdCredentialsBuilder;
+use FortisAPILib\Authentication\AccessTokenCredentialsBuilder;
+use FortisAPILib\FortisAPIClientBuilder;
+
+$client = FortisAPIClientBuilder::init()
+    ->userIdCredentials(
+        UserIdCredentialsBuilder::init(
+            'user-id'
+        )
+    )
+    ->userApiKeyCredentials(
+        UserApiKeyCredentialsBuilder::init(
+            'user-api-key'
+        )
+    )
+    ->developerIdCredentials(
+        DeveloperIdCredentialsBuilder::init(
+            'developer-id'
+        )
+    )
+    ->accessTokenCredentials(
+        AccessTokenCredentialsBuilder::init(
+            'access-token'
+        )
+    )
+    ->environment(Environment::SANDBOX)
     ->build();
 ```
 
@@ -148,19 +174,36 @@ The SDK can be configured to use a different environment for making API calls. A
 
 ## Authorization
 
-This API uses `Custom Header Signature`.
+This API uses the following authentication schemes.
+
+* [`user-id (Custom Header Signature)`](doc/auth/custom-header-signature.md)
+* [`user-api-key (Custom Header Signature)`](doc/auth/custom-header-signature-1.md)
+* [`developer-id (Custom Header Signature)`](doc/auth/custom-header-signature-2.md)
+* [`access-token (Custom Header Signature)`](doc/auth/custom-header-signature-3.md)
 
 ## List of APIs
 
 * [Async Processing](doc/controllers/async-processing.md)
+* [Declined Recurring Transactions](doc/controllers/declined-recurring-transactions.md)
 * [Device Terms](doc/controllers/device-terms.md)
+* [Full Boarding](doc/controllers/full-boarding.md)
+* [3 DS Authentication](doc/controllers/3-ds-authentication.md)
+* [3 DS Transactions](doc/controllers/3-ds-transactions.md)
+* [Merchant Deposits](doc/controllers/merchant-deposits.md)
 * [On Boarding](doc/controllers/on-boarding.md)
+* [Payment Card Reader Token](doc/controllers/payment-card-reader-token.md)
 * [Quick Invoices](doc/controllers/quick-invoices.md)
+* [Transaction ACH Retries](doc/controllers/transaction-ach-retries.md)
 * [Transactions-ACH](doc/controllers/transactions-ach.md)
+* [Transactions-Cash](doc/controllers/transactions-cash.md)
 * [Transactions-Credit Card](doc/controllers/transactions-credit-card.md)
+* [Transactions-EBT Card](doc/controllers/transactions-ebt-card.md)
 * [Transactions-Read](doc/controllers/transactions-read.md)
 * [Level 3 Data](doc/controllers/level-3-data.md)
 * [Transactions-Updates](doc/controllers/transactions-updates.md)
+* [User Verifications](doc/controllers/user-verifications.md)
+* [Apple Pay Validate Merchant](doc/controllers/apple-pay-validate-merchant.md)
+* [Merchant Details](doc/controllers/merchant-details.md)
 * [Batches](doc/controllers/batches.md)
 * [Contacts](doc/controllers/contacts.md)
 * [Elements](doc/controllers/elements.md)
@@ -170,13 +213,23 @@ This API uses `Custom Header Signature`.
 * [Signatures](doc/controllers/signatures.md)
 * [Tags](doc/controllers/tags.md)
 * [Terminals](doc/controllers/terminals.md)
+* [Tickets](doc/controllers/tickets.md)
 * [Tokens](doc/controllers/tokens.md)
 * [Users](doc/controllers/users.md)
 * [Webhooks](doc/controllers/webhooks.md)
 
-## Classes Documentation
+## SDK Infrastructure
 
-* [ApiException](doc/api-exception.md)
+### Configuration
+
+* [ProxyConfigurationBuilder](doc/proxy-configuration-builder.md)
+
+### HTTP
+
 * [HttpRequest](doc/http-request.md)
 * [HttpResponse](doc/http-response.md)
+
+### Utilities
+
+* [ApiException](doc/api-exception.md)
 

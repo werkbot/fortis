@@ -10,32 +10,33 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class TransactionSplit implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $transactionId;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $contactId;
 
     /**
-     * @var float
+     * @var int|null
      */
     private $amount;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
@@ -45,26 +46,10 @@ class TransactionSplit implements \JsonSerializable
     private $createdUserId = [];
 
     /**
-     * @param string $transactionId
-     * @param string $contactId
-     * @param float $amount
-     * @param string $id
-     * @param int $createdTs
-     */
-    public function __construct(string $transactionId, string $contactId, float $amount, string $id, int $createdTs)
-    {
-        $this->transactionId = $transactionId;
-        $this->contactId = $contactId;
-        $this->amount = $amount;
-        $this->id = $id;
-        $this->createdTs = $createdTs;
-    }
-
-    /**
      * Returns Transaction Id.
      * Transaction ID
      */
-    public function getTransactionId(): string
+    public function getTransactionId(): ?string
     {
         return $this->transactionId;
     }
@@ -73,10 +58,9 @@ class TransactionSplit implements \JsonSerializable
      * Sets Transaction Id.
      * Transaction ID
      *
-     * @required
      * @maps transaction_id
      */
-    public function setTransactionId(string $transactionId): void
+    public function setTransactionId(?string $transactionId): void
     {
         $this->transactionId = $transactionId;
     }
@@ -85,7 +69,7 @@ class TransactionSplit implements \JsonSerializable
      * Returns Contact Id.
      * Contact ID
      */
-    public function getContactId(): string
+    public function getContactId(): ?string
     {
         return $this->contactId;
     }
@@ -94,10 +78,9 @@ class TransactionSplit implements \JsonSerializable
      * Sets Contact Id.
      * Contact ID
      *
-     * @required
      * @maps contact_id
      */
-    public function setContactId(string $contactId): void
+    public function setContactId(?string $contactId): void
     {
         $this->contactId = $contactId;
     }
@@ -106,7 +89,7 @@ class TransactionSplit implements \JsonSerializable
      * Returns Amount.
      * Amount
      */
-    public function getAmount(): float
+    public function getAmount(): ?int
     {
         return $this->amount;
     }
@@ -115,10 +98,9 @@ class TransactionSplit implements \JsonSerializable
      * Sets Amount.
      * Amount
      *
-     * @required
      * @maps amount
      */
-    public function setAmount(float $amount): void
+    public function setAmount(?int $amount): void
     {
         $this->amount = $amount;
     }
@@ -127,7 +109,7 @@ class TransactionSplit implements \JsonSerializable
      * Returns Id.
      * Transaction Splits ID
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -136,10 +118,9 @@ class TransactionSplit implements \JsonSerializable
      * Sets Id.
      * Transaction Splits ID
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -148,7 +129,7 @@ class TransactionSplit implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -157,10 +138,9 @@ class TransactionSplit implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -198,6 +178,55 @@ class TransactionSplit implements \JsonSerializable
     }
 
     /**
+     * Converts the TransactionSplit object to a human-readable string representation.
+     *
+     * @return string The string representation of the TransactionSplit object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'TransactionSplit',
+            [
+                'transactionId' => $this->transactionId,
+                'contactId' => $this->contactId,
+                'amount' => $this->amount,
+                'id' => $this->id,
+                'createdTs' => $this->createdTs,
+                'createdUserId' => $this->getCreatedUserId(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -209,14 +238,25 @@ class TransactionSplit implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['transaction_id']      = $this->transactionId;
-        $json['contact_id']          = $this->contactId;
-        $json['amount']              = $this->amount;
-        $json['id']                  = $this->id;
-        $json['created_ts']          = $this->createdTs;
+        if (isset($this->transactionId)) {
+            $json['transaction_id']  = $this->transactionId;
+        }
+        if (isset($this->contactId)) {
+            $json['contact_id']      = $this->contactId;
+        }
+        if (isset($this->amount)) {
+            $json['amount']          = $this->amount;
+        }
+        if (isset($this->id)) {
+            $json['id']              = $this->id;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']      = $this->createdTs;
+        }
         if (!empty($this->createdUserId)) {
             $json['created_user_id'] = $this->createdUserId['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -18,7 +19,7 @@ use stdClass;
 class Resources implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $title;
 
@@ -28,12 +29,12 @@ class Resources implements \JsonSerializable
     private $priv = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $resourceName;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $id;
 
@@ -53,22 +54,10 @@ class Resources implements \JsonSerializable
     private $modifiedTs = [];
 
     /**
-     * @param string $title
-     * @param string $resourceName
-     * @param int $id
-     */
-    public function __construct(string $title, string $resourceName, int $id)
-    {
-        $this->title = $title;
-        $this->resourceName = $resourceName;
-        $this->id = $id;
-    }
-
-    /**
      * Returns Title.
      * Resource Title
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -77,10 +66,9 @@ class Resources implements \JsonSerializable
      * Sets Title.
      * Resource Title
      *
-     * @required
      * @maps title
      */
-    public function setTitle(string $title): void
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -121,7 +109,7 @@ class Resources implements \JsonSerializable
      * Returns Resource Name.
      * Resource Name
      */
-    public function getResourceName(): string
+    public function getResourceName(): ?string
     {
         return $this->resourceName;
     }
@@ -130,10 +118,9 @@ class Resources implements \JsonSerializable
      * Sets Resource Name.
      * Resource Name
      *
-     * @required
      * @maps resource_name
      */
-    public function setResourceName(string $resourceName): void
+    public function setResourceName(?string $resourceName): void
     {
         $this->resourceName = $resourceName;
     }
@@ -142,7 +129,7 @@ class Resources implements \JsonSerializable
      * Returns Id.
      * Resource ID
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -151,10 +138,9 @@ class Resources implements \JsonSerializable
      * Sets Id.
      * Resource ID
      *
-     * @required
      * @maps id
      */
-    public function setId(int $id): void
+    public function setId(?int $id): void
     {
         $this->id = $id;
     }
@@ -256,6 +242,56 @@ class Resources implements \JsonSerializable
     }
 
     /**
+     * Converts the Resources object to a human-readable string representation.
+     *
+     * @return string The string representation of the Resources object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Resources',
+            [
+                'title' => $this->title,
+                'priv' => $this->getPriv(),
+                'resourceName' => $this->resourceName,
+                'id' => $this->id,
+                'lastUsedDate' => $this->getLastUsedDate(),
+                'createdTs' => $this->getCreatedTs(),
+                'modifiedTs' => $this->getModifiedTs(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -267,12 +303,18 @@ class Resources implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['title']              = $this->title;
+        if (isset($this->title)) {
+            $json['title']          = $this->title;
+        }
         if (!empty($this->priv)) {
             $json['priv']           = $this->priv['value'];
         }
-        $json['resource_name']      = $this->resourceName;
-        $json['id']                 = $this->id;
+        if (isset($this->resourceName)) {
+            $json['resource_name']  = $this->resourceName;
+        }
+        if (isset($this->id)) {
+            $json['id']             = $this->id;
+        }
         if (!empty($this->lastUsedDate)) {
             $json['last_used_date'] = $this->lastUsedDate['value'];
         }
@@ -282,6 +324,7 @@ class Resources implements \JsonSerializable
         if (!empty($this->modifiedTs)) {
             $json['modified_ts']    = $this->modifiedTs['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

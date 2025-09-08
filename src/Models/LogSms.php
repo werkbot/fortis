@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -18,7 +19,7 @@ use stdClass;
 class LogSms implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
@@ -28,83 +29,50 @@ class LogSms implements \JsonSerializable
     private $body = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $reasonModel;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $reasonModelId;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $providerId;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $status;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $sender;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $recipient;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $createdUserId;
-
-    /**
-     * @param string $id
-     * @param string $reasonModel
-     * @param string $reasonModelId
-     * @param string $providerId
-     * @param string $status
-     * @param string $sender
-     * @param string $recipient
-     * @param int $createdTs
-     * @param string $createdUserId
-     */
-    public function __construct(
-        string $id,
-        string $reasonModel,
-        string $reasonModelId,
-        string $providerId,
-        string $status,
-        string $sender,
-        string $recipient,
-        int $createdTs,
-        string $createdUserId
-    ) {
-        $this->id = $id;
-        $this->reasonModel = $reasonModel;
-        $this->reasonModelId = $reasonModelId;
-        $this->providerId = $providerId;
-        $this->status = $status;
-        $this->sender = $sender;
-        $this->recipient = $recipient;
-        $this->createdTs = $createdTs;
-        $this->createdUserId = $createdUserId;
-    }
 
     /**
      * Returns Id.
      * Log Sms Id
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -113,10 +81,9 @@ class LogSms implements \JsonSerializable
      * Sets Id.
      * Log Sms Id
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -157,7 +124,7 @@ class LogSms implements \JsonSerializable
      * Returns Reason Model.
      * Reason Model
      */
-    public function getReasonModel(): string
+    public function getReasonModel(): ?string
     {
         return $this->reasonModel;
     }
@@ -166,10 +133,9 @@ class LogSms implements \JsonSerializable
      * Sets Reason Model.
      * Reason Model
      *
-     * @required
      * @maps reason_model
      */
-    public function setReasonModel(string $reasonModel): void
+    public function setReasonModel(?string $reasonModel): void
     {
         $this->reasonModel = $reasonModel;
     }
@@ -178,7 +144,7 @@ class LogSms implements \JsonSerializable
      * Returns Reason Model Id.
      * Reason Model ID
      */
-    public function getReasonModelId(): string
+    public function getReasonModelId(): ?string
     {
         return $this->reasonModelId;
     }
@@ -187,10 +153,9 @@ class LogSms implements \JsonSerializable
      * Sets Reason Model Id.
      * Reason Model ID
      *
-     * @required
      * @maps reason_model_id
      */
-    public function setReasonModelId(string $reasonModelId): void
+    public function setReasonModelId(?string $reasonModelId): void
     {
         $this->reasonModelId = $reasonModelId;
     }
@@ -199,7 +164,7 @@ class LogSms implements \JsonSerializable
      * Returns Provider Id.
      * Provider ID
      */
-    public function getProviderId(): string
+    public function getProviderId(): ?string
     {
         return $this->providerId;
     }
@@ -208,10 +173,9 @@ class LogSms implements \JsonSerializable
      * Sets Provider Id.
      * Provider ID
      *
-     * @required
      * @maps provider_id
      */
-    public function setProviderId(string $providerId): void
+    public function setProviderId(?string $providerId): void
     {
         $this->providerId = $providerId;
     }
@@ -220,7 +184,7 @@ class LogSms implements \JsonSerializable
      * Returns Status.
      * Status
      */
-    public function getStatus(): string
+    public function getStatus(): ?string
     {
         return $this->status;
     }
@@ -229,10 +193,9 @@ class LogSms implements \JsonSerializable
      * Sets Status.
      * Status
      *
-     * @required
      * @maps status
      */
-    public function setStatus(string $status): void
+    public function setStatus(?string $status): void
     {
         $this->status = $status;
     }
@@ -241,7 +204,7 @@ class LogSms implements \JsonSerializable
      * Returns Sender.
      * Sender
      */
-    public function getSender(): string
+    public function getSender(): ?string
     {
         return $this->sender;
     }
@@ -250,10 +213,9 @@ class LogSms implements \JsonSerializable
      * Sets Sender.
      * Sender
      *
-     * @required
      * @maps sender
      */
-    public function setSender(string $sender): void
+    public function setSender(?string $sender): void
     {
         $this->sender = $sender;
     }
@@ -262,7 +224,7 @@ class LogSms implements \JsonSerializable
      * Returns Recipient.
      * Recipient
      */
-    public function getRecipient(): string
+    public function getRecipient(): ?string
     {
         return $this->recipient;
     }
@@ -271,10 +233,9 @@ class LogSms implements \JsonSerializable
      * Sets Recipient.
      * Recipient
      *
-     * @required
      * @maps recipient
      */
-    public function setRecipient(string $recipient): void
+    public function setRecipient(?string $recipient): void
     {
         $this->recipient = $recipient;
     }
@@ -283,7 +244,7 @@ class LogSms implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -292,10 +253,9 @@ class LogSms implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -304,7 +264,7 @@ class LogSms implements \JsonSerializable
      * Returns Created User Id.
      * User ID Created the register
      */
-    public function getCreatedUserId(): string
+    public function getCreatedUserId(): ?string
     {
         return $this->createdUserId;
     }
@@ -313,12 +273,64 @@ class LogSms implements \JsonSerializable
      * Sets Created User Id.
      * User ID Created the register
      *
-     * @required
      * @maps created_user_id
      */
-    public function setCreatedUserId(string $createdUserId): void
+    public function setCreatedUserId(?string $createdUserId): void
     {
         $this->createdUserId = $createdUserId;
+    }
+
+    /**
+     * Converts the LogSms object to a human-readable string representation.
+     *
+     * @return string The string representation of the LogSms object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'LogSms',
+            [
+                'id' => $this->id,
+                'body' => $this->getBody(),
+                'reasonModel' => $this->reasonModel,
+                'reasonModelId' => $this->reasonModelId,
+                'providerId' => $this->providerId,
+                'status' => $this->status,
+                'sender' => $this->sender,
+                'recipient' => $this->recipient,
+                'createdTs' => $this->createdTs,
+                'createdUserId' => $this->createdUserId,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -333,18 +345,37 @@ class LogSms implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['id']              = $this->id;
-        if (!empty($this->body)) {
-            $json['body']        = $this->body['value'];
+        if (isset($this->id)) {
+            $json['id']              = $this->id;
         }
-        $json['reason_model']    = $this->reasonModel;
-        $json['reason_model_id'] = $this->reasonModelId;
-        $json['provider_id']     = $this->providerId;
-        $json['status']          = $this->status;
-        $json['sender']          = $this->sender;
-        $json['recipient']       = $this->recipient;
-        $json['created_ts']      = $this->createdTs;
-        $json['created_user_id'] = $this->createdUserId;
+        if (!empty($this->body)) {
+            $json['body']            = $this->body['value'];
+        }
+        if (isset($this->reasonModel)) {
+            $json['reason_model']    = $this->reasonModel;
+        }
+        if (isset($this->reasonModelId)) {
+            $json['reason_model_id'] = $this->reasonModelId;
+        }
+        if (isset($this->providerId)) {
+            $json['provider_id']     = $this->providerId;
+        }
+        if (isset($this->status)) {
+            $json['status']          = $this->status;
+        }
+        if (isset($this->sender)) {
+            $json['sender']          = $this->sender;
+        }
+        if (isset($this->recipient)) {
+            $json['recipient']       = $this->recipient;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']      = $this->createdTs;
+        }
+        if (isset($this->createdUserId)) {
+            $json['created_user_id'] = $this->createdUserId;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

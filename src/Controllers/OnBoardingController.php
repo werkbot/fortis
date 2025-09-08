@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Controllers;
 
+use Core\Authentication\Auth;
 use Core\Request\Parameters\BodyParam;
 use Core\Request\Parameters\HeaderParam;
 use Core\Response\Types\ErrorType;
@@ -49,12 +50,12 @@ class OnBoardingController extends BaseController
     public function merchantBoarding(V1OnboardingRequest $body): ResponseOnboarding
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/onboarding')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(HeaderParam::init('Content-Type', 'application/json'), BodyParam::init($body));
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseOnboarding::class);
 
         return $this->execute($_reqBuilder, $_resHandler);

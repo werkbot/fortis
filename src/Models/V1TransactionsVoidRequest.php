@@ -10,14 +10,15 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class V1TransactionsVoidRequest implements \JsonSerializable
 {
     /**
-     * @var string[]|null
+     * @var array
      */
-    private $tags;
+    private $tags = [];
 
     /**
      * @var array
@@ -32,7 +33,10 @@ class V1TransactionsVoidRequest implements \JsonSerializable
      */
     public function getTags(): ?array
     {
-        return $this->tags;
+        if (count($this->tags) == 0) {
+            return null;
+        }
+        return $this->tags['value'];
     }
 
     /**
@@ -45,7 +49,16 @@ class V1TransactionsVoidRequest implements \JsonSerializable
      */
     public function setTags(?array $tags): void
     {
-        $this->tags = $tags;
+        $this->tags['value'] = $tags;
+    }
+
+    /**
+     * Unsets Tags.
+     * Tags
+     */
+    public function unsetTags(): void
+    {
+        $this->tags = [];
     }
 
     /**
@@ -81,6 +94,51 @@ class V1TransactionsVoidRequest implements \JsonSerializable
     }
 
     /**
+     * Converts the V1TransactionsVoidRequest object to a human-readable string representation.
+     *
+     * @return string The string representation of the V1TransactionsVoidRequest object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'V1TransactionsVoidRequest',
+            [
+                'tags' => $this->getTags(),
+                'description' => $this->getDescription(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -92,12 +150,13 @@ class V1TransactionsVoidRequest implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        if (isset($this->tags)) {
-            $json['tags']        = $this->tags;
+        if (!empty($this->tags)) {
+            $json['tags']        = $this->tags['value'];
         }
         if (!empty($this->description)) {
             $json['description'] = $this->description['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

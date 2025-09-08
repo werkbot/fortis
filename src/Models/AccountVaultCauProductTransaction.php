@@ -10,22 +10,23 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class AccountVaultCauProductTransaction implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $modifiedTs;
 
@@ -58,11 +59,6 @@ class AccountVaultCauProductTransaction implements \JsonSerializable
      * @var array
      */
     private $defaultCc = [];
-
-    /**
-     * @var array
-     */
-    private $developerCompanyId = [];
 
     /**
      * @var array
@@ -100,7 +96,7 @@ class AccountVaultCauProductTransaction implements \JsonSerializable
     private $locationC3 = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $name;
 
@@ -117,17 +113,37 @@ class AccountVaultCauProductTransaction implements \JsonSerializable
     /**
      * @var array
      */
-    private $recurringNotificationDaysDefault = [];
+    private $tz = [];
+
+    /**
+     * @var string|null
+     */
+    private $parentId;
+
+    /**
+     * @var bool|null
+     */
+    private $showContactNotes;
+
+    /**
+     * @var bool|null
+     */
+    private $showContactFiles;
 
     /**
      * @var array
      */
-    private $tz = [];
+    private $createdUserId = [];
 
     /**
-     * @var string
+     * @var array
      */
-    private $parentId;
+    private $locationType = [];
+
+    /**
+     * @var array
+     */
+    private $parentName = [];
 
     /**
      * @var array
@@ -135,26 +151,15 @@ class AccountVaultCauProductTransaction implements \JsonSerializable
     private $ticketHashKey = [];
 
     /**
-     * @param string $id
-     * @param int $createdTs
-     * @param int $modifiedTs
-     * @param string $name
-     * @param string $parentId
+     * @var AdditionalAccess|null
      */
-    public function __construct(string $id, int $createdTs, int $modifiedTs, string $name, string $parentId)
-    {
-        $this->id = $id;
-        $this->createdTs = $createdTs;
-        $this->modifiedTs = $modifiedTs;
-        $this->name = $name;
-        $this->parentId = $parentId;
-    }
+    private $additionalAccess;
 
     /**
      * Returns Id.
      * Location ID
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -163,10 +168,9 @@ class AccountVaultCauProductTransaction implements \JsonSerializable
      * Sets Id.
      * Location ID
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -175,7 +179,7 @@ class AccountVaultCauProductTransaction implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -184,10 +188,9 @@ class AccountVaultCauProductTransaction implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -196,7 +199,7 @@ class AccountVaultCauProductTransaction implements \JsonSerializable
      * Returns Modified Ts.
      * Modified Time Stamp
      */
-    public function getModifiedTs(): int
+    public function getModifiedTs(): ?int
     {
         return $this->modifiedTs;
     }
@@ -205,10 +208,9 @@ class AccountVaultCauProductTransaction implements \JsonSerializable
      * Sets Modified Ts.
      * Modified Time Stamp
      *
-     * @required
      * @maps modified_ts
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setModifiedTs(?int $modifiedTs): void
     {
         $this->modifiedTs = $modifiedTs;
     }
@@ -379,38 +381,6 @@ class AccountVaultCauProductTransaction implements \JsonSerializable
     public function unsetDefaultCc(): void
     {
         $this->defaultCc = [];
-    }
-
-    /**
-     * Returns Developer Company Id.
-     * GUID for Developer Company
-     */
-    public function getDeveloperCompanyId(): ?string
-    {
-        if (count($this->developerCompanyId) == 0) {
-            return null;
-        }
-        return $this->developerCompanyId['value'];
-    }
-
-    /**
-     * Sets Developer Company Id.
-     * GUID for Developer Company
-     *
-     * @maps developer_company_id
-     */
-    public function setDeveloperCompanyId(?string $developerCompanyId): void
-    {
-        $this->developerCompanyId['value'] = $developerCompanyId;
-    }
-
-    /**
-     * Unsets Developer Company Id.
-     * GUID for Developer Company
-     */
-    public function unsetDeveloperCompanyId(): void
-    {
-        $this->developerCompanyId = [];
     }
 
     /**
@@ -641,7 +611,7 @@ class AccountVaultCauProductTransaction implements \JsonSerializable
      * Returns Name.
      * Name of the company
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -650,10 +620,9 @@ class AccountVaultCauProductTransaction implements \JsonSerializable
      * Sets Name.
      * Name of the company
      *
-     * @required
      * @maps name
      */
-    public function setName(string $name): void
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
@@ -723,38 +692,6 @@ class AccountVaultCauProductTransaction implements \JsonSerializable
     }
 
     /**
-     * Returns Recurring Notification Days Default.
-     * Number of days prior to a Recurring running that a notification should be sent
-     */
-    public function getRecurringNotificationDaysDefault(): ?int
-    {
-        if (count($this->recurringNotificationDaysDefault) == 0) {
-            return null;
-        }
-        return $this->recurringNotificationDaysDefault['value'];
-    }
-
-    /**
-     * Sets Recurring Notification Days Default.
-     * Number of days prior to a Recurring running that a notification should be sent
-     *
-     * @maps recurring_notification_days_default
-     */
-    public function setRecurringNotificationDaysDefault(?int $recurringNotificationDaysDefault): void
-    {
-        $this->recurringNotificationDaysDefault['value'] = $recurringNotificationDaysDefault;
-    }
-
-    /**
-     * Unsets Recurring Notification Days Default.
-     * Number of days prior to a Recurring running that a notification should be sent
-     */
-    public function unsetRecurringNotificationDaysDefault(): void
-    {
-        $this->recurringNotificationDaysDefault = [];
-    }
-
-    /**
      * Returns Tz.
      * Time zone
      */
@@ -790,7 +727,7 @@ class AccountVaultCauProductTransaction implements \JsonSerializable
      * Returns Parent Id.
      * Location GUID of the parent location
      */
-    public function getParentId(): string
+    public function getParentId(): ?string
     {
         return $this->parentId;
     }
@@ -799,12 +736,148 @@ class AccountVaultCauProductTransaction implements \JsonSerializable
      * Sets Parent Id.
      * Location GUID of the parent location
      *
-     * @required
      * @maps parent_id
      */
-    public function setParentId(string $parentId): void
+    public function setParentId(?string $parentId): void
     {
         $this->parentId = $parentId;
+    }
+
+    /**
+     * Returns Show Contact Notes.
+     * If set to true will show 'Notes' tab on Contact
+     */
+    public function getShowContactNotes(): ?bool
+    {
+        return $this->showContactNotes;
+    }
+
+    /**
+     * Sets Show Contact Notes.
+     * If set to true will show 'Notes' tab on Contact
+     *
+     * @maps show_contact_notes
+     */
+    public function setShowContactNotes(?bool $showContactNotes): void
+    {
+        $this->showContactNotes = $showContactNotes;
+    }
+
+    /**
+     * Returns Show Contact Files.
+     * If set to true will show 'Files' tab on Contact
+     */
+    public function getShowContactFiles(): ?bool
+    {
+        return $this->showContactFiles;
+    }
+
+    /**
+     * Sets Show Contact Files.
+     * If set to true will show 'Files' tab on Contact
+     *
+     * @maps show_contact_files
+     */
+    public function setShowContactFiles(?bool $showContactFiles): void
+    {
+        $this->showContactFiles = $showContactFiles;
+    }
+
+    /**
+     * Returns Created User Id.
+     * User ID Created the register
+     */
+    public function getCreatedUserId(): ?string
+    {
+        if (count($this->createdUserId) == 0) {
+            return null;
+        }
+        return $this->createdUserId['value'];
+    }
+
+    /**
+     * Sets Created User Id.
+     * User ID Created the register
+     *
+     * @maps created_user_id
+     */
+    public function setCreatedUserId(?string $createdUserId): void
+    {
+        $this->createdUserId['value'] = $createdUserId;
+    }
+
+    /**
+     * Unsets Created User Id.
+     * User ID Created the register
+     */
+    public function unsetCreatedUserId(): void
+    {
+        $this->createdUserId = [];
+    }
+
+    /**
+     * Returns Location Type.
+     * Location Type
+     */
+    public function getLocationType(): ?string
+    {
+        if (count($this->locationType) == 0) {
+            return null;
+        }
+        return $this->locationType['value'];
+    }
+
+    /**
+     * Sets Location Type.
+     * Location Type
+     *
+     * @maps location_type
+     * @factory \FortisAPILib\Models\LocationTypeEnum::checkValue
+     */
+    public function setLocationType(?string $locationType): void
+    {
+        $this->locationType['value'] = $locationType;
+    }
+
+    /**
+     * Unsets Location Type.
+     * Location Type
+     */
+    public function unsetLocationType(): void
+    {
+        $this->locationType = [];
+    }
+
+    /**
+     * Returns Parent Name.
+     * Name of the parent location
+     */
+    public function getParentName(): ?string
+    {
+        if (count($this->parentName) == 0) {
+            return null;
+        }
+        return $this->parentName['value'];
+    }
+
+    /**
+     * Sets Parent Name.
+     * Name of the parent location
+     *
+     * @maps parent_name
+     */
+    public function setParentName(?string $parentName): void
+    {
+        $this->parentName['value'] = $parentName;
+    }
+
+    /**
+     * Unsets Parent Name.
+     * Name of the parent location
+     */
+    public function unsetParentName(): void
+    {
+        $this->parentName = [];
     }
 
     /**
@@ -840,6 +913,95 @@ class AccountVaultCauProductTransaction implements \JsonSerializable
     }
 
     /**
+     * Returns Additional Access.
+     */
+    public function getAdditionalAccess(): ?AdditionalAccess
+    {
+        return $this->additionalAccess;
+    }
+
+    /**
+     * Sets Additional Access.
+     *
+     * @maps additional_access
+     */
+    public function setAdditionalAccess(?AdditionalAccess $additionalAccess): void
+    {
+        $this->additionalAccess = $additionalAccess;
+    }
+
+    /**
+     * Converts the AccountVaultCauProductTransaction object to a human-readable string representation.
+     *
+     * @return string The string representation of the AccountVaultCauProductTransaction object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'AccountVaultCauProductTransaction',
+            [
+                'id' => $this->id,
+                'createdTs' => $this->createdTs,
+                'modifiedTs' => $this->modifiedTs,
+                'accountNumber' => $this->getAccountNumber(),
+                'address' => $this->address,
+                'brandingDomainId' => $this->getBrandingDomainId(),
+                'contactEmailTrxReceiptDefault' => $this->contactEmailTrxReceiptDefault,
+                'defaultAch' => $this->getDefaultAch(),
+                'defaultCc' => $this->getDefaultCc(),
+                'emailReplyTo' => $this->getEmailReplyTo(),
+                'fax' => $this->getFax(),
+                'locationApiId' => $this->getLocationApiId(),
+                'locationApiKey' => $this->getLocationApiKey(),
+                'locationC1' => $this->getLocationC1(),
+                'locationC2' => $this->getLocationC2(),
+                'locationC3' => $this->getLocationC3(),
+                'name' => $this->name,
+                'officePhone' => $this->getOfficePhone(),
+                'officeExtPhone' => $this->getOfficeExtPhone(),
+                'tz' => $this->getTz(),
+                'parentId' => $this->parentId,
+                'showContactNotes' => $this->showContactNotes,
+                'showContactFiles' => $this->showContactFiles,
+                'createdUserId' => $this->getCreatedUserId(),
+                'locationType' => $this->getLocationType(),
+                'parentName' => $this->getParentName(),
+                'ticketHashKey' => $this->getTicketHashKey(),
+                'additionalAccess' => $this->additionalAccess,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -851,68 +1013,91 @@ class AccountVaultCauProductTransaction implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['id']                                      = $this->id;
-        $json['created_ts']                              = $this->createdTs;
-        $json['modified_ts']                             = $this->modifiedTs;
+        if (isset($this->id)) {
+            $json['id']                                = $this->id;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']                        = $this->createdTs;
+        }
+        if (isset($this->modifiedTs)) {
+            $json['modified_ts']                       = $this->modifiedTs;
+        }
         if (!empty($this->accountNumber)) {
-            $json['account_number']                      = $this->accountNumber['value'];
+            $json['account_number']                    = $this->accountNumber['value'];
         }
         if (isset($this->address)) {
-            $json['address']                             = $this->address;
+            $json['address']                           = $this->address;
         }
         if (!empty($this->brandingDomainId)) {
-            $json['branding_domain_id']                  = $this->brandingDomainId['value'];
+            $json['branding_domain_id']                = $this->brandingDomainId['value'];
         }
         if (isset($this->contactEmailTrxReceiptDefault)) {
-            $json['contact_email_trx_receipt_default']   = $this->contactEmailTrxReceiptDefault;
+            $json['contact_email_trx_receipt_default'] = $this->contactEmailTrxReceiptDefault;
         }
         if (!empty($this->defaultAch)) {
-            $json['default_ach']                         = $this->defaultAch['value'];
+            $json['default_ach']                       = $this->defaultAch['value'];
         }
         if (!empty($this->defaultCc)) {
-            $json['default_cc']                          = $this->defaultCc['value'];
-        }
-        if (!empty($this->developerCompanyId)) {
-            $json['developer_company_id']                = $this->developerCompanyId['value'];
+            $json['default_cc']                        = $this->defaultCc['value'];
         }
         if (!empty($this->emailReplyTo)) {
-            $json['email_reply_to']                      = $this->emailReplyTo['value'];
+            $json['email_reply_to']                    = $this->emailReplyTo['value'];
         }
         if (!empty($this->fax)) {
-            $json['fax']                                 = $this->fax['value'];
+            $json['fax']                               = $this->fax['value'];
         }
         if (!empty($this->locationApiId)) {
-            $json['location_api_id']                     = $this->locationApiId['value'];
+            $json['location_api_id']                   = $this->locationApiId['value'];
         }
         if (!empty($this->locationApiKey)) {
-            $json['location_api_key']                    = $this->locationApiKey['value'];
+            $json['location_api_key']                  = $this->locationApiKey['value'];
         }
         if (!empty($this->locationC1)) {
-            $json['location_c1']                         = $this->locationC1['value'];
+            $json['location_c1']                       = $this->locationC1['value'];
         }
         if (!empty($this->locationC2)) {
-            $json['location_c2']                         = $this->locationC2['value'];
+            $json['location_c2']                       = $this->locationC2['value'];
         }
         if (!empty($this->locationC3)) {
-            $json['location_c3']                         = $this->locationC3['value'];
+            $json['location_c3']                       = $this->locationC3['value'];
         }
-        $json['name']                                    = $this->name;
+        if (isset($this->name)) {
+            $json['name']                              = $this->name;
+        }
         if (!empty($this->officePhone)) {
-            $json['office_phone']                        = $this->officePhone['value'];
+            $json['office_phone']                      = $this->officePhone['value'];
         }
         if (!empty($this->officeExtPhone)) {
-            $json['office_ext_phone']                    = $this->officeExtPhone['value'];
-        }
-        if (!empty($this->recurringNotificationDaysDefault)) {
-            $json['recurring_notification_days_default'] = $this->recurringNotificationDaysDefault['value'];
+            $json['office_ext_phone']                  = $this->officeExtPhone['value'];
         }
         if (!empty($this->tz)) {
-            $json['tz']                                  = $this->tz['value'];
+            $json['tz']                                = $this->tz['value'];
         }
-        $json['parent_id']                               = $this->parentId;
+        if (isset($this->parentId)) {
+            $json['parent_id']                         = $this->parentId;
+        }
+        if (isset($this->showContactNotes)) {
+            $json['show_contact_notes']                = $this->showContactNotes;
+        }
+        if (isset($this->showContactFiles)) {
+            $json['show_contact_files']                = $this->showContactFiles;
+        }
+        if (!empty($this->createdUserId)) {
+            $json['created_user_id']                   = $this->createdUserId['value'];
+        }
+        if (!empty($this->locationType)) {
+            $json['location_type']                     = LocationTypeEnum::checkValue($this->locationType['value']);
+        }
+        if (!empty($this->parentName)) {
+            $json['parent_name']                       = $this->parentName['value'];
+        }
         if (!empty($this->ticketHashKey)) {
-            $json['ticket_hash_key']                     = $this->ticketHashKey['value'];
+            $json['ticket_hash_key']                   = $this->ticketHashKey['value'];
         }
+        if (isset($this->additionalAccess)) {
+            $json['additional_access']                 = $this->additionalAccess;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

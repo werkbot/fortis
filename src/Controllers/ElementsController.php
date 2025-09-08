@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Controllers;
 
+use Core\Authentication\Auth;
 use Core\Request\Parameters\BodyParam;
 use Core\Request\Parameters\HeaderParam;
 use Core\Response\Types\ErrorType;
@@ -17,11 +18,37 @@ use CoreInterfaces\Core\Request\RequestMethod;
 use FortisAPILib\Exceptions\ApiException;
 use FortisAPILib\Exceptions\Response401tokenException;
 use FortisAPILib\Exceptions\Response412Exception;
+use FortisAPILib\Models\ResponseTicketIntention;
 use FortisAPILib\Models\ResponseTransactionIntention;
+use FortisAPILib\Models\V1ElementsTicketIntentionRequest;
 use FortisAPILib\Models\V1ElementsTransactionIntentionRequest;
 
 class ElementsController extends BaseController
 {
+    /**
+     * Elements uses a `TicketIntention` object to represent your intent to tokenize credit card
+     * information from a customer.
+     *
+     * @param V1ElementsTicketIntentionRequest $body
+     *
+     * @return ResponseTicketIntention Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function ticketIntention(V1ElementsTicketIntentionRequest $body): ResponseTicketIntention
+    {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/elements/ticket/intention')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(HeaderParam::init('Content-Type', 'application/json'), BodyParam::init($body));
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTicketIntention::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
     /**
      * Elements uses a `TransactionIntention` object to represent your intent to collect payment from a
      * customer, tracking charge attempts and payment state changes throughout the process.
@@ -35,12 +62,12 @@ class ElementsController extends BaseController
     public function transactionIntention(V1ElementsTransactionIntentionRequest $body): ResponseTransactionIntention
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/elements/transaction/intention')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(HeaderParam::init('Content-Type', 'application/json'), BodyParam::init($body));
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTransactionIntention::class);
 
         return $this->execute($_reqBuilder, $_resHandler);

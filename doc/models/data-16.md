@@ -9,34 +9,67 @@
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `issuerBankName` | `string` | Required | The Issuer Bank name for the BIN<br>**Constraints**: *Maximum Length*: `60` | getIssuerBankName(): string | setIssuerBankName(string issuerBankName): void |
-| `countryCode` | `string` | Required | VISA - Three character alpha country code<br>MC - Three character alpha country code<br>Maestro - Three character alpha country code<br>Amex - Space Filled<br>Discover - Three character alpha country code or spaces when Discover doesn't share issuer country.<br>**Constraints**: *Maximum Length*: `2` | getCountryCode(): string | setCountryCode(string countryCode): void |
-| `detailCardProduct` | `string` | Required | V - Visa<br>M - MasterCard<br>A - American Express<br>D - Discover<br>N - PIN Only (Non-Visa/MasterCard/AMEX/Discover<br>**Constraints**: *Maximum Length*: `1` | getDetailCardProduct(): string | setDetailCardProduct(string detailCardProduct): void |
-| `detailCardIndicator` | `string` | Required | Left justified, Space filled<br>**Constraints**: *Maximum Length*: `2` | getDetailCardIndicator(): string | setDetailCardIndicator(string detailCardIndicator): void |
-| `fsaIndicator` | `string` | Required | Left justified, Space filled<br>**Constraints**: *Maximum Length*: `1` | getFsaIndicator(): string | setFsaIndicator(string fsaIndicator): void |
-| `prepaidIndicator` | `string` | Required | P = Prepaid Card<br>Default: Space filled<br>**Constraints**: *Maximum Length*: `1` | getPrepaidIndicator(): string | setPrepaidIndicator(string prepaidIndicator): void |
-| `productId` | `string` | Required | P = Prepaid Card<br>Default: Space filled<br>**Constraints**: *Maximum Length*: `3` | getProductId(): string | setProductId(string productId): void |
-| `regulatorIndicator` | `string` | Required | P = Prepaid Card<br>Default: Space filled<br>**Constraints**: *Maximum Length*: `1` | getRegulatorIndicator(): string | setRegulatorIndicator(string regulatorIndicator): void |
-| `visaProductSubType` | `?string` | Optional | This is used to identify product sub-types, i.e. further classification of product.<br>**Constraints**: *Maximum Length*: `2` | getVisaProductSubType(): ?string | setVisaProductSubType(?string visaProductSubType): void |
-| `visaLargeTicketIndicator` | `?string` | Optional | L = Visa Large Ticket.<br>Default: Space filled<br>**Constraints**: *Maximum Length*: `1` | getVisaLargeTicketIndicator(): ?string | setVisaLargeTicketIndicator(?string visaLargeTicketIndicator): void |
-| `accountFundSource` | `string` | Required | For Visa, MasterCard, and Discover.  Identifies the source of the funds associated with the primary account for the card.<br>**Constraints**: *Maximum Length*: `1` | getAccountFundSource(): string | setAccountFundSource(string accountFundSource): void |
-| `cardClass` | `?string` | Optional | Categorizes the BIN as a Business card, Corporate T&E card, Purchase card or Consumer card. Assists the POS device with prompting decisions – to collect addenda or not.  Visa, MasterCard and Discover only.<br>**Constraints**: *Maximum Length*: `1` | getCardClass(): ?string | setCardClass(?string cardClass): void |
-| `tokenInd` | `?string` | Optional | Token Indicator values:<br>Y = Token BIN<br>Default: Space filled<br>VISA, MC, and Discover Only<br>**Constraints**: *Maximum Length*: `1` | getTokenInd(): ?string | setTokenInd(?string tokenInd): void |
-| `issuingNetwork` | `?string` | Optional | For Discover card types<br>00 - Discover<br>01 - Diners<br>02 - JCB (Japanese Credit Bank)<br>03 - CUP (China Union Pay)<br>04 PayPal<br>**Constraints**: *Maximum Length*: `2` | getIssuingNetwork(): ?string | setIssuingNetwork(?string issuingNetwork): void |
+| `locationId` | `?string` | Optional | Location ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getLocationId(): ?string | setLocationId(?string locationId): void |
+| `ccProductTransactionId` | `?string` | Optional | cc_product_transaction_id<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getCcProductTransactionId(): ?string | setCcProductTransactionId(?string ccProductTransactionId): void |
+| `email` | `?string` | Optional | Email<br><br>**Constraints**: *Maximum Length*: `128` | getEmail(): ?string | setEmail(?string email): void |
+| `amountDue` | `?int` | Optional | Amount Due<br><br>**Constraints**: `>= 1`, `<= 999999999` | getAmountDue(): ?int | setAmountDue(?int amountDue): void |
+| `locationApiId` | `?string` | Optional | Location Api Id | getLocationApiId(): ?string | setLocationApiId(?string locationApiId): void |
+| `contactId` | `?string` | Optional | Contact Id<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getContactId(): ?string | setContactId(?string contactId): void |
+| `contactApiId` | `?string` | Optional | Contact Api Id | getContactApiId(): ?string | setContactApiId(?string contactApiId): void |
+| `paylinkApiId` | `?string` | Optional | Paylinke Api Id<br><br>**Constraints**: *Maximum Length*: `64` | getPaylinkApiId(): ?string | setPaylinkApiId(?string paylinkApiId): void |
+| `achProductTransactionId` | `?string` | Optional | Ach Product Transaction Id<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getAchProductTransactionId(): ?string | setAchProductTransactionId(?string achProductTransactionId): void |
+| `expireDate` | `?string` | Optional | Expire Date<br><br>**Constraints**: *Maximum Length*: `10`, *Pattern*: `^[\d]{4}-[\d]{2}-[\d]{2}$` | getExpireDate(): ?string | setExpireDate(?string expireDate): void |
+| `displayProductTransactionReceiptDetails` | `?bool` | Optional | Display Product Transaction Receipt Details | getDisplayProductTransactionReceiptDetails(): ?bool | setDisplayProductTransactionReceiptDetails(?bool displayProductTransactionReceiptDetails): void |
+| `displayBillingFields` | `?bool` | Optional | Display Billing Fields | getDisplayBillingFields(): ?bool | setDisplayBillingFields(?bool displayBillingFields): void |
+| `deliveryMethod` | [`?int(DeliveryMethodEnum)`](../../doc/models/delivery-method-enum.md) | Optional | Delivery Method<br><br>> 0 - Do not send<br>> <br>> 1 - Email<br>> <br>> 2 - SMS<br>> <br>> 3 - Both | getDeliveryMethod(): ?int | setDeliveryMethod(?int deliveryMethod): void |
+| `cellPhone` | `?string` | Optional | Cell Phone<br><br>**Constraints**: *Minimum Length*: `10`, *Maximum Length*: `10`, *Pattern*: `^\d{1,10}$` | getCellPhone(): ?string | setCellPhone(?string cellPhone): void |
+| `description` | `?string` | Optional | Description<br><br>**Constraints**: *Maximum Length*: `64` | getDescription(): ?string | setDescription(?string description): void |
+| `storeToken` | `?bool` | Optional | Store Token | getStoreToken(): ?bool | setStoreToken(?bool storeToken): void |
+| `storeTokenTitle` | `?string` | Optional | Store Token Title<br><br>**Constraints**: *Maximum Length*: `16` | getStoreTokenTitle(): ?string | setStoreTokenTitle(?string storeTokenTitle): void |
+| `paylinkAction` | [`?string(PaylinkActionEnum)`](../../doc/models/paylink-action-enum.md) | Optional | Paylink Action | getPaylinkAction(): ?string | setPaylinkAction(?string paylinkAction): void |
+| `bankFundedOnlyOverride` | `?bool` | Optional | Bank Funded Only Override | getBankFundedOnlyOverride(): ?bool | setBankFundedOnlyOverride(?bool bankFundedOnlyOverride): void |
+| `tags` | `?(string[])` | Optional | Used to apply tags to a paylink. | getTags(): ?array | setTags(?array tags): void |
+| `redirectUrlDelay` | `?float` | Optional | Redirect URL Delay in seconds<br><br>**Default**: `15`<br><br>**Constraints**: `<= 15` | getRedirectUrlDelay(): ?float | setRedirectUrlDelay(?float redirectUrlDelay): void |
+| `redirectUrlOnApprove` | `?string` | Optional | Redirect URL On Approval | getRedirectUrlOnApprove(): ?string | setRedirectUrlOnApprove(?string redirectUrlOnApprove): void |
+| `redirectUrlOnDecline` | `?string` | Optional | Redirect URL On Decline | getRedirectUrlOnDecline(): ?string | setRedirectUrlOnDecline(?string redirectUrlOnDecline): void |
+| `id` | `?string` | Optional | Paylink Id<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getId(): ?string | setId(?string id): void |
+| `statusId` | `?bool` | Optional | (DEPRECATED) Status Id | getStatusId(): ?bool | setStatusId(?bool statusId): void |
+| `statusCode` | [`?int(StatusCode12Enum)`](../../doc/models/status-code-12-enum.md) | Optional | Status Code | getStatusCode(): ?int | setStatusCode(?int statusCode): void |
+| `active` | `?bool` | Optional | Active | getActive(): ?bool | setActive(?bool active): void |
+| `createdTs` | `?int` | Optional | Created Time Stamp | getCreatedTs(): ?int | setCreatedTs(?int createdTs): void |
+| `modifiedTs` | `?int` | Optional | Modified Time Stamp | getModifiedTs(): ?int | setModifiedTs(?int modifiedTs): void |
+| `createdUserId` | `?string` | Optional | User ID Created the register<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getCreatedUserId(): ?string | setCreatedUserId(?string createdUserId): void |
+| `modifiedUserId` | `?string` | Optional | Last User ID that updated the register<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getModifiedUserId(): ?string | setModifiedUserId(?string modifiedUserId): void |
 
 ## Example (as JSON)
 
 ```json
 {
-  "issuer_bank_name": "Cartasi S.P.A.",
-  "country_code": "US",
-  "detail_card_product": "V",
-  "detail_card_indicator": "X",
-  "fsa_indicator": "F",
-  "prepaid_indicator": "P",
-  "product_id": "G",
-  "regulator_indicator": "N",
-  "account_fund_source": "C"
+  "location_id": "11e95f8ec39de8fbdb0a4f1a",
+  "cc_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+  "email": "email@domain.com",
+  "amount_due": 1,
+  "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+  "ach_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+  "expire_date": "2021-12-01",
+  "display_product_transaction_receipt_details": true,
+  "display_billing_fields": true,
+  "delivery_method": 0,
+  "cell_phone": "3339998822",
+  "description": "Description",
+  "store_token": false,
+  "store_token_title": "John Account",
+  "bank_funded_only_override": false,
+  "redirect_url_delay": 15,
+  "id": "11e95f8ec39de8fbdb0a4f1a",
+  "status_id": true,
+  "status_code": 1,
+  "active": true,
+  "created_ts": 1422040992,
+  "modified_ts": 1422040992,
+  "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+  "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+  "location_api_id": "location_api_id2"
 }
 ```
 

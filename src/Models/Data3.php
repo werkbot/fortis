@@ -10,466 +10,371 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class Data3 implements \JsonSerializable
 {
     /**
-     * @var string
-     */
-    private $locationId;
-
-    /**
-     * @var string
-     */
-    private $terminalId;
-
-    /**
-     * @var bool
-     */
-    private $requireSignature;
-
-    /**
-     * @var array
-     */
-    private $deviceTermApiId = [];
-
-    /**
-     * @var string
-     */
-    private $termsConditions;
-
-    /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var int
+     * @var array
      */
-    private $reasonCodeId;
+    private $declinedTransactionId = [];
 
     /**
-     * @var Signature|null
+     * @var array
      */
-    private $signature;
+    private $paymentTransactionId = [];
 
     /**
-     * @var int
+     * @var string|null
      */
-    private $createdTs;
+    private $status;
 
     /**
-     * @var int
+     * @var array
      */
-    private $modifiedTs;
+    private $recurringId = [];
 
     /**
-     * @var string
+     * @var array
      */
-    private $createdUserId;
+    private $createdTs = [];
 
     /**
-     * @var CreatedUser|null
+     * @var array
      */
-    private $createdUser;
+    private $createdUserId = [];
 
     /**
-     * @var Location|null
+     * @var array
      */
-    private $location;
+    private $modifiedTs = [];
 
     /**
-     * @var Terminal|null
+     * @var array
      */
-    private $terminal;
-
-    /**
-     * @var Changelog[]|null
-     */
-    private $changelogs;
-
-    /**
-     * @var ReasonCode|null
-     */
-    private $reasonCode;
-
-    /**
-     * @param string $locationId
-     * @param string $terminalId
-     * @param bool $requireSignature
-     * @param string $termsConditions
-     * @param string $id
-     * @param int $reasonCodeId
-     * @param int $createdTs
-     * @param int $modifiedTs
-     * @param string $createdUserId
-     */
-    public function __construct(
-        string $locationId,
-        string $terminalId,
-        bool $requireSignature,
-        string $termsConditions,
-        string $id,
-        int $reasonCodeId,
-        int $createdTs,
-        int $modifiedTs,
-        string $createdUserId
-    ) {
-        $this->locationId = $locationId;
-        $this->terminalId = $terminalId;
-        $this->requireSignature = $requireSignature;
-        $this->termsConditions = $termsConditions;
-        $this->id = $id;
-        $this->reasonCodeId = $reasonCodeId;
-        $this->createdTs = $createdTs;
-        $this->modifiedTs = $modifiedTs;
-        $this->createdUserId = $createdUserId;
-    }
-
-    /**
-     * Returns Location Id.
-     * Location ID
-     */
-    public function getLocationId(): string
-    {
-        return $this->locationId;
-    }
-
-    /**
-     * Sets Location Id.
-     * Location ID
-     *
-     * @required
-     * @maps location_id
-     */
-    public function setLocationId(string $locationId): void
-    {
-        $this->locationId = $locationId;
-    }
-
-    /**
-     * Returns Terminal Id.
-     * Terminal ID
-     */
-    public function getTerminalId(): string
-    {
-        return $this->terminalId;
-    }
-
-    /**
-     * Sets Terminal Id.
-     * Terminal ID
-     *
-     * @required
-     * @maps terminal_id
-     */
-    public function setTerminalId(string $terminalId): void
-    {
-        $this->terminalId = $terminalId;
-    }
-
-    /**
-     * Returns Require Signature.
-     * Set to true or 1 to require a signature from the customer
-     */
-    public function getRequireSignature(): bool
-    {
-        return $this->requireSignature;
-    }
-
-    /**
-     * Sets Require Signature.
-     * Set to true or 1 to require a signature from the customer
-     *
-     * @required
-     * @maps require_signature
-     */
-    public function setRequireSignature(bool $requireSignature): void
-    {
-        $this->requireSignature = $requireSignature;
-    }
-
-    /**
-     * Returns Device Term Api Id.
-     * Can be used for associating record to external systems. Must be unique per location.
-     */
-    public function getDeviceTermApiId(): ?string
-    {
-        if (count($this->deviceTermApiId) == 0) {
-            return null;
-        }
-        return $this->deviceTermApiId['value'];
-    }
-
-    /**
-     * Sets Device Term Api Id.
-     * Can be used for associating record to external systems. Must be unique per location.
-     *
-     * @maps device_term_api_id
-     */
-    public function setDeviceTermApiId(?string $deviceTermApiId): void
-    {
-        $this->deviceTermApiId['value'] = $deviceTermApiId;
-    }
-
-    /**
-     * Unsets Device Term Api Id.
-     * Can be used for associating record to external systems. Must be unique per location.
-     */
-    public function unsetDeviceTermApiId(): void
-    {
-        $this->deviceTermApiId = [];
-    }
-
-    /**
-     * Returns Terms Conditions.
-     * This is the message that is displayed on the screen when prompting for a signature.
-     */
-    public function getTermsConditions(): string
-    {
-        return $this->termsConditions;
-    }
-
-    /**
-     * Sets Terms Conditions.
-     * This is the message that is displayed on the screen when prompting for a signature.
-     *
-     * @required
-     * @maps terms_conditions
-     */
-    public function setTermsConditions(string $termsConditions): void
-    {
-        $this->termsConditions = $termsConditions;
-    }
+    private $modifiedUserId = [];
 
     /**
      * Returns Id.
-     * Device term ID
+     * Id
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
 
     /**
      * Sets Id.
-     * Device term ID
+     * Id
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
 
     /**
-     * Returns Reason Code Id.
-     * Reason code ID
+     * Returns Declined Transaction Id.
+     * Declined Transaction Id
      */
-    public function getReasonCodeId(): int
+    public function getDeclinedTransactionId(): ?string
     {
-        return $this->reasonCodeId;
+        if (count($this->declinedTransactionId) == 0) {
+            return null;
+        }
+        return $this->declinedTransactionId['value'];
     }
 
     /**
-     * Sets Reason Code Id.
-     * Reason code ID
+     * Sets Declined Transaction Id.
+     * Declined Transaction Id
      *
-     * @required
-     * @maps reason_code_id
+     * @maps declined_transaction_id
      */
-    public function setReasonCodeId(int $reasonCodeId): void
+    public function setDeclinedTransactionId(?string $declinedTransactionId): void
     {
-        $this->reasonCodeId = $reasonCodeId;
+        $this->declinedTransactionId['value'] = $declinedTransactionId;
     }
 
     /**
-     * Returns Signature.
-     * Signature Information on `expand`
+     * Unsets Declined Transaction Id.
+     * Declined Transaction Id
      */
-    public function getSignature(): ?Signature
+    public function unsetDeclinedTransactionId(): void
     {
-        return $this->signature;
+        $this->declinedTransactionId = [];
     }
 
     /**
-     * Sets Signature.
-     * Signature Information on `expand`
+     * Returns Payment Transaction Id.
+     * Payment Transaction Id
+     */
+    public function getPaymentTransactionId(): ?string
+    {
+        if (count($this->paymentTransactionId) == 0) {
+            return null;
+        }
+        return $this->paymentTransactionId['value'];
+    }
+
+    /**
+     * Sets Payment Transaction Id.
+     * Payment Transaction Id
      *
-     * @maps signature
+     * @maps payment_transaction_id
      */
-    public function setSignature(?Signature $signature): void
+    public function setPaymentTransactionId(?string $paymentTransactionId): void
     {
-        $this->signature = $signature;
+        $this->paymentTransactionId['value'] = $paymentTransactionId;
+    }
+
+    /**
+     * Unsets Payment Transaction Id.
+     * Payment Transaction Id
+     */
+    public function unsetPaymentTransactionId(): void
+    {
+        $this->paymentTransactionId = [];
+    }
+
+    /**
+     * Returns Status.
+     * Status
+     */
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    /**
+     * Sets Status.
+     * Status
+     *
+     * @maps status
+     * @factory \FortisAPILib\Models\Status3Enum::checkValue
+     */
+    public function setStatus(?string $status): void
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * Returns Recurring Id.
+     * Recurring Id
+     */
+    public function getRecurringId(): ?string
+    {
+        if (count($this->recurringId) == 0) {
+            return null;
+        }
+        return $this->recurringId['value'];
+    }
+
+    /**
+     * Sets Recurring Id.
+     * Recurring Id
+     *
+     * @maps recurring_id
+     */
+    public function setRecurringId(?string $recurringId): void
+    {
+        $this->recurringId['value'] = $recurringId;
+    }
+
+    /**
+     * Unsets Recurring Id.
+     * Recurring Id
+     */
+    public function unsetRecurringId(): void
+    {
+        $this->recurringId = [];
     }
 
     /**
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
-        return $this->createdTs;
+        if (count($this->createdTs) == 0) {
+            return null;
+        }
+        return $this->createdTs['value'];
     }
 
     /**
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
-        $this->createdTs = $createdTs;
+        $this->createdTs['value'] = $createdTs;
+    }
+
+    /**
+     * Unsets Created Ts.
+     * Created Time Stamp
+     */
+    public function unsetCreatedTs(): void
+    {
+        $this->createdTs = [];
+    }
+
+    /**
+     * Returns Created User Id.
+     * User ID Created the register
+     */
+    public function getCreatedUserId(): ?string
+    {
+        if (count($this->createdUserId) == 0) {
+            return null;
+        }
+        return $this->createdUserId['value'];
+    }
+
+    /**
+     * Sets Created User Id.
+     * User ID Created the register
+     *
+     * @maps created_user_id
+     */
+    public function setCreatedUserId(?string $createdUserId): void
+    {
+        $this->createdUserId['value'] = $createdUserId;
+    }
+
+    /**
+     * Unsets Created User Id.
+     * User ID Created the register
+     */
+    public function unsetCreatedUserId(): void
+    {
+        $this->createdUserId = [];
     }
 
     /**
      * Returns Modified Ts.
      * Modified Time Stamp
      */
-    public function getModifiedTs(): int
+    public function getModifiedTs(): ?int
     {
-        return $this->modifiedTs;
+        if (count($this->modifiedTs) == 0) {
+            return null;
+        }
+        return $this->modifiedTs['value'];
     }
 
     /**
      * Sets Modified Ts.
      * Modified Time Stamp
      *
-     * @required
      * @maps modified_ts
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setModifiedTs(?int $modifiedTs): void
     {
-        $this->modifiedTs = $modifiedTs;
+        $this->modifiedTs['value'] = $modifiedTs;
     }
 
     /**
-     * Returns Created User Id.
-     * System generated id for user who created record
+     * Unsets Modified Ts.
+     * Modified Time Stamp
      */
-    public function getCreatedUserId(): string
+    public function unsetModifiedTs(): void
     {
-        return $this->createdUserId;
+        $this->modifiedTs = [];
     }
 
     /**
-     * Sets Created User Id.
-     * System generated id for user who created record
+     * Returns Modified User Id.
+     * Last User ID that updated the register
+     */
+    public function getModifiedUserId(): ?string
+    {
+        if (count($this->modifiedUserId) == 0) {
+            return null;
+        }
+        return $this->modifiedUserId['value'];
+    }
+
+    /**
+     * Sets Modified User Id.
+     * Last User ID that updated the register
      *
-     * @required
-     * @maps created_user_id
+     * @maps modified_user_id
      */
-    public function setCreatedUserId(string $createdUserId): void
+    public function setModifiedUserId(?string $modifiedUserId): void
     {
-        $this->createdUserId = $createdUserId;
+        $this->modifiedUserId['value'] = $modifiedUserId;
     }
 
     /**
-     * Returns Created User.
-     * User Information on `expand`
+     * Unsets Modified User Id.
+     * Last User ID that updated the register
      */
-    public function getCreatedUser(): ?CreatedUser
+    public function unsetModifiedUserId(): void
     {
-        return $this->createdUser;
+        $this->modifiedUserId = [];
     }
 
     /**
-     * Sets Created User.
-     * User Information on `expand`
+     * Converts the Data3 object to a human-readable string representation.
      *
-     * @maps created_user
+     * @return string The string representation of the Data3 object.
      */
-    public function setCreatedUser(?CreatedUser $createdUser): void
+    public function __toString(): string
     {
-        $this->createdUser = $createdUser;
+        return ApiHelper::stringify(
+            'Data3',
+            [
+                'id' => $this->id,
+                'declinedTransactionId' => $this->getDeclinedTransactionId(),
+                'paymentTransactionId' => $this->getPaymentTransactionId(),
+                'status' => $this->status,
+                'recurringId' => $this->getRecurringId(),
+                'createdTs' => $this->getCreatedTs(),
+                'createdUserId' => $this->getCreatedUserId(),
+                'modifiedTs' => $this->getModifiedTs(),
+                'modifiedUserId' => $this->getModifiedUserId(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
     }
 
-    /**
-     * Returns Location.
-     * Location Information on `expand`
-     */
-    public function getLocation(): ?Location
-    {
-        return $this->location;
-    }
+    private $additionalProperties = [];
 
     /**
-     * Sets Location.
-     * Location Information on `expand`
+     * Add an additional property to this model.
      *
-     * @maps location
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
      */
-    public function setLocation(?Location $location): void
+    public function addAdditionalProperty(string $name, $value)
     {
-        $this->location = $location;
+        $this->additionalProperties[$name] = $value;
     }
 
     /**
-     * Returns Terminal.
-     * Terminal Information on `expand`
-     */
-    public function getTerminal(): ?Terminal
-    {
-        return $this->terminal;
-    }
-
-    /**
-     * Sets Terminal.
-     * Terminal Information on `expand`
+     * Find an additional property by name in this model or false if property does not exist.
      *
-     * @maps terminal
-     */
-    public function setTerminal(?Terminal $terminal): void
-    {
-        $this->terminal = $terminal;
-    }
-
-    /**
-     * Returns Changelogs.
-     * Changelog Information on `expand`
+     * @param string $name Name of property.
      *
-     * @return Changelog[]|null
+     * @return mixed|false Value of the property.
      */
-    public function getChangelogs(): ?array
+    public function findAdditionalProperty(string $name)
     {
-        return $this->changelogs;
-    }
-
-    /**
-     * Sets Changelogs.
-     * Changelog Information on `expand`
-     *
-     * @maps changelogs
-     *
-     * @param Changelog[]|null $changelogs
-     */
-    public function setChangelogs(?array $changelogs): void
-    {
-        $this->changelogs = $changelogs;
-    }
-
-    /**
-     * Returns Reason Code.
-     * Reason Code Information on `expand`
-     */
-    public function getReasonCode(): ?ReasonCode
-    {
-        return $this->reasonCode;
-    }
-
-    /**
-     * Sets Reason Code.
-     * Reason Code Information on `expand`
-     *
-     * @maps reason_code
-     */
-    public function setReasonCode(?ReasonCode $reasonCode): void
-    {
-        $this->reasonCode = $reasonCode;
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -484,36 +389,34 @@ class Data3 implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['location_id']            = $this->locationId;
-        $json['terminal_id']            = $this->terminalId;
-        $json['require_signature']      = $this->requireSignature;
-        if (!empty($this->deviceTermApiId)) {
-            $json['device_term_api_id'] = $this->deviceTermApiId['value'];
+        if (isset($this->id)) {
+            $json['id']                      = $this->id;
         }
-        $json['terms_conditions']       = $this->termsConditions;
-        $json['id']                     = $this->id;
-        $json['reason_code_id']         = $this->reasonCodeId;
-        if (isset($this->signature)) {
-            $json['signature']          = $this->signature;
+        if (!empty($this->declinedTransactionId)) {
+            $json['declined_transaction_id'] = $this->declinedTransactionId['value'];
         }
-        $json['created_ts']             = $this->createdTs;
-        $json['modified_ts']            = $this->modifiedTs;
-        $json['created_user_id']        = $this->createdUserId;
-        if (isset($this->createdUser)) {
-            $json['created_user']       = $this->createdUser;
+        if (!empty($this->paymentTransactionId)) {
+            $json['payment_transaction_id']  = $this->paymentTransactionId['value'];
         }
-        if (isset($this->location)) {
-            $json['location']           = $this->location;
+        if (isset($this->status)) {
+            $json['status']                  = Status3Enum::checkValue($this->status);
         }
-        if (isset($this->terminal)) {
-            $json['terminal']           = $this->terminal;
+        if (!empty($this->recurringId)) {
+            $json['recurring_id']            = $this->recurringId['value'];
         }
-        if (isset($this->changelogs)) {
-            $json['changelogs']         = $this->changelogs;
+        if (!empty($this->createdTs)) {
+            $json['created_ts']              = $this->createdTs['value'];
         }
-        if (isset($this->reasonCode)) {
-            $json['reason_code']        = $this->reasonCode;
+        if (!empty($this->createdUserId)) {
+            $json['created_user_id']         = $this->createdUserId['value'];
         }
+        if (!empty($this->modifiedTs)) {
+            $json['modified_ts']             = $this->modifiedTs['value'];
+        }
+        if (!empty($this->modifiedUserId)) {
+            $json['modified_user_id']        = $this->modifiedUserId['value'];
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

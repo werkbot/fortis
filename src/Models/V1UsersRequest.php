@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class V1UsersRequest implements \JsonSerializable
@@ -22,22 +23,12 @@ class V1UsersRequest implements \JsonSerializable
     /**
      * @var array
      */
-    private $address = [];
-
-    /**
-     * @var array
-     */
     private $brandingDomainUrl = [];
 
     /**
      * @var array
      */
     private $cellPhone = [];
-
-    /**
-     * @var array
-     */
-    private $city = [];
 
     /**
      * @var array
@@ -112,11 +103,6 @@ class V1UsersRequest implements \JsonSerializable
     /**
      * @var array
      */
-    private $state = [];
-
-    /**
-     * @var array
-     */
     private $termsConditionCode = [];
 
     /**
@@ -175,9 +161,24 @@ class V1UsersRequest implements \JsonSerializable
     private $primaryLocationApiId = [];
 
     /**
+     * @var array
+     */
+    private $statusCode = [];
+
+    /**
      * @var bool|null
      */
-    private $statusId;
+    private $apiOnly;
+
+    /**
+     * @var bool|null
+     */
+    private $isInvitation;
+
+    /**
+     * @var Address2|null
+     */
+    private $address;
 
     /**
      * @param string $email
@@ -230,38 +231,6 @@ class V1UsersRequest implements \JsonSerializable
     public function unsetAccountNumber(): void
     {
         $this->accountNumber = [];
-    }
-
-    /**
-     * Returns Address.
-     * Address
-     */
-    public function getAddress(): ?string
-    {
-        if (count($this->address) == 0) {
-            return null;
-        }
-        return $this->address['value'];
-    }
-
-    /**
-     * Sets Address.
-     * Address
-     *
-     * @maps address
-     */
-    public function setAddress(?string $address): void
-    {
-        $this->address['value'] = $address;
-    }
-
-    /**
-     * Unsets Address.
-     * Address
-     */
-    public function unsetAddress(): void
-    {
-        $this->address = [];
     }
 
     /**
@@ -326,38 +295,6 @@ class V1UsersRequest implements \JsonSerializable
     public function unsetCellPhone(): void
     {
         $this->cellPhone = [];
-    }
-
-    /**
-     * Returns City.
-     * City
-     */
-    public function getCity(): ?string
-    {
-        if (count($this->city) == 0) {
-            return null;
-        }
-        return $this->city['value'];
-    }
-
-    /**
-     * Sets City.
-     * City
-     *
-     * @maps city
-     */
-    public function setCity(?string $city): void
-    {
-        $this->city['value'] = $city;
-    }
-
-    /**
-     * Unsets City.
-     * City
-     */
-    public function unsetCity(): void
-    {
-        $this->city = [];
     }
 
     /**
@@ -764,38 +701,6 @@ class V1UsersRequest implements \JsonSerializable
     }
 
     /**
-     * Returns State.
-     * State
-     */
-    public function getState(): ?string
-    {
-        if (count($this->state) == 0) {
-            return null;
-        }
-        return $this->state['value'];
-    }
-
-    /**
-     * Sets State.
-     * State
-     *
-     * @maps state
-     */
-    public function setState(?string $state): void
-    {
-        $this->state['value'] = $state;
-    }
-
-    /**
-     * Unsets State.
-     * State
-     */
-    public function unsetState(): void
-    {
-        $this->state = [];
-    }
-
-    /**
      * Returns Terms Condition Code.
      * Terms Condition (This field is required when updating your own password).
      */
@@ -1147,23 +1052,172 @@ class V1UsersRequest implements \JsonSerializable
     }
 
     /**
-     * Returns Status Id.
-     * Status
+     * Returns Status Code.
+     * Status Code
      */
-    public function getStatusId(): ?bool
+    public function getStatusCode(): ?int
     {
-        return $this->statusId;
+        if (count($this->statusCode) == 0) {
+            return null;
+        }
+        return $this->statusCode['value'];
     }
 
     /**
-     * Sets Status Id.
-     * Status
+     * Sets Status Code.
+     * Status Code
      *
-     * @maps status_id
+     * @maps status_code
+     * @factory \FortisAPILib\Models\StatusCodeEnum::checkValue
      */
-    public function setStatusId(?bool $statusId): void
+    public function setStatusCode(?int $statusCode): void
     {
-        $this->statusId = $statusId;
+        $this->statusCode['value'] = $statusCode;
+    }
+
+    /**
+     * Unsets Status Code.
+     * Status Code
+     */
+    public function unsetStatusCode(): void
+    {
+        $this->statusCode = [];
+    }
+
+    /**
+     * Returns Api Only.
+     * API Only
+     */
+    public function getApiOnly(): ?bool
+    {
+        return $this->apiOnly;
+    }
+
+    /**
+     * Sets Api Only.
+     * API Only
+     *
+     * @maps api_only
+     */
+    public function setApiOnly(?bool $apiOnly): void
+    {
+        $this->apiOnly = $apiOnly;
+    }
+
+    /**
+     * Returns Is Invitation.
+     * Is Invitation
+     */
+    public function getIsInvitation(): ?bool
+    {
+        return $this->isInvitation;
+    }
+
+    /**
+     * Sets Is Invitation.
+     * Is Invitation
+     *
+     * @maps is_invitation
+     */
+    public function setIsInvitation(?bool $isInvitation): void
+    {
+        $this->isInvitation = $isInvitation;
+    }
+
+    /**
+     * Returns Address.
+     * Address
+     */
+    public function getAddress(): ?Address2
+    {
+        return $this->address;
+    }
+
+    /**
+     * Sets Address.
+     * Address
+     *
+     * @maps address
+     */
+    public function setAddress(?Address2 $address): void
+    {
+        $this->address = $address;
+    }
+
+    /**
+     * Converts the V1UsersRequest object to a human-readable string representation.
+     *
+     * @return string The string representation of the V1UsersRequest object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'V1UsersRequest',
+            [
+                'accountNumber' => $this->getAccountNumber(),
+                'brandingDomainUrl' => $this->getBrandingDomainUrl(),
+                'cellPhone' => $this->getCellPhone(),
+                'companyName' => $this->getCompanyName(),
+                'contactId' => $this->getContactId(),
+                'dateOfBirth' => $this->getDateOfBirth(),
+                'domainId' => $this->getDomainId(),
+                'email' => $this->email,
+                'emailTrxReceipt' => $this->emailTrxReceipt,
+                'homePhone' => $this->getHomePhone(),
+                'firstName' => $this->getFirstName(),
+                'lastName' => $this->lastName,
+                'locale' => $this->getLocale(),
+                'officePhone' => $this->getOfficePhone(),
+                'officeExtPhone' => $this->getOfficeExtPhone(),
+                'primaryLocationId' => $this->primaryLocationId,
+                'requiresNewPassword' => $this->getRequiresNewPassword(),
+                'termsConditionCode' => $this->getTermsConditionCode(),
+                'tz' => $this->getTz(),
+                'uiPrefs' => $this->uiPrefs,
+                'username' => $this->username,
+                'userApiKey' => $this->getUserApiKey(),
+                'userHashKey' => $this->getUserHashKey(),
+                'userTypeCode' => $this->userTypeCode,
+                'password' => $this->getPassword(),
+                'zip' => $this->getZip(),
+                'locationId' => $this->getLocationId(),
+                'contactApiId' => $this->getContactApiId(),
+                'primaryLocationApiId' => $this->getPrimaryLocationApiId(),
+                'statusCode' => $this->getStatusCode(),
+                'apiOnly' => $this->apiOnly,
+                'isInvitation' => $this->isInvitation,
+                'address' => $this->address,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -1181,17 +1235,11 @@ class V1UsersRequest implements \JsonSerializable
         if (!empty($this->accountNumber)) {
             $json['account_number']          = $this->accountNumber['value'];
         }
-        if (!empty($this->address)) {
-            $json['address']                 = $this->address['value'];
-        }
         if (!empty($this->brandingDomainUrl)) {
             $json['branding_domain_url']     = $this->brandingDomainUrl['value'];
         }
         if (!empty($this->cellPhone)) {
             $json['cell_phone']              = $this->cellPhone['value'];
-        }
-        if (!empty($this->city)) {
-            $json['city']                    = $this->city['value'];
         }
         if (!empty($this->companyName)) {
             $json['company_name']            = $this->companyName['value'];
@@ -1229,9 +1277,6 @@ class V1UsersRequest implements \JsonSerializable
         if (!empty($this->requiresNewPassword)) {
             $json['requires_new_password']   = $this->requiresNewPassword['value'];
         }
-        if (!empty($this->state)) {
-            $json['state']                   = $this->state['value'];
-        }
         if (!empty($this->termsConditionCode)) {
             $json['terms_condition_code']    = $this->termsConditionCode['value'];
         }
@@ -1264,9 +1309,19 @@ class V1UsersRequest implements \JsonSerializable
         if (!empty($this->primaryLocationApiId)) {
             $json['primary_location_api_id'] = $this->primaryLocationApiId['value'];
         }
-        if (isset($this->statusId)) {
-            $json['status_id']               = $this->statusId;
+        if (!empty($this->statusCode)) {
+            $json['status_code']             = StatusCodeEnum::checkValue($this->statusCode['value']);
         }
+        if (isset($this->apiOnly)) {
+            $json['api_only']                = $this->apiOnly;
+        }
+        if (isset($this->isInvitation)) {
+            $json['is_invitation']           = $this->isInvitation;
+        }
+        if (isset($this->address)) {
+            $json['address']                 = $this->address;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

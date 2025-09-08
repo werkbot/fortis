@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -130,6 +131,52 @@ class TipPercents implements \JsonSerializable
     }
 
     /**
+     * Converts the TipPercents object to a human-readable string representation.
+     *
+     * @return string The string representation of the TipPercents object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'TipPercents',
+            [
+                'percent1' => $this->getPercent1(),
+                'percent2' => $this->getPercent2(),
+                'percent3' => $this->getPercent3(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -150,6 +197,7 @@ class TipPercents implements \JsonSerializable
         if (!empty($this->percent3)) {
             $json['percent_3'] = $this->percent3['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

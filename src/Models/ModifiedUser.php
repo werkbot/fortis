@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -25,22 +26,12 @@ class ModifiedUser implements \JsonSerializable
     /**
      * @var array
      */
-    private $address = [];
-
-    /**
-     * @var array
-     */
     private $brandingDomainUrl = [];
 
     /**
      * @var array
      */
     private $cellPhone = [];
-
-    /**
-     * @var array
-     */
-    private $city = [];
 
     /**
      * @var array
@@ -63,7 +54,7 @@ class ModifiedUser implements \JsonSerializable
     private $domainId = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $email;
 
@@ -83,7 +74,7 @@ class ModifiedUser implements \JsonSerializable
     private $firstName = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $lastName;
 
@@ -103,7 +94,7 @@ class ModifiedUser implements \JsonSerializable
     private $officeExtPhone = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $primaryLocationId;
 
@@ -115,15 +106,10 @@ class ModifiedUser implements \JsonSerializable
     /**
      * @var array
      */
-    private $state = [];
-
-    /**
-     * @var array
-     */
     private $termsConditionCode = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $tz;
 
@@ -133,7 +119,7 @@ class ModifiedUser implements \JsonSerializable
     private $uiPrefs;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $username;
 
@@ -148,7 +134,7 @@ class ModifiedUser implements \JsonSerializable
     private $userHashKey = [];
 
     /**
-     * @var int
+     * @var int|null
      */
     private $userTypeCode;
 
@@ -178,42 +164,57 @@ class ModifiedUser implements \JsonSerializable
     private $primaryLocationApiId = [];
 
     /**
-     * @var bool|null
+     * @var array
      */
-    private $statusId;
+    private $statusCode = [];
 
     /**
-     * @var string
+     * @var bool|null
+     */
+    private $apiOnly;
+
+    /**
+     * @var bool|null
+     */
+    private $isInvitation;
+
+    /**
+     * @var Address2|null
+     */
+    private $address;
+
+    /**
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $status;
 
     /**
-     * @var float
+     * @var int|null
      */
     private $loginAttempts;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $lastLoginTs;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $modifiedTs;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $createdUserId;
 
@@ -228,57 +229,29 @@ class ModifiedUser implements \JsonSerializable
     private $termsAgreeIp = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $currentDateTime;
 
     /**
-     * @param string $email
-     * @param string $lastName
-     * @param string $primaryLocationId
-     * @param string $tz
-     * @param string $username
-     * @param int $userTypeCode
-     * @param string $id
-     * @param bool $status
-     * @param float $loginAttempts
-     * @param int $lastLoginTs
-     * @param int $createdTs
-     * @param int $modifiedTs
-     * @param string $createdUserId
-     * @param string $currentDateTime
+     * @var array
      */
-    public function __construct(
-        string $email,
-        string $lastName,
-        string $primaryLocationId,
-        string $tz,
-        string $username,
-        int $userTypeCode,
-        string $id,
-        bool $status,
-        float $loginAttempts,
-        int $lastLoginTs,
-        int $createdTs,
-        int $modifiedTs,
-        string $createdUserId,
-        string $currentDateTime
-    ) {
-        $this->email = $email;
-        $this->lastName = $lastName;
-        $this->primaryLocationId = $primaryLocationId;
-        $this->tz = $tz;
-        $this->username = $username;
-        $this->userTypeCode = $userTypeCode;
-        $this->id = $id;
-        $this->status = $status;
-        $this->loginAttempts = $loginAttempts;
-        $this->lastLoginTs = $lastLoginTs;
-        $this->createdTs = $createdTs;
-        $this->modifiedTs = $modifiedTs;
-        $this->createdUserId = $createdUserId;
-        $this->currentDateTime = $currentDateTime;
-    }
+    private $currentLoginIp = [];
+
+    /**
+     * @var array
+     */
+    private $currentLogin = [];
+
+    /**
+     * @var bool|null
+     */
+    private $sftpAccess;
+
+    /**
+     * @var array
+     */
+    private $logApiResponseBodyTs = [];
 
     /**
      * Returns Account Number.
@@ -310,38 +283,6 @@ class ModifiedUser implements \JsonSerializable
     public function unsetAccountNumber(): void
     {
         $this->accountNumber = [];
-    }
-
-    /**
-     * Returns Address.
-     * Address
-     */
-    public function getAddress(): ?string
-    {
-        if (count($this->address) == 0) {
-            return null;
-        }
-        return $this->address['value'];
-    }
-
-    /**
-     * Sets Address.
-     * Address
-     *
-     * @maps address
-     */
-    public function setAddress(?string $address): void
-    {
-        $this->address['value'] = $address;
-    }
-
-    /**
-     * Unsets Address.
-     * Address
-     */
-    public function unsetAddress(): void
-    {
-        $this->address = [];
     }
 
     /**
@@ -406,38 +347,6 @@ class ModifiedUser implements \JsonSerializable
     public function unsetCellPhone(): void
     {
         $this->cellPhone = [];
-    }
-
-    /**
-     * Returns City.
-     * City
-     */
-    public function getCity(): ?string
-    {
-        if (count($this->city) == 0) {
-            return null;
-        }
-        return $this->city['value'];
-    }
-
-    /**
-     * Sets City.
-     * City
-     *
-     * @maps city
-     */
-    public function setCity(?string $city): void
-    {
-        $this->city['value'] = $city;
-    }
-
-    /**
-     * Unsets City.
-     * City
-     */
-    public function unsetCity(): void
-    {
-        $this->city = [];
     }
 
     /**
@@ -572,7 +481,7 @@ class ModifiedUser implements \JsonSerializable
      * Returns Email.
      * Email
      */
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -581,10 +490,9 @@ class ModifiedUser implements \JsonSerializable
      * Sets Email.
      * Email
      *
-     * @required
      * @maps email
      */
-    public function setEmail(string $email): void
+    public function setEmail(?string $email): void
     {
         $this->email = $email;
     }
@@ -677,7 +585,7 @@ class ModifiedUser implements \JsonSerializable
      * Returns Last Name.
      * Last Name
      */
-    public function getLastName(): string
+    public function getLastName(): ?string
     {
         return $this->lastName;
     }
@@ -686,10 +594,9 @@ class ModifiedUser implements \JsonSerializable
      * Sets Last Name.
      * Last Name
      *
-     * @required
      * @maps last_name
      */
-    public function setLastName(string $lastName): void
+    public function setLastName(?string $lastName): void
     {
         $this->lastName = $lastName;
     }
@@ -794,7 +701,7 @@ class ModifiedUser implements \JsonSerializable
      * Returns Primary Location Id.
      * Primary Location ID
      */
-    public function getPrimaryLocationId(): string
+    public function getPrimaryLocationId(): ?string
     {
         return $this->primaryLocationId;
     }
@@ -803,10 +710,9 @@ class ModifiedUser implements \JsonSerializable
      * Sets Primary Location Id.
      * Primary Location ID
      *
-     * @required
      * @maps primary_location_id
      */
-    public function setPrimaryLocationId(string $primaryLocationId): void
+    public function setPrimaryLocationId(?string $primaryLocationId): void
     {
         $this->primaryLocationId = $primaryLocationId;
     }
@@ -841,38 +747,6 @@ class ModifiedUser implements \JsonSerializable
     public function unsetRequiresNewPassword(): void
     {
         $this->requiresNewPassword = [];
-    }
-
-    /**
-     * Returns State.
-     * State
-     */
-    public function getState(): ?string
-    {
-        if (count($this->state) == 0) {
-            return null;
-        }
-        return $this->state['value'];
-    }
-
-    /**
-     * Sets State.
-     * State
-     *
-     * @maps state
-     */
-    public function setState(?string $state): void
-    {
-        $this->state['value'] = $state;
-    }
-
-    /**
-     * Unsets State.
-     * State
-     */
-    public function unsetState(): void
-    {
-        $this->state = [];
     }
 
     /**
@@ -911,7 +785,7 @@ class ModifiedUser implements \JsonSerializable
      * Returns Tz.
      * Time zone
      */
-    public function getTz(): string
+    public function getTz(): ?string
     {
         return $this->tz;
     }
@@ -920,10 +794,9 @@ class ModifiedUser implements \JsonSerializable
      * Sets Tz.
      * Time zone
      *
-     * @required
      * @maps tz
      */
-    public function setTz(string $tz): void
+    public function setTz(?string $tz): void
     {
         $this->tz = $tz;
     }
@@ -952,7 +825,7 @@ class ModifiedUser implements \JsonSerializable
      * Returns Username.
      * Username
      */
-    public function getUsername(): string
+    public function getUsername(): ?string
     {
         return $this->username;
     }
@@ -961,10 +834,9 @@ class ModifiedUser implements \JsonSerializable
      * Sets Username.
      * Username
      *
-     * @required
      * @maps username
      */
-    public function setUsername(string $username): void
+    public function setUsername(?string $username): void
     {
         $this->username = $username;
     }
@@ -1037,7 +909,7 @@ class ModifiedUser implements \JsonSerializable
      * Returns User Type Code.
      * User Type
      */
-    public function getUserTypeCode(): int
+    public function getUserTypeCode(): ?int
     {
         return $this->userTypeCode;
     }
@@ -1046,11 +918,10 @@ class ModifiedUser implements \JsonSerializable
      * Sets User Type Code.
      * User Type
      *
-     * @required
      * @maps user_type_code
      * @factory \FortisAPILib\Models\UserTypeCodeEnum::checkValue
      */
-    public function setUserTypeCode(int $userTypeCode): void
+    public function setUserTypeCode(?int $userTypeCode): void
     {
         $this->userTypeCode = $userTypeCode;
     }
@@ -1216,30 +1087,103 @@ class ModifiedUser implements \JsonSerializable
     }
 
     /**
-     * Returns Status Id.
-     * Status
+     * Returns Status Code.
+     * Status Code
      */
-    public function getStatusId(): ?bool
+    public function getStatusCode(): ?int
     {
-        return $this->statusId;
+        if (count($this->statusCode) == 0) {
+            return null;
+        }
+        return $this->statusCode['value'];
     }
 
     /**
-     * Sets Status Id.
-     * Status
+     * Sets Status Code.
+     * Status Code
      *
-     * @maps status_id
+     * @maps status_code
+     * @factory \FortisAPILib\Models\StatusCodeEnum::checkValue
      */
-    public function setStatusId(?bool $statusId): void
+    public function setStatusCode(?int $statusCode): void
     {
-        $this->statusId = $statusId;
+        $this->statusCode['value'] = $statusCode;
+    }
+
+    /**
+     * Unsets Status Code.
+     * Status Code
+     */
+    public function unsetStatusCode(): void
+    {
+        $this->statusCode = [];
+    }
+
+    /**
+     * Returns Api Only.
+     * API Only
+     */
+    public function getApiOnly(): ?bool
+    {
+        return $this->apiOnly;
+    }
+
+    /**
+     * Sets Api Only.
+     * API Only
+     *
+     * @maps api_only
+     */
+    public function setApiOnly(?bool $apiOnly): void
+    {
+        $this->apiOnly = $apiOnly;
+    }
+
+    /**
+     * Returns Is Invitation.
+     * Is Invitation
+     */
+    public function getIsInvitation(): ?bool
+    {
+        return $this->isInvitation;
+    }
+
+    /**
+     * Sets Is Invitation.
+     * Is Invitation
+     *
+     * @maps is_invitation
+     */
+    public function setIsInvitation(?bool $isInvitation): void
+    {
+        $this->isInvitation = $isInvitation;
+    }
+
+    /**
+     * Returns Address.
+     * Address
+     */
+    public function getAddress(): ?Address2
+    {
+        return $this->address;
+    }
+
+    /**
+     * Sets Address.
+     * Address
+     *
+     * @maps address
+     */
+    public function setAddress(?Address2 $address): void
+    {
+        $this->address = $address;
     }
 
     /**
      * Returns Id.
      * User ID
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -1248,10 +1192,9 @@ class ModifiedUser implements \JsonSerializable
      * Sets Id.
      * User ID
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -1260,7 +1203,7 @@ class ModifiedUser implements \JsonSerializable
      * Returns Status.
      * Status
      */
-    public function getStatus(): bool
+    public function getStatus(): ?bool
     {
         return $this->status;
     }
@@ -1269,10 +1212,9 @@ class ModifiedUser implements \JsonSerializable
      * Sets Status.
      * Status
      *
-     * @required
      * @maps status
      */
-    public function setStatus(bool $status): void
+    public function setStatus(?bool $status): void
     {
         $this->status = $status;
     }
@@ -1281,7 +1223,7 @@ class ModifiedUser implements \JsonSerializable
      * Returns Login Attempts.
      * Login Attempts
      */
-    public function getLoginAttempts(): float
+    public function getLoginAttempts(): ?int
     {
         return $this->loginAttempts;
     }
@@ -1290,10 +1232,9 @@ class ModifiedUser implements \JsonSerializable
      * Sets Login Attempts.
      * Login Attempts
      *
-     * @required
      * @maps login_attempts
      */
-    public function setLoginAttempts(float $loginAttempts): void
+    public function setLoginAttempts(?int $loginAttempts): void
     {
         $this->loginAttempts = $loginAttempts;
     }
@@ -1302,7 +1243,7 @@ class ModifiedUser implements \JsonSerializable
      * Returns Last Login Ts.
      * Last Login
      */
-    public function getLastLoginTs(): int
+    public function getLastLoginTs(): ?int
     {
         return $this->lastLoginTs;
     }
@@ -1311,10 +1252,9 @@ class ModifiedUser implements \JsonSerializable
      * Sets Last Login Ts.
      * Last Login
      *
-     * @required
      * @maps last_login_ts
      */
-    public function setLastLoginTs(int $lastLoginTs): void
+    public function setLastLoginTs(?int $lastLoginTs): void
     {
         $this->lastLoginTs = $lastLoginTs;
     }
@@ -1323,7 +1263,7 @@ class ModifiedUser implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -1332,10 +1272,9 @@ class ModifiedUser implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -1344,7 +1283,7 @@ class ModifiedUser implements \JsonSerializable
      * Returns Modified Ts.
      * Modified Time Stamp
      */
-    public function getModifiedTs(): int
+    public function getModifiedTs(): ?int
     {
         return $this->modifiedTs;
     }
@@ -1353,10 +1292,9 @@ class ModifiedUser implements \JsonSerializable
      * Sets Modified Ts.
      * Modified Time Stamp
      *
-     * @required
      * @maps modified_ts
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setModifiedTs(?int $modifiedTs): void
     {
         $this->modifiedTs = $modifiedTs;
     }
@@ -1365,7 +1303,7 @@ class ModifiedUser implements \JsonSerializable
      * Returns Created User Id.
      * Created User
      */
-    public function getCreatedUserId(): string
+    public function getCreatedUserId(): ?string
     {
         return $this->createdUserId;
     }
@@ -1374,10 +1312,9 @@ class ModifiedUser implements \JsonSerializable
      * Sets Created User Id.
      * Created User
      *
-     * @required
      * @maps created_user_id
      */
-    public function setCreatedUserId(string $createdUserId): void
+    public function setCreatedUserId(?string $createdUserId): void
     {
         $this->createdUserId = $createdUserId;
     }
@@ -1450,7 +1387,7 @@ class ModifiedUser implements \JsonSerializable
      * Returns Current Date Time.
      * Current Date Time
      */
-    public function getCurrentDateTime(): string
+    public function getCurrentDateTime(): ?string
     {
         return $this->currentDateTime;
     }
@@ -1459,12 +1396,217 @@ class ModifiedUser implements \JsonSerializable
      * Sets Current Date Time.
      * Current Date Time
      *
-     * @required
      * @maps current_date_time
      */
-    public function setCurrentDateTime(string $currentDateTime): void
+    public function setCurrentDateTime(?string $currentDateTime): void
     {
         $this->currentDateTime = $currentDateTime;
+    }
+
+    /**
+     * Returns Current Login Ip.
+     * Current Login Ip
+     */
+    public function getCurrentLoginIp(): ?string
+    {
+        if (count($this->currentLoginIp) == 0) {
+            return null;
+        }
+        return $this->currentLoginIp['value'];
+    }
+
+    /**
+     * Sets Current Login Ip.
+     * Current Login Ip
+     *
+     * @maps current_login_ip
+     */
+    public function setCurrentLoginIp(?string $currentLoginIp): void
+    {
+        $this->currentLoginIp['value'] = $currentLoginIp;
+    }
+
+    /**
+     * Unsets Current Login Ip.
+     * Current Login Ip
+     */
+    public function unsetCurrentLoginIp(): void
+    {
+        $this->currentLoginIp = [];
+    }
+
+    /**
+     * Returns Current Login.
+     * Current Login Timestamp
+     */
+    public function getCurrentLogin(): ?int
+    {
+        if (count($this->currentLogin) == 0) {
+            return null;
+        }
+        return $this->currentLogin['value'];
+    }
+
+    /**
+     * Sets Current Login.
+     * Current Login Timestamp
+     *
+     * @maps current_login
+     */
+    public function setCurrentLogin(?int $currentLogin): void
+    {
+        $this->currentLogin['value'] = $currentLogin;
+    }
+
+    /**
+     * Unsets Current Login.
+     * Current Login Timestamp
+     */
+    public function unsetCurrentLogin(): void
+    {
+        $this->currentLogin = [];
+    }
+
+    /**
+     * Returns Sftp Access.
+     * SFTP Access
+     */
+    public function getSftpAccess(): ?bool
+    {
+        return $this->sftpAccess;
+    }
+
+    /**
+     * Sets Sftp Access.
+     * SFTP Access
+     *
+     * @maps sftp_access
+     */
+    public function setSftpAccess(?bool $sftpAccess): void
+    {
+        $this->sftpAccess = $sftpAccess;
+    }
+
+    /**
+     * Returns Log Api Response Body Ts.
+     * Log Api Response Body
+     */
+    public function getLogApiResponseBodyTs(): ?int
+    {
+        if (count($this->logApiResponseBodyTs) == 0) {
+            return null;
+        }
+        return $this->logApiResponseBodyTs['value'];
+    }
+
+    /**
+     * Sets Log Api Response Body Ts.
+     * Log Api Response Body
+     *
+     * @maps log_api_response_body_ts
+     */
+    public function setLogApiResponseBodyTs(?int $logApiResponseBodyTs): void
+    {
+        $this->logApiResponseBodyTs['value'] = $logApiResponseBodyTs;
+    }
+
+    /**
+     * Unsets Log Api Response Body Ts.
+     * Log Api Response Body
+     */
+    public function unsetLogApiResponseBodyTs(): void
+    {
+        $this->logApiResponseBodyTs = [];
+    }
+
+    /**
+     * Converts the ModifiedUser object to a human-readable string representation.
+     *
+     * @return string The string representation of the ModifiedUser object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'ModifiedUser',
+            [
+                'accountNumber' => $this->getAccountNumber(),
+                'brandingDomainUrl' => $this->getBrandingDomainUrl(),
+                'cellPhone' => $this->getCellPhone(),
+                'companyName' => $this->getCompanyName(),
+                'contactId' => $this->getContactId(),
+                'dateOfBirth' => $this->getDateOfBirth(),
+                'domainId' => $this->getDomainId(),
+                'email' => $this->email,
+                'emailTrxReceipt' => $this->emailTrxReceipt,
+                'homePhone' => $this->getHomePhone(),
+                'firstName' => $this->getFirstName(),
+                'lastName' => $this->lastName,
+                'locale' => $this->getLocale(),
+                'officePhone' => $this->getOfficePhone(),
+                'officeExtPhone' => $this->getOfficeExtPhone(),
+                'primaryLocationId' => $this->primaryLocationId,
+                'requiresNewPassword' => $this->getRequiresNewPassword(),
+                'termsConditionCode' => $this->getTermsConditionCode(),
+                'tz' => $this->tz,
+                'uiPrefs' => $this->uiPrefs,
+                'username' => $this->username,
+                'userApiKey' => $this->getUserApiKey(),
+                'userHashKey' => $this->getUserHashKey(),
+                'userTypeCode' => $this->userTypeCode,
+                'password' => $this->getPassword(),
+                'zip' => $this->getZip(),
+                'locationId' => $this->getLocationId(),
+                'contactApiId' => $this->getContactApiId(),
+                'primaryLocationApiId' => $this->getPrimaryLocationApiId(),
+                'statusCode' => $this->getStatusCode(),
+                'apiOnly' => $this->apiOnly,
+                'isInvitation' => $this->isInvitation,
+                'address' => $this->address,
+                'id' => $this->id,
+                'status' => $this->status,
+                'loginAttempts' => $this->loginAttempts,
+                'lastLoginTs' => $this->lastLoginTs,
+                'createdTs' => $this->createdTs,
+                'modifiedTs' => $this->modifiedTs,
+                'createdUserId' => $this->createdUserId,
+                'termsAcceptedTs' => $this->getTermsAcceptedTs(),
+                'termsAgreeIp' => $this->getTermsAgreeIp(),
+                'currentDateTime' => $this->currentDateTime,
+                'currentLoginIp' => $this->getCurrentLoginIp(),
+                'currentLogin' => $this->getCurrentLogin(),
+                'sftpAccess' => $this->sftpAccess,
+                'logApiResponseBodyTs' => $this->getLogApiResponseBodyTs(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -1480,106 +1622,147 @@ class ModifiedUser implements \JsonSerializable
     {
         $json = [];
         if (!empty($this->accountNumber)) {
-            $json['account_number']          = $this->accountNumber['value'];
-        }
-        if (!empty($this->address)) {
-            $json['address']                 = $this->address['value'];
+            $json['account_number']           = $this->accountNumber['value'];
         }
         if (!empty($this->brandingDomainUrl)) {
-            $json['branding_domain_url']     = $this->brandingDomainUrl['value'];
+            $json['branding_domain_url']      = $this->brandingDomainUrl['value'];
         }
         if (!empty($this->cellPhone)) {
-            $json['cell_phone']              = $this->cellPhone['value'];
-        }
-        if (!empty($this->city)) {
-            $json['city']                    = $this->city['value'];
+            $json['cell_phone']               = $this->cellPhone['value'];
         }
         if (!empty($this->companyName)) {
-            $json['company_name']            = $this->companyName['value'];
+            $json['company_name']             = $this->companyName['value'];
         }
         if (!empty($this->contactId)) {
-            $json['contact_id']              = $this->contactId['value'];
+            $json['contact_id']               = $this->contactId['value'];
         }
         if (!empty($this->dateOfBirth)) {
-            $json['date_of_birth']           = $this->dateOfBirth['value'];
+            $json['date_of_birth']            = $this->dateOfBirth['value'];
         }
         if (!empty($this->domainId)) {
-            $json['domain_id']               = $this->domainId['value'];
+            $json['domain_id']                = $this->domainId['value'];
         }
-        $json['email']                       = $this->email;
+        if (isset($this->email)) {
+            $json['email']                    = $this->email;
+        }
         if (isset($this->emailTrxReceipt)) {
-            $json['email_trx_receipt']       = $this->emailTrxReceipt;
+            $json['email_trx_receipt']        = $this->emailTrxReceipt;
         }
         if (!empty($this->homePhone)) {
-            $json['home_phone']              = $this->homePhone['value'];
+            $json['home_phone']               = $this->homePhone['value'];
         }
         if (!empty($this->firstName)) {
-            $json['first_name']              = $this->firstName['value'];
+            $json['first_name']               = $this->firstName['value'];
         }
-        $json['last_name']                   = $this->lastName;
+        if (isset($this->lastName)) {
+            $json['last_name']                = $this->lastName;
+        }
         if (!empty($this->locale)) {
-            $json['locale']                  = $this->locale['value'];
+            $json['locale']                   = $this->locale['value'];
         }
         if (!empty($this->officePhone)) {
-            $json['office_phone']            = $this->officePhone['value'];
+            $json['office_phone']             = $this->officePhone['value'];
         }
         if (!empty($this->officeExtPhone)) {
-            $json['office_ext_phone']        = $this->officeExtPhone['value'];
+            $json['office_ext_phone']         = $this->officeExtPhone['value'];
         }
-        $json['primary_location_id']         = $this->primaryLocationId;
+        if (isset($this->primaryLocationId)) {
+            $json['primary_location_id']      = $this->primaryLocationId;
+        }
         if (!empty($this->requiresNewPassword)) {
-            $json['requires_new_password']   = $this->requiresNewPassword['value'];
-        }
-        if (!empty($this->state)) {
-            $json['state']                   = $this->state['value'];
+            $json['requires_new_password']    = $this->requiresNewPassword['value'];
         }
         if (!empty($this->termsConditionCode)) {
-            $json['terms_condition_code']    = $this->termsConditionCode['value'];
+            $json['terms_condition_code']     = $this->termsConditionCode['value'];
         }
-        $json['tz']                          = $this->tz;
+        if (isset($this->tz)) {
+            $json['tz']                       = $this->tz;
+        }
         if (isset($this->uiPrefs)) {
-            $json['ui_prefs']                = $this->uiPrefs;
+            $json['ui_prefs']                 = $this->uiPrefs;
         }
-        $json['username']                    = $this->username;
+        if (isset($this->username)) {
+            $json['username']                 = $this->username;
+        }
         if (!empty($this->userApiKey)) {
-            $json['user_api_key']            = $this->userApiKey['value'];
+            $json['user_api_key']             = $this->userApiKey['value'];
         }
         if (!empty($this->userHashKey)) {
-            $json['user_hash_key']           = $this->userHashKey['value'];
+            $json['user_hash_key']            = $this->userHashKey['value'];
         }
-        $json['user_type_code']              = UserTypeCodeEnum::checkValue($this->userTypeCode);
+        if (isset($this->userTypeCode)) {
+            $json['user_type_code']           = UserTypeCodeEnum::checkValue($this->userTypeCode);
+        }
         if (!empty($this->password)) {
-            $json['password']                = $this->password['value'];
+            $json['password']                 = $this->password['value'];
         }
         if (!empty($this->zip)) {
-            $json['zip']                     = $this->zip['value'];
+            $json['zip']                      = $this->zip['value'];
         }
         if (!empty($this->locationId)) {
-            $json['location_id']             = $this->locationId['value'];
+            $json['location_id']              = $this->locationId['value'];
         }
         if (!empty($this->contactApiId)) {
-            $json['contact_api_id']          = $this->contactApiId['value'];
+            $json['contact_api_id']           = $this->contactApiId['value'];
         }
         if (!empty($this->primaryLocationApiId)) {
-            $json['primary_location_api_id'] = $this->primaryLocationApiId['value'];
+            $json['primary_location_api_id']  = $this->primaryLocationApiId['value'];
         }
-        if (isset($this->statusId)) {
-            $json['status_id']               = $this->statusId;
+        if (!empty($this->statusCode)) {
+            $json['status_code']              = StatusCodeEnum::checkValue($this->statusCode['value']);
         }
-        $json['id']                          = $this->id;
-        $json['status']                      = $this->status;
-        $json['login_attempts']              = $this->loginAttempts;
-        $json['last_login_ts']               = $this->lastLoginTs;
-        $json['created_ts']                  = $this->createdTs;
-        $json['modified_ts']                 = $this->modifiedTs;
-        $json['created_user_id']             = $this->createdUserId;
+        if (isset($this->apiOnly)) {
+            $json['api_only']                 = $this->apiOnly;
+        }
+        if (isset($this->isInvitation)) {
+            $json['is_invitation']            = $this->isInvitation;
+        }
+        if (isset($this->address)) {
+            $json['address']                  = $this->address;
+        }
+        if (isset($this->id)) {
+            $json['id']                       = $this->id;
+        }
+        if (isset($this->status)) {
+            $json['status']                   = $this->status;
+        }
+        if (isset($this->loginAttempts)) {
+            $json['login_attempts']           = $this->loginAttempts;
+        }
+        if (isset($this->lastLoginTs)) {
+            $json['last_login_ts']            = $this->lastLoginTs;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']               = $this->createdTs;
+        }
+        if (isset($this->modifiedTs)) {
+            $json['modified_ts']              = $this->modifiedTs;
+        }
+        if (isset($this->createdUserId)) {
+            $json['created_user_id']          = $this->createdUserId;
+        }
         if (!empty($this->termsAcceptedTs)) {
-            $json['terms_accepted_ts']       = $this->termsAcceptedTs['value'];
+            $json['terms_accepted_ts']        = $this->termsAcceptedTs['value'];
         }
         if (!empty($this->termsAgreeIp)) {
-            $json['terms_agree_ip']          = $this->termsAgreeIp['value'];
+            $json['terms_agree_ip']           = $this->termsAgreeIp['value'];
         }
-        $json['current_date_time']           = $this->currentDateTime;
+        if (isset($this->currentDateTime)) {
+            $json['current_date_time']        = $this->currentDateTime;
+        }
+        if (!empty($this->currentLoginIp)) {
+            $json['current_login_ip']         = $this->currentLoginIp['value'];
+        }
+        if (!empty($this->currentLogin)) {
+            $json['current_login']            = $this->currentLogin['value'];
+        }
+        if (isset($this->sftpAccess)) {
+            $json['sftp_access']              = $this->sftpAccess;
+        }
+        if (!empty($this->logApiResponseBodyTs)) {
+            $json['log_api_response_body_ts'] = $this->logApiResponseBodyTs['value'];
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

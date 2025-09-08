@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class V1ContactsRequest1 implements \JsonSerializable
@@ -92,6 +93,21 @@ class V1ContactsRequest1 implements \JsonSerializable
     /**
      * @var array
      */
+    private $homePhoneCountryCode = [];
+
+    /**
+     * @var array
+     */
+    private $officePhoneCountryCode = [];
+
+    /**
+     * @var array
+     */
+    private $cellPhoneCountryCode = [];
+
+    /**
+     * @var array
+     */
     private $headerMessageType = [];
 
     /**
@@ -123,6 +139,11 @@ class V1ContactsRequest1 implements \JsonSerializable
      * @var array
      */
     private $email = [];
+
+    /**
+     * @var array
+     */
+    private $tokenImportId = [];
 
     /**
      * Returns Location Id.
@@ -581,6 +602,102 @@ class V1ContactsRequest1 implements \JsonSerializable
     }
 
     /**
+     * Returns Home Phone Country Code.
+     * Home phone country code
+     */
+    public function getHomePhoneCountryCode(): ?string
+    {
+        if (count($this->homePhoneCountryCode) == 0) {
+            return null;
+        }
+        return $this->homePhoneCountryCode['value'];
+    }
+
+    /**
+     * Sets Home Phone Country Code.
+     * Home phone country code
+     *
+     * @maps home_phone_country_code
+     */
+    public function setHomePhoneCountryCode(?string $homePhoneCountryCode): void
+    {
+        $this->homePhoneCountryCode['value'] = $homePhoneCountryCode;
+    }
+
+    /**
+     * Unsets Home Phone Country Code.
+     * Home phone country code
+     */
+    public function unsetHomePhoneCountryCode(): void
+    {
+        $this->homePhoneCountryCode = [];
+    }
+
+    /**
+     * Returns Office Phone Country Code.
+     * Office phone country code
+     */
+    public function getOfficePhoneCountryCode(): ?string
+    {
+        if (count($this->officePhoneCountryCode) == 0) {
+            return null;
+        }
+        return $this->officePhoneCountryCode['value'];
+    }
+
+    /**
+     * Sets Office Phone Country Code.
+     * Office phone country code
+     *
+     * @maps office_phone_country_code
+     */
+    public function setOfficePhoneCountryCode(?string $officePhoneCountryCode): void
+    {
+        $this->officePhoneCountryCode['value'] = $officePhoneCountryCode;
+    }
+
+    /**
+     * Unsets Office Phone Country Code.
+     * Office phone country code
+     */
+    public function unsetOfficePhoneCountryCode(): void
+    {
+        $this->officePhoneCountryCode = [];
+    }
+
+    /**
+     * Returns Cell Phone Country Code.
+     * Cell phone country code
+     */
+    public function getCellPhoneCountryCode(): ?string
+    {
+        if (count($this->cellPhoneCountryCode) == 0) {
+            return null;
+        }
+        return $this->cellPhoneCountryCode['value'];
+    }
+
+    /**
+     * Sets Cell Phone Country Code.
+     * Cell phone country code
+     *
+     * @maps cell_phone_country_code
+     */
+    public function setCellPhoneCountryCode(?string $cellPhoneCountryCode): void
+    {
+        $this->cellPhoneCountryCode['value'] = $cellPhoneCountryCode;
+    }
+
+    /**
+     * Unsets Cell Phone Country Code.
+     * Cell phone country code
+     */
+    public function unsetCellPhoneCountryCode(): void
+    {
+        $this->cellPhoneCountryCode = [];
+    }
+
+    /**
      * Returns Header Message Type.
      * Header Message Type
      */
@@ -806,6 +923,107 @@ class V1ContactsRequest1 implements \JsonSerializable
     }
 
     /**
+     * Returns Token Import Id.
+     * Token Import Id
+     */
+    public function getTokenImportId(): ?string
+    {
+        if (count($this->tokenImportId) == 0) {
+            return null;
+        }
+        return $this->tokenImportId['value'];
+    }
+
+    /**
+     * Sets Token Import Id.
+     * Token Import Id
+     *
+     * @maps token_import_id
+     */
+    public function setTokenImportId(?string $tokenImportId): void
+    {
+        $this->tokenImportId['value'] = $tokenImportId;
+    }
+
+    /**
+     * Unsets Token Import Id.
+     * Token Import Id
+     */
+    public function unsetTokenImportId(): void
+    {
+        $this->tokenImportId = [];
+    }
+
+    /**
+     * Converts the V1ContactsRequest1 object to a human-readable string representation.
+     *
+     * @return string The string representation of the V1ContactsRequest1 object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'V1ContactsRequest1',
+            [
+                'locationId' => $this->getLocationId(),
+                'accountNumber' => $this->getAccountNumber(),
+                'contactApiId' => $this->getContactApiId(),
+                'firstName' => $this->getFirstName(),
+                'lastName' => $this->getLastName(),
+                'cellPhone' => $this->getCellPhone(),
+                'balance' => $this->getBalance(),
+                'address' => $this->address,
+                'companyName' => $this->getCompanyName(),
+                'headerMessage' => $this->getHeaderMessage(),
+                'dateOfBirth' => $this->getDateOfBirth(),
+                'emailTrxReceipt' => $this->emailTrxReceipt,
+                'homePhone' => $this->getHomePhone(),
+                'officePhone' => $this->getOfficePhone(),
+                'officePhoneExt' => $this->getOfficePhoneExt(),
+                'homePhoneCountryCode' => $this->getHomePhoneCountryCode(),
+                'officePhoneCountryCode' => $this->getOfficePhoneCountryCode(),
+                'cellPhoneCountryCode' => $this->getCellPhoneCountryCode(),
+                'headerMessageType' => $this->getHeaderMessageType(),
+                'updateIfExists' => $this->getUpdateIfExists(),
+                'contactC1' => $this->getContactC1(),
+                'contactC2' => $this->getContactC2(),
+                'contactC3' => $this->getContactC3(),
+                'parentId' => $this->getParentId(),
+                'email' => $this->getEmail(),
+                'tokenImportId' => $this->getTokenImportId(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -818,71 +1036,84 @@ class V1ContactsRequest1 implements \JsonSerializable
     {
         $json = [];
         if (!empty($this->locationId)) {
-            $json['location_id']         = $this->locationId['value'];
+            $json['location_id']               = $this->locationId['value'];
         }
         if (!empty($this->accountNumber)) {
-            $json['account_number']      = $this->accountNumber['value'];
+            $json['account_number']            = $this->accountNumber['value'];
         }
         if (!empty($this->contactApiId)) {
-            $json['contact_api_id']      = $this->contactApiId['value'];
+            $json['contact_api_id']            = $this->contactApiId['value'];
         }
         if (!empty($this->firstName)) {
-            $json['first_name']          = $this->firstName['value'];
+            $json['first_name']                = $this->firstName['value'];
         }
         if (!empty($this->lastName)) {
-            $json['last_name']           = $this->lastName['value'];
+            $json['last_name']                 = $this->lastName['value'];
         }
         if (!empty($this->cellPhone)) {
-            $json['cell_phone']          = $this->cellPhone['value'];
+            $json['cell_phone']                = $this->cellPhone['value'];
         }
         if (!empty($this->balance)) {
-            $json['balance']             = $this->balance['value'];
+            $json['balance']                   = $this->balance['value'];
         }
         if (isset($this->address)) {
-            $json['address']             = $this->address;
+            $json['address']                   = $this->address;
         }
         if (!empty($this->companyName)) {
-            $json['company_name']        = $this->companyName['value'];
+            $json['company_name']              = $this->companyName['value'];
         }
         if (!empty($this->headerMessage)) {
-            $json['header_message']      = $this->headerMessage['value'];
+            $json['header_message']            = $this->headerMessage['value'];
         }
         if (!empty($this->dateOfBirth)) {
-            $json['date_of_birth']       = $this->dateOfBirth['value'];
+            $json['date_of_birth']             = $this->dateOfBirth['value'];
         }
         if (isset($this->emailTrxReceipt)) {
-            $json['email_trx_receipt']   = $this->emailTrxReceipt;
+            $json['email_trx_receipt']         = $this->emailTrxReceipt;
         }
         if (!empty($this->homePhone)) {
-            $json['home_phone']          = $this->homePhone['value'];
+            $json['home_phone']                = $this->homePhone['value'];
         }
         if (!empty($this->officePhone)) {
-            $json['office_phone']        = $this->officePhone['value'];
+            $json['office_phone']              = $this->officePhone['value'];
         }
         if (!empty($this->officePhoneExt)) {
-            $json['office_phone_ext']    = $this->officePhoneExt['value'];
+            $json['office_phone_ext']          = $this->officePhoneExt['value'];
+        }
+        if (!empty($this->homePhoneCountryCode)) {
+            $json['home_phone_country_code']   = $this->homePhoneCountryCode['value'];
+        }
+        if (!empty($this->officePhoneCountryCode)) {
+            $json['office_phone_country_code'] = $this->officePhoneCountryCode['value'];
+        }
+        if (!empty($this->cellPhoneCountryCode)) {
+            $json['cell_phone_country_code']   = $this->cellPhoneCountryCode['value'];
         }
         if (!empty($this->headerMessageType)) {
-            $json['header_message_type'] = $this->headerMessageType['value'];
+            $json['header_message_type']       = $this->headerMessageType['value'];
         }
         if (!empty($this->updateIfExists)) {
-            $json['update_if_exists']    = UpdateIfExistsEnum::checkValue($this->updateIfExists['value']);
+            $json['update_if_exists']          = UpdateIfExistsEnum::checkValue($this->updateIfExists['value']);
         }
         if (!empty($this->contactC1)) {
-            $json['contact_c1']          = $this->contactC1['value'];
+            $json['contact_c1']                = $this->contactC1['value'];
         }
         if (!empty($this->contactC2)) {
-            $json['contact_c2']          = $this->contactC2['value'];
+            $json['contact_c2']                = $this->contactC2['value'];
         }
         if (!empty($this->contactC3)) {
-            $json['contact_c3']          = $this->contactC3['value'];
+            $json['contact_c3']                = $this->contactC3['value'];
         }
         if (!empty($this->parentId)) {
-            $json['parent_id']           = $this->parentId['value'];
+            $json['parent_id']                 = $this->parentId['value'];
         }
         if (!empty($this->email)) {
-            $json['email']               = $this->email['value'];
+            $json['email']                     = $this->email['value'];
         }
+        if (!empty($this->tokenImportId)) {
+            $json['token_import_id']           = $this->tokenImportId['value'];
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

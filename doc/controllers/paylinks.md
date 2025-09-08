@@ -20,8 +20,6 @@ $paylinksController = $client->getPaylinksController();
 
 # Create a New Paylink
 
-Create a new Paylink
-
 ```php
 function createANewPaylink(V1PaylinksRequest $body, ?array $expand = null): ResponsePaylink
 ```
@@ -31,7 +29,7 @@ function createANewPaylink(V1PaylinksRequest $body, ?array $expand = null): Resp
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `body` | [`V1PaylinksRequest`](../../doc/models/v1-paylinks-request.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand11Enum)`](../../doc/models/expand-11-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand17Enum)[])`](../../doc/models/expand-17-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -40,16 +38,25 @@ function createANewPaylink(V1PaylinksRequest $body, ?array $expand = null): Resp
 ## Example Usage
 
 ```php
-$body_locationId = '11e95f8ec39de8fbdb0a4f1a';
-$body_ccProductTransactionId = '11e95f8ec39de8fbdb0a4f1a';
-$body_email = 'email@domain.com';
-$body_amountDue = 10;
-$body = new Models\V1PaylinksRequest(
-    $body_locationId,
-    $body_ccProductTransactionId,
-    $body_email,
-    $body_amountDue
-);
+$body = V1PaylinksRequestBuilder::init(
+    1
+)
+    ->locationId('11e95f8ec39de8fbdb0a4f1a')
+    ->ccProductTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->email('email@domain.com')
+    ->contactId('11e95f8ec39de8fbdb0a4f1a')
+    ->achProductTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->expireDate('2021-12-01')
+    ->displayProductTransactionReceiptDetails(true)
+    ->displayBillingFields(true)
+    ->deliveryMethod(DeliveryMethodEnum::ENUM_0)
+    ->cellPhone('3339998822')
+    ->description('Description')
+    ->storeToken(false)
+    ->storeTokenTitle('John Account')
+    ->bankFundedOnlyOverride(false)
+    ->redirectUrlDelay(15)
+    ->build();
 
 $result = $paylinksController->createANewPaylink($body);
 ```
@@ -63,7 +70,7 @@ $result = $paylinksController->createANewPaylink($body);
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
     "cc_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
     "email": "email@domain.com",
-    "amount_due": 10,
+    "amount_due": 1,
     "contact_id": "11e95f8ec39de8fbdb0a4f1a",
     "ach_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
     "expire_date": "2021-12-01",
@@ -72,8 +79,18 @@ $result = $paylinksController->createANewPaylink($body);
     "delivery_method": 0,
     "cell_phone": "3339998822",
     "description": "Description",
+    "store_token": false,
+    "store_token_title": "John Account",
+    "bank_funded_only_override": false,
+    "tags": [
+      "Tag 1"
+    ],
+    "redirect_url_delay": 15,
+    "redirect_url_on_approve": null,
+    "redirect_url_on_decline": null,
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "status_id": true,
+    "status_code": 1,
     "active": true,
     "created_ts": 1422040992,
     "modified_ts": 1422040992,
@@ -93,14 +110,15 @@ $result = $paylinksController->createANewPaylink($body);
 
 # List All Paylinks
 
-List all Paylinks
-
 ```php
 function listAllPaylinks(
     ?Page $page = null,
-    ?Sort19 $sort = null,
-    ?Filter5 $filter = null,
-    ?array $expand = null
+    ?array $order = null,
+    ?array $filterBy = null,
+    ?array $expand = null,
+    ?string $format = null,
+    ?string $typeahead = null,
+    ?array $fields = null
 ): ResponsePaylinksCollection
 ```
 
@@ -109,9 +127,12 @@ function listAllPaylinks(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `page` | [`?Page`](../../doc/models/page.md) | Query, Optional | Use this field to specify paginate your results, by using page size and number. You can use one of the following methods:<br><br>> /endpoint?page={ "number": 1, "size": 50 }<br>> <br>> /endpoint?page[number]=1&page[size]=50 |
-| `sort` | [`?Sort19`](../../doc/models/sort-19.md) | Query, Optional | You can use any `field_name` from this endpoint results, and you can combine more than one field for more complex sorting. You can use one of the following methods:<br><br>> /endpoint?sort={ "field_name": "asc", "field_name2": "desc" }<br>> <br>> /endpoint?sort[field_name]=asc&sort[field_name2]=desc |
-| `filter` | [`?Filter5`](../../doc/models/filter-5.md) | Query, Optional | You can use any `field_name` from this endpoint results as a filter, and you can also use more than one field to create AND conditions. For date fields (ended with `_ts`), you can also search for ranges using the `$gte` (Greater than or equal to) and/or  `$lte` (Lower than or equal to). You can use one of the following methods:<br><br>> /endpoint?filter={ "field_name": "Value" }<br>> <br>> /endpoint?filter[field_name]=Value<br>> <br>> /endpoint?filter={ "created_ts": "today" }<br>> <br>> /endpoint?filter[created_ts]=today<br>> <br>> /endpoint?filter={ "created_ts": { "$gte": "yesterday", "$lte": "today" } }<br>> <br>> /endpoint?filter[created_ts][$gte]=yesterday&filter[created_ts][$lte]=today |
-| `expand` | [`?(string[]) (Expand12Enum)`](../../doc/models/expand-12-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `order` | [`?(Order21[])`](../../doc/models/order-21.md) | Query, Optional | Criteria used in query string parameters to order results.  Most fields from the endpoint results can be used as a `key`.  Unsupported fields or operators will return a `412`.  Must be encoded, or use syntax that does not require encoding.<br><br>> /endpoint?order[0][key]=created_ts&order[0][operator]=asc<br>> <br>> /endpoint?order=[{ "key": "created_ts", "operator": "asc"}]<br>> <br>> /endpoint?order=[{ "key": "balance", "operator": "desc"},{ "key": "created_ts", "operator": "asc"}]<br><br>**Constraints**: *Minimum Items*: `1` |
+| `filterBy` | [`?(FilterBy[])`](../../doc/models/filter-by.md) | Query, Optional | Filter criteria that can be used in query string parameters.  Most fields from the endpoint results can be used as a `key`.  Unsupported fields or operators will return a `412`. Must be encoded, or use syntax that does not require encoding.<br><br>> ?filter_by[0][key]=first_name&filter_by[0][operator]==&filter_by[0][value]=Steve<br>> <br>> /endpoint?filter_by=[{ "key": "first_name", "operator": "=", "value": "Fred" }]<br>> <br>> /endpoint?filter_by=[{ "key": "account_type", "operator": "=", "value": "VISA" }]<br>> <br>> /endpoint?filter_by=[{ "key": "created_ts", "operator": ">=", "value": "946702799" }, { "key": "created_ts", "operator": "<=", value: "1695061891" }]<br>> <br>> /endpoint?filter_by=[{ "key": "last_name", "operator": "IN", "value": "Williams,Brown,Allman" }]<br><br>**Constraints**: *Minimum Items*: `1` |
+| `expand` | [`?(string(Expand18Enum)[])`](../../doc/models/expand-18-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `format` | [`?string(Format1Enum)`](../../doc/models/format-1-enum.md) | Query, Optional | Reporting format, valid values: csv, tsv |
+| `typeahead` | `?string` | Query, Optional | You can use any `field_name` from this endpoint results to order the list using the value provided as filter for the same `field_name`. It will be ordered using the following rules: 1) Exact match, 2) Starts with, 3) Contains.<br><br>> /endpoint?filter={ "field_name": "Value" }&_typeahead=field_name |
+| `fields` | [`?(string(Field39Enum)[])`](../../doc/models/field-39-enum.md) | Query, Optional | You can use any `field_name` from this endpoint results to filter the list of fields returned on the response. |
 
 ## Response Type
 
@@ -120,7 +141,31 @@ function listAllPaylinks(
 ## Example Usage
 
 ```php
-$result = $paylinksController->listAllPaylinks();
+$page = PageBuilder::init()
+    ->number(1)
+    ->size(50)
+    ->build();
+
+$order = [
+    Order21Builder::init(
+        'first_name',
+        OperatorEnum::ASC
+    )->build()
+];
+
+$filterBy = [
+    FilterByBuilder::init(
+        'first_name',
+        Operator1Enum::ENUM_1,
+        'Fred'
+    )->build()
+];
+
+$result = $paylinksController->listAllPaylinks(
+    $page,
+    $order,
+    $filterBy
+);
 ```
 
 ## Example Response *(as JSON)*
@@ -133,7 +178,7 @@ $result = $paylinksController->listAllPaylinks();
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
       "cc_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
       "email": "email@domain.com",
-      "amount_due": 10,
+      "amount_due": 1,
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "ach_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
       "expire_date": "2021-12-01",
@@ -142,8 +187,18 @@ $result = $paylinksController->listAllPaylinks();
       "delivery_method": 0,
       "cell_phone": "3339998822",
       "description": "Description",
+      "store_token": false,
+      "store_token_title": "John Account",
+      "bank_funded_only_override": false,
+      "tags": [
+        "Tag 1"
+      ],
+      "redirect_url_delay": 15,
+      "redirect_url_on_approve": null,
+      "redirect_url_on_decline": null,
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "status_id": true,
+      "status_code": 1,
       "active": true,
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
@@ -155,6 +210,7 @@ $result = $paylinksController->listAllPaylinks();
     "type": "Links",
     "first": "/v1/endpoint?page[size]=10&page[number]=1",
     "previous": "/v1/endpoint?page[size]=10&page[number]=5",
+    "next": "/v1/endpoint?page[size]=10&page[number]=7",
     "last": "/v1/endpoint?page[size]=10&page[number]=42"
   },
   "pagination": {
@@ -185,8 +241,6 @@ $result = $paylinksController->listAllPaylinks();
 
 # Delete Paylink
 
-Delete Paylink
-
 ```php
 function deletePaylink(string $paylinkId): ResponsePaylink
 ```
@@ -195,7 +249,7 @@ function deletePaylink(string $paylinkId): ResponsePaylink
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `paylinkId` | `string` | Template, Required | Paylink Id<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `paylinkId` | `string` | Template, Required | Paylink Id<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
 
 ## Response Type
 
@@ -218,7 +272,7 @@ $result = $paylinksController->deletePaylink($paylinkId);
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
     "cc_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
     "email": "email@domain.com",
-    "amount_due": 10,
+    "amount_due": 1,
     "contact_id": "11e95f8ec39de8fbdb0a4f1a",
     "ach_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
     "expire_date": "2021-12-01",
@@ -227,8 +281,18 @@ $result = $paylinksController->deletePaylink($paylinkId);
     "delivery_method": 0,
     "cell_phone": "3339998822",
     "description": "Description",
+    "store_token": false,
+    "store_token_title": "John Account",
+    "bank_funded_only_override": false,
+    "tags": [
+      "Tag 1"
+    ],
+    "redirect_url_delay": 15,
+    "redirect_url_on_approve": null,
+    "redirect_url_on_decline": null,
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "status_id": true,
+    "status_code": 1,
     "active": true,
     "created_ts": 1422040992,
     "modified_ts": 1422040992,
@@ -247,18 +311,17 @@ $result = $paylinksController->deletePaylink($paylinkId);
 
 # View Single Paylink
 
-View Single Paylink
-
 ```php
-function viewSinglePaylink(string $paylinkId, ?array $expand = null): ResponsePaylink
+function viewSinglePaylink(string $paylinkId, ?array $expand = null, ?array $fields = null): ResponsePaylink
 ```
 
 ## Parameters
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `paylinkId` | `string` | Template, Required | Paylink Id<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
-| `expand` | [`?(string[]) (Expand12Enum)`](../../doc/models/expand-12-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `paylinkId` | `string` | Template, Required | Paylink Id<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `expand` | [`?(string(Expand18Enum)[])`](../../doc/models/expand-18-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `fields` | [`?(string(Field39Enum)[])`](../../doc/models/field-39-enum.md) | Query, Optional | You can use any `field_name` from this endpoint results to filter the list of fields returned on the response. |
 
 ## Response Type
 
@@ -281,7 +344,7 @@ $result = $paylinksController->viewSinglePaylink($paylinkId);
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
     "cc_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
     "email": "email@domain.com",
-    "amount_due": 10,
+    "amount_due": 1,
     "contact_id": "11e95f8ec39de8fbdb0a4f1a",
     "ach_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
     "expire_date": "2021-12-01",
@@ -290,8 +353,18 @@ $result = $paylinksController->viewSinglePaylink($paylinkId);
     "delivery_method": 0,
     "cell_phone": "3339998822",
     "description": "Description",
+    "store_token": false,
+    "store_token_title": "John Account",
+    "bank_funded_only_override": false,
+    "tags": [
+      "Tag 1"
+    ],
+    "redirect_url_delay": 15,
+    "redirect_url_on_approve": null,
+    "redirect_url_on_decline": null,
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "status_id": true,
+    "status_code": 1,
     "active": true,
     "created_ts": 1422040992,
     "modified_ts": 1422040992,
@@ -310,8 +383,6 @@ $result = $paylinksController->viewSinglePaylink($paylinkId);
 
 # Update Paylink
 
-Update Paylink
-
 ```php
 function updatePaylink(string $paylinkId, V1PaylinksRequest1 $body, ?array $expand = null): ResponsePaylink
 ```
@@ -320,9 +391,9 @@ function updatePaylink(string $paylinkId, V1PaylinksRequest1 $body, ?array $expa
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `paylinkId` | `string` | Template, Required | Paylink Id<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `paylinkId` | `string` | Template, Required | Paylink Id<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
 | `body` | [`V1PaylinksRequest1`](../../doc/models/v1-paylinks-request-1.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand11Enum)`](../../doc/models/expand-11-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand17Enum)[])`](../../doc/models/expand-17-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -332,9 +403,30 @@ function updatePaylink(string $paylinkId, V1PaylinksRequest1 $body, ?array $expa
 
 ```php
 $paylinkId = '11e95f8ec39de8fbdb0a4f1a';
-$body = new Models\V1PaylinksRequest1();
 
-$result = $paylinksController->updatePaylink($paylinkId, $body);
+$body = V1PaylinksRequest1Builder::init()
+    ->locationId('11e95f8ec39de8fbdb0a4f1a')
+    ->ccProductTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->email('email@domain.com')
+    ->amountDue(1)
+    ->contactId('11e95f8ec39de8fbdb0a4f1a')
+    ->achProductTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->expireDate('2021-12-01')
+    ->displayProductTransactionReceiptDetails(true)
+    ->displayBillingFields(true)
+    ->deliveryMethod(DeliveryMethodEnum::ENUM_0)
+    ->cellPhone('3339998822')
+    ->description('Description')
+    ->storeToken(false)
+    ->storeTokenTitle('John Account')
+    ->bankFundedOnlyOverride(false)
+    ->redirectUrlDelay(15)
+    ->build();
+
+$result = $paylinksController->updatePaylink(
+    $paylinkId,
+    $body
+);
 ```
 
 ## Example Response *(as JSON)*
@@ -346,7 +438,7 @@ $result = $paylinksController->updatePaylink($paylinkId, $body);
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
     "cc_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
     "email": "email@domain.com",
-    "amount_due": 10,
+    "amount_due": 1,
     "contact_id": "11e95f8ec39de8fbdb0a4f1a",
     "ach_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
     "expire_date": "2021-12-01",
@@ -355,8 +447,18 @@ $result = $paylinksController->updatePaylink($paylinkId, $body);
     "delivery_method": 0,
     "cell_phone": "3339998822",
     "description": "Description",
+    "store_token": false,
+    "store_token_title": "John Account",
+    "bank_funded_only_override": false,
+    "tags": [
+      "Tag 1"
+    ],
+    "redirect_url_delay": 15,
+    "redirect_url_on_approve": null,
+    "redirect_url_on_decline": null,
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "status_id": true,
+    "status_code": 1,
     "active": true,
     "created_ts": 1422040992,
     "modified_ts": 1422040992,
@@ -376,18 +478,23 @@ $result = $paylinksController->updatePaylink($paylinkId, $body);
 
 # Resend Paylink
 
-Resend Paylink
-
 ```php
-function resendPaylink(string $paylinkId, ?array $expand = null): ResponsePaylink
+function resendPaylink(
+    string $paylinkId,
+    ?array $expand = null,
+    ?int $email = null,
+    ?int $sms = null
+): ResponsePaylink
 ```
 
 ## Parameters
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `paylinkId` | `string` | Template, Required | Paylink Id<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
-| `expand` | [`?(string[]) (Expand11Enum)`](../../doc/models/expand-11-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `paylinkId` | `string` | Template, Required | Paylink Id<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `expand` | [`?(string(Expand17Enum)[])`](../../doc/models/expand-17-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `email` | [`?int(EmailEnum)`](../../doc/models/email-enum.md) | Query, Optional | Resend Email |
+| `sms` | [`?int(SmsEnum)`](../../doc/models/sms-enum.md) | Query, Optional | Resend SMS |
 
 ## Response Type
 
@@ -410,7 +517,7 @@ $result = $paylinksController->resendPaylink($paylinkId);
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
     "cc_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
     "email": "email@domain.com",
-    "amount_due": 10,
+    "amount_due": 1,
     "contact_id": "11e95f8ec39de8fbdb0a4f1a",
     "ach_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
     "expire_date": "2021-12-01",
@@ -419,8 +526,18 @@ $result = $paylinksController->resendPaylink($paylinkId);
     "delivery_method": 0,
     "cell_phone": "3339998822",
     "description": "Description",
+    "store_token": false,
+    "store_token_title": "John Account",
+    "bank_funded_only_override": false,
+    "tags": [
+      "Tag 1"
+    ],
+    "redirect_url_delay": 15,
+    "redirect_url_on_approve": null,
+    "redirect_url_on_decline": null,
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "status_id": true,
+    "status_code": 1,
     "active": true,
     "created_ts": 1422040992,
     "modified_ts": 1422040992,

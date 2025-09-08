@@ -3,6 +3,8 @@
 
 Resource
 
+> Recurring, Transaction, AccountVault, DeviceTerm
+
 ## Enumeration
 
 `ResourceEnum`

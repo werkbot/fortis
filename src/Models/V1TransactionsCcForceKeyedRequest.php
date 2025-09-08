@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
@@ -20,7 +21,7 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
     private $additionalAmounts;
 
     /**
-     * @var BillingAddress|null
+     * @var BillingAddress1|null
      */
     private $billingAddress;
 
@@ -98,6 +99,31 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
      * @var array
      */
     private $installmentCount = [];
+
+    /**
+     * @var array
+     */
+    private $recurringFlag = [];
+
+    /**
+     * @var array
+     */
+    private $installmentCounter = [];
+
+    /**
+     * @var array
+     */
+    private $installmentTotal = [];
+
+    /**
+     * @var bool|null
+     */
+    private $subscription;
+
+    /**
+     * @var bool|null
+     */
+    private $standingOrder;
 
     /**
      * @var array
@@ -185,9 +211,9 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
     private $surchargeAmount = [];
 
     /**
-     * @var string[]|null
+     * @var array
      */
-    private $tags;
+    private $tags = [];
 
     /**
      * @var array
@@ -237,6 +263,31 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
     /**
      * @var bool|null
      */
+    private $allowPartialAuthorizationOverride;
+
+    /**
+     * @var bool|null
+     */
+    private $autoDeclineCvvOverride;
+
+    /**
+     * @var bool|null
+     */
+    private $autoDeclineStreetOverride;
+
+    /**
+     * @var bool|null
+     */
+    private $autoDeclineZipOverride;
+
+    /**
+     * @var array
+     */
+    private $ebtType = [];
+
+    /**
+     * @var bool|null
+     */
     private $cardholderPresent;
 
     /**
@@ -262,7 +313,7 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
     /**
      * @var array
      */
-    private $secureCrytogram = [];
+    private $secureCryptogram = [];
 
     /**
      * @var array
@@ -287,7 +338,57 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
     /**
      * @var array
      */
+    private $threeDsServerTransId = [];
+
+    /**
+     * @var array
+     */
     private $walletType = [];
+
+    /**
+     * @var array
+     */
+    private $clerkId = [];
+
+    /**
+     * @var array
+     */
+    private $voucherNumber = [];
+
+    /**
+     * @var array
+     */
+    private $initiationType = [];
+
+    /**
+     * @var bool|null
+     */
+    private $billPayment;
+
+    /**
+     * @var bool|null
+     */
+    private $delayCharge;
+
+    /**
+     * @var bool|null
+     */
+    private $deferredAuth;
+
+    /**
+     * @var bool|null
+     */
+    private $miniBar;
+
+    /**
+     * @var array
+     */
+    private $ebtFoodEligibleAmount = [];
+
+    /**
+     * @var array
+     */
+    private $ebtCashEligibleAmount = [];
 
     /**
      * @var array
@@ -320,9 +421,24 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
     private $trackData = [];
 
     /**
+     * @var array
+     */
+    private $pin = [];
+
+    /**
+     * @var array
+     */
+    private $ksn = [];
+
+    /**
      * @var string
      */
     private $authCode;
+
+    /**
+     * @var array
+     */
+    private $transId = [];
 
     /**
      * @param string $accountNumber
@@ -364,7 +480,7 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
      * Returns Billing Address.
      * Billing Address Object
      */
-    public function getBillingAddress(): ?BillingAddress
+    public function getBillingAddress(): ?BillingAddress1
     {
         return $this->billingAddress;
     }
@@ -375,7 +491,7 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
      *
      * @maps billing_address
      */
-    public function setBillingAddress(?BillingAddress $billingAddress): void
+    public function setBillingAddress(?BillingAddress1 $billingAddress): void
     {
         $this->billingAddress = $billingAddress;
     }
@@ -383,7 +499,9 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
     /**
      * Returns Checkin Date.
      * Checkin Date - The time difference between checkin_date and checkout_date must be less than or equal
-     * to 99 days.
+     * to 99 days. NOTE: if checkin_date is in the future, set the advance_deposit to 1
+     * >Required if merchant industry type is lodging.
+     * >
      */
     public function getCheckinDate(): ?string
     {
@@ -396,7 +514,9 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
     /**
      * Sets Checkin Date.
      * Checkin Date - The time difference between checkin_date and checkout_date must be less than or equal
-     * to 99 days.
+     * to 99 days. NOTE: if checkin_date is in the future, set the advance_deposit to 1
+     * >Required if merchant industry type is lodging.
+     * >
      *
      * @maps checkin_date
      */
@@ -408,7 +528,9 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
     /**
      * Unsets Checkin Date.
      * Checkin Date - The time difference between checkin_date and checkout_date must be less than or equal
-     * to 99 days.
+     * to 99 days. NOTE: if checkin_date is in the future, set the advance_deposit to 1
+     * >Required if merchant industry type is lodging.
+     * >
      */
     public function unsetCheckinDate(): void
     {
@@ -419,6 +541,8 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
      * Returns Checkout Date.
      * Checkout Date - The time difference between checkin_date and checkout_date must be less than or
      * equal to 99 days.
+     * >Required if merchant industry type is lodging.
+     * >
      */
     public function getCheckoutDate(): ?string
     {
@@ -432,6 +556,8 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
      * Sets Checkout Date.
      * Checkout Date - The time difference between checkin_date and checkout_date must be less than or
      * equal to 99 days.
+     * >Required if merchant industry type is lodging.
+     * >
      *
      * @maps checkout_date
      */
@@ -444,6 +570,8 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
      * Unsets Checkout Date.
      * Checkout Date - The time difference between checkin_date and checkout_date must be less than or
      * equal to 99 days.
+     * >Required if merchant industry type is lodging.
+     * >
      */
     public function unsetCheckoutDate(): void
     {
@@ -780,7 +908,7 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
      * If this is a fixed installment plan and installment field is being passed as 1, then this field must
      * have a vlue of 1-999 specifying the current installment number that is running.
      */
-    public function getInstallmentNumber(): ?float
+    public function getInstallmentNumber(): ?int
     {
         if (count($this->installmentNumber) == 0) {
             return null;
@@ -795,7 +923,7 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
      *
      * @maps installment_number
      */
-    public function setInstallmentNumber(?float $installmentNumber): void
+    public function setInstallmentNumber(?int $installmentNumber): void
     {
         $this->installmentNumber['value'] = $installmentNumber;
     }
@@ -816,7 +944,7 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
      * have a vlue of 1-999 specifying the total number of installments on the plan. This number must be
      * grater than or equal to installment_number.
      */
-    public function getInstallmentCount(): ?float
+    public function getInstallmentCount(): ?int
     {
         if (count($this->installmentCount) == 0) {
             return null;
@@ -832,7 +960,7 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
      *
      * @maps installment_count
      */
-    public function setInstallmentCount(?float $installmentCount): void
+    public function setInstallmentCount(?int $installmentCount): void
     {
         $this->installmentCount['value'] = $installmentCount;
     }
@@ -846,6 +974,143 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
     public function unsetInstallmentCount(): void
     {
         $this->installmentCount = [];
+    }
+
+    /**
+     * Returns Recurring Flag.
+     * Recurring Flag
+     */
+    public function getRecurringFlag(): ?string
+    {
+        if (count($this->recurringFlag) == 0) {
+            return null;
+        }
+        return $this->recurringFlag['value'];
+    }
+
+    /**
+     * Sets Recurring Flag.
+     * Recurring Flag
+     *
+     * @maps recurring_flag
+     * @factory \FortisAPILib\Models\RecurringFlagEnum::checkValue
+     */
+    public function setRecurringFlag(?string $recurringFlag): void
+    {
+        $this->recurringFlag['value'] = $recurringFlag;
+    }
+
+    /**
+     * Unsets Recurring Flag.
+     * Recurring Flag
+     */
+    public function unsetRecurringFlag(): void
+    {
+        $this->recurringFlag = [];
+    }
+
+    /**
+     * Returns Installment Counter.
+     * Installment Counter
+     */
+    public function getInstallmentCounter(): ?int
+    {
+        if (count($this->installmentCounter) == 0) {
+            return null;
+        }
+        return $this->installmentCounter['value'];
+    }
+
+    /**
+     * Sets Installment Counter.
+     * Installment Counter
+     *
+     * @maps installment_counter
+     */
+    public function setInstallmentCounter(?int $installmentCounter): void
+    {
+        $this->installmentCounter['value'] = $installmentCounter;
+    }
+
+    /**
+     * Unsets Installment Counter.
+     * Installment Counter
+     */
+    public function unsetInstallmentCounter(): void
+    {
+        $this->installmentCounter = [];
+    }
+
+    /**
+     * Returns Installment Total.
+     * Installment Total
+     */
+    public function getInstallmentTotal(): ?int
+    {
+        if (count($this->installmentTotal) == 0) {
+            return null;
+        }
+        return $this->installmentTotal['value'];
+    }
+
+    /**
+     * Sets Installment Total.
+     * Installment Total
+     *
+     * @maps installment_total
+     */
+    public function setInstallmentTotal(?int $installmentTotal): void
+    {
+        $this->installmentTotal['value'] = $installmentTotal;
+    }
+
+    /**
+     * Unsets Installment Total.
+     * Installment Total
+     */
+    public function unsetInstallmentTotal(): void
+    {
+        $this->installmentTotal = [];
+    }
+
+    /**
+     * Returns Subscription.
+     * Subscription
+     */
+    public function getSubscription(): ?bool
+    {
+        return $this->subscription;
+    }
+
+    /**
+     * Sets Subscription.
+     * Subscription
+     *
+     * @maps subscription
+     */
+    public function setSubscription(?bool $subscription): void
+    {
+        $this->subscription = $subscription;
+    }
+
+    /**
+     * Returns Standing Order.
+     * Standing Order
+     */
+    public function getStandingOrder(): ?bool
+    {
+        return $this->standingOrder;
+    }
+
+    /**
+     * Sets Standing Order.
+     * Standing Order
+     *
+     * @maps standing_order
+     */
+    public function setStandingOrder(?bool $standingOrder): void
+    {
+        $this->standingOrder = $standingOrder;
     }
 
     /**
@@ -1153,7 +1418,7 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
      * If this is an ongoing recurring and recurring field is being passed as 1, then this field must have
      * a vlue of 1-999 specifying the current recurring number that is running.
      */
-    public function getRecurringNumber(): ?float
+    public function getRecurringNumber(): ?int
     {
         if (count($this->recurringNumber) == 0) {
             return null;
@@ -1168,7 +1433,7 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
      *
      * @maps recurring_number
      */
-    public function setRecurringNumber(?float $recurringNumber): void
+    public function setRecurringNumber(?int $recurringNumber): void
     {
         $this->recurringNumber['value'] = $recurringNumber;
     }
@@ -1379,7 +1644,10 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
      */
     public function getTags(): ?array
     {
-        return $this->tags;
+        if (count($this->tags) == 0) {
+            return null;
+        }
+        return $this->tags['value'];
     }
 
     /**
@@ -1392,7 +1660,16 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
      */
     public function setTags(?array $tags): void
     {
-        $this->tags = $tags;
+        $this->tags['value'] = $tags;
+    }
+
+    /**
+     * Unsets Tags.
+     * Tags
+     */
+    public function unsetTags(): void
+    {
+        $this->tags = [];
     }
 
     /**
@@ -1502,7 +1779,7 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
 
     /**
      * Returns Secondary Amount.
-     * Secondary Amount of the transaction. This should always be less than transaction amount. Use only
+     * Retained Amount of the transaction. This should always be less than transaction amount. Use only
      * integer numbers, so $10.99 will be 1099
      */
     public function getSecondaryAmount(): ?int
@@ -1515,7 +1792,7 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
 
     /**
      * Sets Secondary Amount.
-     * Secondary Amount of the transaction. This should always be less than transaction amount. Use only
+     * Retained Amount of the transaction. This should always be less than transaction amount. Use only
      * integer numbers, so $10.99 will be 1099
      *
      * @maps secondary_amount
@@ -1527,7 +1804,7 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
 
     /**
      * Unsets Secondary Amount.
-     * Secondary Amount of the transaction. This should always be less than transaction amount. Use only
+     * Retained Amount of the transaction. This should always be less than transaction amount. Use only
      * integer numbers, so $10.99 will be 1099
      */
     public function unsetSecondaryAmount(): void
@@ -1684,6 +1961,119 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
     }
 
     /**
+     * Returns Allow Partial Authorization Override.
+     * Allow Partial Authorization Override
+     */
+    public function getAllowPartialAuthorizationOverride(): ?bool
+    {
+        return $this->allowPartialAuthorizationOverride;
+    }
+
+    /**
+     * Sets Allow Partial Authorization Override.
+     * Allow Partial Authorization Override
+     *
+     * @maps allow_partial_authorization_override
+     */
+    public function setAllowPartialAuthorizationOverride(?bool $allowPartialAuthorizationOverride): void
+    {
+        $this->allowPartialAuthorizationOverride = $allowPartialAuthorizationOverride;
+    }
+
+    /**
+     * Returns Auto Decline Cvv Override.
+     * Auto Decline CVV Override
+     */
+    public function getAutoDeclineCvvOverride(): ?bool
+    {
+        return $this->autoDeclineCvvOverride;
+    }
+
+    /**
+     * Sets Auto Decline Cvv Override.
+     * Auto Decline CVV Override
+     *
+     * @maps auto_decline_cvv_override
+     */
+    public function setAutoDeclineCvvOverride(?bool $autoDeclineCvvOverride): void
+    {
+        $this->autoDeclineCvvOverride = $autoDeclineCvvOverride;
+    }
+
+    /**
+     * Returns Auto Decline Street Override.
+     * Auto Decline Street Override
+     */
+    public function getAutoDeclineStreetOverride(): ?bool
+    {
+        return $this->autoDeclineStreetOverride;
+    }
+
+    /**
+     * Sets Auto Decline Street Override.
+     * Auto Decline Street Override
+     *
+     * @maps auto_decline_street_override
+     */
+    public function setAutoDeclineStreetOverride(?bool $autoDeclineStreetOverride): void
+    {
+        $this->autoDeclineStreetOverride = $autoDeclineStreetOverride;
+    }
+
+    /**
+     * Returns Auto Decline Zip Override.
+     * Auto Decline Zip Override
+     */
+    public function getAutoDeclineZipOverride(): ?bool
+    {
+        return $this->autoDeclineZipOverride;
+    }
+
+    /**
+     * Sets Auto Decline Zip Override.
+     * Auto Decline Zip Override
+     *
+     * @maps auto_decline_zip_override
+     */
+    public function setAutoDeclineZipOverride(?bool $autoDeclineZipOverride): void
+    {
+        $this->autoDeclineZipOverride = $autoDeclineZipOverride;
+    }
+
+    /**
+     * Returns Ebt Type.
+     * EBT Type
+     */
+    public function getEbtType(): ?string
+    {
+        if (count($this->ebtType) == 0) {
+            return null;
+        }
+        return $this->ebtType['value'];
+    }
+
+    /**
+     * Sets Ebt Type.
+     * EBT Type
+     *
+     * @maps ebt_type
+     * @factory \FortisAPILib\Models\EbtTypeEnum::checkValue
+     */
+    public function setEbtType(?string $ebtType): void
+    {
+        $this->ebtType['value'] = $ebtType;
+    }
+
+    /**
+     * Unsets Ebt Type.
+     * EBT Type
+     */
+    public function unsetEbtType(): void
+    {
+        $this->ebtType = [];
+    }
+
+    /**
      * Returns Cardholder Present.
      * If the cardholder is present at the point of service
      */
@@ -1706,6 +2096,11 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
     /**
      * Returns Card Present.
      * A POST only field to specify whether or not the card is present.
+     * >This field will be defaulted to '1' for all card present industries (retail, lodging, restaurant)
+     * and '0' for card not present industries (MOTO/e-commerce).
+     * For lodging, if the no_show flag is set to '1', this field will automatically be set to '0'.
+     * For transactions where account_vault_id is used, this filed will be set to '0'.
+     * >
      */
     public function getCardPresent(): ?bool
     {
@@ -1715,6 +2110,11 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
     /**
      * Sets Card Present.
      * A POST only field to specify whether or not the card is present.
+     * >This field will be defaulted to '1' for all card present industries (retail, lodging, restaurant)
+     * and '0' for card not present industries (MOTO/e-commerce).
+     * For lodging, if the no_show flag is set to '1', this field will automatically be set to '0'.
+     * For transactions where account_vault_id is used, this filed will be set to '0'.
+     * >
      *
      * @maps card_present
      */
@@ -1823,38 +2223,38 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
     }
 
     /**
-     * Returns Secure Crytogram.
+     * Returns Secure Cryptogram.
      * (ECOMM) Used to supply the Digital Payment Cryptogram obtained from a Digital Secure Remote Payment
      * (DSRP) transaction
      */
-    public function getSecureCrytogram(): ?string
+    public function getSecureCryptogram(): ?string
     {
-        if (count($this->secureCrytogram) == 0) {
+        if (count($this->secureCryptogram) == 0) {
             return null;
         }
-        return $this->secureCrytogram['value'];
+        return $this->secureCryptogram['value'];
     }
 
     /**
-     * Sets Secure Crytogram.
+     * Sets Secure Cryptogram.
      * (ECOMM) Used to supply the Digital Payment Cryptogram obtained from a Digital Secure Remote Payment
      * (DSRP) transaction
      *
-     * @maps secure_crytogram
+     * @maps secure_cryptogram
      */
-    public function setSecureCrytogram(?string $secureCrytogram): void
+    public function setSecureCryptogram(?string $secureCryptogram): void
     {
-        $this->secureCrytogram['value'] = $secureCrytogram;
+        $this->secureCryptogram['value'] = $secureCryptogram;
     }
 
     /**
-     * Unsets Secure Crytogram.
+     * Unsets Secure Cryptogram.
      * (ECOMM) Used to supply the Digital Payment Cryptogram obtained from a Digital Secure Remote Payment
      * (DSRP) transaction
      */
-    public function unsetSecureCrytogram(): void
+    public function unsetSecureCryptogram(): void
     {
-        $this->secureCrytogram = [];
+        $this->secureCryptogram = [];
     }
 
     /**
@@ -1964,8 +2364,7 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
 
     /**
      * Returns Threedsecure.
-     * Specifies to save account to contacts profile if account_number/track_data is present with either
-     * contact_id or contact_api_id in params.
+     * (ECOMM) Specify if the transaction is obtained by 3DSecure.
      */
     public function getThreedsecure(): ?bool
     {
@@ -1974,14 +2373,51 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
 
     /**
      * Sets Threedsecure.
-     * Specifies to save account to contacts profile if account_number/track_data is present with either
-     * contact_id or contact_api_id in params.
+     * (ECOMM) Specify if the transaction is obtained by 3DSecure.
      *
      * @maps threedsecure
      */
     public function setThreedsecure(?bool $threedsecure): void
     {
         $this->threedsecure = $threedsecure;
+    }
+
+    /**
+     * Returns Three Ds Server Trans Id.
+     * 3DS Server Transaction ID.  If this field is sent and 3DS authentication was done with Fortis, the
+     * 3DS fields secure_directory_server_transaction_id, secure_protocol_version, and
+     * secure_collection_indicator will be pre-populated.
+     */
+    public function getThreeDsServerTransId(): ?string
+    {
+        if (count($this->threeDsServerTransId) == 0) {
+            return null;
+        }
+        return $this->threeDsServerTransId['value'];
+    }
+
+    /**
+     * Sets Three Ds Server Trans Id.
+     * 3DS Server Transaction ID.  If this field is sent and 3DS authentication was done with Fortis, the
+     * 3DS fields secure_directory_server_transaction_id, secure_protocol_version, and
+     * secure_collection_indicator will be pre-populated.
+     *
+     * @maps three_ds_server_trans_id
+     */
+    public function setThreeDsServerTransId(?string $threeDsServerTransId): void
+    {
+        $this->threeDsServerTransId['value'] = $threeDsServerTransId;
+    }
+
+    /**
+     * Unsets Three Ds Server Trans Id.
+     * 3DS Server Transaction ID.  If this field is sent and 3DS authentication was done with Fortis, the
+     * 3DS fields secure_directory_server_transaction_id, secure_protocol_version, and
+     * secure_collection_indicator will be pre-populated.
+     */
+    public function unsetThreeDsServerTransId(): void
+    {
+        $this->threeDsServerTransId = [];
     }
 
     /**
@@ -2057,8 +2493,252 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
     }
 
     /**
+     * Returns Clerk Id.
+     * Clerk ID
+     */
+    public function getClerkId(): ?string
+    {
+        if (count($this->clerkId) == 0) {
+            return null;
+        }
+        return $this->clerkId['value'];
+    }
+
+    /**
+     * Sets Clerk Id.
+     * Clerk ID
+     *
+     * @maps clerk_id
+     */
+    public function setClerkId(?string $clerkId): void
+    {
+        $this->clerkId['value'] = $clerkId;
+    }
+
+    /**
+     * Unsets Clerk Id.
+     * Clerk ID
+     */
+    public function unsetClerkId(): void
+    {
+        $this->clerkId = [];
+    }
+
+    /**
+     * Returns Voucher Number.
+     * Voucher Number
+     */
+    public function getVoucherNumber(): ?string
+    {
+        if (count($this->voucherNumber) == 0) {
+            return null;
+        }
+        return $this->voucherNumber['value'];
+    }
+
+    /**
+     * Sets Voucher Number.
+     * Voucher Number
+     *
+     * @maps voucher_number
+     */
+    public function setVoucherNumber(?string $voucherNumber): void
+    {
+        $this->voucherNumber['value'] = $voucherNumber;
+    }
+
+    /**
+     * Unsets Voucher Number.
+     * Voucher Number
+     */
+    public function unsetVoucherNumber(): void
+    {
+        $this->voucherNumber = [];
+    }
+
+    /**
+     * Returns Initiation Type.
+     * Initiation Type
+     */
+    public function getInitiationType(): ?string
+    {
+        if (count($this->initiationType) == 0) {
+            return null;
+        }
+        return $this->initiationType['value'];
+    }
+
+    /**
+     * Sets Initiation Type.
+     * Initiation Type
+     *
+     * @maps initiation_type
+     * @factory \FortisAPILib\Models\InitiationTypeEnum::checkValue
+     */
+    public function setInitiationType(?string $initiationType): void
+    {
+        $this->initiationType['value'] = $initiationType;
+    }
+
+    /**
+     * Unsets Initiation Type.
+     * Initiation Type
+     */
+    public function unsetInitiationType(): void
+    {
+        $this->initiationType = [];
+    }
+
+    /**
+     * Returns Bill Payment.
+     * If transaction is a bill payment
+     */
+    public function getBillPayment(): ?bool
+    {
+        return $this->billPayment;
+    }
+
+    /**
+     * Sets Bill Payment.
+     * If transaction is a bill payment
+     *
+     * @maps bill_payment
+     */
+    public function setBillPayment(?bool $billPayment): void
+    {
+        $this->billPayment = $billPayment;
+    }
+
+    /**
+     * Returns Delay Charge.
+     * Delay Charge
+     */
+    public function getDelayCharge(): ?bool
+    {
+        return $this->delayCharge;
+    }
+
+    /**
+     * Sets Delay Charge.
+     * Delay Charge
+     *
+     * @maps delay_charge
+     */
+    public function setDelayCharge(?bool $delayCharge): void
+    {
+        $this->delayCharge = $delayCharge;
+    }
+
+    /**
+     * Returns Deferred Auth.
+     * Deferred Auth
+     */
+    public function getDeferredAuth(): ?bool
+    {
+        return $this->deferredAuth;
+    }
+
+    /**
+     * Sets Deferred Auth.
+     * Deferred Auth
+     *
+     * @maps deferred_auth
+     */
+    public function setDeferredAuth(?bool $deferredAuth): void
+    {
+        $this->deferredAuth = $deferredAuth;
+    }
+
+    /**
+     * Returns Mini Bar.
+     * Mini Bar
+     */
+    public function getMiniBar(): ?bool
+    {
+        return $this->miniBar;
+    }
+
+    /**
+     * Sets Mini Bar.
+     * Mini Bar
+     *
+     * @maps mini_bar
+     */
+    public function setMiniBar(?bool $miniBar): void
+    {
+        $this->miniBar = $miniBar;
+    }
+
+    /**
+     * Returns Ebt Food Eligible Amount.
+     * EBT Food Eligible Amount
+     */
+    public function getEbtFoodEligibleAmount(): ?int
+    {
+        if (count($this->ebtFoodEligibleAmount) == 0) {
+            return null;
+        }
+        return $this->ebtFoodEligibleAmount['value'];
+    }
+
+    /**
+     * Sets Ebt Food Eligible Amount.
+     * EBT Food Eligible Amount
+     *
+     * @maps ebt_food_eligible_amount
+     */
+    public function setEbtFoodEligibleAmount(?int $ebtFoodEligibleAmount): void
+    {
+        $this->ebtFoodEligibleAmount['value'] = $ebtFoodEligibleAmount;
+    }
+
+    /**
+     * Unsets Ebt Food Eligible Amount.
+     * EBT Food Eligible Amount
+     */
+    public function unsetEbtFoodEligibleAmount(): void
+    {
+        $this->ebtFoodEligibleAmount = [];
+    }
+
+    /**
+     * Returns Ebt Cash Eligible Amount.
+     * EBT Cash Eligible Amount
+     */
+    public function getEbtCashEligibleAmount(): ?int
+    {
+        if (count($this->ebtCashEligibleAmount) == 0) {
+            return null;
+        }
+        return $this->ebtCashEligibleAmount['value'];
+    }
+
+    /**
+     * Sets Ebt Cash Eligible Amount.
+     * EBT Cash Eligible Amount
+     *
+     * @maps ebt_cash_eligible_amount
+     */
+    public function setEbtCashEligibleAmount(?int $ebtCashEligibleAmount): void
+    {
+        $this->ebtCashEligibleAmount['value'] = $ebtCashEligibleAmount;
+    }
+
+    /**
+     * Unsets Ebt Cash Eligible Amount.
+     * EBT Cash Eligible Amount
+     */
+    public function unsetEbtCashEligibleAmount(): void
+    {
+        $this->ebtCashEligibleAmount = [];
+    }
+
+    /**
      * Returns Account Holder Name.
      * For CC, this is the 'Name (as it appears) on Card'. For ACH, this is the 'Name on Account'.
+     * >Required for ACH transactions if account_vault_id is not provided. For CC transactions that are run
+     * through a terminal, this field may be overwritten by data acquired from the credit card track data.
+     * >
      */
     public function getAccountHolderName(): ?string
     {
@@ -2071,6 +2751,9 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
     /**
      * Sets Account Holder Name.
      * For CC, this is the 'Name (as it appears) on Card'. For ACH, this is the 'Name on Account'.
+     * >Required for ACH transactions if account_vault_id is not provided. For CC transactions that are run
+     * through a terminal, this field may be overwritten by data acquired from the credit card track data.
+     * >
      *
      * @maps account_holder_name
      */
@@ -2082,6 +2765,9 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
     /**
      * Unsets Account Holder Name.
      * For CC, this is the 'Name (as it appears) on Card'. For ACH, this is the 'Name on Account'.
+     * >Required for ACH transactions if account_vault_id is not provided. For CC transactions that are run
+     * through a terminal, this field may be overwritten by data acquired from the credit card track data.
+     * >
      */
     public function unsetAccountHolderName(): void
     {
@@ -2091,6 +2777,9 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
     /**
      * Returns Account Number.
      * For CC transactions, a credit card number. For ACH transactions, a bank account number.
+     * >String lengths are conditional, CC should be 13-19 and ACH should be 4-19. Required if
+     * account_vault_id , track_data, or micr_data is not provided.
+     * >
      */
     public function getAccountNumber(): string
     {
@@ -2100,6 +2789,9 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
     /**
      * Sets Account Number.
      * For CC transactions, a credit card number. For ACH transactions, a bank account number.
+     * >String lengths are conditional, CC should be 13-19 and ACH should be 4-19. Required if
+     * account_vault_id , track_data, or micr_data is not provided.
+     * >
      *
      * @required
      * @maps account_number
@@ -2231,8 +2923,72 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
     }
 
     /**
+     * Returns Pin.
+     * Pin
+     */
+    public function getPin(): ?string
+    {
+        if (count($this->pin) == 0) {
+            return null;
+        }
+        return $this->pin['value'];
+    }
+
+    /**
+     * Sets Pin.
+     * Pin
+     *
+     * @maps pin
+     */
+    public function setPin(?string $pin): void
+    {
+        $this->pin['value'] = $pin;
+    }
+
+    /**
+     * Unsets Pin.
+     * Pin
+     */
+    public function unsetPin(): void
+    {
+        $this->pin = [];
+    }
+
+    /**
+     * Returns Ksn.
+     * KSN (Key Serial Number)
+     */
+    public function getKsn(): ?string
+    {
+        if (count($this->ksn) == 0) {
+            return null;
+        }
+        return $this->ksn['value'];
+    }
+
+    /**
+     * Sets Ksn.
+     * KSN (Key Serial Number)
+     *
+     * @maps ksn
+     */
+    public function setKsn(?string $ksn): void
+    {
+        $this->ksn['value'] = $ksn;
+    }
+
+    /**
+     * Unsets Ksn.
+     * KSN (Key Serial Number)
+     */
+    public function unsetKsn(): void
+    {
+        $this->ksn = [];
+    }
+
+    /**
      * Returns Auth Code.
-     * Required on force transactions. Ignored for all other actions.
+     * Required on force transactions and EBT voucher clear sale/refund. Ignored for all other actions.
      */
     public function getAuthCode(): string
     {
@@ -2241,7 +2997,7 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
 
     /**
      * Sets Auth Code.
-     * Required on force transactions. Ignored for all other actions.
+     * Required on force transactions and EBT voucher clear sale/refund. Ignored for all other actions.
      *
      * @required
      * @maps auth_code
@@ -2249,6 +3005,166 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
     public function setAuthCode(string $authCode): void
     {
         $this->authCode = $authCode;
+    }
+
+    /**
+     * Returns Trans Id.
+     * Trans ID
+     */
+    public function getTransId(): ?string
+    {
+        if (count($this->transId) == 0) {
+            return null;
+        }
+        return $this->transId['value'];
+    }
+
+    /**
+     * Sets Trans Id.
+     * Trans ID
+     *
+     * @maps trans_id
+     */
+    public function setTransId(?string $transId): void
+    {
+        $this->transId['value'] = $transId;
+    }
+
+    /**
+     * Unsets Trans Id.
+     * Trans ID
+     */
+    public function unsetTransId(): void
+    {
+        $this->transId = [];
+    }
+
+    /**
+     * Converts the V1TransactionsCcForceKeyedRequest object to a human-readable string representation.
+     *
+     * @return string The string representation of the V1TransactionsCcForceKeyedRequest object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'V1TransactionsCcForceKeyedRequest',
+            [
+                'additionalAmounts' => $this->additionalAmounts,
+                'billingAddress' => $this->billingAddress,
+                'checkinDate' => $this->getCheckinDate(),
+                'checkoutDate' => $this->getCheckoutDate(),
+                'clerkNumber' => $this->getClerkNumber(),
+                'contactApiId' => $this->getContactApiId(),
+                'contactId' => $this->getContactId(),
+                'customData' => $this->customData,
+                'customerId' => $this->getCustomerId(),
+                'description' => $this->getDescription(),
+                'identityVerification' => $this->identityVerification,
+                'iiasInd' => $this->getIiasInd(),
+                'imageFront' => $this->getImageFront(),
+                'imageBack' => $this->getImageBack(),
+                'installment' => $this->installment,
+                'installmentNumber' => $this->getInstallmentNumber(),
+                'installmentCount' => $this->getInstallmentCount(),
+                'recurringFlag' => $this->getRecurringFlag(),
+                'installmentCounter' => $this->getInstallmentCounter(),
+                'installmentTotal' => $this->getInstallmentTotal(),
+                'subscription' => $this->subscription,
+                'standingOrder' => $this->standingOrder,
+                'locationApiId' => $this->getLocationApiId(),
+                'locationId' => $this->getLocationId(),
+                'productTransactionId' => $this->getProductTransactionId(),
+                'advanceDeposit' => $this->advanceDeposit,
+                'noShow' => $this->noShow,
+                'notificationEmailAddress' => $this->getNotificationEmailAddress(),
+                'orderNumber' => $this->getOrderNumber(),
+                'poNumber' => $this->getPoNumber(),
+                'quickInvoiceId' => $this->getQuickInvoiceId(),
+                'recurring' => $this->recurring,
+                'recurringNumber' => $this->getRecurringNumber(),
+                'roomNum' => $this->getRoomNum(),
+                'roomRate' => $this->getRoomRate(),
+                'saveAccount' => $this->saveAccount,
+                'saveAccountTitle' => $this->getSaveAccountTitle(),
+                'subtotalAmount' => $this->getSubtotalAmount(),
+                'surchargeAmount' => $this->getSurchargeAmount(),
+                'tags' => $this->getTags(),
+                'tax' => $this->getTax(),
+                'tipAmount' => $this->getTipAmount(),
+                'transactionAmount' => $this->getTransactionAmount(),
+                'secondaryAmount' => $this->getSecondaryAmount(),
+                'transactionApiId' => $this->getTransactionApiId(),
+                'transactionC1' => $this->getTransactionC1(),
+                'transactionC2' => $this->getTransactionC2(),
+                'transactionC3' => $this->getTransactionC3(),
+                'bankFundedOnlyOverride' => $this->bankFundedOnlyOverride,
+                'allowPartialAuthorizationOverride' => $this->allowPartialAuthorizationOverride,
+                'autoDeclineCvvOverride' => $this->autoDeclineCvvOverride,
+                'autoDeclineStreetOverride' => $this->autoDeclineStreetOverride,
+                'autoDeclineZipOverride' => $this->autoDeclineZipOverride,
+                'ebtType' => $this->getEbtType(),
+                'cardholderPresent' => $this->cardholderPresent,
+                'cardPresent' => $this->cardPresent,
+                'secureAuthData' => $this->getSecureAuthData(),
+                'secureProtocolVersion' => $this->getSecureProtocolVersion(),
+                'secureCollectionIndicator' => $this->getSecureCollectionIndicator(),
+                'secureCryptogram' => $this->getSecureCryptogram(),
+                'secureDirectoryServerTransactionId' => $this->getSecureDirectoryServerTransactionId(),
+                'secureEcommUrl' => $this->getSecureEcommUrl(),
+                'terminalSerialNumber' => $this->getTerminalSerialNumber(),
+                'threedsecure' => $this->threedsecure,
+                'threeDsServerTransId' => $this->getThreeDsServerTransId(),
+                'walletType' => $this->getWalletType(),
+                'clerkId' => $this->getClerkId(),
+                'voucherNumber' => $this->getVoucherNumber(),
+                'initiationType' => $this->getInitiationType(),
+                'billPayment' => $this->billPayment,
+                'delayCharge' => $this->delayCharge,
+                'deferredAuth' => $this->deferredAuth,
+                'miniBar' => $this->miniBar,
+                'ebtFoodEligibleAmount' => $this->getEbtFoodEligibleAmount(),
+                'ebtCashEligibleAmount' => $this->getEbtCashEligibleAmount(),
+                'accountHolderName' => $this->getAccountHolderName(),
+                'accountNumber' => $this->accountNumber,
+                'cvv' => $this->getCvv(),
+                'entryModeId' => $this->getEntryModeId(),
+                'expDate' => $this->expDate,
+                'trackData' => $this->getTrackData(),
+                'pin' => $this->getPin(),
+                'ksn' => $this->getKsn(),
+                'authCode' => $this->authCode,
+                'transId' => $this->getTransId(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -2314,6 +3230,24 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
         if (!empty($this->installmentCount)) {
             $json['installment_count']                      = $this->installmentCount['value'];
         }
+        if (!empty($this->recurringFlag)) {
+            $json['recurring_flag']                         =
+                RecurringFlagEnum::checkValue(
+                    $this->recurringFlag['value']
+                );
+        }
+        if (!empty($this->installmentCounter)) {
+            $json['installment_counter']                    = $this->installmentCounter['value'];
+        }
+        if (!empty($this->installmentTotal)) {
+            $json['installment_total']                      = $this->installmentTotal['value'];
+        }
+        if (isset($this->subscription)) {
+            $json['subscription']                           = $this->subscription;
+        }
+        if (isset($this->standingOrder)) {
+            $json['standing_order']                         = $this->standingOrder;
+        }
         if (!empty($this->locationApiId)) {
             $json['location_api_id']                        = $this->locationApiId['value'];
         }
@@ -2365,8 +3299,8 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
         if (!empty($this->surchargeAmount)) {
             $json['surcharge_amount']                       = $this->surchargeAmount['value'];
         }
-        if (isset($this->tags)) {
-            $json['tags']                                   = $this->tags;
+        if (!empty($this->tags)) {
+            $json['tags']                                   = $this->tags['value'];
         }
         if (!empty($this->tax)) {
             $json['tax']                                    = $this->tax['value'];
@@ -2395,6 +3329,21 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
         if (isset($this->bankFundedOnlyOverride)) {
             $json['bank_funded_only_override']              = $this->bankFundedOnlyOverride;
         }
+        if (isset($this->allowPartialAuthorizationOverride)) {
+            $json['allow_partial_authorization_override']   = $this->allowPartialAuthorizationOverride;
+        }
+        if (isset($this->autoDeclineCvvOverride)) {
+            $json['auto_decline_cvv_override']              = $this->autoDeclineCvvOverride;
+        }
+        if (isset($this->autoDeclineStreetOverride)) {
+            $json['auto_decline_street_override']           = $this->autoDeclineStreetOverride;
+        }
+        if (isset($this->autoDeclineZipOverride)) {
+            $json['auto_decline_zip_override']              = $this->autoDeclineZipOverride;
+        }
+        if (!empty($this->ebtType)) {
+            $json['ebt_type']                               = EbtTypeEnum::checkValue($this->ebtType['value']);
+        }
         if (isset($this->cardholderPresent)) {
             $json['cardholder_present']                     = $this->cardholderPresent;
         }
@@ -2410,8 +3359,8 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
         if (!empty($this->secureCollectionIndicator)) {
             $json['secure_collection_indicator']            = $this->secureCollectionIndicator['value'];
         }
-        if (!empty($this->secureCrytogram)) {
-            $json['secure_crytogram']                       = $this->secureCrytogram['value'];
+        if (!empty($this->secureCryptogram)) {
+            $json['secure_cryptogram']                      = $this->secureCryptogram['value'];
         }
         if (!empty($this->secureDirectoryServerTransactionId)) {
             $json['secure_directory_server_transaction_id'] = $this->secureDirectoryServerTransactionId['value'];
@@ -2425,8 +3374,41 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
         if (isset($this->threedsecure)) {
             $json['threedsecure']                           = $this->threedsecure;
         }
+        if (!empty($this->threeDsServerTransId)) {
+            $json['three_ds_server_trans_id']               = $this->threeDsServerTransId['value'];
+        }
         if (!empty($this->walletType)) {
             $json['wallet_type']                            = WalletTypeEnum::checkValue($this->walletType['value']);
+        }
+        if (!empty($this->clerkId)) {
+            $json['clerk_id']                               = $this->clerkId['value'];
+        }
+        if (!empty($this->voucherNumber)) {
+            $json['voucher_number']                         = $this->voucherNumber['value'];
+        }
+        if (!empty($this->initiationType)) {
+            $json['initiation_type']                        =
+                InitiationTypeEnum::checkValue(
+                    $this->initiationType['value']
+                );
+        }
+        if (isset($this->billPayment)) {
+            $json['bill_payment']                           = $this->billPayment;
+        }
+        if (isset($this->delayCharge)) {
+            $json['delay_charge']                           = $this->delayCharge;
+        }
+        if (isset($this->deferredAuth)) {
+            $json['deferred_auth']                          = $this->deferredAuth;
+        }
+        if (isset($this->miniBar)) {
+            $json['mini_bar']                               = $this->miniBar;
+        }
+        if (!empty($this->ebtFoodEligibleAmount)) {
+            $json['ebt_food_eligible_amount']               = $this->ebtFoodEligibleAmount['value'];
+        }
+        if (!empty($this->ebtCashEligibleAmount)) {
+            $json['ebt_cash_eligible_amount']               = $this->ebtCashEligibleAmount['value'];
         }
         if (!empty($this->accountHolderName)) {
             $json['account_holder_name']                    = $this->accountHolderName['value'];
@@ -2442,7 +3424,17 @@ class V1TransactionsCcForceKeyedRequest implements \JsonSerializable
         if (!empty($this->trackData)) {
             $json['track_data']                             = $this->trackData['value'];
         }
+        if (!empty($this->pin)) {
+            $json['pin']                                    = $this->pin['value'];
+        }
+        if (!empty($this->ksn)) {
+            $json['ksn']                                    = $this->ksn['value'];
+        }
         $json['auth_code']                                  = $this->authCode;
+        if (!empty($this->transId)) {
+            $json['trans_id']                               = $this->transId['value'];
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

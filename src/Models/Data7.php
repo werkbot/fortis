@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class Data7 implements \JsonSerializable
@@ -17,929 +18,255 @@ class Data7 implements \JsonSerializable
     /**
      * @var array
      */
-    private $parentId = [];
-
-    /**
-     * @var PrimaryPrincipal
-     */
-    private $primaryPrincipal;
-
-    /**
-     * @var string
-     */
-    private $templateCode;
-
-    /**
-     * @var string
-     */
-    private $email;
-
-    /**
-     * @var string
-     */
-    private $dbaName;
-
-    /**
-     * @var Location4
-     */
-    private $location;
-
-    /**
-     * @var string
-     */
-    private $appDelivery;
+    private $contactId = [];
 
     /**
      * @var array
      */
-    private $businessCategory = [];
+    private $contactApiId = [];
+
+    /**
+     * @var string|null
+     */
+    private $locationId;
 
     /**
      * @var array
      */
-    private $businessType = [];
+    private $productTransactionId = [];
 
     /**
      * @var array
      */
-    private $businessDescription = [];
+    private $message = [];
 
     /**
-     * @var array
+     * @var string|null
      */
-    private $swipedPercent = [];
+    private $clientToken;
 
     /**
-     * @var array
+     * Returns Contact Id.
+     * Used to associate the Ticket with a Contact.
      */
-    private $keyedPercent = [];
-
-    /**
-     * @var array
-     */
-    private $ecommercePercent = [];
-
-    /**
-     * @var array
-     */
-    private $ownershipType = [];
-
-    /**
-     * @var array
-     */
-    private $fedTaxId = [];
-
-    /**
-     * @var array
-     */
-    private $ccAverageTicketRange = [];
-
-    /**
-     * @var array
-     */
-    private $ccMonthlyVolumeRange = [];
-
-    /**
-     * @var array
-     */
-    private $ccHighTicket = [];
-
-    /**
-     * @var array
-     */
-    private $ecAverageTicketRange = [];
-
-    /**
-     * @var array
-     */
-    private $ecMonthlyVolumeRange = [];
-
-    /**
-     * @var array
-     */
-    private $ecHighTicket = [];
-
-    /**
-     * @var array
-     */
-    private $website = [];
-
-    /**
-     * @var BankAccount
-     */
-    private $bankAccount;
-
-    /**
-     * @var AltBankAccount
-     */
-    private $altBankAccount;
-
-    /**
-     * @var array
-     */
-    private $legalName = [];
-
-    /**
-     * @var Contact
-     */
-    private $contact;
-
-    /**
-     * @var string
-     */
-    private $clientAppId;
-
-    /**
-     * @param PrimaryPrincipal $primaryPrincipal
-     * @param string $templateCode
-     * @param string $email
-     * @param string $dbaName
-     * @param Location4 $location
-     * @param string $appDelivery
-     * @param BankAccount $bankAccount
-     * @param AltBankAccount $altBankAccount
-     * @param Contact $contact
-     * @param string $clientAppId
-     */
-    public function __construct(
-        PrimaryPrincipal $primaryPrincipal,
-        string $templateCode,
-        string $email,
-        string $dbaName,
-        Location4 $location,
-        string $appDelivery,
-        BankAccount $bankAccount,
-        AltBankAccount $altBankAccount,
-        Contact $contact,
-        string $clientAppId
-    ) {
-        $this->primaryPrincipal = $primaryPrincipal;
-        $this->templateCode = $templateCode;
-        $this->email = $email;
-        $this->dbaName = $dbaName;
-        $this->location = $location;
-        $this->appDelivery = $appDelivery;
-        $this->bankAccount = $bankAccount;
-        $this->altBankAccount = $altBankAccount;
-        $this->contact = $contact;
-        $this->clientAppId = $clientAppId;
-    }
-
-    /**
-     * Returns Parent Id.
-     * Location ID
-     */
-    public function getParentId(): ?string
+    public function getContactId(): ?string
     {
-        if (count($this->parentId) == 0) {
+        if (count($this->contactId) == 0) {
             return null;
         }
-        return $this->parentId['value'];
+        return $this->contactId['value'];
     }
 
     /**
-     * Sets Parent Id.
-     * Location ID
+     * Sets Contact Id.
+     * Used to associate the Ticket with a Contact.
      *
-     * @maps parent_id
+     * @maps contact_id
      */
-    public function setParentId(?string $parentId): void
+    public function setContactId(?string $contactId): void
     {
-        $this->parentId['value'] = $parentId;
+        $this->contactId['value'] = $contactId;
     }
 
     /**
-     * Unsets Parent Id.
-     * Location ID
+     * Unsets Contact Id.
+     * Used to associate the Ticket with a Contact.
      */
-    public function unsetParentId(): void
+    public function unsetContactId(): void
     {
-        $this->parentId = [];
+        $this->contactId = [];
     }
 
     /**
-     * Returns Primary Principal.
-     * The Primary Principal.
+     * Returns Contact Api Id.
+     * Used to associate the Ticket with a Contact.
      */
-    public function getPrimaryPrincipal(): PrimaryPrincipal
+    public function getContactApiId(): ?string
     {
-        return $this->primaryPrincipal;
-    }
-
-    /**
-     * Sets Primary Principal.
-     * The Primary Principal.
-     *
-     * @required
-     * @maps primary_principal
-     */
-    public function setPrimaryPrincipal(PrimaryPrincipal $primaryPrincipal): void
-    {
-        $this->primaryPrincipal = $primaryPrincipal;
-    }
-
-    /**
-     * Returns Template Code.
-     * The ID of the template to be used - this value will be provided by Fortis.
-     */
-    public function getTemplateCode(): string
-    {
-        return $this->templateCode;
-    }
-
-    /**
-     * Sets Template Code.
-     * The ID of the template to be used - this value will be provided by Fortis.
-     *
-     * @required
-     * @maps template_code
-     */
-    public function setTemplateCode(string $templateCode): void
-    {
-        $this->templateCode = $templateCode;
-    }
-
-    /**
-     * Returns Email.
-     * Merchant email address.
-     */
-    public function getEmail(): string
-    {
-        return $this->email;
-    }
-
-    /**
-     * Sets Email.
-     * Merchant email address.
-     *
-     * @required
-     * @maps email
-     */
-    public function setEmail(string $email): void
-    {
-        $this->email = $email;
-    }
-
-    /**
-     * Returns Dba Name.
-     * Merchant 'Doing Business As' name.
-     */
-    public function getDbaName(): string
-    {
-        return $this->dbaName;
-    }
-
-    /**
-     * Sets Dba Name.
-     * Merchant 'Doing Business As' name.
-     *
-     * @required
-     * @maps dba_name
-     */
-    public function setDbaName(string $dbaName): void
-    {
-        $this->dbaName = $dbaName;
-    }
-
-    /**
-     * Returns Location.
-     * The Location.
-     */
-    public function getLocation(): Location4
-    {
-        return $this->location;
-    }
-
-    /**
-     * Sets Location.
-     * The Location.
-     *
-     * @required
-     * @maps location
-     */
-    public function setLocation(Location4 $location): void
-    {
-        $this->location = $location;
-    }
-
-    /**
-     * Returns App Delivery.
-     * The delivery method of the app to the merchant.
-     */
-    public function getAppDelivery(): string
-    {
-        return $this->appDelivery;
-    }
-
-    /**
-     * Sets App Delivery.
-     * The delivery method of the app to the merchant.
-     *
-     * @required
-     * @maps app_delivery
-     */
-    public function setAppDelivery(string $appDelivery): void
-    {
-        $this->appDelivery = $appDelivery;
-    }
-
-    /**
-     * Returns Business Category.
-     * The Category of the merchant's business
-     */
-    public function getBusinessCategory(): ?string
-    {
-        if (count($this->businessCategory) == 0) {
+        if (count($this->contactApiId) == 0) {
             return null;
         }
-        return $this->businessCategory['value'];
+        return $this->contactApiId['value'];
     }
 
     /**
-     * Sets Business Category.
-     * The Category of the merchant's business
+     * Sets Contact Api Id.
+     * Used to associate the Ticket with a Contact.
      *
-     * @maps business_category
-     * @factory \FortisAPILib\Models\BusinessCategoryEnum::checkValue
+     * @maps contact_api_id
      */
-    public function setBusinessCategory(?string $businessCategory): void
+    public function setContactApiId(?string $contactApiId): void
     {
-        $this->businessCategory['value'] = $businessCategory;
+        $this->contactApiId['value'] = $contactApiId;
     }
 
     /**
-     * Unsets Business Category.
-     * The Category of the merchant's business
+     * Unsets Contact Api Id.
+     * Used to associate the Ticket with a Contact.
      */
-    public function unsetBusinessCategory(): void
+    public function unsetContactApiId(): void
     {
-        $this->businessCategory = [];
+        $this->contactApiId = [];
     }
 
     /**
-     * Returns Business Type.
-     * The Type of a merchant's business.
+     * Returns Location Id.
+     * A valid Location Id associated with the Contact for this Ticket
      */
-    public function getBusinessType(): ?string
+    public function getLocationId(): ?string
     {
-        if (count($this->businessType) == 0) {
+        return $this->locationId;
+    }
+
+    /**
+     * Sets Location Id.
+     * A valid Location Id associated with the Contact for this Ticket
+     *
+     * @maps location_id
+     */
+    public function setLocationId(?string $locationId): void
+    {
+        $this->locationId = $locationId;
+    }
+
+    /**
+     * Returns Product Transaction Id.
+     * Include a product_transaction_id to respect it's cvv and address field settings when creating a
+     * ticket.  These settings are enforced at the ticket creation level only.
+     */
+    public function getProductTransactionId(): ?string
+    {
+        if (count($this->productTransactionId) == 0) {
             return null;
         }
-        return $this->businessType['value'];
+        return $this->productTransactionId['value'];
     }
 
     /**
-     * Sets Business Type.
-     * The Type of a merchant's business.
+     * Sets Product Transaction Id.
+     * Include a product_transaction_id to respect it's cvv and address field settings when creating a
+     * ticket.  These settings are enforced at the ticket creation level only.
      *
-     * @maps business_type
-     * @factory \FortisAPILib\Models\BusinessTypeEnum::checkValue
+     * @maps product_transaction_id
      */
-    public function setBusinessType(?string $businessType): void
+    public function setProductTransactionId(?string $productTransactionId): void
     {
-        $this->businessType['value'] = $businessType;
+        $this->productTransactionId['value'] = $productTransactionId;
     }
 
     /**
-     * Unsets Business Type.
-     * The Type of a merchant's business.
+     * Unsets Product Transaction Id.
+     * Include a product_transaction_id to respect it's cvv and address field settings when creating a
+     * ticket.  These settings are enforced at the ticket creation level only.
      */
-    public function unsetBusinessType(): void
+    public function unsetProductTransactionId(): void
     {
-        $this->businessType = [];
+        $this->productTransactionId = [];
     }
 
     /**
-     * Returns Business Description.
-     * Description of Goods or Services.
+     * Returns Message.
+     * A custom text message that displays after the ticket is created.
      */
-    public function getBusinessDescription(): ?string
+    public function getMessage(): ?string
     {
-        if (count($this->businessDescription) == 0) {
+        if (count($this->message) == 0) {
             return null;
         }
-        return $this->businessDescription['value'];
+        return $this->message['value'];
     }
 
     /**
-     * Sets Business Description.
-     * Description of Goods or Services.
+     * Sets Message.
+     * A custom text message that displays after the ticket is created.
      *
-     * @maps business_description
+     * @maps message
      */
-    public function setBusinessDescription(?string $businessDescription): void
+    public function setMessage(?string $message): void
     {
-        $this->businessDescription['value'] = $businessDescription;
+        $this->message['value'] = $message;
     }
 
     /**
-     * Unsets Business Description.
-     * Description of Goods or Services.
+     * Unsets Message.
+     * A custom text message that displays after the ticket is created.
      */
-    public function unsetBusinessDescription(): void
+    public function unsetMessage(): void
     {
-        $this->businessDescription = [];
+        $this->message = [];
     }
 
     /**
-     * Returns Swiped Percent.
-     * Card present/swiped percentage
+     * Returns Client Token.
+     * A JWT to be used to create the elements.
+     * > This is a one-time only use token.
+     * > Do not store for long term use, it expires after 48 hours.
      */
-    public function getSwipedPercent(): ?int
+    public function getClientToken(): ?string
     {
-        if (count($this->swipedPercent) == 0) {
-            return null;
+        return $this->clientToken;
+    }
+
+    /**
+     * Sets Client Token.
+     * A JWT to be used to create the elements.
+     * > This is a one-time only use token.
+     * > Do not store for long term use, it expires after 48 hours.
+     *
+     * @maps client_token
+     */
+    public function setClientToken(?string $clientToken): void
+    {
+        $this->clientToken = $clientToken;
+    }
+
+    /**
+     * Converts the Data7 object to a human-readable string representation.
+     *
+     * @return string The string representation of the Data7 object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Data7',
+            [
+                'contactId' => $this->getContactId(),
+                'contactApiId' => $this->getContactApiId(),
+                'locationId' => $this->locationId,
+                'productTransactionId' => $this->getProductTransactionId(),
+                'message' => $this->getMessage(),
+                'clientToken' => $this->clientToken,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
         }
-        return $this->swipedPercent['value'];
-    }
-
-    /**
-     * Sets Swiped Percent.
-     * Card present/swiped percentage
-     *
-     * @maps swiped_percent
-     */
-    public function setSwipedPercent(?int $swipedPercent): void
-    {
-        $this->swipedPercent['value'] = $swipedPercent;
-    }
-
-    /**
-     * Unsets Swiped Percent.
-     * Card present/swiped percentage
-     */
-    public function unsetSwipedPercent(): void
-    {
-        $this->swipedPercent = [];
-    }
-
-    /**
-     * Returns Keyed Percent.
-     * Card not present/keyed percentage
-     */
-    public function getKeyedPercent(): ?int
-    {
-        if (count($this->keyedPercent) == 0) {
-            return null;
-        }
-        return $this->keyedPercent['value'];
-    }
-
-    /**
-     * Sets Keyed Percent.
-     * Card not present/keyed percentage
-     *
-     * @maps keyed_percent
-     */
-    public function setKeyedPercent(?int $keyedPercent): void
-    {
-        $this->keyedPercent['value'] = $keyedPercent;
-    }
-
-    /**
-     * Unsets Keyed Percent.
-     * Card not present/keyed percentage
-     */
-    public function unsetKeyedPercent(): void
-    {
-        $this->keyedPercent = [];
-    }
-
-    /**
-     * Returns Ecommerce Percent.
-     * eCommerce percentage.
-     */
-    public function getEcommercePercent(): ?int
-    {
-        if (count($this->ecommercePercent) == 0) {
-            return null;
-        }
-        return $this->ecommercePercent['value'];
-    }
-
-    /**
-     * Sets Ecommerce Percent.
-     * eCommerce percentage.
-     *
-     * @maps ecommerce_percent
-     */
-    public function setEcommercePercent(?int $ecommercePercent): void
-    {
-        $this->ecommercePercent['value'] = $ecommercePercent;
-    }
-
-    /**
-     * Unsets Ecommerce Percent.
-     * eCommerce percentage.
-     */
-    public function unsetEcommercePercent(): void
-    {
-        $this->ecommercePercent = [];
-    }
-
-    /**
-     * Returns Ownership Type.
-     * The Ownership Type of the merchant's business.
-     */
-    public function getOwnershipType(): ?string
-    {
-        if (count($this->ownershipType) == 0) {
-            return null;
-        }
-        return $this->ownershipType['value'];
-    }
-
-    /**
-     * Sets Ownership Type.
-     * The Ownership Type of the merchant's business.
-     *
-     * @maps ownership_type
-     * @factory \FortisAPILib\Models\OwnershipTypeEnum::checkValue
-     */
-    public function setOwnershipType(?string $ownershipType): void
-    {
-        $this->ownershipType['value'] = $ownershipType;
-    }
-
-    /**
-     * Unsets Ownership Type.
-     * The Ownership Type of the merchant's business.
-     */
-    public function unsetOwnershipType(): void
-    {
-        $this->ownershipType = [];
-    }
-
-    /**
-     * Returns Fed Tax Id.
-     * Federal Tax ID (EIN).
-     */
-    public function getFedTaxId(): ?string
-    {
-        if (count($this->fedTaxId) == 0) {
-            return null;
-        }
-        return $this->fedTaxId['value'];
-    }
-
-    /**
-     * Sets Fed Tax Id.
-     * Federal Tax ID (EIN).
-     *
-     * @maps fed_tax_id
-     */
-    public function setFedTaxId(?string $fedTaxId): void
-    {
-        $this->fedTaxId['value'] = $fedTaxId;
-    }
-
-    /**
-     * Unsets Fed Tax Id.
-     * Federal Tax ID (EIN).
-     */
-    public function unsetFedTaxId(): void
-    {
-        $this->fedTaxId = [];
-    }
-
-    /**
-     * Returns Cc Average Ticket Range.
-     * Average Transaction Amount Range
-     */
-    public function getCcAverageTicketRange(): ?int
-    {
-        if (count($this->ccAverageTicketRange) == 0) {
-            return null;
-        }
-        return $this->ccAverageTicketRange['value'];
-    }
-
-    /**
-     * Sets Cc Average Ticket Range.
-     * Average Transaction Amount Range
-     *
-     * @maps cc_average_ticket_range
-     */
-    public function setCcAverageTicketRange(?int $ccAverageTicketRange): void
-    {
-        $this->ccAverageTicketRange['value'] = $ccAverageTicketRange;
-    }
-
-    /**
-     * Unsets Cc Average Ticket Range.
-     * Average Transaction Amount Range
-     */
-    public function unsetCcAverageTicketRange(): void
-    {
-        $this->ccAverageTicketRange = [];
-    }
-
-    /**
-     * Returns Cc Monthly Volume Range.
-     * Monthly Processing Volume Range
-     */
-    public function getCcMonthlyVolumeRange(): ?int
-    {
-        if (count($this->ccMonthlyVolumeRange) == 0) {
-            return null;
-        }
-        return $this->ccMonthlyVolumeRange['value'];
-    }
-
-    /**
-     * Sets Cc Monthly Volume Range.
-     * Monthly Processing Volume Range
-     *
-     * @maps cc_monthly_volume_range
-     */
-    public function setCcMonthlyVolumeRange(?int $ccMonthlyVolumeRange): void
-    {
-        $this->ccMonthlyVolumeRange['value'] = $ccMonthlyVolumeRange;
-    }
-
-    /**
-     * Unsets Cc Monthly Volume Range.
-     * Monthly Processing Volume Range
-     */
-    public function unsetCcMonthlyVolumeRange(): void
-    {
-        $this->ccMonthlyVolumeRange = [];
-    }
-
-    /**
-     * Returns Cc High Ticket.
-     * Highest transaction amount rounded to the next dollar
-     */
-    public function getCcHighTicket(): ?int
-    {
-        if (count($this->ccHighTicket) == 0) {
-            return null;
-        }
-        return $this->ccHighTicket['value'];
-    }
-
-    /**
-     * Sets Cc High Ticket.
-     * Highest transaction amount rounded to the next dollar
-     *
-     * @maps cc_high_ticket
-     */
-    public function setCcHighTicket(?int $ccHighTicket): void
-    {
-        $this->ccHighTicket['value'] = $ccHighTicket;
-    }
-
-    /**
-     * Unsets Cc High Ticket.
-     * Highest transaction amount rounded to the next dollar
-     */
-    public function unsetCcHighTicket(): void
-    {
-        $this->ccHighTicket = [];
-    }
-
-    /**
-     * Returns Ec Average Ticket Range.
-     * Average Transaction Amount Range
-     */
-    public function getEcAverageTicketRange(): ?int
-    {
-        if (count($this->ecAverageTicketRange) == 0) {
-            return null;
-        }
-        return $this->ecAverageTicketRange['value'];
-    }
-
-    /**
-     * Sets Ec Average Ticket Range.
-     * Average Transaction Amount Range
-     *
-     * @maps ec_average_ticket_range
-     */
-    public function setEcAverageTicketRange(?int $ecAverageTicketRange): void
-    {
-        $this->ecAverageTicketRange['value'] = $ecAverageTicketRange;
-    }
-
-    /**
-     * Unsets Ec Average Ticket Range.
-     * Average Transaction Amount Range
-     */
-    public function unsetEcAverageTicketRange(): void
-    {
-        $this->ecAverageTicketRange = [];
-    }
-
-    /**
-     * Returns Ec Monthly Volume Range.
-     * Monthly Processing Volume Range
-     */
-    public function getEcMonthlyVolumeRange(): ?int
-    {
-        if (count($this->ecMonthlyVolumeRange) == 0) {
-            return null;
-        }
-        return $this->ecMonthlyVolumeRange['value'];
-    }
-
-    /**
-     * Sets Ec Monthly Volume Range.
-     * Monthly Processing Volume Range
-     *
-     * @maps ec_monthly_volume_range
-     */
-    public function setEcMonthlyVolumeRange(?int $ecMonthlyVolumeRange): void
-    {
-        $this->ecMonthlyVolumeRange['value'] = $ecMonthlyVolumeRange;
-    }
-
-    /**
-     * Unsets Ec Monthly Volume Range.
-     * Monthly Processing Volume Range
-     */
-    public function unsetEcMonthlyVolumeRange(): void
-    {
-        $this->ecMonthlyVolumeRange = [];
-    }
-
-    /**
-     * Returns Ec High Ticket.
-     * Highest transaction amount rounded to the next dollar
-     */
-    public function getEcHighTicket(): ?int
-    {
-        if (count($this->ecHighTicket) == 0) {
-            return null;
-        }
-        return $this->ecHighTicket['value'];
-    }
-
-    /**
-     * Sets Ec High Ticket.
-     * Highest transaction amount rounded to the next dollar
-     *
-     * @maps ec_high_ticket
-     */
-    public function setEcHighTicket(?int $ecHighTicket): void
-    {
-        $this->ecHighTicket['value'] = $ecHighTicket;
-    }
-
-    /**
-     * Unsets Ec High Ticket.
-     * Highest transaction amount rounded to the next dollar
-     */
-    public function unsetEcHighTicket(): void
-    {
-        $this->ecHighTicket = [];
-    }
-
-    /**
-     * Returns Website.
-     * Merchant's business website.
-     */
-    public function getWebsite(): ?string
-    {
-        if (count($this->website) == 0) {
-            return null;
-        }
-        return $this->website['value'];
-    }
-
-    /**
-     * Sets Website.
-     * Merchant's business website.
-     *
-     * @maps website
-     */
-    public function setWebsite(?string $website): void
-    {
-        $this->website['value'] = $website;
-    }
-
-    /**
-     * Unsets Website.
-     * Merchant's business website.
-     */
-    public function unsetWebsite(): void
-    {
-        $this->website = [];
-    }
-
-    /**
-     * Returns Bank Account.
-     * The Bank Account.
-     */
-    public function getBankAccount(): BankAccount
-    {
-        return $this->bankAccount;
-    }
-
-    /**
-     * Sets Bank Account.
-     * The Bank Account.
-     *
-     * @required
-     * @maps bank_account
-     */
-    public function setBankAccount(BankAccount $bankAccount): void
-    {
-        $this->bankAccount = $bankAccount;
-    }
-
-    /**
-     * Returns Alt Bank Account.
-     * The Alternative Bank Account.
-     */
-    public function getAltBankAccount(): AltBankAccount
-    {
-        return $this->altBankAccount;
-    }
-
-    /**
-     * Sets Alt Bank Account.
-     * The Alternative Bank Account.
-     *
-     * @required
-     * @maps alt_bank_account
-     */
-    public function setAltBankAccount(AltBankAccount $altBankAccount): void
-    {
-        $this->altBankAccount = $altBankAccount;
-    }
-
-    /**
-     * Returns Legal Name.
-     * Merchant legal name.
-     */
-    public function getLegalName(): ?string
-    {
-        if (count($this->legalName) == 0) {
-            return null;
-        }
-        return $this->legalName['value'];
-    }
-
-    /**
-     * Sets Legal Name.
-     * Merchant legal name.
-     *
-     * @maps legal_name
-     */
-    public function setLegalName(?string $legalName): void
-    {
-        $this->legalName['value'] = $legalName;
-    }
-
-    /**
-     * Unsets Legal Name.
-     * Merchant legal name.
-     */
-    public function unsetLegalName(): void
-    {
-        $this->legalName = [];
-    }
-
-    /**
-     * Returns Contact.
-     * The Contact.
-     */
-    public function getContact(): Contact
-    {
-        return $this->contact;
-    }
-
-    /**
-     * Sets Contact.
-     * The Contact.
-     *
-     * @required
-     * @maps contact
-     */
-    public function setContact(Contact $contact): void
-    {
-        $this->contact = $contact;
-    }
-
-    /**
-     * Returns Client App Id.
-     * Client-Issued ID to uniquely identify the merchant (Returned unmodified).
-     */
-    public function getClientAppId(): string
-    {
-        return $this->clientAppId;
-    }
-
-    /**
-     * Sets Client App Id.
-     * Client-Issued ID to uniquely identify the merchant (Returned unmodified).
-     *
-     * @required
-     * @maps client_app_id
-     */
-    public function setClientAppId(string $clientAppId): void
-    {
-        $this->clientAppId = $clientAppId;
+        return false;
     }
 
     /**
@@ -954,67 +281,25 @@ class Data7 implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        if (!empty($this->parentId)) {
-            $json['parent_id']               = $this->parentId['value'];
+        if (!empty($this->contactId)) {
+            $json['contact_id']             = $this->contactId['value'];
         }
-        $json['primary_principal']           = $this->primaryPrincipal;
-        $json['template_code']               = $this->templateCode;
-        $json['email']                       = $this->email;
-        $json['dba_name']                    = $this->dbaName;
-        $json['location']                    = $this->location;
-        $json['app_delivery']                = $this->appDelivery;
-        if (!empty($this->businessCategory)) {
-            $json['business_category']       = BusinessCategoryEnum::checkValue($this->businessCategory['value']);
+        if (!empty($this->contactApiId)) {
+            $json['contact_api_id']         = $this->contactApiId['value'];
         }
-        if (!empty($this->businessType)) {
-            $json['business_type']           = BusinessTypeEnum::checkValue($this->businessType['value']);
+        if (isset($this->locationId)) {
+            $json['location_id']            = $this->locationId;
         }
-        if (!empty($this->businessDescription)) {
-            $json['business_description']    = $this->businessDescription['value'];
+        if (!empty($this->productTransactionId)) {
+            $json['product_transaction_id'] = $this->productTransactionId['value'];
         }
-        if (!empty($this->swipedPercent)) {
-            $json['swiped_percent']          = $this->swipedPercent['value'];
+        if (!empty($this->message)) {
+            $json['message']                = $this->message['value'];
         }
-        if (!empty($this->keyedPercent)) {
-            $json['keyed_percent']           = $this->keyedPercent['value'];
+        if (isset($this->clientToken)) {
+            $json['client_token']           = $this->clientToken;
         }
-        if (!empty($this->ecommercePercent)) {
-            $json['ecommerce_percent']       = $this->ecommercePercent['value'];
-        }
-        if (!empty($this->ownershipType)) {
-            $json['ownership_type']          = OwnershipTypeEnum::checkValue($this->ownershipType['value']);
-        }
-        if (!empty($this->fedTaxId)) {
-            $json['fed_tax_id']              = $this->fedTaxId['value'];
-        }
-        if (!empty($this->ccAverageTicketRange)) {
-            $json['cc_average_ticket_range'] = $this->ccAverageTicketRange['value'];
-        }
-        if (!empty($this->ccMonthlyVolumeRange)) {
-            $json['cc_monthly_volume_range'] = $this->ccMonthlyVolumeRange['value'];
-        }
-        if (!empty($this->ccHighTicket)) {
-            $json['cc_high_ticket']          = $this->ccHighTicket['value'];
-        }
-        if (!empty($this->ecAverageTicketRange)) {
-            $json['ec_average_ticket_range'] = $this->ecAverageTicketRange['value'];
-        }
-        if (!empty($this->ecMonthlyVolumeRange)) {
-            $json['ec_monthly_volume_range'] = $this->ecMonthlyVolumeRange['value'];
-        }
-        if (!empty($this->ecHighTicket)) {
-            $json['ec_high_ticket']          = $this->ecHighTicket['value'];
-        }
-        if (!empty($this->website)) {
-            $json['website']                 = $this->website['value'];
-        }
-        $json['bank_account']                = $this->bankAccount;
-        $json['alt_bank_account']            = $this->altBankAccount;
-        if (!empty($this->legalName)) {
-            $json['legal_name']              = $this->legalName['value'];
-        }
-        $json['contact']                     = $this->contact;
-        $json['client_app_id']               = $this->clientAppId;
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

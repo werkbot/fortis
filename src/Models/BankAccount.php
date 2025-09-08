@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -129,6 +130,52 @@ class BankAccount implements \JsonSerializable
     }
 
     /**
+     * Converts the BankAccount object to a human-readable string representation.
+     *
+     * @return string The string representation of the BankAccount object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'BankAccount',
+            [
+                'routingNumber' => $this->getRoutingNumber(),
+                'accountNumber' => $this->getAccountNumber(),
+                'accountHolderName' => $this->getAccountHolderName(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -149,6 +196,7 @@ class BankAccount implements \JsonSerializable
         if (!empty($this->accountHolderName)) {
             $json['account_holder_name'] = $this->accountHolderName['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

@@ -9,19 +9,22 @@
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
+| `type` | `?string` | Optional | - | getType(): ?string | setType(?string type): void |
+| `id` | `?string` | Optional | - | getId(): ?string | setId(?string id): void |
 | `statusCode` | `?int` | Optional | Response code | getStatusCode(): ?int | setStatusCode(?int statusCode): void |
-| `error` | `?string` | Optional | Error description | getError(): ?string | setError(?string error): void |
-| `message` | `?string` | Optional | Error message | getMessage(): ?string | setMessage(?string message): void |
-| `details` | [`?(Detail[])`](../../doc/models/detail.md) | Optional | Error detail | getDetails(): ?array | setDetails(?array details): void |
+| `title` | `?string` | Optional | Error description | getTitle(): ?string | setTitle(?string title): void |
+| `detail` | `?string` | Optional | Error details | getDetail(): ?string | setDetail(?string detail): void |
+| `meta` | [`?Meta`](../../doc/models/meta.md) | Optional | - | getMeta(): ?Meta | setMeta(?Meta meta): void |
 
 ## Example (as JSON)
 
 ```json
 {
-  "statusCode": null,
-  "error": null,
-  "message": null,
-  "details": null
+  "type": "clj4ge1234004t9ptdoz34567",
+  "id": "clj4ge1234004t9ptdoz34567",
+  "statusCode": 412,
+  "title": "Precondition Failed",
+  "detail": "\"fieldName\" is required"
 }
 ```
 

@@ -30,18 +30,29 @@ class SignaturesControllerTest extends BaseTestController
         self::$controller = parent::getClient()->getSignaturesController();
     }
 
-    public function testTestListAllSignaturesRecord()
+    public function testListAllSignaturesRecord()
     {
         // Parameters for the API call
         $page = null;
-        $sort = null;
-        $filter = null;
+        $order = null;
+        $filterBy = null;
         $expand = null;
+        $format = null;
+        $typeahead = null;
+        $fields = null;
 
         // Perform API call
         $result = null;
         try {
-            $result = self::$controller->listAllSignaturesRecord($page, $sort, $filter, $expand);
+            $result = self::$controller->listAllSignaturesRecord(
+                $page,
+                $order,
+                $filterBy,
+                $expand,
+                $format,
+                $typeahead,
+                $fields
+            );
         } catch (Exceptions\ApiException $e) {
         }
 
@@ -71,24 +82,25 @@ class SignaturesControllerTest extends BaseTestController
                 ':"11e95f8ec39de8fbdb0a4f1a","id":"11e95f8ec39de8fbdb0a4f1a","created_ts":142204' .
                 '0992,"modified_ts":1422040992,"raw_signature":" "}],"links":{"type":"Links","fi' .
                 'rst":"/v1/endpoint?page[size]=10&page[number]=1","previous":"/v1/endpoint?page[' .
-                'size]=10&page[number]=5","last":"/v1/endpoint?page[size]=10&page[number]=42"},"' .
-                'pagination":{"type":"Pagination","total_count":423,"page_count":42,"page_number' .
-                '":6,"page_size":10},"sort":{"type":"Sorting","fields":[{"field":"last_name","or' .
-                'der":"asc"}]}}'
+                'size]=10&page[number]=5","next":"/v1/endpoint?page[size]=10&page[number]=7","la' .
+                'st":"/v1/endpoint?page[size]=10&page[number]=42"},"pagination":{"type":"Paginat' .
+                'ion","total_count":423,"page_count":42,"page_number":6,"page_size":10},"sort":{' .
+                '"type":"Sorting","fields":[{"field":"last_name","order":"asc"}]}}'
             )))
             ->assert();
     }
 
-    public function testTestViewSingleSignatureRecord()
+    public function testViewSingleSignatureRecord()
     {
         // Parameters for the API call
         $signatureId = '11e95f8ec39de8fbdb0a4f1a';
         $expand = null;
+        $fields = null;
 
         // Perform API call
         $result = null;
         try {
-            $result = self::$controller->viewSingleSignatureRecord($signatureId, $expand);
+            $result = self::$controller->viewSingleSignatureRecord($signatureId, $expand, $fields);
         } catch (Exceptions\ApiException $e) {
         }
 

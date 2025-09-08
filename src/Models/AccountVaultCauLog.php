@@ -10,12 +10,13 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class AccountVaultCauLog implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
@@ -40,18 +41,10 @@ class AccountVaultCauLog implements \JsonSerializable
     private $createdUserId = [];
 
     /**
-     * @param string $id
-     */
-    public function __construct(string $id)
-    {
-        $this->id = $id;
-    }
-
-    /**
      * Returns Id.
      * Token CAU Log ID
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -60,10 +53,9 @@ class AccountVaultCauLog implements \JsonSerializable
      * Sets Id.
      * Token CAU Log ID
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -197,6 +189,54 @@ class AccountVaultCauLog implements \JsonSerializable
     }
 
     /**
+     * Converts the AccountVaultCauLog object to a human-readable string representation.
+     *
+     * @return string The string representation of the AccountVaultCauLog object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'AccountVaultCauLog',
+            [
+                'id' => $this->id,
+                'productTransactionId' => $this->getProductTransactionId(),
+                'accountVaultId' => $this->getAccountVaultId(),
+                'createdTs' => $this->getCreatedTs(),
+                'createdUserId' => $this->getCreatedUserId(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -208,7 +248,9 @@ class AccountVaultCauLog implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['id']                         = $this->id;
+        if (isset($this->id)) {
+            $json['id']                     = $this->id;
+        }
         if (!empty($this->productTransactionId)) {
             $json['product_transaction_id'] = $this->productTransactionId['value'];
         }
@@ -221,6 +263,7 @@ class AccountVaultCauLog implements \JsonSerializable
         if (!empty($this->createdUserId)) {
             $json['created_user_id']        = $this->createdUserId['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

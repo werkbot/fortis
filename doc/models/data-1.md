@@ -9,15 +9,15 @@
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `async` | [`Async`](../../doc/models/async.md) | Required | Do not store the Async Code for long term use, it expires after 30 days. | getAsync(): Async | setAsync(Async async): void |
+| `async` | [`?Async`](../../doc/models/async.md) | Optional | Do not store the Async Code for long term use, it expires after 30 days. | getAsync(): ?Async | setAsync(?Async async): void |
 
 ## Example (as JSON)
 
 ```json
 {
   "async": {
-    "code": "406c66c3-21cb-47fb-80fc-843bc42507fb",
-    "link": "/v1/async/status/406c66c3-21cb-47fb-80fc-843bc42507fb"
+    "code": "00000038-0000-0000-0000-000000000000",
+    "link": "link8"
   }
 }
 ```

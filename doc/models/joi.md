@@ -15,7 +15,10 @@
 
 ```json
 {
-  "conditions": null
+  "conditions": {
+    "method": "xor",
+    "values": "account_vault_api_id"
+  }
 }
 ```
 

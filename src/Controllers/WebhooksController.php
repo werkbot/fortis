@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Controllers;
 
+use Core\Authentication\Auth;
 use Core\Request\Parameters\BodyParam;
 use Core\Request\Parameters\HeaderParam;
 use Core\Request\Parameters\QueryParam;
@@ -19,7 +20,7 @@ use CoreInterfaces\Core\Request\RequestMethod;
 use FortisAPILib\Exceptions\ApiException;
 use FortisAPILib\Exceptions\Response401tokenException;
 use FortisAPILib\Exceptions\Response412Exception;
-use FortisAPILib\Models\Expand83Enum;
+use FortisAPILib\Models\Expand117Enum;
 use FortisAPILib\Models\ResponseWebhook;
 use FortisAPILib\Models\V1WebhooksBatchRequest;
 use FortisAPILib\Models\V1WebhooksBatchRequest1;
@@ -31,8 +32,6 @@ use FortisAPILib\Models\V1WebhooksTransactionRequest1;
 class WebhooksController extends BaseController
 {
     /**
-     * Create a new transaction batch postback config
-     *
      * @param V1WebhooksBatchRequest $body
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
      *        related to the current record being retrieved. For example, if the API request is
@@ -49,24 +48,22 @@ class WebhooksController extends BaseController
         ?array $expand = null
     ): ResponseWebhook {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/webhooks/batch')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand83Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand117Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseWebhook::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * Create a new contact postback config
-     *
      * @param V1WebhooksContactRequest $body
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
      *        related to the current record being retrieved. For example, if the API request is
@@ -83,24 +80,22 @@ class WebhooksController extends BaseController
         ?array $expand = null
     ): ResponseWebhook {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/webhooks/contact')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand83Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand117Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseWebhook::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * Create a new transaction postback config
-     *
      * @param V1WebhooksTransactionRequest $body
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
      *        related to the current record being retrieved. For example, if the API request is
@@ -117,24 +112,22 @@ class WebhooksController extends BaseController
         ?array $expand = null
     ): ResponseWebhook {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/webhooks/transaction')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand83Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand117Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseWebhook::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * Delete a postback config
-     *
      * @param string $webhookId Postback Config ID
      *
      * @return ResponseWebhook Response from the API call
@@ -144,19 +137,17 @@ class WebhooksController extends BaseController
     public function deleteAPostbackConfig(string $webhookId): ResponseWebhook
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::DELETE, '/v1/webhooks/{webhook_id}')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(TemplateParam::init('webhook_id', $webhookId));
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
             ->type(ResponseWebhook::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * Update transaction batch postback config
-     *
      * @param string $webhookId Postback Config ID
      * @param V1WebhooksBatchRequest1 $body
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
@@ -175,25 +166,23 @@ class WebhooksController extends BaseController
         ?array $expand = null
     ): ResponseWebhook {
         $_reqBuilder = $this->requestBuilder(RequestMethod::PATCH, '/v1/webhooks/{webhook_id}/batch')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 TemplateParam::init('webhook_id', $webhookId),
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand83Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand117Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseWebhook::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * Update contact postback config
-     *
      * @param string $webhookId Postback Config ID
      * @param V1WebhooksContactRequest1 $body
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
@@ -212,25 +201,23 @@ class WebhooksController extends BaseController
         ?array $expand = null
     ): ResponseWebhook {
         $_reqBuilder = $this->requestBuilder(RequestMethod::PATCH, '/v1/webhooks/{webhook_id}/contact')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 TemplateParam::init('webhook_id', $webhookId),
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand83Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand117Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseWebhook::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * Update transaction postback config
-     *
      * @param string $webhookId Postback Config ID
      * @param V1WebhooksTransactionRequest1 $body
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
@@ -249,17 +236,17 @@ class WebhooksController extends BaseController
         ?array $expand = null
     ): ResponseWebhook {
         $_reqBuilder = $this->requestBuilder(RequestMethod::PATCH, '/v1/webhooks/{webhook_id}/transaction')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 TemplateParam::init('webhook_id', $webhookId),
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand83Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand117Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseWebhook::class);
 
         return $this->execute($_reqBuilder, $_resHandler);

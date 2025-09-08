@@ -12,27 +12,53 @@ namespace FortisAPILib;
 
 use Core\ClientBuilder;
 use Core\Utils\CoreHelper;
+use FortisAPILib\Authentication\AccessTokenCredentials;
+use FortisAPILib\Authentication\AccessTokenCredentialsBuilder;
+use FortisAPILib\Authentication\AccessTokenManager;
+use FortisAPILib\Authentication\DeveloperIdCredentials;
+use FortisAPILib\Authentication\DeveloperIdCredentialsBuilder;
+use FortisAPILib\Authentication\DeveloperIdManager;
+use FortisAPILib\Authentication\UserApiKeyCredentials;
+use FortisAPILib\Authentication\UserApiKeyCredentialsBuilder;
+use FortisAPILib\Authentication\UserApiKeyManager;
+use FortisAPILib\Authentication\UserIdCredentials;
+use FortisAPILib\Authentication\UserIdCredentialsBuilder;
+use FortisAPILib\Authentication\UserIdManager;
+use FortisAPILib\Controllers\ApplePayValidateMerchantController;
 use FortisAPILib\Controllers\AsyncProcessingController;
 use FortisAPILib\Controllers\BatchesController;
 use FortisAPILib\Controllers\ContactsController;
+use FortisAPILib\Controllers\DeclinedRecurringTransactionsController;
 use FortisAPILib\Controllers\DeviceTermsController;
 use FortisAPILib\Controllers\ElementsController;
+use FortisAPILib\Controllers\FullBoardingController;
 use FortisAPILib\Controllers\Level3DataController;
 use FortisAPILib\Controllers\LocationsController;
+use FortisAPILib\Controllers\M3DSAuthenticationController;
+use FortisAPILib\Controllers\M3DSTransactionsController;
+use FortisAPILib\Controllers\MerchantDepositsController;
+use FortisAPILib\Controllers\MerchantDetailsController;
 use FortisAPILib\Controllers\OnBoardingController;
 use FortisAPILib\Controllers\PaylinksController;
+use FortisAPILib\Controllers\PaymentCardReaderTokenController;
 use FortisAPILib\Controllers\QuickInvoicesController;
 use FortisAPILib\Controllers\RecurringController;
 use FortisAPILib\Controllers\SignaturesController;
 use FortisAPILib\Controllers\TagsController;
 use FortisAPILib\Controllers\TerminalsController;
+use FortisAPILib\Controllers\TicketsController;
 use FortisAPILib\Controllers\TokensController;
+use FortisAPILib\Controllers\TransactionACHRetriesController;
 use FortisAPILib\Controllers\TransactionsACHController;
+use FortisAPILib\Controllers\TransactionsCashController;
 use FortisAPILib\Controllers\TransactionsCreditCardController;
+use FortisAPILib\Controllers\TransactionsEBTCardController;
 use FortisAPILib\Controllers\TransactionsReadController;
 use FortisAPILib\Controllers\TransactionsUpdatesController;
 use FortisAPILib\Controllers\UsersController;
+use FortisAPILib\Controllers\UserVerificationsController;
 use FortisAPILib\Controllers\WebhooksController;
+use FortisAPILib\Proxy\ProxyConfigurationBuilder;
 use FortisAPILib\Utils\CompatibilityConverter;
 use Unirest\Configuration;
 use Unirest\HttpClient;
@@ -45,15 +71,27 @@ class FortisAPIClient implements ConfigurationInterface
 
     private $contacts;
 
+    private $declinedRecurringTransactions;
+
     private $deviceTerms;
 
     private $elements;
 
+    private $fullBoarding;
+
     private $locations;
+
+    private $m3DSAuthentication;
+
+    private $m3DSTransactions;
+
+    private $merchantDeposits;
 
     private $onBoarding;
 
     private $paylinks;
+
+    private $paymentCardReaderToken;
 
     private $quickInvoices;
 
@@ -65,11 +103,19 @@ class FortisAPIClient implements ConfigurationInterface
 
     private $terminals;
 
+    private $tickets;
+
     private $tokens;
+
+    private $transactionACHRetries;
 
     private $transactionsACH;
 
+    private $transactionsCash;
+
     private $transactionsCreditCard;
+
+    private $transactionsEBTCard;
 
     private $transactionsRead;
 
@@ -77,11 +123,25 @@ class FortisAPIClient implements ConfigurationInterface
 
     private $transactionsUpdates;
 
+    private $userVerifications;
+
     private $users;
+
+    private $applePayValidateMerchant;
+
+    private $merchantDetails;
 
     private $webhooks;
 
-    private $customHeaderAuthenticationManager;
+    private $userIdManager;
+
+    private $userApiKeyManager;
+
+    private $developerIdManager;
+
+    private $accessTokenManager;
+
+    private $proxyConfiguration;
 
     private $config;
 
@@ -96,18 +156,25 @@ class FortisAPIClient implements ConfigurationInterface
     public function __construct(array $config = [])
     {
         $this->config = array_merge(ConfigurationDefaults::_ALL, CoreHelper::clone($config));
-        $this->customHeaderAuthenticationManager = new CustomHeaderAuthenticationManager(
-            $this->config['userId'] ?? ConfigurationDefaults::USER_ID,
-            $this->config['userApiKey'] ?? ConfigurationDefaults::USER_API_KEY,
-            $this->config['developerId'] ?? ConfigurationDefaults::DEVELOPER_ID
-        );
-        $this->client = ClientBuilder::init(new HttpClient(Configuration::init($this)))
+        $this->userIdManager = new UserIdManager($this->config);
+        $this->userApiKeyManager = new UserApiKeyManager($this->config);
+        $this->developerIdManager = new DeveloperIdManager($this->config);
+        $this->accessTokenManager = new AccessTokenManager($this->config);
+        $this->proxyConfiguration = $this->config['proxyConfiguration'] ?? ConfigurationDefaults::PROXY_CONFIGURATION;
+        $this->client = ClientBuilder::init(
+            new HttpClient(Configuration::init($this)->proxyConfiguration($this->proxyConfiguration))
+        )
             ->converter(new CompatibilityConverter())
             ->jsonHelper(ApiHelper::getJsonHelper())
             ->apiCallback($this->config['httpCallback'] ?? null)
             ->userAgent('APIMATIC 3.0')
             ->serverUrls(self::ENVIRONMENT_MAP[$this->getEnvironment()], Server::DEFAULT_)
-            ->authManagers(['global' => $this->customHeaderAuthenticationManager])
+            ->authManagers([
+                'user-id' => $this->userIdManager,
+                'user-api-key' => $this->userApiKeyManager,
+                'developer-id' => $this->developerIdManager,
+                'access-token' => $this->accessTokenManager
+            ])
             ->build();
     }
 
@@ -118,7 +185,7 @@ class FortisAPIClient implements ConfigurationInterface
      */
     public function toBuilder(): FortisAPIClientBuilder
     {
-        return FortisAPIClientBuilder::init()
+        $builder = FortisAPIClientBuilder::init()
             ->timeout($this->getTimeout())
             ->enableRetries($this->shouldEnableRetries())
             ->numberOfRetries($this->getNumberOfRetries())
@@ -129,10 +196,29 @@ class FortisAPIClient implements ConfigurationInterface
             ->httpStatusCodesToRetry($this->getHttpStatusCodesToRetry())
             ->httpMethodsToRetry($this->getHttpMethodsToRetry())
             ->environment($this->getEnvironment())
-            ->userId($this->customHeaderAuthenticationManager->getUserId())
-            ->userApiKey($this->customHeaderAuthenticationManager->getUserApiKey())
-            ->developerId($this->customHeaderAuthenticationManager->getDeveloperId())
-            ->httpCallback($this->config['httpCallback'] ?? null);
+            ->httpCallback($this->config['httpCallback'] ?? null)
+            ->proxyConfiguration($this->getProxyConfigurationBuilder());
+
+        $userId = $this->getUserIdCredentialsBuilder();
+        if ($userId != null) {
+            $builder->userIdCredentials($userId);
+        }
+
+        $userApiKey = $this->getUserApiKeyCredentialsBuilder();
+        if ($userApiKey != null) {
+            $builder->userApiKeyCredentials($userApiKey);
+        }
+
+        $developerId = $this->getDeveloperIdCredentialsBuilder();
+        if ($developerId != null) {
+            $builder->developerIdCredentials($developerId);
+        }
+
+        $accessToken = $this->getAccessTokenCredentialsBuilder();
+        if ($accessToken != null) {
+            $builder->accessTokenCredentials($accessToken);
+        }
+        return $builder;
     }
 
     public function getTimeout(): int
@@ -185,9 +271,68 @@ class FortisAPIClient implements ConfigurationInterface
         return $this->config['environment'] ?? ConfigurationDefaults::ENVIRONMENT;
     }
 
-    public function getCustomHeaderAuthenticationCredentials(): ?CustomHeaderAuthenticationCredentials
+    public function getUserIdCredentials(): UserIdCredentials
     {
-        return $this->customHeaderAuthenticationManager;
+        return $this->userIdManager;
+    }
+
+    public function getUserIdCredentialsBuilder(): ?UserIdCredentialsBuilder
+    {
+        if (empty($this->userIdManager->getUserId())) {
+            return null;
+        }
+        return UserIdCredentialsBuilder::init($this->userIdManager->getUserId());
+    }
+
+    public function getUserApiKeyCredentials(): UserApiKeyCredentials
+    {
+        return $this->userApiKeyManager;
+    }
+
+    public function getUserApiKeyCredentialsBuilder(): ?UserApiKeyCredentialsBuilder
+    {
+        if (empty($this->userApiKeyManager->getUserApiKey())) {
+            return null;
+        }
+        return UserApiKeyCredentialsBuilder::init($this->userApiKeyManager->getUserApiKey());
+    }
+
+    public function getDeveloperIdCredentials(): DeveloperIdCredentials
+    {
+        return $this->developerIdManager;
+    }
+
+    public function getDeveloperIdCredentialsBuilder(): ?DeveloperIdCredentialsBuilder
+    {
+        if (empty($this->developerIdManager->getDeveloperId())) {
+            return null;
+        }
+        return DeveloperIdCredentialsBuilder::init($this->developerIdManager->getDeveloperId());
+    }
+
+    public function getAccessTokenCredentials(): AccessTokenCredentials
+    {
+        return $this->accessTokenManager;
+    }
+
+    public function getAccessTokenCredentialsBuilder(): ?AccessTokenCredentialsBuilder
+    {
+        if (empty($this->accessTokenManager->getAccessToken())) {
+            return null;
+        }
+        return AccessTokenCredentialsBuilder::init($this->accessTokenManager->getAccessToken());
+    }
+
+    /**
+     * Get the proxy configuration builder
+     */
+    public function getProxyConfigurationBuilder(): ProxyConfigurationBuilder
+    {
+        return ProxyConfigurationBuilder::init($this->proxyConfiguration['address'])
+            ->port($this->proxyConfiguration['port'])
+            ->tunnel($this->proxyConfiguration['tunnel'])
+            ->auth($this->proxyConfiguration['auth']['user'], $this->proxyConfiguration['auth']['pass'])
+            ->authMethod($this->proxyConfiguration['auth']['method']);
     }
 
     /**
@@ -256,6 +401,17 @@ class FortisAPIClient implements ConfigurationInterface
     }
 
     /**
+     * Returns Declined Recurring Transactions Controller
+     */
+    public function getDeclinedRecurringTransactionsController(): DeclinedRecurringTransactionsController
+    {
+        if ($this->declinedRecurringTransactions == null) {
+            $this->declinedRecurringTransactions = new DeclinedRecurringTransactionsController($this->client);
+        }
+        return $this->declinedRecurringTransactions;
+    }
+
+    /**
      * Returns Device Terms Controller
      */
     public function getDeviceTermsController(): DeviceTermsController
@@ -278,6 +434,17 @@ class FortisAPIClient implements ConfigurationInterface
     }
 
     /**
+     * Returns Full Boarding Controller
+     */
+    public function getFullBoardingController(): FullBoardingController
+    {
+        if ($this->fullBoarding == null) {
+            $this->fullBoarding = new FullBoardingController($this->client);
+        }
+        return $this->fullBoarding;
+    }
+
+    /**
      * Returns Locations Controller
      */
     public function getLocationsController(): LocationsController
@@ -286,6 +453,39 @@ class FortisAPIClient implements ConfigurationInterface
             $this->locations = new LocationsController($this->client);
         }
         return $this->locations;
+    }
+
+    /**
+     * Returns M3 DS Authentication Controller
+     */
+    public function getM3DSAuthenticationController(): M3DSAuthenticationController
+    {
+        if ($this->m3DSAuthentication == null) {
+            $this->m3DSAuthentication = new M3DSAuthenticationController($this->client);
+        }
+        return $this->m3DSAuthentication;
+    }
+
+    /**
+     * Returns M3 DS Transactions Controller
+     */
+    public function getM3DSTransactionsController(): M3DSTransactionsController
+    {
+        if ($this->m3DSTransactions == null) {
+            $this->m3DSTransactions = new M3DSTransactionsController($this->client);
+        }
+        return $this->m3DSTransactions;
+    }
+
+    /**
+     * Returns Merchant Deposits Controller
+     */
+    public function getMerchantDepositsController(): MerchantDepositsController
+    {
+        if ($this->merchantDeposits == null) {
+            $this->merchantDeposits = new MerchantDepositsController($this->client);
+        }
+        return $this->merchantDeposits;
     }
 
     /**
@@ -308,6 +508,17 @@ class FortisAPIClient implements ConfigurationInterface
             $this->paylinks = new PaylinksController($this->client);
         }
         return $this->paylinks;
+    }
+
+    /**
+     * Returns Payment Card Reader Token Controller
+     */
+    public function getPaymentCardReaderTokenController(): PaymentCardReaderTokenController
+    {
+        if ($this->paymentCardReaderToken == null) {
+            $this->paymentCardReaderToken = new PaymentCardReaderTokenController($this->client);
+        }
+        return $this->paymentCardReaderToken;
     }
 
     /**
@@ -366,6 +577,17 @@ class FortisAPIClient implements ConfigurationInterface
     }
 
     /**
+     * Returns Tickets Controller
+     */
+    public function getTicketsController(): TicketsController
+    {
+        if ($this->tickets == null) {
+            $this->tickets = new TicketsController($this->client);
+        }
+        return $this->tickets;
+    }
+
+    /**
      * Returns Tokens Controller
      */
     public function getTokensController(): TokensController
@@ -374,6 +596,17 @@ class FortisAPIClient implements ConfigurationInterface
             $this->tokens = new TokensController($this->client);
         }
         return $this->tokens;
+    }
+
+    /**
+     * Returns Transaction ACH Retries Controller
+     */
+    public function getTransactionACHRetriesController(): TransactionACHRetriesController
+    {
+        if ($this->transactionACHRetries == null) {
+            $this->transactionACHRetries = new TransactionACHRetriesController($this->client);
+        }
+        return $this->transactionACHRetries;
     }
 
     /**
@@ -388,6 +621,17 @@ class FortisAPIClient implements ConfigurationInterface
     }
 
     /**
+     * Returns Transactions Cash Controller
+     */
+    public function getTransactionsCashController(): TransactionsCashController
+    {
+        if ($this->transactionsCash == null) {
+            $this->transactionsCash = new TransactionsCashController($this->client);
+        }
+        return $this->transactionsCash;
+    }
+
+    /**
      * Returns Transactions Credit Card Controller
      */
     public function getTransactionsCreditCardController(): TransactionsCreditCardController
@@ -396,6 +640,17 @@ class FortisAPIClient implements ConfigurationInterface
             $this->transactionsCreditCard = new TransactionsCreditCardController($this->client);
         }
         return $this->transactionsCreditCard;
+    }
+
+    /**
+     * Returns Transactions EBT Card Controller
+     */
+    public function getTransactionsEBTCardController(): TransactionsEBTCardController
+    {
+        if ($this->transactionsEBTCard == null) {
+            $this->transactionsEBTCard = new TransactionsEBTCardController($this->client);
+        }
+        return $this->transactionsEBTCard;
     }
 
     /**
@@ -432,6 +687,17 @@ class FortisAPIClient implements ConfigurationInterface
     }
 
     /**
+     * Returns User Verifications Controller
+     */
+    public function getUserVerificationsController(): UserVerificationsController
+    {
+        if ($this->userVerifications == null) {
+            $this->userVerifications = new UserVerificationsController($this->client);
+        }
+        return $this->userVerifications;
+    }
+
+    /**
      * Returns Users Controller
      */
     public function getUsersController(): UsersController
@@ -440,6 +706,28 @@ class FortisAPIClient implements ConfigurationInterface
             $this->users = new UsersController($this->client);
         }
         return $this->users;
+    }
+
+    /**
+     * Returns Apple Pay Validate Merchant Controller
+     */
+    public function getApplePayValidateMerchantController(): ApplePayValidateMerchantController
+    {
+        if ($this->applePayValidateMerchant == null) {
+            $this->applePayValidateMerchant = new ApplePayValidateMerchantController($this->client);
+        }
+        return $this->applePayValidateMerchant;
+    }
+
+    /**
+     * Returns Merchant Details Controller
+     */
+    public function getMerchantDetailsController(): MerchantDetailsController
+    {
+        if ($this->merchantDetails == null) {
+            $this->merchantDetails = new MerchantDetailsController($this->client);
+        }
+        return $this->merchantDetails;
     }
 
     /**

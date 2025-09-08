@@ -30,18 +30,29 @@ class PaylinksControllerTest extends BaseTestController
         self::$controller = parent::getClient()->getPaylinksController();
     }
 
-    public function testTestListAllPaylinks()
+    public function testListAllPaylinks()
     {
         // Parameters for the API call
         $page = null;
-        $sort = null;
-        $filter = null;
+        $order = null;
+        $filterBy = null;
         $expand = null;
+        $format = null;
+        $typeahead = null;
+        $fields = null;
 
         // Perform API call
         $result = null;
         try {
-            $result = self::$controller->listAllPaylinks($page, $sort, $filter, $expand);
+            $result = self::$controller->listAllPaylinks(
+                $page,
+                $order,
+                $filterBy,
+                $expand,
+                $format,
+                $typeahead,
+                $fields
+            );
         } catch (Exceptions\ApiException $e) {
         }
 
@@ -56,22 +67,26 @@ class PaylinksControllerTest extends BaseTestController
             ->bodyMatcher(KeysBodyMatcher::init(TestParam::object(
                 '{"type":"PaylinksCollection","list":[{"location_id":"11e95f8ec39de8fbdb0a4f1a"' .
                 ',"cc_product_transaction_id":"11e95f8ec39de8fbdb0a4f1a","email":"email@domain.c' .
-                'om","amount_due":10,"contact_id":"11e95f8ec39de8fbdb0a4f1a","ach_product_transa' .
-                'ction_id":"11e95f8ec39de8fbdb0a4f1a","expire_date":"2021-12-01","display_produc' .
-                't_transaction_receipt_details":true,"display_billing_fields":true,"delivery_met' .
-                'hod":0,"cell_phone":"3339998822","description":"Description","id":"11e95f8ec39d' .
-                'e8fbdb0a4f1a","status_id":true,"active":true,"created_ts":1422040992,"modified_' .
-                'ts":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","modified_user_id":' .
-                '"11e95f8ec39de8fbdb0a4f1a"}],"links":{"type":"Links","first":"/v1/endpoint?page' .
-                '[size]=10&page[number]=1","previous":"/v1/endpoint?page[size]=10&page[number]=5' .
-                '","last":"/v1/endpoint?page[size]=10&page[number]=42"},"pagination":{"type":"Pa' .
-                'gination","total_count":423,"page_count":42,"page_number":6,"page_size":10},"so' .
-                'rt":{"type":"Sorting","fields":[{"field":"last_name","order":"asc"}]}}'
+                'om","amount_due":1,"contact_id":"11e95f8ec39de8fbdb0a4f1a","ach_product_transac' .
+                'tion_id":"11e95f8ec39de8fbdb0a4f1a","expire_date":"2021-12-01","display_product' .
+                '_transaction_receipt_details":true,"display_billing_fields":true,"delivery_meth' .
+                'od":0,"cell_phone":"3339998822","description":"Description","store_token":false' .
+                ',"store_token_title":"John Account","bank_funded_only_override":false,"tags":["' .
+                'Tag 1"],"redirect_url_delay":15,"redirect_url_on_approve":null,"redirect_url_on' .
+                '_decline":null,"id":"11e95f8ec39de8fbdb0a4f1a","status_id":true,"status_code":1' .
+                ',"active":true,"created_ts":1422040992,"modified_ts":1422040992,"created_user_i' .
+                'd":"11e95f8ec39de8fbdb0a4f1a","modified_user_id":"11e95f8ec39de8fbdb0a4f1a"}],"' .
+                'links":{"type":"Links","first":"/v1/endpoint?page[size]=10&page[number]=1","pre' .
+                'vious":"/v1/endpoint?page[size]=10&page[number]=5","next":"/v1/endpoint?page[si' .
+                'ze]=10&page[number]=7","last":"/v1/endpoint?page[size]=10&page[number]=42"},"pa' .
+                'gination":{"type":"Pagination","total_count":423,"page_count":42,"page_number":' .
+                '6,"page_size":10},"sort":{"type":"Sorting","fields":[{"field":"last_name","orde' .
+                'r":"asc"}]}}'
             )))
             ->assert();
     }
 
-    public function testTestDeletePaylink()
+    public function testDeletePaylink()
     {
         // Parameters for the API call
         $paylinkId = '11e95f8ec39de8fbdb0a4f1a';
@@ -88,33 +103,36 @@ class PaylinksControllerTest extends BaseTestController
 
         // Assert result with expected response
         $this->newTestCase($result)
-            ->expectStatus(200)
+            ->expectStatus(204)
             ->allowExtraHeaders()
             ->expectHeaders($headers)
             ->bodyMatcher(KeysBodyMatcher::init(TestParam::object(
                 '{"type":"Paylink","data":{"location_id":"11e95f8ec39de8fbdb0a4f1a","cc_product' .
                 '_transaction_id":"11e95f8ec39de8fbdb0a4f1a","email":"email@domain.com","amount_' .
-                'due":10,"contact_id":"11e95f8ec39de8fbdb0a4f1a","ach_product_transaction_id":"1' .
-                '1e95f8ec39de8fbdb0a4f1a","expire_date":"2021-12-01","display_product_transactio' .
-                'n_receipt_details":true,"display_billing_fields":true,"delivery_method":0,"cell' .
-                '_phone":"3339998822","description":"Description","id":"11e95f8ec39de8fbdb0a4f1a' .
-                '","status_id":true,"active":true,"created_ts":1422040992,"modified_ts":14220409' .
-                '92,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","modified_user_id":"11e95f8ec39' .
-                'de8fbdb0a4f1a"}}'
+                'due":1,"contact_id":"11e95f8ec39de8fbdb0a4f1a","ach_product_transaction_id":"11' .
+                'e95f8ec39de8fbdb0a4f1a","expire_date":"2021-12-01","display_product_transaction' .
+                '_receipt_details":true,"display_billing_fields":true,"delivery_method":0,"cell_' .
+                'phone":"3339998822","description":"Description","store_token":false,"store_toke' .
+                'n_title":"John Account","bank_funded_only_override":false,"tags":["Tag 1"],"red' .
+                'irect_url_delay":15,"redirect_url_on_approve":null,"redirect_url_on_decline":nu' .
+                'll,"id":"11e95f8ec39de8fbdb0a4f1a","status_id":true,"status_code":1,"active":tr' .
+                'ue,"created_ts":1422040992,"modified_ts":1422040992,"created_user_id":"11e95f8e' .
+                'c39de8fbdb0a4f1a","modified_user_id":"11e95f8ec39de8fbdb0a4f1a"}}'
             )))
             ->assert();
     }
 
-    public function testTestViewSinglePaylink()
+    public function testViewSinglePaylink()
     {
         // Parameters for the API call
         $paylinkId = '11e95f8ec39de8fbdb0a4f1a';
         $expand = null;
+        $fields = null;
 
         // Perform API call
         $result = null;
         try {
-            $result = self::$controller->viewSinglePaylink($paylinkId, $expand);
+            $result = self::$controller->viewSinglePaylink($paylinkId, $expand, $fields);
         } catch (Exceptions\ApiException $e) {
         }
 
@@ -129,27 +147,31 @@ class PaylinksControllerTest extends BaseTestController
             ->bodyMatcher(KeysBodyMatcher::init(TestParam::object(
                 '{"type":"Paylink","data":{"location_id":"11e95f8ec39de8fbdb0a4f1a","cc_product' .
                 '_transaction_id":"11e95f8ec39de8fbdb0a4f1a","email":"email@domain.com","amount_' .
-                'due":10,"contact_id":"11e95f8ec39de8fbdb0a4f1a","ach_product_transaction_id":"1' .
-                '1e95f8ec39de8fbdb0a4f1a","expire_date":"2021-12-01","display_product_transactio' .
-                'n_receipt_details":true,"display_billing_fields":true,"delivery_method":0,"cell' .
-                '_phone":"3339998822","description":"Description","id":"11e95f8ec39de8fbdb0a4f1a' .
-                '","status_id":true,"active":true,"created_ts":1422040992,"modified_ts":14220409' .
-                '92,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","modified_user_id":"11e95f8ec39' .
-                'de8fbdb0a4f1a"}}'
+                'due":1,"contact_id":"11e95f8ec39de8fbdb0a4f1a","ach_product_transaction_id":"11' .
+                'e95f8ec39de8fbdb0a4f1a","expire_date":"2021-12-01","display_product_transaction' .
+                '_receipt_details":true,"display_billing_fields":true,"delivery_method":0,"cell_' .
+                'phone":"3339998822","description":"Description","store_token":false,"store_toke' .
+                'n_title":"John Account","bank_funded_only_override":false,"tags":["Tag 1"],"red' .
+                'irect_url_delay":15,"redirect_url_on_approve":null,"redirect_url_on_decline":nu' .
+                'll,"id":"11e95f8ec39de8fbdb0a4f1a","status_id":true,"status_code":1,"active":tr' .
+                'ue,"created_ts":1422040992,"modified_ts":1422040992,"created_user_id":"11e95f8e' .
+                'c39de8fbdb0a4f1a","modified_user_id":"11e95f8ec39de8fbdb0a4f1a"}}'
             )))
             ->assert();
     }
 
-    public function testTestResendPaylink()
+    public function testResendPaylink()
     {
         // Parameters for the API call
         $paylinkId = '11e95f8ec39de8fbdb0a4f1a';
         $expand = null;
+        $email = null;
+        $sms = null;
 
         // Perform API call
         $result = null;
         try {
-            $result = self::$controller->resendPaylink($paylinkId, $expand);
+            $result = self::$controller->resendPaylink($paylinkId, $expand, $email, $sms);
         } catch (Exceptions\ApiException $e) {
         }
 
@@ -164,13 +186,15 @@ class PaylinksControllerTest extends BaseTestController
             ->bodyMatcher(KeysBodyMatcher::init(TestParam::object(
                 '{"type":"Paylink","data":{"location_id":"11e95f8ec39de8fbdb0a4f1a","cc_product' .
                 '_transaction_id":"11e95f8ec39de8fbdb0a4f1a","email":"email@domain.com","amount_' .
-                'due":10,"contact_id":"11e95f8ec39de8fbdb0a4f1a","ach_product_transaction_id":"1' .
-                '1e95f8ec39de8fbdb0a4f1a","expire_date":"2021-12-01","display_product_transactio' .
-                'n_receipt_details":true,"display_billing_fields":true,"delivery_method":0,"cell' .
-                '_phone":"3339998822","description":"Description","id":"11e95f8ec39de8fbdb0a4f1a' .
-                '","status_id":true,"active":true,"created_ts":1422040992,"modified_ts":14220409' .
-                '92,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","modified_user_id":"11e95f8ec39' .
-                'de8fbdb0a4f1a"}}'
+                'due":1,"contact_id":"11e95f8ec39de8fbdb0a4f1a","ach_product_transaction_id":"11' .
+                'e95f8ec39de8fbdb0a4f1a","expire_date":"2021-12-01","display_product_transaction' .
+                '_receipt_details":true,"display_billing_fields":true,"delivery_method":0,"cell_' .
+                'phone":"3339998822","description":"Description","store_token":false,"store_toke' .
+                'n_title":"John Account","bank_funded_only_override":false,"tags":["Tag 1"],"red' .
+                'irect_url_delay":15,"redirect_url_on_approve":null,"redirect_url_on_decline":nu' .
+                'll,"id":"11e95f8ec39de8fbdb0a4f1a","status_id":true,"status_code":1,"active":tr' .
+                'ue,"created_ts":1422040992,"modified_ts":1422040992,"created_user_id":"11e95f8e' .
+                'c39de8fbdb0a4f1a","modified_user_id":"11e95f8ec39de8fbdb0a4f1a"}}'
             )))
             ->assert();
     }

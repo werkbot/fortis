@@ -10,27 +10,28 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class ReceivedEmail implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $subject;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $body;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $sourceAddress;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $returnPath;
 
@@ -65,44 +66,20 @@ class ReceivedEmail implements \JsonSerializable
     private $replyTo = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
-
-    /**
-     * @param string $subject
-     * @param string $body
-     * @param string $sourceAddress
-     * @param string $returnPath
-     * @param string $id
-     * @param int $createdTs
-     */
-    public function __construct(
-        string $subject,
-        string $body,
-        string $sourceAddress,
-        string $returnPath,
-        string $id,
-        int $createdTs
-    ) {
-        $this->subject = $subject;
-        $this->body = $body;
-        $this->sourceAddress = $sourceAddress;
-        $this->returnPath = $returnPath;
-        $this->id = $id;
-        $this->createdTs = $createdTs;
-    }
 
     /**
      * Returns Subject.
      * Subject
      */
-    public function getSubject(): string
+    public function getSubject(): ?string
     {
         return $this->subject;
     }
@@ -111,10 +88,9 @@ class ReceivedEmail implements \JsonSerializable
      * Sets Subject.
      * Subject
      *
-     * @required
      * @maps subject
      */
-    public function setSubject(string $subject): void
+    public function setSubject(?string $subject): void
     {
         $this->subject = $subject;
     }
@@ -123,7 +99,7 @@ class ReceivedEmail implements \JsonSerializable
      * Returns Body.
      * Body
      */
-    public function getBody(): string
+    public function getBody(): ?string
     {
         return $this->body;
     }
@@ -132,10 +108,9 @@ class ReceivedEmail implements \JsonSerializable
      * Sets Body.
      * Body
      *
-     * @required
      * @maps body
      */
-    public function setBody(string $body): void
+    public function setBody(?string $body): void
     {
         $this->body = $body;
     }
@@ -144,7 +119,7 @@ class ReceivedEmail implements \JsonSerializable
      * Returns Source Address.
      * Source Address
      */
-    public function getSourceAddress(): string
+    public function getSourceAddress(): ?string
     {
         return $this->sourceAddress;
     }
@@ -153,10 +128,9 @@ class ReceivedEmail implements \JsonSerializable
      * Sets Source Address.
      * Source Address
      *
-     * @required
      * @maps source_address
      */
-    public function setSourceAddress(string $sourceAddress): void
+    public function setSourceAddress(?string $sourceAddress): void
     {
         $this->sourceAddress = $sourceAddress;
     }
@@ -165,7 +139,7 @@ class ReceivedEmail implements \JsonSerializable
      * Returns Return Path.
      * Return Path
      */
-    public function getReturnPath(): string
+    public function getReturnPath(): ?string
     {
         return $this->returnPath;
     }
@@ -174,10 +148,9 @@ class ReceivedEmail implements \JsonSerializable
      * Sets Return Path.
      * Return Path
      *
-     * @required
      * @maps return_path
      */
-    public function setReturnPath(string $returnPath): void
+    public function setReturnPath(?string $returnPath): void
     {
         $this->returnPath = $returnPath;
     }
@@ -379,7 +352,7 @@ class ReceivedEmail implements \JsonSerializable
      * Returns Id.
      * Log Email Id
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -388,10 +361,9 @@ class ReceivedEmail implements \JsonSerializable
      * Sets Id.
      * Log Email Id
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -400,7 +372,7 @@ class ReceivedEmail implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -409,12 +381,66 @@ class ReceivedEmail implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
+    }
+
+    /**
+     * Converts the ReceivedEmail object to a human-readable string representation.
+     *
+     * @return string The string representation of the ReceivedEmail object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'ReceivedEmail',
+            [
+                'subject' => $this->subject,
+                'body' => $this->body,
+                'sourceAddress' => $this->sourceAddress,
+                'returnPath' => $this->returnPath,
+                'providerId' => $this->getProviderId(),
+                'domainId' => $this->getDomainId(),
+                'reasonSent' => $this->getReasonSent(),
+                'reasonModel' => $this->getReasonModel(),
+                'reasonModelId' => $this->getReasonModelId(),
+                'replyTo' => $this->getReplyTo(),
+                'id' => $this->id,
+                'createdTs' => $this->createdTs,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -429,10 +455,18 @@ class ReceivedEmail implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['subject']             = $this->subject;
-        $json['body']                = $this->body;
-        $json['source_address']      = $this->sourceAddress;
-        $json['return_path']         = $this->returnPath;
+        if (isset($this->subject)) {
+            $json['subject']         = $this->subject;
+        }
+        if (isset($this->body)) {
+            $json['body']            = $this->body;
+        }
+        if (isset($this->sourceAddress)) {
+            $json['source_address']  = $this->sourceAddress;
+        }
+        if (isset($this->returnPath)) {
+            $json['return_path']     = $this->returnPath;
+        }
         if (!empty($this->providerId)) {
             $json['provider_id']     = $this->providerId['value'];
         }
@@ -451,8 +485,13 @@ class ReceivedEmail implements \JsonSerializable
         if (!empty($this->replyTo)) {
             $json['reply_to']        = $this->replyTo['value'];
         }
-        $json['id']                  = $this->id;
-        $json['created_ts']          = $this->createdTs;
+        if (isset($this->id)) {
+            $json['id']              = $this->id;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']      = $this->createdTs;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

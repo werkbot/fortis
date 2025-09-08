@@ -23,7 +23,9 @@ class PaymentMethodEnum
 
     public const ACH = 'ach';
 
-    private const _ALL_VALUES = [self::CC, self::ACH];
+    public const CASH = 'cash';
+
+    private const _ALL_VALUES = [self::CC, self::ACH, self::CASH];
 
     /**
      * Ensures that all the given values are present in this Enum.

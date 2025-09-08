@@ -10,17 +10,18 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class LocationUser implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $locationId;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $userId;
 
@@ -30,62 +31,35 @@ class LocationUser implements \JsonSerializable
     private $locationApiId = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $modifiedTs;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $createdUserId;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $modifiedUserId;
-
-    /**
-     * @param string $locationId
-     * @param string $userId
-     * @param string $id
-     * @param int $createdTs
-     * @param int $modifiedTs
-     * @param string $createdUserId
-     * @param string $modifiedUserId
-     */
-    public function __construct(
-        string $locationId,
-        string $userId,
-        string $id,
-        int $createdTs,
-        int $modifiedTs,
-        string $createdUserId,
-        string $modifiedUserId
-    ) {
-        $this->locationId = $locationId;
-        $this->userId = $userId;
-        $this->id = $id;
-        $this->createdTs = $createdTs;
-        $this->modifiedTs = $modifiedTs;
-        $this->createdUserId = $createdUserId;
-        $this->modifiedUserId = $modifiedUserId;
-    }
 
     /**
      * Returns Location Id.
      * Location ID
      */
-    public function getLocationId(): string
+    public function getLocationId(): ?string
     {
         return $this->locationId;
     }
@@ -94,10 +68,9 @@ class LocationUser implements \JsonSerializable
      * Sets Location Id.
      * Location ID
      *
-     * @required
      * @maps location_id
      */
-    public function setLocationId(string $locationId): void
+    public function setLocationId(?string $locationId): void
     {
         $this->locationId = $locationId;
     }
@@ -106,7 +79,7 @@ class LocationUser implements \JsonSerializable
      * Returns User Id.
      * User ID
      */
-    public function getUserId(): string
+    public function getUserId(): ?string
     {
         return $this->userId;
     }
@@ -115,10 +88,9 @@ class LocationUser implements \JsonSerializable
      * Sets User Id.
      * User ID
      *
-     * @required
      * @maps user_id
      */
-    public function setUserId(string $userId): void
+    public function setUserId(?string $userId): void
     {
         $this->userId = $userId;
     }
@@ -155,7 +127,7 @@ class LocationUser implements \JsonSerializable
     /**
      * Returns Id.
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -163,10 +135,9 @@ class LocationUser implements \JsonSerializable
     /**
      * Sets Id.
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -175,7 +146,7 @@ class LocationUser implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -184,10 +155,9 @@ class LocationUser implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -196,7 +166,7 @@ class LocationUser implements \JsonSerializable
      * Returns Modified Ts.
      * Modified Time Stamp
      */
-    public function getModifiedTs(): int
+    public function getModifiedTs(): ?int
     {
         return $this->modifiedTs;
     }
@@ -205,10 +175,9 @@ class LocationUser implements \JsonSerializable
      * Sets Modified Ts.
      * Modified Time Stamp
      *
-     * @required
      * @maps modified_ts
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setModifiedTs(?int $modifiedTs): void
     {
         $this->modifiedTs = $modifiedTs;
     }
@@ -217,7 +186,7 @@ class LocationUser implements \JsonSerializable
      * Returns Created User Id.
      * User ID Created the register
      */
-    public function getCreatedUserId(): string
+    public function getCreatedUserId(): ?string
     {
         return $this->createdUserId;
     }
@@ -226,10 +195,9 @@ class LocationUser implements \JsonSerializable
      * Sets Created User Id.
      * User ID Created the register
      *
-     * @required
      * @maps created_user_id
      */
-    public function setCreatedUserId(string $createdUserId): void
+    public function setCreatedUserId(?string $createdUserId): void
     {
         $this->createdUserId = $createdUserId;
     }
@@ -238,7 +206,7 @@ class LocationUser implements \JsonSerializable
      * Returns Modified User Id.
      * Last User ID that updated the register
      */
-    public function getModifiedUserId(): string
+    public function getModifiedUserId(): ?string
     {
         return $this->modifiedUserId;
     }
@@ -247,12 +215,62 @@ class LocationUser implements \JsonSerializable
      * Sets Modified User Id.
      * Last User ID that updated the register
      *
-     * @required
      * @maps modified_user_id
      */
-    public function setModifiedUserId(string $modifiedUserId): void
+    public function setModifiedUserId(?string $modifiedUserId): void
     {
         $this->modifiedUserId = $modifiedUserId;
+    }
+
+    /**
+     * Converts the LocationUser object to a human-readable string representation.
+     *
+     * @return string The string representation of the LocationUser object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'LocationUser',
+            [
+                'locationId' => $this->locationId,
+                'userId' => $this->userId,
+                'locationApiId' => $this->getLocationApiId(),
+                'id' => $this->id,
+                'createdTs' => $this->createdTs,
+                'modifiedTs' => $this->modifiedTs,
+                'createdUserId' => $this->createdUserId,
+                'modifiedUserId' => $this->modifiedUserId,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -267,16 +285,31 @@ class LocationUser implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['location_id']         = $this->locationId;
-        $json['user_id']             = $this->userId;
-        if (!empty($this->locationApiId)) {
-            $json['location_api_id'] = $this->locationApiId['value'];
+        if (isset($this->locationId)) {
+            $json['location_id']      = $this->locationId;
         }
-        $json['id']                  = $this->id;
-        $json['created_ts']          = $this->createdTs;
-        $json['modified_ts']         = $this->modifiedTs;
-        $json['created_user_id']     = $this->createdUserId;
-        $json['modified_user_id']    = $this->modifiedUserId;
+        if (isset($this->userId)) {
+            $json['user_id']          = $this->userId;
+        }
+        if (!empty($this->locationApiId)) {
+            $json['location_api_id']  = $this->locationApiId['value'];
+        }
+        if (isset($this->id)) {
+            $json['id']               = $this->id;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']       = $this->createdTs;
+        }
+        if (isset($this->modifiedTs)) {
+            $json['modified_ts']      = $this->modifiedTs;
+        }
+        if (isset($this->createdUserId)) {
+            $json['created_user_id']  = $this->createdUserId;
+        }
+        if (isset($this->modifiedUserId)) {
+            $json['modified_user_id'] = $this->modifiedUserId;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

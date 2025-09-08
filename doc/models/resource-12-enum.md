@@ -3,6 +3,8 @@
 
 The resource you want to subscribe the postbacks to.
 
+> Possible values include: 'contact', 'transaction', 'transactionbatch'
+
 ## Enumeration
 
 `Resource12Enum`

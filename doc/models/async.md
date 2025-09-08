@@ -11,8 +11,8 @@ Do not store the Async Code for long term use, it expires after 30 days.
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `code` | `string` | Required | A [UUID v4](https://datatracker.ietf.org/doc/html/rfc4122) that's unique for the Async Request | getCode(): string | setCode(string code): void |
-| `link` | `string` | Required | Link to the status check endpoint | getLink(): string | setLink(string link): void |
+| `code` | `?string` | Optional | A [UUID v4](https://datatracker.ietf.org/doc/html/rfc4122) that's unique for the Async Request | getCode(): ?string | setCode(?string code): void |
+| `link` | `?string` | Optional | Link to the status check endpoint | getLink(): ?string | setLink(?string link): void |
 
 ## Example (as JSON)
 

@@ -10,56 +10,41 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class AllTag implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $locationId;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $title;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $modifiedTs;
-
-    /**
-     * @param string $locationId
-     * @param string $title
-     * @param string $id
-     * @param int $createdTs
-     * @param int $modifiedTs
-     */
-    public function __construct(string $locationId, string $title, string $id, int $createdTs, int $modifiedTs)
-    {
-        $this->locationId = $locationId;
-        $this->title = $title;
-        $this->id = $id;
-        $this->createdTs = $createdTs;
-        $this->modifiedTs = $modifiedTs;
-    }
 
     /**
      * Returns Location Id.
      * Location ID
      */
-    public function getLocationId(): string
+    public function getLocationId(): ?string
     {
         return $this->locationId;
     }
@@ -68,10 +53,9 @@ class AllTag implements \JsonSerializable
      * Sets Location Id.
      * Location ID
      *
-     * @required
      * @maps location_id
      */
-    public function setLocationId(string $locationId): void
+    public function setLocationId(?string $locationId): void
     {
         $this->locationId = $locationId;
     }
@@ -80,7 +64,7 @@ class AllTag implements \JsonSerializable
      * Returns Title.
      * Tag Title
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -89,10 +73,9 @@ class AllTag implements \JsonSerializable
      * Sets Title.
      * Tag Title
      *
-     * @required
      * @maps title
      */
-    public function setTitle(string $title): void
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -101,7 +84,7 @@ class AllTag implements \JsonSerializable
      * Returns Id.
      * Tag ID
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -110,10 +93,9 @@ class AllTag implements \JsonSerializable
      * Sets Id.
      * Tag ID
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -122,7 +104,7 @@ class AllTag implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -131,10 +113,9 @@ class AllTag implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -143,7 +124,7 @@ class AllTag implements \JsonSerializable
      * Returns Modified Ts.
      * Modified Time Stamp
      */
-    public function getModifiedTs(): int
+    public function getModifiedTs(): ?int
     {
         return $this->modifiedTs;
     }
@@ -152,12 +133,59 @@ class AllTag implements \JsonSerializable
      * Sets Modified Ts.
      * Modified Time Stamp
      *
-     * @required
      * @maps modified_ts
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setModifiedTs(?int $modifiedTs): void
     {
         $this->modifiedTs = $modifiedTs;
+    }
+
+    /**
+     * Converts the AllTag object to a human-readable string representation.
+     *
+     * @return string The string representation of the AllTag object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'AllTag',
+            [
+                'locationId' => $this->locationId,
+                'title' => $this->title,
+                'id' => $this->id,
+                'createdTs' => $this->createdTs,
+                'modifiedTs' => $this->modifiedTs,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -172,11 +200,22 @@ class AllTag implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['location_id'] = $this->locationId;
-        $json['title']       = $this->title;
-        $json['id']          = $this->id;
-        $json['created_ts']  = $this->createdTs;
-        $json['modified_ts'] = $this->modifiedTs;
+        if (isset($this->locationId)) {
+            $json['location_id'] = $this->locationId;
+        }
+        if (isset($this->title)) {
+            $json['title']       = $this->title;
+        }
+        if (isset($this->id)) {
+            $json['id']          = $this->id;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']  = $this->createdTs;
+        }
+        if (isset($this->modifiedTs)) {
+            $json['modified_ts'] = $this->modifiedTs;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

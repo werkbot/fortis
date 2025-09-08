@@ -10,12 +10,13 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class Data2 implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $locationId;
 
@@ -35,7 +36,7 @@ class Data2 implements \JsonSerializable
     private $firstName = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $lastName;
 
@@ -70,7 +71,7 @@ class Data2 implements \JsonSerializable
     private $dateOfBirth = [];
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $emailTrxReceipt;
 
@@ -90,7 +91,22 @@ class Data2 implements \JsonSerializable
     private $officePhoneExt = [];
 
     /**
-     * @var int
+     * @var array
+     */
+    private $homePhoneCountryCode = [];
+
+    /**
+     * @var array
+     */
+    private $officePhoneCountryCode = [];
+
+    /**
+     * @var array
+     */
+    private $cellPhoneCountryCode = [];
+
+    /**
+     * @var int|null
      */
     private $headerMessageType;
 
@@ -125,24 +141,34 @@ class Data2 implements \JsonSerializable
     private $email = [];
 
     /**
-     * @var string
+     * @var array
+     */
+    private $tokenImportId = [];
+
+    /**
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $modifiedTs;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $active;
+
+    /**
+     * @var array
+     */
+    private $createdUserId = [];
 
     /**
      * @var ReceivedEmail[]|null
@@ -205,40 +231,10 @@ class Data2 implements \JsonSerializable
     private $children;
 
     /**
-     * @param string $locationId
-     * @param string $lastName
-     * @param bool $emailTrxReceipt
-     * @param int $headerMessageType
-     * @param string $id
-     * @param int $createdTs
-     * @param int $modifiedTs
-     * @param bool $active
-     */
-    public function __construct(
-        string $locationId,
-        string $lastName,
-        bool $emailTrxReceipt,
-        int $headerMessageType,
-        string $id,
-        int $createdTs,
-        int $modifiedTs,
-        bool $active
-    ) {
-        $this->locationId = $locationId;
-        $this->lastName = $lastName;
-        $this->emailTrxReceipt = $emailTrxReceipt;
-        $this->headerMessageType = $headerMessageType;
-        $this->id = $id;
-        $this->createdTs = $createdTs;
-        $this->modifiedTs = $modifiedTs;
-        $this->active = $active;
-    }
-
-    /**
      * Returns Location Id.
      * Location ID
      */
-    public function getLocationId(): string
+    public function getLocationId(): ?string
     {
         return $this->locationId;
     }
@@ -247,10 +243,9 @@ class Data2 implements \JsonSerializable
      * Sets Location Id.
      * Location ID
      *
-     * @required
      * @maps location_id
      */
-    public function setLocationId(string $locationId): void
+    public function setLocationId(?string $locationId): void
     {
         $this->locationId = $locationId;
     }
@@ -355,7 +350,7 @@ class Data2 implements \JsonSerializable
      * Returns Last Name.
      * Last Name
      */
-    public function getLastName(): string
+    public function getLastName(): ?string
     {
         return $this->lastName;
     }
@@ -364,10 +359,9 @@ class Data2 implements \JsonSerializable
      * Sets Last Name.
      * Last Name
      *
-     * @required
      * @maps last_name
      */
-    public function setLastName(string $lastName): void
+    public function setLastName(?string $lastName): void
     {
         $this->lastName = $lastName;
     }
@@ -556,7 +550,7 @@ class Data2 implements \JsonSerializable
      * Returns Email Trx Receipt.
      * Whether or not to email all transactions receipts to contact (1 or 0)
      */
-    public function getEmailTrxReceipt(): bool
+    public function getEmailTrxReceipt(): ?bool
     {
         return $this->emailTrxReceipt;
     }
@@ -565,10 +559,9 @@ class Data2 implements \JsonSerializable
      * Sets Email Trx Receipt.
      * Whether or not to email all transactions receipts to contact (1 or 0)
      *
-     * @required
      * @maps email_trx_receipt
      */
-    public function setEmailTrxReceipt(bool $emailTrxReceipt): void
+    public function setEmailTrxReceipt(?bool $emailTrxReceipt): void
     {
         $this->emailTrxReceipt = $emailTrxReceipt;
     }
@@ -670,10 +663,106 @@ class Data2 implements \JsonSerializable
     }
 
     /**
+     * Returns Home Phone Country Code.
+     * Home phone country code
+     */
+    public function getHomePhoneCountryCode(): ?string
+    {
+        if (count($this->homePhoneCountryCode) == 0) {
+            return null;
+        }
+        return $this->homePhoneCountryCode['value'];
+    }
+
+    /**
+     * Sets Home Phone Country Code.
+     * Home phone country code
+     *
+     * @maps home_phone_country_code
+     */
+    public function setHomePhoneCountryCode(?string $homePhoneCountryCode): void
+    {
+        $this->homePhoneCountryCode['value'] = $homePhoneCountryCode;
+    }
+
+    /**
+     * Unsets Home Phone Country Code.
+     * Home phone country code
+     */
+    public function unsetHomePhoneCountryCode(): void
+    {
+        $this->homePhoneCountryCode = [];
+    }
+
+    /**
+     * Returns Office Phone Country Code.
+     * Office phone country code
+     */
+    public function getOfficePhoneCountryCode(): ?string
+    {
+        if (count($this->officePhoneCountryCode) == 0) {
+            return null;
+        }
+        return $this->officePhoneCountryCode['value'];
+    }
+
+    /**
+     * Sets Office Phone Country Code.
+     * Office phone country code
+     *
+     * @maps office_phone_country_code
+     */
+    public function setOfficePhoneCountryCode(?string $officePhoneCountryCode): void
+    {
+        $this->officePhoneCountryCode['value'] = $officePhoneCountryCode;
+    }
+
+    /**
+     * Unsets Office Phone Country Code.
+     * Office phone country code
+     */
+    public function unsetOfficePhoneCountryCode(): void
+    {
+        $this->officePhoneCountryCode = [];
+    }
+
+    /**
+     * Returns Cell Phone Country Code.
+     * Cell phone country code
+     */
+    public function getCellPhoneCountryCode(): ?string
+    {
+        if (count($this->cellPhoneCountryCode) == 0) {
+            return null;
+        }
+        return $this->cellPhoneCountryCode['value'];
+    }
+
+    /**
+     * Sets Cell Phone Country Code.
+     * Cell phone country code
+     *
+     * @maps cell_phone_country_code
+     */
+    public function setCellPhoneCountryCode(?string $cellPhoneCountryCode): void
+    {
+        $this->cellPhoneCountryCode['value'] = $cellPhoneCountryCode;
+    }
+
+    /**
+     * Unsets Cell Phone Country Code.
+     * Cell phone country code
+     */
+    public function unsetCellPhoneCountryCode(): void
+    {
+        $this->cellPhoneCountryCode = [];
+    }
+
+    /**
      * Returns Header Message Type.
      * Header Message Type
      */
-    public function getHeaderMessageType(): int
+    public function getHeaderMessageType(): ?int
     {
         return $this->headerMessageType;
     }
@@ -682,10 +771,9 @@ class Data2 implements \JsonSerializable
      * Sets Header Message Type.
      * Header Message Type
      *
-     * @required
      * @maps header_message_type
      */
-    public function setHeaderMessageType(int $headerMessageType): void
+    public function setHeaderMessageType(?int $headerMessageType): void
     {
         $this->headerMessageType = $headerMessageType;
     }
@@ -884,10 +972,42 @@ class Data2 implements \JsonSerializable
     }
 
     /**
+     * Returns Token Import Id.
+     * Token Import Id
+     */
+    public function getTokenImportId(): ?string
+    {
+        if (count($this->tokenImportId) == 0) {
+            return null;
+        }
+        return $this->tokenImportId['value'];
+    }
+
+    /**
+     * Sets Token Import Id.
+     * Token Import Id
+     *
+     * @maps token_import_id
+     */
+    public function setTokenImportId(?string $tokenImportId): void
+    {
+        $this->tokenImportId['value'] = $tokenImportId;
+    }
+
+    /**
+     * Unsets Token Import Id.
+     * Token Import Id
+     */
+    public function unsetTokenImportId(): void
+    {
+        $this->tokenImportId = [];
+    }
+
+    /**
      * Returns Id.
      * Contact ID
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -896,10 +1016,9 @@ class Data2 implements \JsonSerializable
      * Sets Id.
      * Contact ID
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -908,7 +1027,7 @@ class Data2 implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -917,10 +1036,9 @@ class Data2 implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -929,7 +1047,7 @@ class Data2 implements \JsonSerializable
      * Returns Modified Ts.
      * Modified Time Stamp
      */
-    public function getModifiedTs(): int
+    public function getModifiedTs(): ?int
     {
         return $this->modifiedTs;
     }
@@ -938,10 +1056,9 @@ class Data2 implements \JsonSerializable
      * Sets Modified Ts.
      * Modified Time Stamp
      *
-     * @required
      * @maps modified_ts
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setModifiedTs(?int $modifiedTs): void
     {
         $this->modifiedTs = $modifiedTs;
     }
@@ -950,7 +1067,7 @@ class Data2 implements \JsonSerializable
      * Returns Active.
      * Active
      */
-    public function getActive(): bool
+    public function getActive(): ?bool
     {
         return $this->active;
     }
@@ -959,12 +1076,43 @@ class Data2 implements \JsonSerializable
      * Sets Active.
      * Active
      *
-     * @required
      * @maps active
      */
-    public function setActive(bool $active): void
+    public function setActive(?bool $active): void
     {
         $this->active = $active;
+    }
+
+    /**
+     * Returns Created User Id.
+     * User ID Created the register
+     */
+    public function getCreatedUserId(): ?string
+    {
+        if (count($this->createdUserId) == 0) {
+            return null;
+        }
+        return $this->createdUserId['value'];
+    }
+
+    /**
+     * Sets Created User Id.
+     * User ID Created the register
+     *
+     * @maps created_user_id
+     */
+    public function setCreatedUserId(?string $createdUserId): void
+    {
+        $this->createdUserId['value'] = $createdUserId;
+    }
+
+    /**
+     * Unsets Created User Id.
+     * User ID Created the register
+     */
+    public function unsetCreatedUserId(): void
+    {
+        $this->createdUserId = [];
     }
 
     /**
@@ -1224,6 +1372,92 @@ class Data2 implements \JsonSerializable
     }
 
     /**
+     * Converts the Data2 object to a human-readable string representation.
+     *
+     * @return string The string representation of the Data2 object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Data2',
+            [
+                'locationId' => $this->locationId,
+                'accountNumber' => $this->getAccountNumber(),
+                'contactApiId' => $this->getContactApiId(),
+                'firstName' => $this->getFirstName(),
+                'lastName' => $this->lastName,
+                'cellPhone' => $this->getCellPhone(),
+                'balance' => $this->getBalance(),
+                'address' => $this->address,
+                'companyName' => $this->getCompanyName(),
+                'headerMessage' => $this->getHeaderMessage(),
+                'dateOfBirth' => $this->getDateOfBirth(),
+                'emailTrxReceipt' => $this->emailTrxReceipt,
+                'homePhone' => $this->getHomePhone(),
+                'officePhone' => $this->getOfficePhone(),
+                'officePhoneExt' => $this->getOfficePhoneExt(),
+                'homePhoneCountryCode' => $this->getHomePhoneCountryCode(),
+                'officePhoneCountryCode' => $this->getOfficePhoneCountryCode(),
+                'cellPhoneCountryCode' => $this->getCellPhoneCountryCode(),
+                'headerMessageType' => $this->headerMessageType,
+                'updateIfExists' => $this->getUpdateIfExists(),
+                'contactC1' => $this->getContactC1(),
+                'contactC2' => $this->getContactC2(),
+                'contactC3' => $this->getContactC3(),
+                'parentId' => $this->getParentId(),
+                'email' => $this->getEmail(),
+                'tokenImportId' => $this->getTokenImportId(),
+                'id' => $this->id,
+                'createdTs' => $this->createdTs,
+                'modifiedTs' => $this->modifiedTs,
+                'active' => $this->active,
+                'createdUserId' => $this->getCreatedUserId(),
+                'receivedEmails' => $this->receivedEmails,
+                'isDeletable' => $this->isDeletable,
+                'location' => $this->location,
+                'user' => $this->user,
+                'recurrings' => $this->recurrings,
+                'emailBlacklist' => $this->emailBlacklist,
+                'smsBlacklist' => $this->smsBlacklist,
+                'changelogs' => $this->changelogs,
+                'postbackLogs' => $this->postbackLogs,
+                'createdUser' => $this->createdUser,
+                'parent' => $this->parent,
+                'children' => $this->children,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -1235,104 +1469,136 @@ class Data2 implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['location_id']          = $this->locationId;
+        if (isset($this->locationId)) {
+            $json['location_id']               = $this->locationId;
+        }
         if (!empty($this->accountNumber)) {
-            $json['account_number']   = $this->accountNumber['value'];
+            $json['account_number']            = $this->accountNumber['value'];
         }
         if (!empty($this->contactApiId)) {
-            $json['contact_api_id']   = $this->contactApiId['value'];
+            $json['contact_api_id']            = $this->contactApiId['value'];
         }
         if (!empty($this->firstName)) {
-            $json['first_name']       = $this->firstName['value'];
+            $json['first_name']                = $this->firstName['value'];
         }
-        $json['last_name']            = $this->lastName;
+        if (isset($this->lastName)) {
+            $json['last_name']                 = $this->lastName;
+        }
         if (!empty($this->cellPhone)) {
-            $json['cell_phone']       = $this->cellPhone['value'];
+            $json['cell_phone']                = $this->cellPhone['value'];
         }
         if (!empty($this->balance)) {
-            $json['balance']          = $this->balance['value'];
+            $json['balance']                   = $this->balance['value'];
         }
         if (isset($this->address)) {
-            $json['address']          = $this->address;
+            $json['address']                   = $this->address;
         }
         if (!empty($this->companyName)) {
-            $json['company_name']     = $this->companyName['value'];
+            $json['company_name']              = $this->companyName['value'];
         }
         if (!empty($this->headerMessage)) {
-            $json['header_message']   = $this->headerMessage['value'];
+            $json['header_message']            = $this->headerMessage['value'];
         }
         if (!empty($this->dateOfBirth)) {
-            $json['date_of_birth']    = $this->dateOfBirth['value'];
+            $json['date_of_birth']             = $this->dateOfBirth['value'];
         }
-        $json['email_trx_receipt']    = $this->emailTrxReceipt;
+        if (isset($this->emailTrxReceipt)) {
+            $json['email_trx_receipt']         = $this->emailTrxReceipt;
+        }
         if (!empty($this->homePhone)) {
-            $json['home_phone']       = $this->homePhone['value'];
+            $json['home_phone']                = $this->homePhone['value'];
         }
         if (!empty($this->officePhone)) {
-            $json['office_phone']     = $this->officePhone['value'];
+            $json['office_phone']              = $this->officePhone['value'];
         }
         if (!empty($this->officePhoneExt)) {
-            $json['office_phone_ext'] = $this->officePhoneExt['value'];
+            $json['office_phone_ext']          = $this->officePhoneExt['value'];
         }
-        $json['header_message_type']  = $this->headerMessageType;
+        if (!empty($this->homePhoneCountryCode)) {
+            $json['home_phone_country_code']   = $this->homePhoneCountryCode['value'];
+        }
+        if (!empty($this->officePhoneCountryCode)) {
+            $json['office_phone_country_code'] = $this->officePhoneCountryCode['value'];
+        }
+        if (!empty($this->cellPhoneCountryCode)) {
+            $json['cell_phone_country_code']   = $this->cellPhoneCountryCode['value'];
+        }
+        if (isset($this->headerMessageType)) {
+            $json['header_message_type']       = $this->headerMessageType;
+        }
         if (!empty($this->updateIfExists)) {
-            $json['update_if_exists'] = UpdateIfExistsEnum::checkValue($this->updateIfExists['value']);
+            $json['update_if_exists']          = UpdateIfExistsEnum::checkValue($this->updateIfExists['value']);
         }
         if (!empty($this->contactC1)) {
-            $json['contact_c1']       = $this->contactC1['value'];
+            $json['contact_c1']                = $this->contactC1['value'];
         }
         if (!empty($this->contactC2)) {
-            $json['contact_c2']       = $this->contactC2['value'];
+            $json['contact_c2']                = $this->contactC2['value'];
         }
         if (!empty($this->contactC3)) {
-            $json['contact_c3']       = $this->contactC3['value'];
+            $json['contact_c3']                = $this->contactC3['value'];
         }
         if (!empty($this->parentId)) {
-            $json['parent_id']        = $this->parentId['value'];
+            $json['parent_id']                 = $this->parentId['value'];
         }
         if (!empty($this->email)) {
-            $json['email']            = $this->email['value'];
+            $json['email']                     = $this->email['value'];
         }
-        $json['id']                   = $this->id;
-        $json['created_ts']           = $this->createdTs;
-        $json['modified_ts']          = $this->modifiedTs;
-        $json['active']               = $this->active;
+        if (!empty($this->tokenImportId)) {
+            $json['token_import_id']           = $this->tokenImportId['value'];
+        }
+        if (isset($this->id)) {
+            $json['id']                        = $this->id;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']                = $this->createdTs;
+        }
+        if (isset($this->modifiedTs)) {
+            $json['modified_ts']               = $this->modifiedTs;
+        }
+        if (isset($this->active)) {
+            $json['active']                    = $this->active;
+        }
+        if (!empty($this->createdUserId)) {
+            $json['created_user_id']           = $this->createdUserId['value'];
+        }
         if (isset($this->receivedEmails)) {
-            $json['received_emails']  = $this->receivedEmails;
+            $json['received_emails']           = $this->receivedEmails;
         }
         if (isset($this->isDeletable)) {
-            $json['is_deletable']     = $this->isDeletable;
+            $json['is_deletable']              = $this->isDeletable;
         }
         if (isset($this->location)) {
-            $json['location']         = $this->location;
+            $json['location']                  = $this->location;
         }
         if (isset($this->user)) {
-            $json['user']             = $this->user;
+            $json['user']                      = $this->user;
         }
         if (isset($this->recurrings)) {
-            $json['recurrings']       = $this->recurrings;
+            $json['recurrings']                = $this->recurrings;
         }
         if (isset($this->emailBlacklist)) {
-            $json['email_blacklist']  = $this->emailBlacklist;
+            $json['email_blacklist']           = $this->emailBlacklist;
         }
         if (isset($this->smsBlacklist)) {
-            $json['sms_blacklist']    = $this->smsBlacklist;
+            $json['sms_blacklist']             = $this->smsBlacklist;
         }
         if (isset($this->changelogs)) {
-            $json['changelogs']       = $this->changelogs;
+            $json['changelogs']                = $this->changelogs;
         }
         if (isset($this->postbackLogs)) {
-            $json['postback_logs']    = $this->postbackLogs;
+            $json['postback_logs']             = $this->postbackLogs;
         }
         if (isset($this->createdUser)) {
-            $json['created_user']     = $this->createdUser;
+            $json['created_user']              = $this->createdUser;
         }
         if (isset($this->parent)) {
-            $json['parent']           = $this->parent;
+            $json['parent']                    = $this->parent;
         }
         if (isset($this->children)) {
-            $json['children']         = $this->children;
+            $json['children']                  = $this->children;
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

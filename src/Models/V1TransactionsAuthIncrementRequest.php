@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class V1TransactionsAuthIncrementRequest implements \JsonSerializable
@@ -20,7 +21,7 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
     private $additionalAmounts;
 
     /**
-     * @var BillingAddress|null
+     * @var BillingAddress1|null
      */
     private $billingAddress;
 
@@ -98,6 +99,31 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
      * @var array
      */
     private $installmentCount = [];
+
+    /**
+     * @var array
+     */
+    private $recurringFlag = [];
+
+    /**
+     * @var array
+     */
+    private $installmentCounter = [];
+
+    /**
+     * @var array
+     */
+    private $installmentTotal = [];
+
+    /**
+     * @var bool|null
+     */
+    private $subscription;
+
+    /**
+     * @var bool|null
+     */
+    private $standingOrder;
 
     /**
      * @var array
@@ -185,9 +211,9 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
     private $surchargeAmount = [];
 
     /**
-     * @var string[]|null
+     * @var array
      */
-    private $tags;
+    private $tags = [];
 
     /**
      * @var array
@@ -235,6 +261,41 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
     private $bankFundedOnlyOverride;
 
     /**
+     * @var bool|null
+     */
+    private $allowPartialAuthorizationOverride;
+
+    /**
+     * @var bool|null
+     */
+    private $autoDeclineCvvOverride;
+
+    /**
+     * @var bool|null
+     */
+    private $autoDeclineStreetOverride;
+
+    /**
+     * @var bool|null
+     */
+    private $autoDeclineZipOverride;
+
+    /**
+     * @var array
+     */
+    private $ebtType = [];
+
+    /**
+     * @var bool|null
+     */
+    private $deferredAuth;
+
+    /**
+     * @var bool|null
+     */
+    private $miniBar;
+
+    /**
      * @param int $transactionAmount
      */
     public function __construct(int $transactionAmount)
@@ -270,7 +331,7 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
      * Returns Billing Address.
      * Billing Address Object
      */
-    public function getBillingAddress(): ?BillingAddress
+    public function getBillingAddress(): ?BillingAddress1
     {
         return $this->billingAddress;
     }
@@ -281,7 +342,7 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
      *
      * @maps billing_address
      */
-    public function setBillingAddress(?BillingAddress $billingAddress): void
+    public function setBillingAddress(?BillingAddress1 $billingAddress): void
     {
         $this->billingAddress = $billingAddress;
     }
@@ -289,7 +350,9 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
     /**
      * Returns Checkin Date.
      * Checkin Date - The time difference between checkin_date and checkout_date must be less than or equal
-     * to 99 days.
+     * to 99 days. NOTE: if checkin_date is in the future, set the advance_deposit to 1
+     * >Required if merchant industry type is lodging.
+     * >
      */
     public function getCheckinDate(): ?string
     {
@@ -302,7 +365,9 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
     /**
      * Sets Checkin Date.
      * Checkin Date - The time difference between checkin_date and checkout_date must be less than or equal
-     * to 99 days.
+     * to 99 days. NOTE: if checkin_date is in the future, set the advance_deposit to 1
+     * >Required if merchant industry type is lodging.
+     * >
      *
      * @maps checkin_date
      */
@@ -314,7 +379,9 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
     /**
      * Unsets Checkin Date.
      * Checkin Date - The time difference between checkin_date and checkout_date must be less than or equal
-     * to 99 days.
+     * to 99 days. NOTE: if checkin_date is in the future, set the advance_deposit to 1
+     * >Required if merchant industry type is lodging.
+     * >
      */
     public function unsetCheckinDate(): void
     {
@@ -325,6 +392,8 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
      * Returns Checkout Date.
      * Checkout Date - The time difference between checkin_date and checkout_date must be less than or
      * equal to 99 days.
+     * >Required if merchant industry type is lodging.
+     * >
      */
     public function getCheckoutDate(): ?string
     {
@@ -338,6 +407,8 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
      * Sets Checkout Date.
      * Checkout Date - The time difference between checkin_date and checkout_date must be less than or
      * equal to 99 days.
+     * >Required if merchant industry type is lodging.
+     * >
      *
      * @maps checkout_date
      */
@@ -350,6 +421,8 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
      * Unsets Checkout Date.
      * Checkout Date - The time difference between checkin_date and checkout_date must be less than or
      * equal to 99 days.
+     * >Required if merchant industry type is lodging.
+     * >
      */
     public function unsetCheckoutDate(): void
     {
@@ -686,7 +759,7 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
      * If this is a fixed installment plan and installment field is being passed as 1, then this field must
      * have a vlue of 1-999 specifying the current installment number that is running.
      */
-    public function getInstallmentNumber(): ?float
+    public function getInstallmentNumber(): ?int
     {
         if (count($this->installmentNumber) == 0) {
             return null;
@@ -701,7 +774,7 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
      *
      * @maps installment_number
      */
-    public function setInstallmentNumber(?float $installmentNumber): void
+    public function setInstallmentNumber(?int $installmentNumber): void
     {
         $this->installmentNumber['value'] = $installmentNumber;
     }
@@ -722,7 +795,7 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
      * have a vlue of 1-999 specifying the total number of installments on the plan. This number must be
      * grater than or equal to installment_number.
      */
-    public function getInstallmentCount(): ?float
+    public function getInstallmentCount(): ?int
     {
         if (count($this->installmentCount) == 0) {
             return null;
@@ -738,7 +811,7 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
      *
      * @maps installment_count
      */
-    public function setInstallmentCount(?float $installmentCount): void
+    public function setInstallmentCount(?int $installmentCount): void
     {
         $this->installmentCount['value'] = $installmentCount;
     }
@@ -752,6 +825,143 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
     public function unsetInstallmentCount(): void
     {
         $this->installmentCount = [];
+    }
+
+    /**
+     * Returns Recurring Flag.
+     * Recurring Flag
+     */
+    public function getRecurringFlag(): ?string
+    {
+        if (count($this->recurringFlag) == 0) {
+            return null;
+        }
+        return $this->recurringFlag['value'];
+    }
+
+    /**
+     * Sets Recurring Flag.
+     * Recurring Flag
+     *
+     * @maps recurring_flag
+     * @factory \FortisAPILib\Models\RecurringFlagEnum::checkValue
+     */
+    public function setRecurringFlag(?string $recurringFlag): void
+    {
+        $this->recurringFlag['value'] = $recurringFlag;
+    }
+
+    /**
+     * Unsets Recurring Flag.
+     * Recurring Flag
+     */
+    public function unsetRecurringFlag(): void
+    {
+        $this->recurringFlag = [];
+    }
+
+    /**
+     * Returns Installment Counter.
+     * Installment Counter
+     */
+    public function getInstallmentCounter(): ?int
+    {
+        if (count($this->installmentCounter) == 0) {
+            return null;
+        }
+        return $this->installmentCounter['value'];
+    }
+
+    /**
+     * Sets Installment Counter.
+     * Installment Counter
+     *
+     * @maps installment_counter
+     */
+    public function setInstallmentCounter(?int $installmentCounter): void
+    {
+        $this->installmentCounter['value'] = $installmentCounter;
+    }
+
+    /**
+     * Unsets Installment Counter.
+     * Installment Counter
+     */
+    public function unsetInstallmentCounter(): void
+    {
+        $this->installmentCounter = [];
+    }
+
+    /**
+     * Returns Installment Total.
+     * Installment Total
+     */
+    public function getInstallmentTotal(): ?int
+    {
+        if (count($this->installmentTotal) == 0) {
+            return null;
+        }
+        return $this->installmentTotal['value'];
+    }
+
+    /**
+     * Sets Installment Total.
+     * Installment Total
+     *
+     * @maps installment_total
+     */
+    public function setInstallmentTotal(?int $installmentTotal): void
+    {
+        $this->installmentTotal['value'] = $installmentTotal;
+    }
+
+    /**
+     * Unsets Installment Total.
+     * Installment Total
+     */
+    public function unsetInstallmentTotal(): void
+    {
+        $this->installmentTotal = [];
+    }
+
+    /**
+     * Returns Subscription.
+     * Subscription
+     */
+    public function getSubscription(): ?bool
+    {
+        return $this->subscription;
+    }
+
+    /**
+     * Sets Subscription.
+     * Subscription
+     *
+     * @maps subscription
+     */
+    public function setSubscription(?bool $subscription): void
+    {
+        $this->subscription = $subscription;
+    }
+
+    /**
+     * Returns Standing Order.
+     * Standing Order
+     */
+    public function getStandingOrder(): ?bool
+    {
+        return $this->standingOrder;
+    }
+
+    /**
+     * Sets Standing Order.
+     * Standing Order
+     *
+     * @maps standing_order
+     */
+    public function setStandingOrder(?bool $standingOrder): void
+    {
+        $this->standingOrder = $standingOrder;
     }
 
     /**
@@ -1059,7 +1269,7 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
      * If this is an ongoing recurring and recurring field is being passed as 1, then this field must have
      * a vlue of 1-999 specifying the current recurring number that is running.
      */
-    public function getRecurringNumber(): ?float
+    public function getRecurringNumber(): ?int
     {
         if (count($this->recurringNumber) == 0) {
             return null;
@@ -1074,7 +1284,7 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
      *
      * @maps recurring_number
      */
-    public function setRecurringNumber(?float $recurringNumber): void
+    public function setRecurringNumber(?int $recurringNumber): void
     {
         $this->recurringNumber['value'] = $recurringNumber;
     }
@@ -1285,7 +1495,10 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
      */
     public function getTags(): ?array
     {
-        return $this->tags;
+        if (count($this->tags) == 0) {
+            return null;
+        }
+        return $this->tags['value'];
     }
 
     /**
@@ -1298,7 +1511,16 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
      */
     public function setTags(?array $tags): void
     {
-        $this->tags = $tags;
+        $this->tags['value'] = $tags;
+    }
+
+    /**
+     * Unsets Tags.
+     * Tags
+     */
+    public function unsetTags(): void
+    {
+        $this->tags = [];
     }
 
     /**
@@ -1396,7 +1618,7 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
 
     /**
      * Returns Secondary Amount.
-     * Secondary Amount of the transaction. This should always be less than transaction amount. Use only
+     * Retained Amount of the transaction. This should always be less than transaction amount. Use only
      * integer numbers, so $10.99 will be 1099
      */
     public function getSecondaryAmount(): ?int
@@ -1409,7 +1631,7 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
 
     /**
      * Sets Secondary Amount.
-     * Secondary Amount of the transaction. This should always be less than transaction amount. Use only
+     * Retained Amount of the transaction. This should always be less than transaction amount. Use only
      * integer numbers, so $10.99 will be 1099
      *
      * @maps secondary_amount
@@ -1421,7 +1643,7 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
 
     /**
      * Unsets Secondary Amount.
-     * Secondary Amount of the transaction. This should always be less than transaction amount. Use only
+     * Retained Amount of the transaction. This should always be less than transaction amount. Use only
      * integer numbers, so $10.99 will be 1099
      */
     public function unsetSecondaryAmount(): void
@@ -1578,6 +1800,258 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
     }
 
     /**
+     * Returns Allow Partial Authorization Override.
+     * Allow Partial Authorization Override
+     */
+    public function getAllowPartialAuthorizationOverride(): ?bool
+    {
+        return $this->allowPartialAuthorizationOverride;
+    }
+
+    /**
+     * Sets Allow Partial Authorization Override.
+     * Allow Partial Authorization Override
+     *
+     * @maps allow_partial_authorization_override
+     */
+    public function setAllowPartialAuthorizationOverride(?bool $allowPartialAuthorizationOverride): void
+    {
+        $this->allowPartialAuthorizationOverride = $allowPartialAuthorizationOverride;
+    }
+
+    /**
+     * Returns Auto Decline Cvv Override.
+     * Auto Decline CVV Override
+     */
+    public function getAutoDeclineCvvOverride(): ?bool
+    {
+        return $this->autoDeclineCvvOverride;
+    }
+
+    /**
+     * Sets Auto Decline Cvv Override.
+     * Auto Decline CVV Override
+     *
+     * @maps auto_decline_cvv_override
+     */
+    public function setAutoDeclineCvvOverride(?bool $autoDeclineCvvOverride): void
+    {
+        $this->autoDeclineCvvOverride = $autoDeclineCvvOverride;
+    }
+
+    /**
+     * Returns Auto Decline Street Override.
+     * Auto Decline Street Override
+     */
+    public function getAutoDeclineStreetOverride(): ?bool
+    {
+        return $this->autoDeclineStreetOverride;
+    }
+
+    /**
+     * Sets Auto Decline Street Override.
+     * Auto Decline Street Override
+     *
+     * @maps auto_decline_street_override
+     */
+    public function setAutoDeclineStreetOverride(?bool $autoDeclineStreetOverride): void
+    {
+        $this->autoDeclineStreetOverride = $autoDeclineStreetOverride;
+    }
+
+    /**
+     * Returns Auto Decline Zip Override.
+     * Auto Decline Zip Override
+     */
+    public function getAutoDeclineZipOverride(): ?bool
+    {
+        return $this->autoDeclineZipOverride;
+    }
+
+    /**
+     * Sets Auto Decline Zip Override.
+     * Auto Decline Zip Override
+     *
+     * @maps auto_decline_zip_override
+     */
+    public function setAutoDeclineZipOverride(?bool $autoDeclineZipOverride): void
+    {
+        $this->autoDeclineZipOverride = $autoDeclineZipOverride;
+    }
+
+    /**
+     * Returns Ebt Type.
+     * EBT Type
+     */
+    public function getEbtType(): ?string
+    {
+        if (count($this->ebtType) == 0) {
+            return null;
+        }
+        return $this->ebtType['value'];
+    }
+
+    /**
+     * Sets Ebt Type.
+     * EBT Type
+     *
+     * @maps ebt_type
+     * @factory \FortisAPILib\Models\EbtTypeEnum::checkValue
+     */
+    public function setEbtType(?string $ebtType): void
+    {
+        $this->ebtType['value'] = $ebtType;
+    }
+
+    /**
+     * Unsets Ebt Type.
+     * EBT Type
+     */
+    public function unsetEbtType(): void
+    {
+        $this->ebtType = [];
+    }
+
+    /**
+     * Returns Deferred Auth.
+     * Deferred Auth
+     */
+    public function getDeferredAuth(): ?bool
+    {
+        return $this->deferredAuth;
+    }
+
+    /**
+     * Sets Deferred Auth.
+     * Deferred Auth
+     *
+     * @maps deferred_auth
+     */
+    public function setDeferredAuth(?bool $deferredAuth): void
+    {
+        $this->deferredAuth = $deferredAuth;
+    }
+
+    /**
+     * Returns Mini Bar.
+     * Mini Bar
+     */
+    public function getMiniBar(): ?bool
+    {
+        return $this->miniBar;
+    }
+
+    /**
+     * Sets Mini Bar.
+     * Mini Bar
+     *
+     * @maps mini_bar
+     */
+    public function setMiniBar(?bool $miniBar): void
+    {
+        $this->miniBar = $miniBar;
+    }
+
+    /**
+     * Converts the V1TransactionsAuthIncrementRequest object to a human-readable string representation.
+     *
+     * @return string The string representation of the V1TransactionsAuthIncrementRequest object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'V1TransactionsAuthIncrementRequest',
+            [
+                'additionalAmounts' => $this->additionalAmounts,
+                'billingAddress' => $this->billingAddress,
+                'checkinDate' => $this->getCheckinDate(),
+                'checkoutDate' => $this->getCheckoutDate(),
+                'clerkNumber' => $this->getClerkNumber(),
+                'contactApiId' => $this->getContactApiId(),
+                'contactId' => $this->getContactId(),
+                'customData' => $this->customData,
+                'customerId' => $this->getCustomerId(),
+                'description' => $this->getDescription(),
+                'identityVerification' => $this->identityVerification,
+                'iiasInd' => $this->getIiasInd(),
+                'imageFront' => $this->getImageFront(),
+                'imageBack' => $this->getImageBack(),
+                'installment' => $this->installment,
+                'installmentNumber' => $this->getInstallmentNumber(),
+                'installmentCount' => $this->getInstallmentCount(),
+                'recurringFlag' => $this->getRecurringFlag(),
+                'installmentCounter' => $this->getInstallmentCounter(),
+                'installmentTotal' => $this->getInstallmentTotal(),
+                'subscription' => $this->subscription,
+                'standingOrder' => $this->standingOrder,
+                'locationApiId' => $this->getLocationApiId(),
+                'locationId' => $this->getLocationId(),
+                'productTransactionId' => $this->getProductTransactionId(),
+                'advanceDeposit' => $this->advanceDeposit,
+                'noShow' => $this->noShow,
+                'notificationEmailAddress' => $this->getNotificationEmailAddress(),
+                'orderNumber' => $this->getOrderNumber(),
+                'poNumber' => $this->getPoNumber(),
+                'quickInvoiceId' => $this->getQuickInvoiceId(),
+                'recurring' => $this->recurring,
+                'recurringNumber' => $this->getRecurringNumber(),
+                'roomNum' => $this->getRoomNum(),
+                'roomRate' => $this->getRoomRate(),
+                'saveAccount' => $this->saveAccount,
+                'saveAccountTitle' => $this->getSaveAccountTitle(),
+                'subtotalAmount' => $this->getSubtotalAmount(),
+                'surchargeAmount' => $this->getSurchargeAmount(),
+                'tags' => $this->getTags(),
+                'tax' => $this->getTax(),
+                'tipAmount' => $this->getTipAmount(),
+                'transactionAmount' => $this->transactionAmount,
+                'secondaryAmount' => $this->getSecondaryAmount(),
+                'transactionApiId' => $this->getTransactionApiId(),
+                'transactionC1' => $this->getTransactionC1(),
+                'transactionC2' => $this->getTransactionC2(),
+                'transactionC3' => $this->getTransactionC3(),
+                'bankFundedOnlyOverride' => $this->bankFundedOnlyOverride,
+                'allowPartialAuthorizationOverride' => $this->allowPartialAuthorizationOverride,
+                'autoDeclineCvvOverride' => $this->autoDeclineCvvOverride,
+                'autoDeclineStreetOverride' => $this->autoDeclineStreetOverride,
+                'autoDeclineZipOverride' => $this->autoDeclineZipOverride,
+                'ebtType' => $this->getEbtType(),
+                'deferredAuth' => $this->deferredAuth,
+                'miniBar' => $this->miniBar,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -1590,135 +2064,175 @@ class V1TransactionsAuthIncrementRequest implements \JsonSerializable
     {
         $json = [];
         if (isset($this->additionalAmounts)) {
-            $json['additional_amounts']         = $this->additionalAmounts;
+            $json['additional_amounts']                   = $this->additionalAmounts;
         }
         if (isset($this->billingAddress)) {
-            $json['billing_address']            = $this->billingAddress;
+            $json['billing_address']                      = $this->billingAddress;
         }
         if (!empty($this->checkinDate)) {
-            $json['checkin_date']               = $this->checkinDate['value'];
+            $json['checkin_date']                         = $this->checkinDate['value'];
         }
         if (!empty($this->checkoutDate)) {
-            $json['checkout_date']              = $this->checkoutDate['value'];
+            $json['checkout_date']                        = $this->checkoutDate['value'];
         }
         if (!empty($this->clerkNumber)) {
-            $json['clerk_number']               = $this->clerkNumber['value'];
+            $json['clerk_number']                         = $this->clerkNumber['value'];
         }
         if (!empty($this->contactApiId)) {
-            $json['contact_api_id']             = $this->contactApiId['value'];
+            $json['contact_api_id']                       = $this->contactApiId['value'];
         }
         if (!empty($this->contactId)) {
-            $json['contact_id']                 = $this->contactId['value'];
+            $json['contact_id']                           = $this->contactId['value'];
         }
         if (isset($this->customData)) {
-            $json['custom_data']                = $this->customData;
+            $json['custom_data']                          = $this->customData;
         }
         if (!empty($this->customerId)) {
-            $json['customer_id']                = $this->customerId['value'];
+            $json['customer_id']                          = $this->customerId['value'];
         }
         if (!empty($this->description)) {
-            $json['description']                = $this->description['value'];
+            $json['description']                          = $this->description['value'];
         }
         if (isset($this->identityVerification)) {
-            $json['identity_verification']      = $this->identityVerification;
+            $json['identity_verification']                = $this->identityVerification;
         }
         if (!empty($this->iiasInd)) {
-            $json['iias_ind']                   = IiasIndEnum::checkValue($this->iiasInd['value']);
+            $json['iias_ind']                             = IiasIndEnum::checkValue($this->iiasInd['value']);
         }
         if (!empty($this->imageFront)) {
-            $json['image_front']                = $this->imageFront['value'];
+            $json['image_front']                          = $this->imageFront['value'];
         }
         if (!empty($this->imageBack)) {
-            $json['image_back']                 = $this->imageBack['value'];
+            $json['image_back']                           = $this->imageBack['value'];
         }
         if (isset($this->installment)) {
-            $json['installment']                = $this->installment;
+            $json['installment']                          = $this->installment;
         }
         if (!empty($this->installmentNumber)) {
-            $json['installment_number']         = $this->installmentNumber['value'];
+            $json['installment_number']                   = $this->installmentNumber['value'];
         }
         if (!empty($this->installmentCount)) {
-            $json['installment_count']          = $this->installmentCount['value'];
+            $json['installment_count']                    = $this->installmentCount['value'];
+        }
+        if (!empty($this->recurringFlag)) {
+            $json['recurring_flag']                       =
+                RecurringFlagEnum::checkValue(
+                    $this->recurringFlag['value']
+                );
+        }
+        if (!empty($this->installmentCounter)) {
+            $json['installment_counter']                  = $this->installmentCounter['value'];
+        }
+        if (!empty($this->installmentTotal)) {
+            $json['installment_total']                    = $this->installmentTotal['value'];
+        }
+        if (isset($this->subscription)) {
+            $json['subscription']                         = $this->subscription;
+        }
+        if (isset($this->standingOrder)) {
+            $json['standing_order']                       = $this->standingOrder;
         }
         if (!empty($this->locationApiId)) {
-            $json['location_api_id']            = $this->locationApiId['value'];
+            $json['location_api_id']                      = $this->locationApiId['value'];
         }
         if (!empty($this->locationId)) {
-            $json['location_id']                = $this->locationId['value'];
+            $json['location_id']                          = $this->locationId['value'];
         }
         if (!empty($this->productTransactionId)) {
-            $json['product_transaction_id']     = $this->productTransactionId['value'];
+            $json['product_transaction_id']               = $this->productTransactionId['value'];
         }
         if (isset($this->advanceDeposit)) {
-            $json['advance_deposit']            = $this->advanceDeposit;
+            $json['advance_deposit']                      = $this->advanceDeposit;
         }
         if (isset($this->noShow)) {
-            $json['no_show']                    = $this->noShow;
+            $json['no_show']                              = $this->noShow;
         }
         if (!empty($this->notificationEmailAddress)) {
-            $json['notification_email_address'] = $this->notificationEmailAddress['value'];
+            $json['notification_email_address']           = $this->notificationEmailAddress['value'];
         }
         if (!empty($this->orderNumber)) {
-            $json['order_number']               = $this->orderNumber['value'];
+            $json['order_number']                         = $this->orderNumber['value'];
         }
         if (!empty($this->poNumber)) {
-            $json['po_number']                  = $this->poNumber['value'];
+            $json['po_number']                            = $this->poNumber['value'];
         }
         if (!empty($this->quickInvoiceId)) {
-            $json['quick_invoice_id']           = $this->quickInvoiceId['value'];
+            $json['quick_invoice_id']                     = $this->quickInvoiceId['value'];
         }
         if (isset($this->recurring)) {
-            $json['recurring']                  = $this->recurring;
+            $json['recurring']                            = $this->recurring;
         }
         if (!empty($this->recurringNumber)) {
-            $json['recurring_number']           = $this->recurringNumber['value'];
+            $json['recurring_number']                     = $this->recurringNumber['value'];
         }
         if (!empty($this->roomNum)) {
-            $json['room_num']                   = $this->roomNum['value'];
+            $json['room_num']                             = $this->roomNum['value'];
         }
         if (!empty($this->roomRate)) {
-            $json['room_rate']                  = $this->roomRate['value'];
+            $json['room_rate']                            = $this->roomRate['value'];
         }
         if (isset($this->saveAccount)) {
-            $json['save_account']               = $this->saveAccount;
+            $json['save_account']                         = $this->saveAccount;
         }
         if (!empty($this->saveAccountTitle)) {
-            $json['save_account_title']         = $this->saveAccountTitle['value'];
+            $json['save_account_title']                   = $this->saveAccountTitle['value'];
         }
         if (!empty($this->subtotalAmount)) {
-            $json['subtotal_amount']            = $this->subtotalAmount['value'];
+            $json['subtotal_amount']                      = $this->subtotalAmount['value'];
         }
         if (!empty($this->surchargeAmount)) {
-            $json['surcharge_amount']           = $this->surchargeAmount['value'];
+            $json['surcharge_amount']                     = $this->surchargeAmount['value'];
         }
-        if (isset($this->tags)) {
-            $json['tags']                       = $this->tags;
+        if (!empty($this->tags)) {
+            $json['tags']                                 = $this->tags['value'];
         }
         if (!empty($this->tax)) {
-            $json['tax']                        = $this->tax['value'];
+            $json['tax']                                  = $this->tax['value'];
         }
         if (!empty($this->tipAmount)) {
-            $json['tip_amount']                 = $this->tipAmount['value'];
+            $json['tip_amount']                           = $this->tipAmount['value'];
         }
-        $json['transaction_amount']             = $this->transactionAmount;
+        $json['transaction_amount']                       = $this->transactionAmount;
         if (!empty($this->secondaryAmount)) {
-            $json['secondary_amount']           = $this->secondaryAmount['value'];
+            $json['secondary_amount']                     = $this->secondaryAmount['value'];
         }
         if (!empty($this->transactionApiId)) {
-            $json['transaction_api_id']         = $this->transactionApiId['value'];
+            $json['transaction_api_id']                   = $this->transactionApiId['value'];
         }
         if (!empty($this->transactionC1)) {
-            $json['transaction_c1']             = $this->transactionC1['value'];
+            $json['transaction_c1']                       = $this->transactionC1['value'];
         }
         if (!empty($this->transactionC2)) {
-            $json['transaction_c2']             = $this->transactionC2['value'];
+            $json['transaction_c2']                       = $this->transactionC2['value'];
         }
         if (!empty($this->transactionC3)) {
-            $json['transaction_c3']             = $this->transactionC3['value'];
+            $json['transaction_c3']                       = $this->transactionC3['value'];
         }
         if (isset($this->bankFundedOnlyOverride)) {
-            $json['bank_funded_only_override']  = $this->bankFundedOnlyOverride;
+            $json['bank_funded_only_override']            = $this->bankFundedOnlyOverride;
         }
+        if (isset($this->allowPartialAuthorizationOverride)) {
+            $json['allow_partial_authorization_override'] = $this->allowPartialAuthorizationOverride;
+        }
+        if (isset($this->autoDeclineCvvOverride)) {
+            $json['auto_decline_cvv_override']            = $this->autoDeclineCvvOverride;
+        }
+        if (isset($this->autoDeclineStreetOverride)) {
+            $json['auto_decline_street_override']         = $this->autoDeclineStreetOverride;
+        }
+        if (isset($this->autoDeclineZipOverride)) {
+            $json['auto_decline_zip_override']            = $this->autoDeclineZipOverride;
+        }
+        if (!empty($this->ebtType)) {
+            $json['ebt_type']                             = EbtTypeEnum::checkValue($this->ebtType['value']);
+        }
+        if (isset($this->deferredAuth)) {
+            $json['deferred_auth']                        = $this->deferredAuth;
+        }
+        if (isset($this->miniBar)) {
+            $json['mini_bar']                             = $this->miniBar;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -25,12 +26,12 @@ class AccountVault implements \JsonSerializable
     /**
      * @var array
      */
-    private $accountNumber = [];
+    private $accountVaultApiId = [];
 
     /**
      * @var array
      */
-    private $accountVaultApiId = [];
+    private $tokenApiId = [];
 
     /**
      * @var array
@@ -46,6 +47,21 @@ class AccountVault implements \JsonSerializable
      * @var array
      */
     private $accountvaultC3 = [];
+
+    /**
+     * @var array
+     */
+    private $tokenC1 = [];
+
+    /**
+     * @var array
+     */
+    private $tokenC2 = [];
+
+    /**
+     * @var array
+     */
+    private $tokenC3 = [];
 
     /**
      * @var array
@@ -73,7 +89,7 @@ class AccountVault implements \JsonSerializable
     private $identityVerification;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $locationId;
 
@@ -85,12 +101,27 @@ class AccountVault implements \JsonSerializable
     /**
      * @var array
      */
+    private $previousTokenApiId = [];
+
+    /**
+     * @var array
+     */
     private $previousAccountVaultId = [];
 
     /**
      * @var array
      */
+    private $previousTokenId = [];
+
+    /**
+     * @var array
+     */
     private $previousTransactionId = [];
+
+    /**
+     * @var array
+     */
+    private $accountNumber = [];
 
     /**
      * @var bool|null
@@ -108,12 +139,52 @@ class AccountVault implements \JsonSerializable
     private $title = [];
 
     /**
-     * @var string
+     * @var array
+     */
+    private $tokenImportId = [];
+
+    /**
+     * @var array
+     */
+    private $secureDirectoryServerTransactionId = [];
+
+    /**
+     * @var array
+     */
+    private $secureProtocolVersion = [];
+
+    /**
+     * @var array
+     */
+    private $secureAuthData = [];
+
+    /**
+     * @var array
+     */
+    private $secureCollectionIndicator = [];
+
+    /**
+     * @var array
+     */
+    private $threeDsServerTransId = [];
+
+    /**
+     * @var array
+     */
+    private $acsTransactionId = [];
+
+    /**
+     * @var Joi4|null
+     */
+    private $joi;
+
+    /**
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $accountType;
 
@@ -123,12 +194,12 @@ class AccountVault implements \JsonSerializable
     private $active;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $cauSummaryStatusId;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
@@ -158,27 +229,32 @@ class AccountVault implements \JsonSerializable
     private $expiringInMonths = [];
 
     /**
-     * @var string
+     * @var array
+     */
+    private $expDate = [];
+
+    /**
+     * @var string|null
      */
     private $firstSix;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $hasRecurring;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $lastFour;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $modifiedTs;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $paymentMethod;
 
@@ -193,44 +269,30 @@ class AccountVault implements \JsonSerializable
     private $trackData = [];
 
     /**
-     * @param string $locationId
-     * @param string $id
-     * @param string $accountType
-     * @param int $cauSummaryStatusId
-     * @param int $createdTs
-     * @param string $firstSix
-     * @param bool $hasRecurring
-     * @param string $lastFour
-     * @param int $modifiedTs
-     * @param string $paymentMethod
+     * @var array
      */
-    public function __construct(
-        string $locationId,
-        string $id,
-        string $accountType,
-        int $cauSummaryStatusId,
-        int $createdTs,
-        string $firstSix,
-        bool $hasRecurring,
-        string $lastFour,
-        int $modifiedTs,
-        string $paymentMethod
-    ) {
-        $this->locationId = $locationId;
-        $this->id = $id;
-        $this->accountType = $accountType;
-        $this->cauSummaryStatusId = $cauSummaryStatusId;
-        $this->createdTs = $createdTs;
-        $this->firstSix = $firstSix;
-        $this->hasRecurring = $hasRecurring;
-        $this->lastFour = $lastFour;
-        $this->modifiedTs = $modifiedTs;
-        $this->paymentMethod = $paymentMethod;
-    }
+    private $createdUserId = [];
+
+    /**
+     * @var array
+     */
+    private $cauLastUpdatedTs = [];
+
+    /**
+     * @var array
+     */
+    private $cardBin = [];
+
+    /**
+     * @var array
+     */
+    private $routingNumber = [];
 
     /**
      * Returns Account Holder Name.
      * Account holder name
+     * >For CC, this is the 'Name (as it appears) on Card'. For ACH, this is the 'Name on Account'.
+     * >
      */
     public function getAccountHolderName(): ?string
     {
@@ -243,6 +305,8 @@ class AccountVault implements \JsonSerializable
     /**
      * Sets Account Holder Name.
      * Account holder name
+     * >For CC, this is the 'Name (as it appears) on Card'. For ACH, this is the 'Name on Account'.
+     * >
      *
      * @maps account_holder_name
      */
@@ -254,6 +318,8 @@ class AccountVault implements \JsonSerializable
     /**
      * Unsets Account Holder Name.
      * Account holder name
+     * >For CC, this is the 'Name (as it appears) on Card'. For ACH, this is the 'Name on Account'.
+     * >
      */
     public function unsetAccountHolderName(): void
     {
@@ -261,41 +327,12 @@ class AccountVault implements \JsonSerializable
     }
 
     /**
-     * Returns Account Number.
-     * Account number
-     */
-    public function getAccountNumber(): ?string
-    {
-        if (count($this->accountNumber) == 0) {
-            return null;
-        }
-        return $this->accountNumber['value'];
-    }
-
-    /**
-     * Sets Account Number.
-     * Account number
-     *
-     * @maps account_number
-     */
-    public function setAccountNumber(?string $accountNumber): void
-    {
-        $this->accountNumber['value'] = $accountNumber;
-    }
-
-    /**
-     * Unsets Account Number.
-     * Account number
-     */
-    public function unsetAccountNumber(): void
-    {
-        $this->accountNumber = [];
-    }
-
-    /**
      * Returns Account Vault Api Id.
      * This field can be used to correlate Tokens in our system to data within an outside software
      * integration
+     * >Must be unique per location. When running a transaction and using a stored token, this field can be
+     * used in place of account_vault_id.
+     * >
      */
     public function getAccountVaultApiId(): ?string
     {
@@ -309,6 +346,9 @@ class AccountVault implements \JsonSerializable
      * Sets Account Vault Api Id.
      * This field can be used to correlate Tokens in our system to data within an outside software
      * integration
+     * >Must be unique per location. When running a transaction and using a stored token, this field can be
+     * used in place of account_vault_id.
+     * >
      *
      * @maps account_vault_api_id
      */
@@ -321,6 +361,9 @@ class AccountVault implements \JsonSerializable
      * Unsets Account Vault Api Id.
      * This field can be used to correlate Tokens in our system to data within an outside software
      * integration
+     * >Must be unique per location. When running a transaction and using a stored token, this field can be
+     * used in place of account_vault_id.
+     * >
      */
     public function unsetAccountVaultApiId(): void
     {
@@ -328,8 +371,52 @@ class AccountVault implements \JsonSerializable
     }
 
     /**
+     * Returns Token Api Id.
+     * This field can be used to correlate Tokens in our system to data within an outside software
+     * integration
+     * >Must be unique per location. When running a transaction and using a stored token, this field can be
+     * used in place of token_id.
+     * >
+     */
+    public function getTokenApiId(): ?string
+    {
+        if (count($this->tokenApiId) == 0) {
+            return null;
+        }
+        return $this->tokenApiId['value'];
+    }
+
+    /**
+     * Sets Token Api Id.
+     * This field can be used to correlate Tokens in our system to data within an outside software
+     * integration
+     * >Must be unique per location. When running a transaction and using a stored token, this field can be
+     * used in place of token_id.
+     * >
+     *
+     * @maps token_api_id
+     */
+    public function setTokenApiId(?string $tokenApiId): void
+    {
+        $this->tokenApiId['value'] = $tokenApiId;
+    }
+
+    /**
+     * Unsets Token Api Id.
+     * This field can be used to correlate Tokens in our system to data within an outside software
+     * integration
+     * >Must be unique per location. When running a transaction and using a stored token, this field can be
+     * used in place of token_id.
+     * >
+     */
+    public function unsetTokenApiId(): void
+    {
+        $this->tokenApiId = [];
+    }
+
+    /**
      * Returns Accountvault C1.
-     * Custom field 1 for API users to store custom data
+     * DEPRECATED (Use token_c1 instead)
      */
     public function getAccountvaultC1(): ?string
     {
@@ -341,7 +428,7 @@ class AccountVault implements \JsonSerializable
 
     /**
      * Sets Accountvault C1.
-     * Custom field 1 for API users to store custom data
+     * DEPRECATED (Use token_c1 instead)
      *
      * @maps accountvault_c1
      */
@@ -352,7 +439,7 @@ class AccountVault implements \JsonSerializable
 
     /**
      * Unsets Accountvault C1.
-     * Custom field 1 for API users to store custom data
+     * DEPRECATED (Use token_c1 instead)
      */
     public function unsetAccountvaultC1(): void
     {
@@ -361,7 +448,7 @@ class AccountVault implements \JsonSerializable
 
     /**
      * Returns Accountvault C2.
-     * Custom field 2 for API users to store custom data
+     * DEPRECATED (Use token_c2 instead)
      */
     public function getAccountvaultC2(): ?string
     {
@@ -373,7 +460,7 @@ class AccountVault implements \JsonSerializable
 
     /**
      * Sets Accountvault C2.
-     * Custom field 2 for API users to store custom data
+     * DEPRECATED (Use token_c2 instead)
      *
      * @maps accountvault_c2
      */
@@ -384,7 +471,7 @@ class AccountVault implements \JsonSerializable
 
     /**
      * Unsets Accountvault C2.
-     * Custom field 2 for API users to store custom data
+     * DEPRECATED (Use token_c2 instead)
      */
     public function unsetAccountvaultC2(): void
     {
@@ -393,7 +480,7 @@ class AccountVault implements \JsonSerializable
 
     /**
      * Returns Accountvault C3.
-     * Custom field 3 for API users to store custom data
+     * DEPRECATED (Use token_c3 instead)
      */
     public function getAccountvaultC3(): ?string
     {
@@ -405,7 +492,7 @@ class AccountVault implements \JsonSerializable
 
     /**
      * Sets Accountvault C3.
-     * Custom field 3 for API users to store custom data
+     * DEPRECATED (Use token_c3 instead)
      *
      * @maps accountvault_c3
      */
@@ -416,11 +503,107 @@ class AccountVault implements \JsonSerializable
 
     /**
      * Unsets Accountvault C3.
-     * Custom field 3 for API users to store custom data
+     * DEPRECATED (Use token_c3 instead)
      */
     public function unsetAccountvaultC3(): void
     {
         $this->accountvaultC3 = [];
+    }
+
+    /**
+     * Returns Token C1.
+     * Custom field 1 for API users to store custom data
+     */
+    public function getTokenC1(): ?string
+    {
+        if (count($this->tokenC1) == 0) {
+            return null;
+        }
+        return $this->tokenC1['value'];
+    }
+
+    /**
+     * Sets Token C1.
+     * Custom field 1 for API users to store custom data
+     *
+     * @maps token_c1
+     */
+    public function setTokenC1(?string $tokenC1): void
+    {
+        $this->tokenC1['value'] = $tokenC1;
+    }
+
+    /**
+     * Unsets Token C1.
+     * Custom field 1 for API users to store custom data
+     */
+    public function unsetTokenC1(): void
+    {
+        $this->tokenC1 = [];
+    }
+
+    /**
+     * Returns Token C2.
+     * Custom field 2 for API users to store custom data
+     */
+    public function getTokenC2(): ?string
+    {
+        if (count($this->tokenC2) == 0) {
+            return null;
+        }
+        return $this->tokenC2['value'];
+    }
+
+    /**
+     * Sets Token C2.
+     * Custom field 2 for API users to store custom data
+     *
+     * @maps token_c2
+     */
+    public function setTokenC2(?string $tokenC2): void
+    {
+        $this->tokenC2['value'] = $tokenC2;
+    }
+
+    /**
+     * Unsets Token C2.
+     * Custom field 2 for API users to store custom data
+     */
+    public function unsetTokenC2(): void
+    {
+        $this->tokenC2 = [];
+    }
+
+    /**
+     * Returns Token C3.
+     * Custom field 3 for API users to store custom data
+     */
+    public function getTokenC3(): ?string
+    {
+        if (count($this->tokenC3) == 0) {
+            return null;
+        }
+        return $this->tokenC3['value'];
+    }
+
+    /**
+     * Sets Token C3.
+     * Custom field 3 for API users to store custom data
+     *
+     * @maps token_c3
+     */
+    public function setTokenC3(?string $tokenC3): void
+    {
+        $this->tokenC3['value'] = $tokenC3;
+    }
+
+    /**
+     * Unsets Token C3.
+     * Custom field 3 for API users to store custom data
+     */
+    public function unsetTokenC3(): void
+    {
+        $this->tokenC3 = [];
     }
 
     /**
@@ -564,7 +747,7 @@ class AccountVault implements \JsonSerializable
      * Returns Location Id.
      * A valid Location Id associated with the Contact for this Token
      */
-    public function getLocationId(): string
+    public function getLocationId(): ?string
     {
         return $this->locationId;
     }
@@ -573,10 +756,9 @@ class AccountVault implements \JsonSerializable
      * Sets Location Id.
      * A valid Location Id associated with the Contact for this Token
      *
-     * @required
      * @maps location_id
      */
-    public function setLocationId(string $locationId): void
+    public function setLocationId(?string $locationId): void
     {
         $this->locationId = $locationId;
     }
@@ -614,6 +796,38 @@ class AccountVault implements \JsonSerializable
     }
 
     /**
+     * Returns Previous Token Api Id.
+     * Can be used to pull payment info from a previous token api id.
+     */
+    public function getPreviousTokenApiId(): ?string
+    {
+        if (count($this->previousTokenApiId) == 0) {
+            return null;
+        }
+        return $this->previousTokenApiId['value'];
+    }
+
+    /**
+     * Sets Previous Token Api Id.
+     * Can be used to pull payment info from a previous token api id.
+     *
+     * @maps previous_token_api_id
+     */
+    public function setPreviousTokenApiId(?string $previousTokenApiId): void
+    {
+        $this->previousTokenApiId['value'] = $previousTokenApiId;
+    }
+
+    /**
+     * Unsets Previous Token Api Id.
+     * Can be used to pull payment info from a previous token api id.
+     */
+    public function unsetPreviousTokenApiId(): void
+    {
+        $this->previousTokenApiId = [];
+    }
+
+    /**
      * Returns Previous Account Vault Id.
      * Can be used to pull payment info from a previous token.
      */
@@ -646,6 +860,38 @@ class AccountVault implements \JsonSerializable
     }
 
     /**
+     * Returns Previous Token Id.
+     * Can be used to pull payment info from a previous token.
+     */
+    public function getPreviousTokenId(): ?string
+    {
+        if (count($this->previousTokenId) == 0) {
+            return null;
+        }
+        return $this->previousTokenId['value'];
+    }
+
+    /**
+     * Sets Previous Token Id.
+     * Can be used to pull payment info from a previous token.
+     *
+     * @maps previous_token_id
+     */
+    public function setPreviousTokenId(?string $previousTokenId): void
+    {
+        $this->previousTokenId['value'] = $previousTokenId;
+    }
+
+    /**
+     * Unsets Previous Token Id.
+     * Can be used to pull payment info from a previous token.
+     */
+    public function unsetPreviousTokenId(): void
+    {
+        $this->previousTokenId = [];
+    }
+
+    /**
      * Returns Previous Transaction Id.
      * Can be used to pull payment info from a previous transaction.
      */
@@ -675,6 +921,47 @@ class AccountVault implements \JsonSerializable
     public function unsetPreviousTransactionId(): void
     {
         $this->previousTransactionId = [];
+    }
+
+    /**
+     * Returns Account Number.
+     * Account number
+     * >For CC transactions, a credit card number. For ACH transactions, a bank account number. String
+     * lengths are conditional, CC should be 13-19 and ACH should be 4-19.
+     * >
+     */
+    public function getAccountNumber(): ?string
+    {
+        if (count($this->accountNumber) == 0) {
+            return null;
+        }
+        return $this->accountNumber['value'];
+    }
+
+    /**
+     * Sets Account Number.
+     * Account number
+     * >For CC transactions, a credit card number. For ACH transactions, a bank account number. String
+     * lengths are conditional, CC should be 13-19 and ACH should be 4-19.
+     * >
+     *
+     * @maps account_number
+     */
+    public function setAccountNumber(?string $accountNumber): void
+    {
+        $this->accountNumber['value'] = $accountNumber;
+    }
+
+    /**
+     * Unsets Account Number.
+     * Account number
+     * >For CC transactions, a credit card number. For ACH transactions, a bank account number. String
+     * lengths are conditional, CC should be 13-19 and ACH should be 4-19.
+     * >
+     */
+    public function unsetAccountNumber(): void
+    {
+        $this->accountNumber = [];
     }
 
     /**
@@ -762,10 +1049,261 @@ class AccountVault implements \JsonSerializable
     }
 
     /**
+     * Returns Token Import Id.
+     * Token Import Id
+     */
+    public function getTokenImportId(): ?string
+    {
+        if (count($this->tokenImportId) == 0) {
+            return null;
+        }
+        return $this->tokenImportId['value'];
+    }
+
+    /**
+     * Sets Token Import Id.
+     * Token Import Id
+     *
+     * @maps token_import_id
+     */
+    public function setTokenImportId(?string $tokenImportId): void
+    {
+        $this->tokenImportId['value'] = $tokenImportId;
+    }
+
+    /**
+     * Unsets Token Import Id.
+     * Token Import Id
+     */
+    public function unsetTokenImportId(): void
+    {
+        $this->tokenImportId = [];
+    }
+
+    /**
+     * Returns Secure Directory Server Transaction Id.
+     * (ECOMM) Directory Server Transaction ID (Such as XID, TAVV)
+     */
+    public function getSecureDirectoryServerTransactionId(): ?string
+    {
+        if (count($this->secureDirectoryServerTransactionId) == 0) {
+            return null;
+        }
+        return $this->secureDirectoryServerTransactionId['value'];
+    }
+
+    /**
+     * Sets Secure Directory Server Transaction Id.
+     * (ECOMM) Directory Server Transaction ID (Such as XID, TAVV)
+     *
+     * @maps secure_directory_server_transaction_id
+     */
+    public function setSecureDirectoryServerTransactionId(?string $secureDirectoryServerTransactionId): void
+    {
+        $this->secureDirectoryServerTransactionId['value'] = $secureDirectoryServerTransactionId;
+    }
+
+    /**
+     * Unsets Secure Directory Server Transaction Id.
+     * (ECOMM) Directory Server Transaction ID (Such as XID, TAVV)
+     */
+    public function unsetSecureDirectoryServerTransactionId(): void
+    {
+        $this->secureDirectoryServerTransactionId = [];
+    }
+
+    /**
+     * Returns Secure Protocol Version.
+     * (ECOMM)  Secure Program Protocol Version
+     */
+    public function getSecureProtocolVersion(): ?int
+    {
+        if (count($this->secureProtocolVersion) == 0) {
+            return null;
+        }
+        return $this->secureProtocolVersion['value'];
+    }
+
+    /**
+     * Sets Secure Protocol Version.
+     * (ECOMM)  Secure Program Protocol Version
+     *
+     * @maps secure_protocol_version
+     */
+    public function setSecureProtocolVersion(?int $secureProtocolVersion): void
+    {
+        $this->secureProtocolVersion['value'] = $secureProtocolVersion;
+    }
+
+    /**
+     * Unsets Secure Protocol Version.
+     * (ECOMM)  Secure Program Protocol Version
+     */
+    public function unsetSecureProtocolVersion(): void
+    {
+        $this->secureProtocolVersion = [];
+    }
+
+    /**
+     * Returns Secure Auth Data.
+     * (ECOMM) The token authentication value associated with 3D secure transactions (Such as CAVV, UCAF
+     * auth data)
+     */
+    public function getSecureAuthData(): ?string
+    {
+        if (count($this->secureAuthData) == 0) {
+            return null;
+        }
+        return $this->secureAuthData['value'];
+    }
+
+    /**
+     * Sets Secure Auth Data.
+     * (ECOMM) The token authentication value associated with 3D secure transactions (Such as CAVV, UCAF
+     * auth data)
+     *
+     * @maps secure_auth_data
+     */
+    public function setSecureAuthData(?string $secureAuthData): void
+    {
+        $this->secureAuthData['value'] = $secureAuthData;
+    }
+
+    /**
+     * Unsets Secure Auth Data.
+     * (ECOMM) The token authentication value associated with 3D secure transactions (Such as CAVV, UCAF
+     * auth data)
+     */
+    public function unsetSecureAuthData(): void
+    {
+        $this->secureAuthData = [];
+    }
+
+    /**
+     * Returns Secure Collection Indicator.
+     * (ECOMM) Used for UCAF collection indicator or Discover Autentication type
+     */
+    public function getSecureCollectionIndicator(): ?int
+    {
+        if (count($this->secureCollectionIndicator) == 0) {
+            return null;
+        }
+        return $this->secureCollectionIndicator['value'];
+    }
+
+    /**
+     * Sets Secure Collection Indicator.
+     * (ECOMM) Used for UCAF collection indicator or Discover Autentication type
+     *
+     * @maps secure_collection_indicator
+     */
+    public function setSecureCollectionIndicator(?int $secureCollectionIndicator): void
+    {
+        $this->secureCollectionIndicator['value'] = $secureCollectionIndicator;
+    }
+
+    /**
+     * Unsets Secure Collection Indicator.
+     * (ECOMM) Used for UCAF collection indicator or Discover Autentication type
+     */
+    public function unsetSecureCollectionIndicator(): void
+    {
+        $this->secureCollectionIndicator = [];
+    }
+
+    /**
+     * Returns Three Ds Server Trans Id.
+     * 3DS Server Transaction ID.  If this field is sent and 3DS authentication was done with Fortis, the
+     * 3DS fields secure_directory_server_transaction_id, secure_protocol_version, and
+     * secure_collection_indicator will be pre-populated.
+     */
+    public function getThreeDsServerTransId(): ?string
+    {
+        if (count($this->threeDsServerTransId) == 0) {
+            return null;
+        }
+        return $this->threeDsServerTransId['value'];
+    }
+
+    /**
+     * Sets Three Ds Server Trans Id.
+     * 3DS Server Transaction ID.  If this field is sent and 3DS authentication was done with Fortis, the
+     * 3DS fields secure_directory_server_transaction_id, secure_protocol_version, and
+     * secure_collection_indicator will be pre-populated.
+     *
+     * @maps three_ds_server_trans_id
+     */
+    public function setThreeDsServerTransId(?string $threeDsServerTransId): void
+    {
+        $this->threeDsServerTransId['value'] = $threeDsServerTransId;
+    }
+
+    /**
+     * Unsets Three Ds Server Trans Id.
+     * 3DS Server Transaction ID.  If this field is sent and 3DS authentication was done with Fortis, the
+     * 3DS fields secure_directory_server_transaction_id, secure_protocol_version, and
+     * secure_collection_indicator will be pre-populated.
+     */
+    public function unsetThreeDsServerTransId(): void
+    {
+        $this->threeDsServerTransId = [];
+    }
+
+    /**
+     * Returns Acs Transaction Id.
+     * ACS Transaction ID
+     */
+    public function getAcsTransactionId(): ?string
+    {
+        if (count($this->acsTransactionId) == 0) {
+            return null;
+        }
+        return $this->acsTransactionId['value'];
+    }
+
+    /**
+     * Sets Acs Transaction Id.
+     * ACS Transaction ID
+     *
+     * @maps acs_transaction_id
+     */
+    public function setAcsTransactionId(?string $acsTransactionId): void
+    {
+        $this->acsTransactionId['value'] = $acsTransactionId;
+    }
+
+    /**
+     * Unsets Acs Transaction Id.
+     * ACS Transaction ID
+     */
+    public function unsetAcsTransactionId(): void
+    {
+        $this->acsTransactionId = [];
+    }
+
+    /**
+     * Returns Joi.
+     */
+    public function getJoi(): ?Joi4
+    {
+        return $this->joi;
+    }
+
+    /**
+     * Sets Joi.
+     *
+     * @maps _joi
+     */
+    public function setJoi(?Joi4 $joi): void
+    {
+        $this->joi = $joi;
+    }
+
+    /**
      * Returns Id.
      * A unique, system-generated identifier for the Token.
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -774,10 +1312,9 @@ class AccountVault implements \JsonSerializable
      * Sets Id.
      * A unique, system-generated identifier for the Token.
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -785,8 +1322,12 @@ class AccountVault implements \JsonSerializable
     /**
      * Returns Account Type.
      * Account type
+     * >For ACH, must be provided as either 'checking' or 'savings'. For CC, field is read only. System
+     * will identify card_type and generate a value for this field automatically. i.e. visa, mc, disc, amex,
+     * jcb, diners.
+     * >
      */
-    public function getAccountType(): string
+    public function getAccountType(): ?string
     {
         return $this->accountType;
     }
@@ -794,11 +1335,14 @@ class AccountVault implements \JsonSerializable
     /**
      * Sets Account Type.
      * Account type
+     * >For ACH, must be provided as either 'checking' or 'savings'. For CC, field is read only. System
+     * will identify card_type and generate a value for this field automatically. i.e. visa, mc, disc, amex,
+     * jcb, diners.
+     * >
      *
-     * @required
      * @maps account_type
      */
-    public function setAccountType(string $accountType): void
+    public function setAccountType(?string $accountType): void
     {
         $this->accountType = $accountType;
     }
@@ -827,7 +1371,7 @@ class AccountVault implements \JsonSerializable
      * Returns Cau Summary Status Id.
      * CAU Summary Status ID.
      */
-    public function getCauSummaryStatusId(): int
+    public function getCauSummaryStatusId(): ?int
     {
         return $this->cauSummaryStatusId;
     }
@@ -836,11 +1380,10 @@ class AccountVault implements \JsonSerializable
      * Sets Cau Summary Status Id.
      * CAU Summary Status ID.
      *
-     * @required
      * @maps cau_summary_status_id
      * @factory \FortisAPILib\Models\CauSummaryStatusIdEnum::checkValue
      */
-    public function setCauSummaryStatusId(int $cauSummaryStatusId): void
+    public function setCauSummaryStatusId(?int $cauSummaryStatusId): void
     {
         $this->cauSummaryStatusId = $cauSummaryStatusId;
     }
@@ -849,7 +1392,7 @@ class AccountVault implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -858,10 +1401,9 @@ class AccountVault implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -1027,11 +1569,43 @@ class AccountVault implements \JsonSerializable
     }
 
     /**
+     * Returns Exp Date.
+     * Required for CC. The Expiration Date for the credit card. (MMYY format).
+     */
+    public function getExpDate(): ?string
+    {
+        if (count($this->expDate) == 0) {
+            return null;
+        }
+        return $this->expDate['value'];
+    }
+
+    /**
+     * Sets Exp Date.
+     * Required for CC. The Expiration Date for the credit card. (MMYY format).
+     *
+     * @maps exp_date
+     */
+    public function setExpDate(?string $expDate): void
+    {
+        $this->expDate['value'] = $expDate;
+    }
+
+    /**
+     * Unsets Exp Date.
+     * Required for CC. The Expiration Date for the credit card. (MMYY format).
+     */
+    public function unsetExpDate(): void
+    {
+        $this->expDate = [];
+    }
+
+    /**
      * Returns First Six.
      * The first six numbers of an account number.  System will generate a value for this field
      * automatically.
      */
-    public function getFirstSix(): string
+    public function getFirstSix(): ?string
     {
         return $this->firstSix;
     }
@@ -1041,10 +1615,9 @@ class AccountVault implements \JsonSerializable
      * The first six numbers of an account number.  System will generate a value for this field
      * automatically.
      *
-     * @required
      * @maps first_six
      */
-    public function setFirstSix(string $firstSix): void
+    public function setFirstSix(?string $firstSix): void
     {
         $this->firstSix = $firstSix;
     }
@@ -1053,7 +1626,7 @@ class AccountVault implements \JsonSerializable
      * Returns Has Recurring.
      * True indicates that this token is tied to a Recurring Payment
      */
-    public function getHasRecurring(): bool
+    public function getHasRecurring(): ?bool
     {
         return $this->hasRecurring;
     }
@@ -1062,10 +1635,9 @@ class AccountVault implements \JsonSerializable
      * Sets Has Recurring.
      * True indicates that this token is tied to a Recurring Payment
      *
-     * @required
      * @maps has_recurring
      */
-    public function setHasRecurring(bool $hasRecurring): void
+    public function setHasRecurring(?bool $hasRecurring): void
     {
         $this->hasRecurring = $hasRecurring;
     }
@@ -1075,7 +1647,7 @@ class AccountVault implements \JsonSerializable
      * The last four numbers of an account number.  System will generate a value for this field
      * automatically.
      */
-    public function getLastFour(): string
+    public function getLastFour(): ?string
     {
         return $this->lastFour;
     }
@@ -1085,10 +1657,9 @@ class AccountVault implements \JsonSerializable
      * The last four numbers of an account number.  System will generate a value for this field
      * automatically.
      *
-     * @required
      * @maps last_four
      */
-    public function setLastFour(string $lastFour): void
+    public function setLastFour(?string $lastFour): void
     {
         $this->lastFour = $lastFour;
     }
@@ -1097,7 +1668,7 @@ class AccountVault implements \JsonSerializable
      * Returns Modified Ts.
      * Modified Time Stamp
      */
-    public function getModifiedTs(): int
+    public function getModifiedTs(): ?int
     {
         return $this->modifiedTs;
     }
@@ -1106,10 +1677,9 @@ class AccountVault implements \JsonSerializable
      * Sets Modified Ts.
      * Modified Time Stamp
      *
-     * @required
      * @maps modified_ts
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setModifiedTs(?int $modifiedTs): void
     {
         $this->modifiedTs = $modifiedTs;
     }
@@ -1118,7 +1688,7 @@ class AccountVault implements \JsonSerializable
      * Returns Payment Method.
      * Must be provided as either 'cc' or 'ach'.
      */
-    public function getPaymentMethod(): string
+    public function getPaymentMethod(): ?string
     {
         return $this->paymentMethod;
     }
@@ -1127,11 +1697,10 @@ class AccountVault implements \JsonSerializable
      * Sets Payment Method.
      * Must be provided as either 'cc' or 'ach'.
      *
-     * @required
      * @maps payment_method
-     * @factory \FortisAPILib\Models\PaymentMethod10Enum::checkValue
+     * @factory \FortisAPILib\Models\PaymentMethod16Enum::checkValue
      */
-    public function setPaymentMethod(string $paymentMethod): void
+    public function setPaymentMethod(?string $paymentMethod): void
     {
         $this->paymentMethod = $paymentMethod;
     }
@@ -1201,6 +1770,231 @@ class AccountVault implements \JsonSerializable
     }
 
     /**
+     * Returns Created User Id.
+     * User ID Created the register
+     */
+    public function getCreatedUserId(): ?string
+    {
+        if (count($this->createdUserId) == 0) {
+            return null;
+        }
+        return $this->createdUserId['value'];
+    }
+
+    /**
+     * Sets Created User Id.
+     * User ID Created the register
+     *
+     * @maps created_user_id
+     */
+    public function setCreatedUserId(?string $createdUserId): void
+    {
+        $this->createdUserId['value'] = $createdUserId;
+    }
+
+    /**
+     * Unsets Created User Id.
+     * User ID Created the register
+     */
+    public function unsetCreatedUserId(): void
+    {
+        $this->createdUserId = [];
+    }
+
+    /**
+     * Returns Cau Last Updated Ts.
+     * CAU Last Updated Timestamp
+     */
+    public function getCauLastUpdatedTs(): ?int
+    {
+        if (count($this->cauLastUpdatedTs) == 0) {
+            return null;
+        }
+        return $this->cauLastUpdatedTs['value'];
+    }
+
+    /**
+     * Sets Cau Last Updated Ts.
+     * CAU Last Updated Timestamp
+     *
+     * @maps cau_last_updated_ts
+     */
+    public function setCauLastUpdatedTs(?int $cauLastUpdatedTs): void
+    {
+        $this->cauLastUpdatedTs['value'] = $cauLastUpdatedTs;
+    }
+
+    /**
+     * Unsets Cau Last Updated Ts.
+     * CAU Last Updated Timestamp
+     */
+    public function unsetCauLastUpdatedTs(): void
+    {
+        $this->cauLastUpdatedTs = [];
+    }
+
+    /**
+     * Returns Card Bin.
+     * Card bin
+     */
+    public function getCardBin(): ?string
+    {
+        if (count($this->cardBin) == 0) {
+            return null;
+        }
+        return $this->cardBin['value'];
+    }
+
+    /**
+     * Sets Card Bin.
+     * Card bin
+     *
+     * @maps card_bin
+     */
+    public function setCardBin(?string $cardBin): void
+    {
+        $this->cardBin['value'] = $cardBin;
+    }
+
+    /**
+     * Unsets Card Bin.
+     * Card bin
+     */
+    public function unsetCardBin(): void
+    {
+        $this->cardBin = [];
+    }
+
+    /**
+     * Returns Routing Number.
+     * Required for ACH. The Routing Number for the bank account being used.
+     */
+    public function getRoutingNumber(): ?string
+    {
+        if (count($this->routingNumber) == 0) {
+            return null;
+        }
+        return $this->routingNumber['value'];
+    }
+
+    /**
+     * Sets Routing Number.
+     * Required for ACH. The Routing Number for the bank account being used.
+     *
+     * @maps routing_number
+     */
+    public function setRoutingNumber(?string $routingNumber): void
+    {
+        $this->routingNumber['value'] = $routingNumber;
+    }
+
+    /**
+     * Unsets Routing Number.
+     * Required for ACH. The Routing Number for the bank account being used.
+     */
+    public function unsetRoutingNumber(): void
+    {
+        $this->routingNumber = [];
+    }
+
+    /**
+     * Converts the AccountVault object to a human-readable string representation.
+     *
+     * @return string The string representation of the AccountVault object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'AccountVault',
+            [
+                'accountHolderName' => $this->getAccountHolderName(),
+                'accountVaultApiId' => $this->getAccountVaultApiId(),
+                'tokenApiId' => $this->getTokenApiId(),
+                'accountvaultC1' => $this->getAccountvaultC1(),
+                'accountvaultC2' => $this->getAccountvaultC2(),
+                'accountvaultC3' => $this->getAccountvaultC3(),
+                'tokenC1' => $this->getTokenC1(),
+                'tokenC2' => $this->getTokenC2(),
+                'tokenC3' => $this->getTokenC3(),
+                'achSecCode' => $this->getAchSecCode(),
+                'billingAddress' => $this->billingAddress,
+                'contactId' => $this->getContactId(),
+                'customerId' => $this->getCustomerId(),
+                'identityVerification' => $this->identityVerification,
+                'locationId' => $this->locationId,
+                'previousAccountVaultApiId' => $this->getPreviousAccountVaultApiId(),
+                'previousTokenApiId' => $this->getPreviousTokenApiId(),
+                'previousAccountVaultId' => $this->getPreviousAccountVaultId(),
+                'previousTokenId' => $this->getPreviousTokenId(),
+                'previousTransactionId' => $this->getPreviousTransactionId(),
+                'accountNumber' => $this->getAccountNumber(),
+                'termsAgree' => $this->termsAgree,
+                'termsAgreeIp' => $this->getTermsAgreeIp(),
+                'title' => $this->getTitle(),
+                'tokenImportId' => $this->getTokenImportId(),
+                'secureDirectoryServerTransactionId' => $this->getSecureDirectoryServerTransactionId(),
+                'secureProtocolVersion' => $this->getSecureProtocolVersion(),
+                'secureAuthData' => $this->getSecureAuthData(),
+                'secureCollectionIndicator' => $this->getSecureCollectionIndicator(),
+                'threeDsServerTransId' => $this->getThreeDsServerTransId(),
+                'acsTransactionId' => $this->getAcsTransactionId(),
+                'joi' => $this->joi,
+                'id' => $this->id,
+                'accountType' => $this->accountType,
+                'active' => $this->active,
+                'cauSummaryStatusId' => $this->cauSummaryStatusId,
+                'createdTs' => $this->createdTs,
+                'eSerialNumber' => $this->getESerialNumber(),
+                'eTrackData' => $this->getETrackData(),
+                'eFormat' => $this->getEFormat(),
+                'eKeyedData' => $this->getEKeyedData(),
+                'expiringInMonths' => $this->getExpiringInMonths(),
+                'expDate' => $this->getExpDate(),
+                'firstSix' => $this->firstSix,
+                'hasRecurring' => $this->hasRecurring,
+                'lastFour' => $this->lastFour,
+                'modifiedTs' => $this->modifiedTs,
+                'paymentMethod' => $this->paymentMethod,
+                'ticket' => $this->getTicket(),
+                'trackData' => $this->getTrackData(),
+                'createdUserId' => $this->getCreatedUserId(),
+                'cauLastUpdatedTs' => $this->getCauLastUpdatedTs(),
+                'cardBin' => $this->getCardBin(),
+                'routingNumber' => $this->getRoutingNumber(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -1213,90 +2007,171 @@ class AccountVault implements \JsonSerializable
     {
         $json = [];
         if (!empty($this->accountHolderName)) {
-            $json['account_holder_name']           = $this->accountHolderName['value'];
-        }
-        if (!empty($this->accountNumber)) {
-            $json['account_number']                = $this->accountNumber['value'];
+            $json['account_holder_name']                    = $this->accountHolderName['value'];
         }
         if (!empty($this->accountVaultApiId)) {
-            $json['account_vault_api_id']          = $this->accountVaultApiId['value'];
+            $json['account_vault_api_id']                   = $this->accountVaultApiId['value'];
+        }
+        if (!empty($this->tokenApiId)) {
+            $json['token_api_id']                           = $this->tokenApiId['value'];
         }
         if (!empty($this->accountvaultC1)) {
-            $json['accountvault_c1']               = $this->accountvaultC1['value'];
+            $json['accountvault_c1']                        = $this->accountvaultC1['value'];
         }
         if (!empty($this->accountvaultC2)) {
-            $json['accountvault_c2']               = $this->accountvaultC2['value'];
+            $json['accountvault_c2']                        = $this->accountvaultC2['value'];
         }
         if (!empty($this->accountvaultC3)) {
-            $json['accountvault_c3']               = $this->accountvaultC3['value'];
+            $json['accountvault_c3']                        = $this->accountvaultC3['value'];
+        }
+        if (!empty($this->tokenC1)) {
+            $json['token_c1']                               = $this->tokenC1['value'];
+        }
+        if (!empty($this->tokenC2)) {
+            $json['token_c2']                               = $this->tokenC2['value'];
+        }
+        if (!empty($this->tokenC3)) {
+            $json['token_c3']                               = $this->tokenC3['value'];
         }
         if (!empty($this->achSecCode)) {
-            $json['ach_sec_code']                  = AchSecCode3Enum::checkValue($this->achSecCode['value']);
+            $json['ach_sec_code']                           = AchSecCode3Enum::checkValue($this->achSecCode['value']);
         }
         if (isset($this->billingAddress)) {
-            $json['billing_address']               = $this->billingAddress;
+            $json['billing_address']                        = $this->billingAddress;
         }
         if (!empty($this->contactId)) {
-            $json['contact_id']                    = $this->contactId['value'];
+            $json['contact_id']                             = $this->contactId['value'];
         }
         if (!empty($this->customerId)) {
-            $json['customer_id']                   = $this->customerId['value'];
+            $json['customer_id']                            = $this->customerId['value'];
         }
         if (isset($this->identityVerification)) {
-            $json['identity_verification']         = $this->identityVerification;
+            $json['identity_verification']                  = $this->identityVerification;
         }
-        $json['location_id']                       = $this->locationId;
+        if (isset($this->locationId)) {
+            $json['location_id']                            = $this->locationId;
+        }
         if (!empty($this->previousAccountVaultApiId)) {
-            $json['previous_account_vault_api_id'] = $this->previousAccountVaultApiId['value'];
+            $json['previous_account_vault_api_id']          = $this->previousAccountVaultApiId['value'];
+        }
+        if (!empty($this->previousTokenApiId)) {
+            $json['previous_token_api_id']                  = $this->previousTokenApiId['value'];
         }
         if (!empty($this->previousAccountVaultId)) {
-            $json['previous_account_vault_id']     = $this->previousAccountVaultId['value'];
+            $json['previous_account_vault_id']              = $this->previousAccountVaultId['value'];
+        }
+        if (!empty($this->previousTokenId)) {
+            $json['previous_token_id']                      = $this->previousTokenId['value'];
         }
         if (!empty($this->previousTransactionId)) {
-            $json['previous_transaction_id']       = $this->previousTransactionId['value'];
+            $json['previous_transaction_id']                = $this->previousTransactionId['value'];
+        }
+        if (!empty($this->accountNumber)) {
+            $json['account_number']                         = $this->accountNumber['value'];
         }
         if (isset($this->termsAgree)) {
-            $json['terms_agree']                   = $this->termsAgree;
+            $json['terms_agree']                            = $this->termsAgree;
         }
         if (!empty($this->termsAgreeIp)) {
-            $json['terms_agree_ip']                = $this->termsAgreeIp['value'];
+            $json['terms_agree_ip']                         = $this->termsAgreeIp['value'];
         }
         if (!empty($this->title)) {
-            $json['title']                         = $this->title['value'];
+            $json['title']                                  = $this->title['value'];
         }
-        $json['id']                                = $this->id;
-        $json['account_type']                      = $this->accountType;
+        if (!empty($this->tokenImportId)) {
+            $json['token_import_id']                        = $this->tokenImportId['value'];
+        }
+        if (!empty($this->secureDirectoryServerTransactionId)) {
+            $json['secure_directory_server_transaction_id'] = $this->secureDirectoryServerTransactionId['value'];
+        }
+        if (!empty($this->secureProtocolVersion)) {
+            $json['secure_protocol_version']                = $this->secureProtocolVersion['value'];
+        }
+        if (!empty($this->secureAuthData)) {
+            $json['secure_auth_data']                       = $this->secureAuthData['value'];
+        }
+        if (!empty($this->secureCollectionIndicator)) {
+            $json['secure_collection_indicator']            = $this->secureCollectionIndicator['value'];
+        }
+        if (!empty($this->threeDsServerTransId)) {
+            $json['three_ds_server_trans_id']               = $this->threeDsServerTransId['value'];
+        }
+        if (!empty($this->acsTransactionId)) {
+            $json['acs_transaction_id']                     = $this->acsTransactionId['value'];
+        }
+        if (isset($this->joi)) {
+            $json['_joi']                                   = $this->joi;
+        }
+        if (isset($this->id)) {
+            $json['id']                                     = $this->id;
+        }
+        if (isset($this->accountType)) {
+            $json['account_type']                           = $this->accountType;
+        }
         if (isset($this->active)) {
-            $json['active']                        = $this->active;
+            $json['active']                                 = $this->active;
         }
-        $json['cau_summary_status_id']             = CauSummaryStatusIdEnum::checkValue($this->cauSummaryStatusId);
-        $json['created_ts']                        = $this->createdTs;
+        if (isset($this->cauSummaryStatusId)) {
+            $json['cau_summary_status_id']                  =
+                CauSummaryStatusIdEnum::checkValue(
+                    $this->cauSummaryStatusId
+                );
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']                             = $this->createdTs;
+        }
         if (!empty($this->eSerialNumber)) {
-            $json['e_serial_number']               = $this->eSerialNumber['value'];
+            $json['e_serial_number']                        = $this->eSerialNumber['value'];
         }
         if (!empty($this->eTrackData)) {
-            $json['e_track_data']                  = $this->eTrackData['value'];
+            $json['e_track_data']                           = $this->eTrackData['value'];
         }
         if (!empty($this->eFormat)) {
-            $json['e_format']                      = $this->eFormat['value'];
+            $json['e_format']                               = $this->eFormat['value'];
         }
         if (!empty($this->eKeyedData)) {
-            $json['e_keyed_data']                  = $this->eKeyedData['value'];
+            $json['e_keyed_data']                           = $this->eKeyedData['value'];
         }
         if (!empty($this->expiringInMonths)) {
-            $json['expiring_in_months']            = $this->expiringInMonths['value'];
+            $json['expiring_in_months']                     = $this->expiringInMonths['value'];
         }
-        $json['first_six']                         = $this->firstSix;
-        $json['has_recurring']                     = $this->hasRecurring;
-        $json['last_four']                         = $this->lastFour;
-        $json['modified_ts']                       = $this->modifiedTs;
-        $json['payment_method']                    = PaymentMethod10Enum::checkValue($this->paymentMethod);
+        if (!empty($this->expDate)) {
+            $json['exp_date']                               = $this->expDate['value'];
+        }
+        if (isset($this->firstSix)) {
+            $json['first_six']                              = $this->firstSix;
+        }
+        if (isset($this->hasRecurring)) {
+            $json['has_recurring']                          = $this->hasRecurring;
+        }
+        if (isset($this->lastFour)) {
+            $json['last_four']                              = $this->lastFour;
+        }
+        if (isset($this->modifiedTs)) {
+            $json['modified_ts']                            = $this->modifiedTs;
+        }
+        if (isset($this->paymentMethod)) {
+            $json['payment_method']                         = PaymentMethod16Enum::checkValue($this->paymentMethod);
+        }
         if (!empty($this->ticket)) {
-            $json['ticket']                        = $this->ticket['value'];
+            $json['ticket']                                 = $this->ticket['value'];
         }
         if (!empty($this->trackData)) {
-            $json['track_data']                    = $this->trackData['value'];
+            $json['track_data']                             = $this->trackData['value'];
         }
+        if (!empty($this->createdUserId)) {
+            $json['created_user_id']                        = $this->createdUserId['value'];
+        }
+        if (!empty($this->cauLastUpdatedTs)) {
+            $json['cau_last_updated_ts']                    = $this->cauLastUpdatedTs['value'];
+        }
+        if (!empty($this->cardBin)) {
+            $json['card_bin']                               = $this->cardBin['value'];
+        }
+        if (!empty($this->routingNumber)) {
+            $json['routing_number']                         = $this->routingNumber['value'];
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

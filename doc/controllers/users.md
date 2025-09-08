@@ -17,11 +17,11 @@ $usersController = $client->getUsersController();
 * [View Single User Record](../../doc/controllers/users.md#view-single-user-record)
 * [Update a User Record](../../doc/controllers/users.md#update-a-user-record)
 * [View Self Record](../../doc/controllers/users.md#view-self-record)
+* [Remove Verification](../../doc/controllers/users.md#remove-verification)
+* [Send Verification](../../doc/controllers/users.md#send-verification)
 
 
 # Create a New API Key
-
-Create a new API key
 
 ```php
 function createANewAPIKey(string $userId, ?array $expand = null): ResponseUserApiKey
@@ -31,8 +31,8 @@ function createANewAPIKey(string $userId, ?array $expand = null): ResponseUserAp
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `userId` | `string` | Template, Required | User ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
-| `expand` | [`?(string[]) (Expand77Enum)`](../../doc/models/expand-77-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `userId` | `string` | Template, Required | User ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `expand` | [`?(string(Expand111Enum)[])`](../../doc/models/expand-111-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -66,8 +66,6 @@ $result = $usersController->createANewAPIKey($userId);
 
 # Create a New User
 
-Create a new user
-
 ```php
 function createANewUser(V1UsersRequest $body, ?array $expand = null): ResponseUser
 ```
@@ -77,7 +75,7 @@ function createANewUser(V1UsersRequest $body, ?array $expand = null): ResponseUs
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `body` | [`V1UsersRequest`](../../doc/models/v1-users-request.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand77Enum)`](../../doc/models/expand-77-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand111Enum)[])`](../../doc/models/expand-111-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -86,18 +84,35 @@ function createANewUser(V1UsersRequest $body, ?array $expand = null): ResponseUs
 ## Example Usage
 
 ```php
-$body_email = 'email@domain.com';
-$body_lastName = 'Smith';
-$body_primaryLocationId = '11e95f8ec39de8fbdb0a4f1a';
-$body_username = '{user_name}';
-$body_userTypeCode = Models\UserTypeCodeEnum::ENUM_100;
-$body = new Models\V1UsersRequest(
-    $body_email,
-    $body_lastName,
-    $body_primaryLocationId,
-    $body_username,
-    $body_userTypeCode
-);
+$body = V1UsersRequestBuilder::init(
+    'email@domain.com',
+    'Smith',
+    '11e95f8ec39de8fbdb0a4f1a',
+    '{user_name}',
+    UserTypeCodeEnum::ENUM_100
+)
+    ->accountNumber('5454545454545454')
+    ->brandingDomainUrl('{branding_domain_url}')
+    ->cellPhone('3339998822')
+    ->companyName('Fortis Payment Systems, LLC')
+    ->contactId('11e95f8ec39de8fbdb0a4f1a')
+    ->dateOfBirth('2021-12-01')
+    ->domainId('11e95f8ec39de8fbdb0a4f1a')
+    ->emailTrxReceipt(true)
+    ->homePhone('3339998822')
+    ->firstName('John')
+    ->locale('en-US')
+    ->officePhone('3339998822')
+    ->officeExtPhone('5')
+    ->termsConditionCode('20220308')
+    ->tz('America/New_York')
+    ->userApiKey('234bas8dfn8238f923w2')
+    ->zip('48375')
+    ->locationId('11e95f8ec39de8fbdb0a4f1a')
+    ->statusCode(StatusCodeEnum::ENUM_1)
+    ->apiOnly(false)
+    ->isInvitation(false)
+    ->build();
 
 $result = $usersController->createANewUser($body);
 ```
@@ -109,10 +124,8 @@ $result = $usersController->createANewUser($body);
   "type": "User",
   "data": {
     "account_number": "5454545454545454",
-    "address": "43155 Main Street STE 2310-C",
     "branding_domain_url": "{branding_domain_url}",
     "cell_phone": "3339998822",
-    "city": "Novi",
     "company_name": "Fortis Payment Systems, LLC",
     "contact_id": "Sample contact ID",
     "date_of_birth": "2021-12-01",
@@ -127,7 +140,6 @@ $result = $usersController->createANewUser($body);
     "office_ext_phone": "5",
     "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
     "requires_new_password": null,
-    "state": "Michigan",
     "terms_condition_code": "20220308",
     "tz": "America/New_York",
     "ui_prefs": {
@@ -144,7 +156,15 @@ $result = $usersController->createANewUser($body);
     "password": null,
     "zip": "48375",
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
-    "status_id": true,
+    "status_code": 1,
+    "api_only": false,
+    "is_invitation": false,
+    "address": {
+      "city": "Novi",
+      "state": "MI",
+      "postal_code": "48375",
+      "country": "US"
+    },
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "status": true,
     "login_attempts": 0,
@@ -155,6 +175,8 @@ $result = $usersController->createANewUser($body);
     "terms_accepted_ts": 1422040992,
     "terms_agree_ip": "192.168.0.10",
     "current_date_time": "2019-03-11T10:38:26-0700",
+    "current_login": 1422040992,
+    "log_api_response_body_ts": 1422040992,
     "locations": [
       {
         "id": "11e95f8ec39de8fbdb0a4f1a",
@@ -165,15 +187,12 @@ $result = $usersController->createANewUser($body);
           "city": "Novi",
           "state": "MI",
           "postal_code": "48375",
-          "country": "US",
-          "street": "43155 Main Street STE 2310-C",
-          "street2": "43155 Main Street STE 2310-C"
+          "country": "US"
         },
         "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
         "contact_email_trx_receipt_default": true,
         "default_ach": "11e608a7d515f1e093242bb2",
         "default_cc": "11e608a442a5f1e092242dda",
-        "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
         "email_reply_to": "email@domain.com",
         "fax": "3339998822",
         "location_api_id": "location-111111",
@@ -184,10 +203,14 @@ $result = $usersController->createANewUser($body);
         "name": "Sample Company Headquarters",
         "office_phone": "2481234567",
         "office_ext_phone": "1021021209",
-        "recurring_notification_days_default": 0,
         "tz": "America/New_York",
         "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+        "show_contact_notes": true,
+        "show_contact_files": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "location_type": "merchant",
+        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+        "additional_access": {}
       }
     ],
     "primary_location": {
@@ -199,15 +222,12 @@ $result = $usersController->createANewUser($body);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -218,10 +238,14 @@ $result = $usersController->createANewUser($body);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     },
     "received_emails": [
       {
@@ -251,8 +275,7 @@ $result = $usersController->createANewUser($body);
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C"
+        "country": "USA"
       },
       "company_name": "Fortis Payment Systems, LLC",
       "header_message": "This is a sample message for you",
@@ -261,6 +284,9 @@ $result = $usersController->createANewUser($body);
       "home_phone": "3339998822",
       "office_phone": "3339998822",
       "office_phone_ext": "5",
+      "home_phone_country_code": "+1",
+      "office_phone_country_code": "+1",
+      "cell_phone_country_code": "+1",
       "header_message_type": 0,
       "update_if_exists": 1,
       "contact_c1": "any",
@@ -268,10 +294,12 @@ $result = $usersController->createANewUser($body);
       "contact_c3": "something",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
       "email": "email@domain.com",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "active": true
+      "active": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "isDeletable": true,
     "active_notification_alerts": [
@@ -381,16 +409,15 @@ $result = $usersController->createANewUser($body);
       "contact_user_default_auth_roles": [
         null
       ],
+      "custom_stylesheet_url": "https://127.0.0.1/receiver",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992
     },
     "created_user": {
       "account_number": "5454545454545454",
-      "address": "43155 Main Street STE 2310-C",
       "branding_domain_url": "{branding_domain_url}",
       "cell_phone": "3339998822",
-      "city": "Novi",
       "company_name": "Fortis Payment Systems, LLC",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "date_of_birth": "2021-12-01",
@@ -405,7 +432,6 @@ $result = $usersController->createANewUser($body);
       "office_ext_phone": "5",
       "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
       "requires_new_password": null,
-      "state": "Michigan",
       "terms_condition_code": "20220308",
       "tz": "America/New_York",
       "ui_prefs": {
@@ -422,7 +448,15 @@ $result = $usersController->createANewUser($body);
       "password": null,
       "zip": "48375",
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
-      "status_id": true,
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "status": true,
       "login_attempts": 0,
@@ -432,7 +466,9 @@ $result = $usersController->createANewUser($body);
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "terms_accepted_ts": 1422040992,
       "terms_agree_ip": "192.168.0.10",
-      "current_date_time": "2019-03-11T10:38:26-0700"
+      "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992
     },
     "location_marketplaces": [
       {
@@ -475,14 +511,15 @@ $result = $usersController->createANewUser($body);
 
 # List All User
 
-List all User
-
 ```php
 function listAllUser(
     ?Page $page = null,
-    ?Sort27 $sort = null,
-    ?Filter13 $filter = null,
-    ?array $expand = null
+    ?array $order = null,
+    ?array $filterBy = null,
+    ?array $expand = null,
+    ?string $format = null,
+    ?string $typeahead = null,
+    ?array $fields = null
 ): ResponseUsersCollection
 ```
 
@@ -491,9 +528,12 @@ function listAllUser(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `page` | [`?Page`](../../doc/models/page.md) | Query, Optional | Use this field to specify paginate your results, by using page size and number. You can use one of the following methods:<br><br>> /endpoint?page={ "number": 1, "size": 50 }<br>> <br>> /endpoint?page[number]=1&page[size]=50 |
-| `sort` | [`?Sort27`](../../doc/models/sort-27.md) | Query, Optional | You can use any `field_name` from this endpoint results, and you can combine more than one field for more complex sorting. You can use one of the following methods:<br><br>> /endpoint?sort={ "field_name": "asc", "field_name2": "desc" }<br>> <br>> /endpoint?sort[field_name]=asc&sort[field_name2]=desc |
-| `filter` | [`?Filter13`](../../doc/models/filter-13.md) | Query, Optional | You can use any `field_name` from this endpoint results as a filter, and you can also use more than one field to create AND conditions. For date fields (ended with `_ts`), you can also search for ranges using the `$gte` (Greater than or equal to) and/or  `$lte` (Lower than or equal to). You can use one of the following methods:<br><br>> /endpoint?filter={ "field_name": "Value" }<br>> <br>> /endpoint?filter[field_name]=Value<br>> <br>> /endpoint?filter={ "created_ts": "today" }<br>> <br>> /endpoint?filter[created_ts]=today<br>> <br>> /endpoint?filter={ "created_ts": { "$gte": "yesterday", "$lte": "today" } }<br>> <br>> /endpoint?filter[created_ts][$gte]=yesterday&filter[created_ts][$lte]=today |
-| `expand` | [`?(string[]) (Expand77Enum)`](../../doc/models/expand-77-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `order` | [`?(Order21[])`](../../doc/models/order-21.md) | Query, Optional | Criteria used in query string parameters to order results.  Most fields from the endpoint results can be used as a `key`.  Unsupported fields or operators will return a `412`.  Must be encoded, or use syntax that does not require encoding.<br><br>> /endpoint?order[0][key]=created_ts&order[0][operator]=asc<br>> <br>> /endpoint?order=[{ "key": "created_ts", "operator": "asc"}]<br>> <br>> /endpoint?order=[{ "key": "balance", "operator": "desc"},{ "key": "created_ts", "operator": "asc"}]<br><br>**Constraints**: *Minimum Items*: `1` |
+| `filterBy` | [`?(FilterBy[])`](../../doc/models/filter-by.md) | Query, Optional | Filter criteria that can be used in query string parameters.  Most fields from the endpoint results can be used as a `key`.  Unsupported fields or operators will return a `412`. Must be encoded, or use syntax that does not require encoding.<br><br>> ?filter_by[0][key]=first_name&filter_by[0][operator]==&filter_by[0][value]=Steve<br>> <br>> /endpoint?filter_by=[{ "key": "first_name", "operator": "=", "value": "Fred" }]<br>> <br>> /endpoint?filter_by=[{ "key": "account_type", "operator": "=", "value": "VISA" }]<br>> <br>> /endpoint?filter_by=[{ "key": "created_ts", "operator": ">=", "value": "946702799" }, { "key": "created_ts", "operator": "<=", value: "1695061891" }]<br>> <br>> /endpoint?filter_by=[{ "key": "last_name", "operator": "IN", "value": "Williams,Brown,Allman" }]<br><br>**Constraints**: *Minimum Items*: `1` |
+| `expand` | [`?(string(Expand111Enum)[])`](../../doc/models/expand-111-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `format` | [`?string(Format1Enum)`](../../doc/models/format-1-enum.md) | Query, Optional | Reporting format, valid values: csv, tsv |
+| `typeahead` | `?string` | Query, Optional | You can use any `field_name` from this endpoint results to order the list using the value provided as filter for the same `field_name`. It will be ordered using the following rules: 1) Exact match, 2) Starts with, 3) Contains.<br><br>> /endpoint?filter={ "field_name": "Value" }&_typeahead=field_name |
+| `fields` | [`?(string(Field60Enum)[])`](../../doc/models/field-60-enum.md) | Query, Optional | You can use any `field_name` from this endpoint results to filter the list of fields returned on the response. |
 
 ## Response Type
 
@@ -502,7 +542,31 @@ function listAllUser(
 ## Example Usage
 
 ```php
-$result = $usersController->listAllUser();
+$page = PageBuilder::init()
+    ->number(1)
+    ->size(50)
+    ->build();
+
+$order = [
+    Order21Builder::init(
+        'first_name',
+        OperatorEnum::ASC
+    )->build()
+];
+
+$filterBy = [
+    FilterByBuilder::init(
+        'first_name',
+        Operator1Enum::ENUM_1,
+        'Fred'
+    )->build()
+];
+
+$result = $usersController->listAllUser(
+    $page,
+    $order,
+    $filterBy
+);
 ```
 
 ## Example Response *(as JSON)*
@@ -513,10 +577,8 @@ $result = $usersController->listAllUser();
   "list": [
     {
       "account_number": "5454545454545454",
-      "address": "43155 Main Street STE 2310-C",
       "branding_domain_url": "{branding_domain_url}",
       "cell_phone": "3339998822",
-      "city": "Novi",
       "company_name": "Fortis Payment Systems, LLC",
       "contact_id": "Sample contact ID",
       "date_of_birth": "2021-12-01",
@@ -531,7 +593,6 @@ $result = $usersController->listAllUser();
       "office_ext_phone": "5",
       "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
       "requires_new_password": null,
-      "state": "Michigan",
       "terms_condition_code": "20220308",
       "tz": "America/New_York",
       "ui_prefs": {
@@ -548,7 +609,15 @@ $result = $usersController->listAllUser();
       "password": null,
       "zip": "48375",
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
-      "status_id": true,
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "status": true,
       "login_attempts": 0,
@@ -559,6 +628,8 @@ $result = $usersController->listAllUser();
       "terms_accepted_ts": 1422040992,
       "terms_agree_ip": "192.168.0.10",
       "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992,
       "locations": [
         {
           "id": "11e95f8ec39de8fbdb0a4f1a",
@@ -569,15 +640,12 @@ $result = $usersController->listAllUser();
             "city": "Novi",
             "state": "MI",
             "postal_code": "48375",
-            "country": "US",
-            "street": "43155 Main Street STE 2310-C",
-            "street2": "43155 Main Street STE 2310-C"
+            "country": "US"
           },
           "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
           "contact_email_trx_receipt_default": true,
           "default_ach": "11e608a7d515f1e093242bb2",
           "default_cc": "11e608a442a5f1e092242dda",
-          "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
           "email_reply_to": "email@domain.com",
           "fax": "3339998822",
           "location_api_id": "location-111111",
@@ -588,10 +656,14 @@ $result = $usersController->listAllUser();
           "name": "Sample Company Headquarters",
           "office_phone": "2481234567",
           "office_ext_phone": "1021021209",
-          "recurring_notification_days_default": 0,
           "tz": "America/New_York",
           "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-          "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+          "show_contact_notes": true,
+          "show_contact_files": true,
+          "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+          "location_type": "merchant",
+          "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+          "additional_access": {}
         }
       ],
       "primary_location": {
@@ -603,15 +675,12 @@ $result = $usersController->listAllUser();
           "city": "Novi",
           "state": "MI",
           "postal_code": "48375",
-          "country": "US",
-          "street": "43155 Main Street STE 2310-C",
-          "street2": "43155 Main Street STE 2310-C"
+          "country": "US"
         },
         "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
         "contact_email_trx_receipt_default": true,
         "default_ach": "11e608a7d515f1e093242bb2",
         "default_cc": "11e608a442a5f1e092242dda",
-        "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
         "email_reply_to": "email@domain.com",
         "fax": "3339998822",
         "location_api_id": "location-111111",
@@ -622,10 +691,14 @@ $result = $usersController->listAllUser();
         "name": "Sample Company Headquarters",
         "office_phone": "2481234567",
         "office_ext_phone": "1021021209",
-        "recurring_notification_days_default": 0,
         "tz": "America/New_York",
         "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+        "show_contact_notes": true,
+        "show_contact_files": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "location_type": "merchant",
+        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+        "additional_access": {}
       },
       "received_emails": [
         {
@@ -655,8 +728,7 @@ $result = $usersController->listAllUser();
           "city": "Novi",
           "state": "Michigan",
           "postal_code": "48375",
-          "country": "US",
-          "street": "43155 Main Street STE 2310-C"
+          "country": "USA"
         },
         "company_name": "Fortis Payment Systems, LLC",
         "header_message": "This is a sample message for you",
@@ -665,6 +737,9 @@ $result = $usersController->listAllUser();
         "home_phone": "3339998822",
         "office_phone": "3339998822",
         "office_phone_ext": "5",
+        "home_phone_country_code": "+1",
+        "office_phone_country_code": "+1",
+        "cell_phone_country_code": "+1",
         "header_message_type": 0,
         "update_if_exists": 1,
         "contact_c1": "any",
@@ -672,10 +747,12 @@ $result = $usersController->listAllUser();
         "contact_c3": "something",
         "parent_id": "11e95f8ec39de8fbdb0a4f1a",
         "email": "email@domain.com",
+        "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "created_ts": 1422040992,
         "modified_ts": 1422040992,
-        "active": true
+        "active": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
       },
       "isDeletable": true,
       "active_notification_alerts": [
@@ -785,16 +862,15 @@ $result = $usersController->listAllUser();
         "contact_user_default_auth_roles": [
           null
         ],
+        "custom_stylesheet_url": "https://127.0.0.1/receiver",
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "created_ts": 1422040992,
         "modified_ts": 1422040992
       },
       "created_user": {
         "account_number": "5454545454545454",
-        "address": "43155 Main Street STE 2310-C",
         "branding_domain_url": "{branding_domain_url}",
         "cell_phone": "3339998822",
-        "city": "Novi",
         "company_name": "Fortis Payment Systems, LLC",
         "contact_id": "11e95f8ec39de8fbdb0a4f1a",
         "date_of_birth": "2021-12-01",
@@ -809,7 +885,6 @@ $result = $usersController->listAllUser();
         "office_ext_phone": "5",
         "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
         "requires_new_password": null,
-        "state": "Michigan",
         "terms_condition_code": "20220308",
         "tz": "America/New_York",
         "ui_prefs": {
@@ -826,7 +901,15 @@ $result = $usersController->listAllUser();
         "password": null,
         "zip": "48375",
         "location_id": "11e95f8ec39de8fbdb0a4f1a",
-        "status_id": true,
+        "status_code": 1,
+        "api_only": false,
+        "is_invitation": false,
+        "address": {
+          "city": "Novi",
+          "state": "MI",
+          "postal_code": "48375",
+          "country": "US"
+        },
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "status": true,
         "login_attempts": 0,
@@ -836,7 +919,9 @@ $result = $usersController->listAllUser();
         "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
         "terms_accepted_ts": 1422040992,
         "terms_agree_ip": "192.168.0.10",
-        "current_date_time": "2019-03-11T10:38:26-0700"
+        "current_date_time": "2019-03-11T10:38:26-0700",
+        "current_login": 1422040992,
+        "log_api_response_body_ts": 1422040992
       },
       "location_marketplaces": [
         {
@@ -871,6 +956,7 @@ $result = $usersController->listAllUser();
     "type": "Links",
     "first": "/v1/endpoint?page[size]=10&page[number]=1",
     "previous": "/v1/endpoint?page[size]=10&page[number]=5",
+    "next": "/v1/endpoint?page[size]=10&page[number]=7",
     "last": "/v1/endpoint?page[size]=10&page[number]=42"
   },
   "pagination": {
@@ -901,8 +987,6 @@ $result = $usersController->listAllUser();
 
 # Delete a User Record
 
-Delete a user record
-
 ```php
 function deleteAUserRecord(string $userId): ResponseUser
 ```
@@ -911,7 +995,7 @@ function deleteAUserRecord(string $userId): ResponseUser
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `userId` | `string` | Template, Required | User ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `userId` | `string` | Template, Required | User ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
 
 ## Response Type
 
@@ -932,10 +1016,8 @@ $result = $usersController->deleteAUserRecord($userId);
   "type": "User",
   "data": {
     "account_number": "5454545454545454",
-    "address": "43155 Main Street STE 2310-C",
     "branding_domain_url": "{branding_domain_url}",
     "cell_phone": "3339998822",
-    "city": "Novi",
     "company_name": "Fortis Payment Systems, LLC",
     "contact_id": "Sample contact ID",
     "date_of_birth": "2021-12-01",
@@ -950,7 +1032,6 @@ $result = $usersController->deleteAUserRecord($userId);
     "office_ext_phone": "5",
     "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
     "requires_new_password": null,
-    "state": "Michigan",
     "terms_condition_code": "20220308",
     "tz": "America/New_York",
     "ui_prefs": {
@@ -967,7 +1048,15 @@ $result = $usersController->deleteAUserRecord($userId);
     "password": null,
     "zip": "48375",
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
-    "status_id": true,
+    "status_code": 1,
+    "api_only": false,
+    "is_invitation": false,
+    "address": {
+      "city": "Novi",
+      "state": "MI",
+      "postal_code": "48375",
+      "country": "US"
+    },
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "status": true,
     "login_attempts": 0,
@@ -978,6 +1067,8 @@ $result = $usersController->deleteAUserRecord($userId);
     "terms_accepted_ts": 1422040992,
     "terms_agree_ip": "192.168.0.10",
     "current_date_time": "2019-03-11T10:38:26-0700",
+    "current_login": 1422040992,
+    "log_api_response_body_ts": 1422040992,
     "locations": [
       {
         "id": "11e95f8ec39de8fbdb0a4f1a",
@@ -988,15 +1079,12 @@ $result = $usersController->deleteAUserRecord($userId);
           "city": "Novi",
           "state": "MI",
           "postal_code": "48375",
-          "country": "US",
-          "street": "43155 Main Street STE 2310-C",
-          "street2": "43155 Main Street STE 2310-C"
+          "country": "US"
         },
         "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
         "contact_email_trx_receipt_default": true,
         "default_ach": "11e608a7d515f1e093242bb2",
         "default_cc": "11e608a442a5f1e092242dda",
-        "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
         "email_reply_to": "email@domain.com",
         "fax": "3339998822",
         "location_api_id": "location-111111",
@@ -1007,10 +1095,14 @@ $result = $usersController->deleteAUserRecord($userId);
         "name": "Sample Company Headquarters",
         "office_phone": "2481234567",
         "office_ext_phone": "1021021209",
-        "recurring_notification_days_default": 0,
         "tz": "America/New_York",
         "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+        "show_contact_notes": true,
+        "show_contact_files": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "location_type": "merchant",
+        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+        "additional_access": {}
       }
     ],
     "primary_location": {
@@ -1022,15 +1114,12 @@ $result = $usersController->deleteAUserRecord($userId);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -1041,10 +1130,14 @@ $result = $usersController->deleteAUserRecord($userId);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     },
     "received_emails": [
       {
@@ -1074,8 +1167,7 @@ $result = $usersController->deleteAUserRecord($userId);
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C"
+        "country": "USA"
       },
       "company_name": "Fortis Payment Systems, LLC",
       "header_message": "This is a sample message for you",
@@ -1084,6 +1176,9 @@ $result = $usersController->deleteAUserRecord($userId);
       "home_phone": "3339998822",
       "office_phone": "3339998822",
       "office_phone_ext": "5",
+      "home_phone_country_code": "+1",
+      "office_phone_country_code": "+1",
+      "cell_phone_country_code": "+1",
       "header_message_type": 0,
       "update_if_exists": 1,
       "contact_c1": "any",
@@ -1091,10 +1186,12 @@ $result = $usersController->deleteAUserRecord($userId);
       "contact_c3": "something",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
       "email": "email@domain.com",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "active": true
+      "active": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "isDeletable": true,
     "active_notification_alerts": [
@@ -1204,16 +1301,15 @@ $result = $usersController->deleteAUserRecord($userId);
       "contact_user_default_auth_roles": [
         null
       ],
+      "custom_stylesheet_url": "https://127.0.0.1/receiver",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992
     },
     "created_user": {
       "account_number": "5454545454545454",
-      "address": "43155 Main Street STE 2310-C",
       "branding_domain_url": "{branding_domain_url}",
       "cell_phone": "3339998822",
-      "city": "Novi",
       "company_name": "Fortis Payment Systems, LLC",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "date_of_birth": "2021-12-01",
@@ -1228,7 +1324,6 @@ $result = $usersController->deleteAUserRecord($userId);
       "office_ext_phone": "5",
       "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
       "requires_new_password": null,
-      "state": "Michigan",
       "terms_condition_code": "20220308",
       "tz": "America/New_York",
       "ui_prefs": {
@@ -1245,7 +1340,15 @@ $result = $usersController->deleteAUserRecord($userId);
       "password": null,
       "zip": "48375",
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
-      "status_id": true,
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "status": true,
       "login_attempts": 0,
@@ -1255,7 +1358,9 @@ $result = $usersController->deleteAUserRecord($userId);
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "terms_accepted_ts": 1422040992,
       "terms_agree_ip": "192.168.0.10",
-      "current_date_time": "2019-03-11T10:38:26-0700"
+      "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992
     },
     "location_marketplaces": [
       {
@@ -1297,18 +1402,17 @@ $result = $usersController->deleteAUserRecord($userId);
 
 # View Single User Record
 
-View single user record
-
 ```php
-function viewSingleUserRecord(string $userId, ?array $expand = null): ResponseUser
+function viewSingleUserRecord(string $userId, ?array $expand = null, ?array $fields = null): ResponseUser
 ```
 
 ## Parameters
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `userId` | `string` | Template, Required | User ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
-| `expand` | [`?(string[]) (Expand77Enum)`](../../doc/models/expand-77-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `userId` | `string` | Template, Required | User ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `expand` | [`?(string(Expand111Enum)[])`](../../doc/models/expand-111-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `fields` | [`?(string(Field60Enum)[])`](../../doc/models/field-60-enum.md) | Query, Optional | You can use any `field_name` from this endpoint results to filter the list of fields returned on the response. |
 
 ## Response Type
 
@@ -1329,10 +1433,8 @@ $result = $usersController->viewSingleUserRecord($userId);
   "type": "User",
   "data": {
     "account_number": "5454545454545454",
-    "address": "43155 Main Street STE 2310-C",
     "branding_domain_url": "{branding_domain_url}",
     "cell_phone": "3339998822",
-    "city": "Novi",
     "company_name": "Fortis Payment Systems, LLC",
     "contact_id": "Sample contact ID",
     "date_of_birth": "2021-12-01",
@@ -1347,7 +1449,6 @@ $result = $usersController->viewSingleUserRecord($userId);
     "office_ext_phone": "5",
     "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
     "requires_new_password": null,
-    "state": "Michigan",
     "terms_condition_code": "20220308",
     "tz": "America/New_York",
     "ui_prefs": {
@@ -1364,7 +1465,15 @@ $result = $usersController->viewSingleUserRecord($userId);
     "password": null,
     "zip": "48375",
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
-    "status_id": true,
+    "status_code": 1,
+    "api_only": false,
+    "is_invitation": false,
+    "address": {
+      "city": "Novi",
+      "state": "MI",
+      "postal_code": "48375",
+      "country": "US"
+    },
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "status": true,
     "login_attempts": 0,
@@ -1375,6 +1484,8 @@ $result = $usersController->viewSingleUserRecord($userId);
     "terms_accepted_ts": 1422040992,
     "terms_agree_ip": "192.168.0.10",
     "current_date_time": "2019-03-11T10:38:26-0700",
+    "current_login": 1422040992,
+    "log_api_response_body_ts": 1422040992,
     "locations": [
       {
         "id": "11e95f8ec39de8fbdb0a4f1a",
@@ -1385,15 +1496,12 @@ $result = $usersController->viewSingleUserRecord($userId);
           "city": "Novi",
           "state": "MI",
           "postal_code": "48375",
-          "country": "US",
-          "street": "43155 Main Street STE 2310-C",
-          "street2": "43155 Main Street STE 2310-C"
+          "country": "US"
         },
         "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
         "contact_email_trx_receipt_default": true,
         "default_ach": "11e608a7d515f1e093242bb2",
         "default_cc": "11e608a442a5f1e092242dda",
-        "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
         "email_reply_to": "email@domain.com",
         "fax": "3339998822",
         "location_api_id": "location-111111",
@@ -1404,10 +1512,14 @@ $result = $usersController->viewSingleUserRecord($userId);
         "name": "Sample Company Headquarters",
         "office_phone": "2481234567",
         "office_ext_phone": "1021021209",
-        "recurring_notification_days_default": 0,
         "tz": "America/New_York",
         "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+        "show_contact_notes": true,
+        "show_contact_files": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "location_type": "merchant",
+        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+        "additional_access": {}
       }
     ],
     "primary_location": {
@@ -1419,15 +1531,12 @@ $result = $usersController->viewSingleUserRecord($userId);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -1438,10 +1547,14 @@ $result = $usersController->viewSingleUserRecord($userId);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     },
     "received_emails": [
       {
@@ -1471,8 +1584,7 @@ $result = $usersController->viewSingleUserRecord($userId);
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C"
+        "country": "USA"
       },
       "company_name": "Fortis Payment Systems, LLC",
       "header_message": "This is a sample message for you",
@@ -1481,6 +1593,9 @@ $result = $usersController->viewSingleUserRecord($userId);
       "home_phone": "3339998822",
       "office_phone": "3339998822",
       "office_phone_ext": "5",
+      "home_phone_country_code": "+1",
+      "office_phone_country_code": "+1",
+      "cell_phone_country_code": "+1",
       "header_message_type": 0,
       "update_if_exists": 1,
       "contact_c1": "any",
@@ -1488,10 +1603,12 @@ $result = $usersController->viewSingleUserRecord($userId);
       "contact_c3": "something",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
       "email": "email@domain.com",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "active": true
+      "active": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "isDeletable": true,
     "active_notification_alerts": [
@@ -1601,16 +1718,15 @@ $result = $usersController->viewSingleUserRecord($userId);
       "contact_user_default_auth_roles": [
         null
       ],
+      "custom_stylesheet_url": "https://127.0.0.1/receiver",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992
     },
     "created_user": {
       "account_number": "5454545454545454",
-      "address": "43155 Main Street STE 2310-C",
       "branding_domain_url": "{branding_domain_url}",
       "cell_phone": "3339998822",
-      "city": "Novi",
       "company_name": "Fortis Payment Systems, LLC",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "date_of_birth": "2021-12-01",
@@ -1625,7 +1741,6 @@ $result = $usersController->viewSingleUserRecord($userId);
       "office_ext_phone": "5",
       "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
       "requires_new_password": null,
-      "state": "Michigan",
       "terms_condition_code": "20220308",
       "tz": "America/New_York",
       "ui_prefs": {
@@ -1642,7 +1757,15 @@ $result = $usersController->viewSingleUserRecord($userId);
       "password": null,
       "zip": "48375",
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
-      "status_id": true,
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "status": true,
       "login_attempts": 0,
@@ -1652,7 +1775,9 @@ $result = $usersController->viewSingleUserRecord($userId);
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "terms_accepted_ts": 1422040992,
       "terms_agree_ip": "192.168.0.10",
-      "current_date_time": "2019-03-11T10:38:26-0700"
+      "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992
     },
     "location_marketplaces": [
       {
@@ -1694,8 +1819,6 @@ $result = $usersController->viewSingleUserRecord($userId);
 
 # Update a User Record
 
-Update a user record
-
 ```php
 function updateAUserRecord(string $userId, V1UsersRequest1 $body, ?array $expand = null): ResponseUser
 ```
@@ -1704,9 +1827,9 @@ function updateAUserRecord(string $userId, V1UsersRequest1 $body, ?array $expand
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `userId` | `string` | Template, Required | User ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `userId` | `string` | Template, Required | User ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
 | `body` | [`V1UsersRequest1`](../../doc/models/v1-users-request-1.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand77Enum)`](../../doc/models/expand-77-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand111Enum)[])`](../../doc/models/expand-111-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -1716,9 +1839,40 @@ function updateAUserRecord(string $userId, V1UsersRequest1 $body, ?array $expand
 
 ```php
 $userId = '11e95f8ec39de8fbdb0a4f1a';
-$body = new Models\V1UsersRequest1();
 
-$result = $usersController->updateAUserRecord($userId, $body);
+$body = V1UsersRequest1Builder::init()
+    ->accountNumber('5454545454545454')
+    ->brandingDomainUrl('{branding_domain_url}')
+    ->cellPhone('3339998822')
+    ->companyName('Fortis Payment Systems, LLC')
+    ->contactId('11e95f8ec39de8fbdb0a4f1a')
+    ->dateOfBirth('2021-12-01')
+    ->domainId('11e95f8ec39de8fbdb0a4f1a')
+    ->email('email@domain.com')
+    ->emailTrxReceipt(true)
+    ->homePhone('3339998822')
+    ->firstName('John')
+    ->lastName('Smith')
+    ->locale('en-US')
+    ->officePhone('3339998822')
+    ->officeExtPhone('5')
+    ->primaryLocationId('11e95f8ec39de8fbdb0a4f1a')
+    ->termsConditionCode('20220308')
+    ->tz('America/New_York')
+    ->username('{user_name}')
+    ->userApiKey('234bas8dfn8238f923w2')
+    ->userTypeCode(UserTypeCodeEnum::ENUM_100)
+    ->zip('48375')
+    ->locationId('11e95f8ec39de8fbdb0a4f1a')
+    ->statusCode(StatusCodeEnum::ENUM_1)
+    ->apiOnly(false)
+    ->isInvitation(false)
+    ->build();
+
+$result = $usersController->updateAUserRecord(
+    $userId,
+    $body
+);
 ```
 
 ## Example Response *(as JSON)*
@@ -1728,10 +1882,8 @@ $result = $usersController->updateAUserRecord($userId, $body);
   "type": "User",
   "data": {
     "account_number": "5454545454545454",
-    "address": "43155 Main Street STE 2310-C",
     "branding_domain_url": "{branding_domain_url}",
     "cell_phone": "3339998822",
-    "city": "Novi",
     "company_name": "Fortis Payment Systems, LLC",
     "contact_id": "Sample contact ID",
     "date_of_birth": "2021-12-01",
@@ -1746,7 +1898,6 @@ $result = $usersController->updateAUserRecord($userId, $body);
     "office_ext_phone": "5",
     "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
     "requires_new_password": null,
-    "state": "Michigan",
     "terms_condition_code": "20220308",
     "tz": "America/New_York",
     "ui_prefs": {
@@ -1763,7 +1914,15 @@ $result = $usersController->updateAUserRecord($userId, $body);
     "password": null,
     "zip": "48375",
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
-    "status_id": true,
+    "status_code": 1,
+    "api_only": false,
+    "is_invitation": false,
+    "address": {
+      "city": "Novi",
+      "state": "MI",
+      "postal_code": "48375",
+      "country": "US"
+    },
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "status": true,
     "login_attempts": 0,
@@ -1774,6 +1933,8 @@ $result = $usersController->updateAUserRecord($userId, $body);
     "terms_accepted_ts": 1422040992,
     "terms_agree_ip": "192.168.0.10",
     "current_date_time": "2019-03-11T10:38:26-0700",
+    "current_login": 1422040992,
+    "log_api_response_body_ts": 1422040992,
     "locations": [
       {
         "id": "11e95f8ec39de8fbdb0a4f1a",
@@ -1784,15 +1945,12 @@ $result = $usersController->updateAUserRecord($userId, $body);
           "city": "Novi",
           "state": "MI",
           "postal_code": "48375",
-          "country": "US",
-          "street": "43155 Main Street STE 2310-C",
-          "street2": "43155 Main Street STE 2310-C"
+          "country": "US"
         },
         "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
         "contact_email_trx_receipt_default": true,
         "default_ach": "11e608a7d515f1e093242bb2",
         "default_cc": "11e608a442a5f1e092242dda",
-        "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
         "email_reply_to": "email@domain.com",
         "fax": "3339998822",
         "location_api_id": "location-111111",
@@ -1803,10 +1961,14 @@ $result = $usersController->updateAUserRecord($userId, $body);
         "name": "Sample Company Headquarters",
         "office_phone": "2481234567",
         "office_ext_phone": "1021021209",
-        "recurring_notification_days_default": 0,
         "tz": "America/New_York",
         "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+        "show_contact_notes": true,
+        "show_contact_files": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "location_type": "merchant",
+        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+        "additional_access": {}
       }
     ],
     "primary_location": {
@@ -1818,15 +1980,12 @@ $result = $usersController->updateAUserRecord($userId, $body);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -1837,10 +1996,14 @@ $result = $usersController->updateAUserRecord($userId, $body);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     },
     "received_emails": [
       {
@@ -1870,8 +2033,7 @@ $result = $usersController->updateAUserRecord($userId, $body);
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C"
+        "country": "USA"
       },
       "company_name": "Fortis Payment Systems, LLC",
       "header_message": "This is a sample message for you",
@@ -1880,6 +2042,9 @@ $result = $usersController->updateAUserRecord($userId, $body);
       "home_phone": "3339998822",
       "office_phone": "3339998822",
       "office_phone_ext": "5",
+      "home_phone_country_code": "+1",
+      "office_phone_country_code": "+1",
+      "cell_phone_country_code": "+1",
       "header_message_type": 0,
       "update_if_exists": 1,
       "contact_c1": "any",
@@ -1887,10 +2052,12 @@ $result = $usersController->updateAUserRecord($userId, $body);
       "contact_c3": "something",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
       "email": "email@domain.com",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "active": true
+      "active": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "isDeletable": true,
     "active_notification_alerts": [
@@ -2000,16 +2167,15 @@ $result = $usersController->updateAUserRecord($userId, $body);
       "contact_user_default_auth_roles": [
         null
       ],
+      "custom_stylesheet_url": "https://127.0.0.1/receiver",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992
     },
     "created_user": {
       "account_number": "5454545454545454",
-      "address": "43155 Main Street STE 2310-C",
       "branding_domain_url": "{branding_domain_url}",
       "cell_phone": "3339998822",
-      "city": "Novi",
       "company_name": "Fortis Payment Systems, LLC",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "date_of_birth": "2021-12-01",
@@ -2024,7 +2190,6 @@ $result = $usersController->updateAUserRecord($userId, $body);
       "office_ext_phone": "5",
       "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
       "requires_new_password": null,
-      "state": "Michigan",
       "terms_condition_code": "20220308",
       "tz": "America/New_York",
       "ui_prefs": {
@@ -2041,7 +2206,15 @@ $result = $usersController->updateAUserRecord($userId, $body);
       "password": null,
       "zip": "48375",
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
-      "status_id": true,
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "status": true,
       "login_attempts": 0,
@@ -2051,7 +2224,9 @@ $result = $usersController->updateAUserRecord($userId, $body);
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "terms_accepted_ts": 1422040992,
       "terms_agree_ip": "192.168.0.10",
-      "current_date_time": "2019-03-11T10:38:26-0700"
+      "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992
     },
     "location_marketplaces": [
       {
@@ -2094,17 +2269,16 @@ $result = $usersController->updateAUserRecord($userId, $body);
 
 # View Self Record
 
-View self record
-
 ```php
-function viewSelfRecord(?array $expand = null): ResponseUser
+function viewSelfRecord(?array $expand = null, ?array $fields = null): ResponseUser
 ```
 
 ## Parameters
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `expand` | [`?(string[]) (Expand77Enum)`](../../doc/models/expand-77-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand111Enum)[])`](../../doc/models/expand-111-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `fields` | [`?(string(Field60Enum)[])`](../../doc/models/field-60-enum.md) | Query, Optional | You can use any `field_name` from this endpoint results to filter the list of fields returned on the response. |
 
 ## Response Type
 
@@ -2123,10 +2297,8 @@ $result = $usersController->viewSelfRecord();
   "type": "User",
   "data": {
     "account_number": "5454545454545454",
-    "address": "43155 Main Street STE 2310-C",
     "branding_domain_url": "{branding_domain_url}",
     "cell_phone": "3339998822",
-    "city": "Novi",
     "company_name": "Fortis Payment Systems, LLC",
     "contact_id": "Sample contact ID",
     "date_of_birth": "2021-12-01",
@@ -2141,7 +2313,6 @@ $result = $usersController->viewSelfRecord();
     "office_ext_phone": "5",
     "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
     "requires_new_password": null,
-    "state": "Michigan",
     "terms_condition_code": "20220308",
     "tz": "America/New_York",
     "ui_prefs": {
@@ -2158,7 +2329,15 @@ $result = $usersController->viewSelfRecord();
     "password": null,
     "zip": "48375",
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
-    "status_id": true,
+    "status_code": 1,
+    "api_only": false,
+    "is_invitation": false,
+    "address": {
+      "city": "Novi",
+      "state": "MI",
+      "postal_code": "48375",
+      "country": "US"
+    },
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "status": true,
     "login_attempts": 0,
@@ -2169,6 +2348,8 @@ $result = $usersController->viewSelfRecord();
     "terms_accepted_ts": 1422040992,
     "terms_agree_ip": "192.168.0.10",
     "current_date_time": "2019-03-11T10:38:26-0700",
+    "current_login": 1422040992,
+    "log_api_response_body_ts": 1422040992,
     "locations": [
       {
         "id": "11e95f8ec39de8fbdb0a4f1a",
@@ -2179,15 +2360,12 @@ $result = $usersController->viewSelfRecord();
           "city": "Novi",
           "state": "MI",
           "postal_code": "48375",
-          "country": "US",
-          "street": "43155 Main Street STE 2310-C",
-          "street2": "43155 Main Street STE 2310-C"
+          "country": "US"
         },
         "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
         "contact_email_trx_receipt_default": true,
         "default_ach": "11e608a7d515f1e093242bb2",
         "default_cc": "11e608a442a5f1e092242dda",
-        "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
         "email_reply_to": "email@domain.com",
         "fax": "3339998822",
         "location_api_id": "location-111111",
@@ -2198,10 +2376,14 @@ $result = $usersController->viewSelfRecord();
         "name": "Sample Company Headquarters",
         "office_phone": "2481234567",
         "office_ext_phone": "1021021209",
-        "recurring_notification_days_default": 0,
         "tz": "America/New_York",
         "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+        "show_contact_notes": true,
+        "show_contact_files": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "location_type": "merchant",
+        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+        "additional_access": {}
       }
     ],
     "primary_location": {
@@ -2213,15 +2395,12 @@ $result = $usersController->viewSelfRecord();
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -2232,10 +2411,14 @@ $result = $usersController->viewSelfRecord();
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     },
     "received_emails": [
       {
@@ -2265,8 +2448,7 @@ $result = $usersController->viewSelfRecord();
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C"
+        "country": "USA"
       },
       "company_name": "Fortis Payment Systems, LLC",
       "header_message": "This is a sample message for you",
@@ -2275,6 +2457,9 @@ $result = $usersController->viewSelfRecord();
       "home_phone": "3339998822",
       "office_phone": "3339998822",
       "office_phone_ext": "5",
+      "home_phone_country_code": "+1",
+      "office_phone_country_code": "+1",
+      "cell_phone_country_code": "+1",
       "header_message_type": 0,
       "update_if_exists": 1,
       "contact_c1": "any",
@@ -2282,10 +2467,12 @@ $result = $usersController->viewSelfRecord();
       "contact_c3": "something",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
       "email": "email@domain.com",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "active": true
+      "active": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "isDeletable": true,
     "active_notification_alerts": [
@@ -2395,16 +2582,15 @@ $result = $usersController->viewSelfRecord();
       "contact_user_default_auth_roles": [
         null
       ],
+      "custom_stylesheet_url": "https://127.0.0.1/receiver",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992
     },
     "created_user": {
       "account_number": "5454545454545454",
-      "address": "43155 Main Street STE 2310-C",
       "branding_domain_url": "{branding_domain_url}",
       "cell_phone": "3339998822",
-      "city": "Novi",
       "company_name": "Fortis Payment Systems, LLC",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "date_of_birth": "2021-12-01",
@@ -2419,7 +2605,6 @@ $result = $usersController->viewSelfRecord();
       "office_ext_phone": "5",
       "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
       "requires_new_password": null,
-      "state": "Michigan",
       "terms_condition_code": "20220308",
       "tz": "America/New_York",
       "ui_prefs": {
@@ -2436,7 +2621,15 @@ $result = $usersController->viewSelfRecord();
       "password": null,
       "zip": "48375",
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
-      "status_id": true,
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "status": true,
       "login_attempts": 0,
@@ -2446,7 +2639,9 @@ $result = $usersController->viewSelfRecord();
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "terms_accepted_ts": 1422040992,
       "terms_agree_ip": "192.168.0.10",
-      "current_date_time": "2019-03-11T10:38:26-0700"
+      "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992
     },
     "location_marketplaces": [
       {
@@ -2475,6 +2670,100 @@ $result = $usersController->viewSelfRecord();
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "modified_user_id": "11e95f8ec39de8fbdb0a4f1a"
     }
+  }
+}
+```
+
+## Errors
+
+| HTTP Status Code | Error Description | Exception Class |
+|  --- | --- | --- |
+| 401 | Unauthorized | [`Response401tokenException`](../../doc/models/response-401-token-exception.md) |
+
+
+# Remove Verification
+
+Remove the pending user
+
+```php
+function removeVerification(string $userId): ResponseRemoveVerification
+```
+
+## Parameters
+
+| Parameter | Type | Tags | Description |
+|  --- | --- | --- | --- |
+| `userId` | `string` | Template, Required | - |
+
+## Response Type
+
+[`ResponseRemoveVerification`](../../doc/models/response-remove-verification.md)
+
+## Example Usage
+
+```php
+$userId = 'user_id8';
+
+$result = $usersController->removeVerification($userId);
+```
+
+## Example Response *(as JSON)*
+
+```json
+{
+  "type": "RemoveVerification",
+  "data": {
+    "id": "11e95f8ec39de8fbdb0a4f1a",
+    "user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "hash": "123456781234567812345678",
+    "created_ts": 1422040992
+  }
+}
+```
+
+## Errors
+
+| HTTP Status Code | Error Description | Exception Class |
+|  --- | --- | --- |
+| 401 | Unauthorized | [`Response401tokenException`](../../doc/models/response-401-token-exception.md) |
+
+
+# Send Verification
+
+Send an verification email to the pending user
+
+```php
+function sendVerification(string $userId): ResponseSendVerification
+```
+
+## Parameters
+
+| Parameter | Type | Tags | Description |
+|  --- | --- | --- | --- |
+| `userId` | `string` | Template, Required | - |
+
+## Response Type
+
+[`ResponseSendVerification`](../../doc/models/response-send-verification.md)
+
+## Example Usage
+
+```php
+$userId = 'user_id8';
+
+$result = $usersController->sendVerification($userId);
+```
+
+## Example Response *(as JSON)*
+
+```json
+{
+  "type": "SendVerification",
+  "data": {
+    "id": "11e95f8ec39de8fbdb0a4f1a",
+    "user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "hash": "123456781234567812345678",
+    "created_ts": 1422040992
   }
 }
 ```

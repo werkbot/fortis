@@ -12,6 +12,7 @@ Options include: api-default
 | Name |
 |  --- |
 | `APIDEFAULT` |
+| `PARTNER` |
 
 ## Example
 

@@ -9,77 +9,92 @@
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `locationId` | `string` | Required | Location ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getLocationId(): string | setLocationId(string locationId): void |
-| `title` | `string` | Required | Title<br>**Constraints**: *Maximum Length*: `64` | getTitle(): string | setTitle(string title): void |
-| `ccProductTransactionId` | `string` | Required | Transaction ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getCcProductTransactionId(): string | setCcProductTransactionId(string ccProductTransactionId): void |
-| `achProductTransactionId` | `?string` | Optional | ACH Product Transaction Id<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getAchProductTransactionId(): ?string | setAchProductTransactionId(?string achProductTransactionId): void |
-| `dueDate` | `string` | Required | Due Date, Format: Y-m-d<br>**Constraints**: *Maximum Length*: `10`, *Pattern*: `^[\d]{4}-[\d]{2}-[\d]{2}$` | getDueDate(): string | setDueDate(string dueDate): void |
-| `itemList` | [`ItemList[]`](../../doc/models/item-list.md) | Required | Item List<br>**Constraints**: *Minimum Items*: `1`, *Maximum Items*: `99`, *Unique Items Required* | getItemList(): array | setItemList(array itemList): void |
-| `allowOverpayment` | `?bool` | Optional | Allow Overpayment. | getAllowOverpayment(): ?bool | setAllowOverpayment(?bool allowOverpayment): void |
-| `email` | `?string` | Optional | Email<br>**Constraints**: *Maximum Length*: `128` | getEmail(): ?string | setEmail(?string email): void |
-| `contactId` | `?string` | Optional | Contact ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getContactId(): ?string | setContactId(?string contactId): void |
-| `contactApiId` | `?string` | Optional | Contact API Id<br>**Constraints**: *Maximum Length*: `64` | getContactApiId(): ?string | setContactApiId(?string contactApiId): void |
-| `customerId` | `?string` | Optional | Customer Id<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getCustomerId(): ?string | setCustomerId(?string customerId): void |
-| `expireDate` | `?string` | Optional | Expire Date.<br>**Constraints**: *Maximum Length*: `10`, *Pattern*: `^[\d]{4}-[\d]{2}-[\d]{2}$` | getExpireDate(): ?string | setExpireDate(?string expireDate): void |
-| `allowPartialPay` | `?bool` | Optional | Allow partial pay | getAllowPartialPay(): ?bool | setAllowPartialPay(?bool allowPartialPay): void |
-| `attachFilesToEmail` | `?bool` | Optional | Attach Files to Email | getAttachFilesToEmail(): ?bool | setAttachFilesToEmail(?bool attachFilesToEmail): void |
-| `sendEmail` | `?bool` | Optional | Send Email | getSendEmail(): ?bool | setSendEmail(?bool sendEmail): void |
-| `invoiceNumber` | `?string` | Optional | Invoice number<br>**Constraints**: *Maximum Length*: `64` | getInvoiceNumber(): ?string | setInvoiceNumber(?string invoiceNumber): void |
-| `itemHeader` | `?string` | Optional | Item Header<br>**Constraints**: *Maximum Length*: `250` | getItemHeader(): ?string | setItemHeader(?string itemHeader): void |
-| `itemFooter` | `?string` | Optional | Item footer<br>**Constraints**: *Maximum Length*: `250` | getItemFooter(): ?string | setItemFooter(?string itemFooter): void |
-| `amountDue` | `?float` | Optional | Amount Due | getAmountDue(): ?float | setAmountDue(?float amountDue): void |
-| `notificationEmail` | `?string` | Optional | Notification email<br>**Constraints**: *Maximum Length*: `640` | getNotificationEmail(): ?string | setNotificationEmail(?string notificationEmail): void |
-| `paymentStatusId` | `?float` | Optional | Payment Status Id<br>**Constraints**: `>= 1`, `<= 3` | getPaymentStatusId(): ?float | setPaymentStatusId(?float paymentStatusId): void |
-| `statusId` | [`?int (StatusIdEnum)`](../../doc/models/status-id-enum.md) | Optional | Status Id | getStatusId(): ?int | setStatusId(?int statusId): void |
-| `note` | `?string` | Optional | Note<br>**Constraints**: *Maximum Length*: `200` | getNote(): ?string | setNote(?string note): void |
-| `notificationDaysBeforeDueDate` | `?int` | Optional | Notification days before due date<br>**Constraints**: `>= 0`, `<= 99` | getNotificationDaysBeforeDueDate(): ?int | setNotificationDaysBeforeDueDate(?int notificationDaysBeforeDueDate): void |
-| `notificationDaysAfterDueDate` | `?int` | Optional | Notification days after due date<br>**Constraints**: `>= 0`, `<= 99` | getNotificationDaysAfterDueDate(): ?int | setNotificationDaysAfterDueDate(?int notificationDaysAfterDueDate): void |
-| `notificationOnDueDate` | `?bool` | Optional | Notification on due date | getNotificationOnDueDate(): ?bool | setNotificationOnDueDate(?bool notificationOnDueDate): void |
-| `sendTextToPay` | `?bool` | Optional | Send Text To Pay | getSendTextToPay(): ?bool | setSendTextToPay(?bool sendTextToPay): void |
-| `files` | [`?(File[])`](../../doc/models/file.md) | Optional | File Information on `expand` | getFiles(): ?array | setFiles(?array files): void |
-| `remainingBalance` | `?float` | Optional | Remaining Balance | getRemainingBalance(): ?float | setRemainingBalance(?float remainingBalance): void |
-| `singlePaymentMinAmount` | `?float` | Optional | Single Payment Min Amount | getSinglePaymentMinAmount(): ?float | setSinglePaymentMinAmount(?float singlePaymentMinAmount): void |
-| `singlePaymentMaxAmount` | `?float` | Optional | Single Payment Max Amount<br>**Default**: `9999999.99` | getSinglePaymentMaxAmount(): ?float | setSinglePaymentMaxAmount(?float singlePaymentMaxAmount): void |
-| `cellPhone` | `?string` | Optional | Cell Phone<br>**Constraints**: *Minimum Length*: `10`, *Maximum Length*: `10`, *Pattern*: `^\d{10}$` | getCellPhone(): ?string | setCellPhone(?string cellPhone): void |
-| `id` | `string` | Required | Quick Invoice ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getId(): string | setId(string id): void |
-| `createdTs` | `int` | Required | Created Time Stamp | getCreatedTs(): int | setCreatedTs(int createdTs): void |
-| `modifiedTs` | `int` | Required | Modified Time Stamp | getModifiedTs(): int | setModifiedTs(int modifiedTs): void |
-| `createdUserId` | `?string` | Optional | Created User Id<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getCreatedUserId(): ?string | setCreatedUserId(?string createdUserId): void |
-| `modifiedUserId` | `?string` | Optional | Modified User Id<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getModifiedUserId(): ?string | setModifiedUserId(?string modifiedUserId): void |
-| `active` | `?bool` | Optional | Active status | getActive(): ?bool | setActive(?bool active): void |
-| `isActive` | `?bool` | Optional | Register is active | getIsActive(): ?bool | setIsActive(?bool isActive): void |
-| `quickInvoiceSetting` | [`?QuickInvoiceSetting`](../../doc/models/quick-invoice-setting.md) | Optional | Quick Invoice Setting Information on `expand` | getQuickInvoiceSetting(): ?QuickInvoiceSetting | setQuickInvoiceSetting(?QuickInvoiceSetting quickInvoiceSetting): void |
-| `tags` | [`?(Tag[])`](../../doc/models/tag.md) | Optional | Tag Information on `expand` | getTags(): ?array | setTags(?array tags): void |
-| `quickInvoiceViews` | [`?(QuickInvoiceView[])`](../../doc/models/quick-invoice-view.md) | Optional | Quick Invoice View Information on `expand` | getQuickInvoiceViews(): ?array | setQuickInvoiceViews(?array quickInvoiceViews): void |
-| `location` | [`?Location`](../../doc/models/location.md) | Optional | Location Information on `expand` | getLocation(): ?Location | setLocation(?Location location): void |
+| `id` | `?string` | Optional | Location ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getId(): ?string | setId(?string id): void |
+| `createdTs` | `?int` | Optional | Created Time Stamp | getCreatedTs(): ?int | setCreatedTs(?int createdTs): void |
+| `modifiedTs` | `?int` | Optional | Modified Time Stamp | getModifiedTs(): ?int | setModifiedTs(?int modifiedTs): void |
+| `accountNumber` | `?string` | Optional | Account number<br><br>**Constraints**: *Maximum Length*: `32`, *Pattern*: `^[a-zA-Z0-9\-_]+$` | getAccountNumber(): ?string | setAccountNumber(?string accountNumber): void |
+| `address` | [`?Address1`](../../doc/models/address-1.md) | Optional | Address | getAddress(): ?Address1 | setAddress(?Address1 address): void |
+| `brandingDomainId` | `?string` | Optional | GUID for Branding Domain<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getBrandingDomainId(): ?string | setBrandingDomainId(?string brandingDomainId): void |
+| `contactEmailTrxReceiptDefault` | `?bool` | Optional | If true, will email contact receipt for any transaction | getContactEmailTrxReceiptDefault(): ?bool | setContactEmailTrxReceiptDefault(?bool contactEmailTrxReceiptDefault): void |
+| `defaultAch` | `?string` | Optional | GUID for Location's default ACH Product Transaction<br><br>**Constraints**: *Minimum Length*: `24`, *Maximum Length*: `36` | getDefaultAch(): ?string | setDefaultAch(?string defaultAch): void |
+| `defaultCc` | `?string` | Optional | GUID for Location's default CC Product Transaction<br><br>**Constraints**: *Minimum Length*: `24`, *Maximum Length*: `36` | getDefaultCc(): ?string | setDefaultCc(?string defaultCc): void |
+| `emailReplyTo` | `?string` | Optional | Used as from email address when sending various notifications<br><br>**Constraints**: *Maximum Length*: `64` | getEmailReplyTo(): ?string | setEmailReplyTo(?string emailReplyTo): void |
+| `fax` | `?string` | Optional | Fax number<br><br>**Constraints**: *Minimum Length*: `10`, *Maximum Length*: `10`, *Pattern*: `^\d{10}$` | getFax(): ?string | setFax(?string fax): void |
+| `locationApiId` | `?string` | Optional | Location api ID<br><br>**Constraints**: *Maximum Length*: `36` | getLocationApiId(): ?string | setLocationApiId(?string locationApiId): void |
+| `locationApiKey` | `?string` | Optional | Location api key<br><br>**Constraints**: *Maximum Length*: `36` | getLocationApiKey(): ?string | setLocationApiKey(?string locationApiKey): void |
+| `locationC1` | `?string` | Optional | Can be used to store custom information for location.<br><br>**Constraints**: *Maximum Length*: `128` | getLocationC1(): ?string | setLocationC1(?string locationC1): void |
+| `locationC2` | `?string` | Optional | Can be used to store custom information for location.<br><br>**Constraints**: *Maximum Length*: `128` | getLocationC2(): ?string | setLocationC2(?string locationC2): void |
+| `locationC3` | `?string` | Optional | Can be used to store custom information for location.<br><br>**Constraints**: *Maximum Length*: `128` | getLocationC3(): ?string | setLocationC3(?string locationC3): void |
+| `name` | `?string` | Optional | Name of the company<br><br>**Constraints**: *Minimum Length*: `1`, *Maximum Length*: `64` | getName(): ?string | setName(?string name): void |
+| `officePhone` | `?string` | Optional | Office phone number<br><br>**Constraints**: *Minimum Length*: `10`, *Maximum Length*: `10` | getOfficePhone(): ?string | setOfficePhone(?string officePhone): void |
+| `officeExtPhone` | `?string` | Optional | Office phone extension number<br><br>**Constraints**: *Maximum Length*: `10` | getOfficeExtPhone(): ?string | setOfficeExtPhone(?string officeExtPhone): void |
+| `tz` | `?string` | Optional | Time zone<br><br>**Constraints**: *Maximum Length*: `30` | getTz(): ?string | setTz(?string tz): void |
+| `parentId` | `?string` | Optional | Location GUID of the parent location<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getParentId(): ?string | setParentId(?string parentId): void |
+| `showContactNotes` | `?bool` | Optional | If set to true will show 'Notes' tab on Contact | getShowContactNotes(): ?bool | setShowContactNotes(?bool showContactNotes): void |
+| `showContactFiles` | `?bool` | Optional | If set to true will show 'Files' tab on Contact | getShowContactFiles(): ?bool | setShowContactFiles(?bool showContactFiles): void |
+| `createdUserId` | `?string` | Optional | User ID Created the register<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getCreatedUserId(): ?string | setCreatedUserId(?string createdUserId): void |
+| `locationType` | [`?string(LocationTypeEnum)`](../../doc/models/location-type-enum.md) | Optional | Location Type | getLocationType(): ?string | setLocationType(?string locationType): void |
+| `parentName` | `?string` | Optional | Name of the parent location | getParentName(): ?string | setParentName(?string parentName): void |
+| `ticketHashKey` | `?string` | Optional | Ticket Hash Key<br><br>**Constraints**: *Maximum Length*: `36` | getTicketHashKey(): ?string | setTicketHashKey(?string ticketHashKey): void |
+| `additionalAccess` | [`?AdditionalAccess`](../../doc/models/additional-access.md) | Optional | - | getAdditionalAccess(): ?AdditionalAccess | setAdditionalAccess(?AdditionalAccess additionalAccess): void |
+| `parent` | [`?Parent3`](../../doc/models/parent-3.md) | Optional | Parent Information on `expand` | getParent(): ?Parent3 | setParent(?Parent3 parent): void |
+| `users` | [`?(User9[])`](../../doc/models/user-9.md) | Optional | User Information on `expand` | getUsers(): ?array | setUsers(?array users): void |
+| `isDeletable` | `?bool` | Optional | Is Deletable Information on `expand` | getIsDeletable(): ?bool | setIsDeletable(?bool isDeletable): void |
+| `terminals` | [`?(Terminal2[])`](../../doc/models/terminal-2.md) | Optional | Terminal Information on `expand` | getTerminals(): ?array | setTerminals(?array terminals): void |
+| `brandingDomain` | [`?BrandingDomain1`](../../doc/models/branding-domain-1.md) | Optional | Branding Domain Information on `expand` | getBrandingDomain(): ?BrandingDomain1 | setBrandingDomain(?BrandingDomain1 brandingDomain): void |
+| `productInvoice` | [`?ProductInvoice`](../../doc/models/product-invoice.md) | Optional | Product Invoice Information on `expand` | getProductInvoice(): ?ProductInvoice | setProductInvoice(?ProductInvoice productInvoice): void |
+| `productFiles` | [`?(ProductFile1[])`](../../doc/models/product-file-1.md) | Optional | Product File Information on `expand` | getProductFiles(): ?array | setProductFiles(?array productFiles): void |
 | `createdUser` | [`?CreatedUser`](../../doc/models/created-user.md) | Optional | User Information on `expand` | getCreatedUser(): ?CreatedUser | setCreatedUser(?CreatedUser createdUser): void |
-| `modifiedUser` | [`?ModifiedUser`](../../doc/models/modified-user.md) | Optional | Modified User Information on `expand` | getModifiedUser(): ?ModifiedUser | setModifiedUser(?ModifiedUser modifiedUser): void |
 | `changelogs` | [`?(Changelog[])`](../../doc/models/changelog.md) | Optional | Changelog Information on `expand` | getChangelogs(): ?array | setChangelogs(?array changelogs): void |
-| `contact` | [`?Contact1`](../../doc/models/contact-1.md) | Optional | Contact Information on `expand` | getContact(): ?Contact1 | setContact(?Contact1 contact): void |
-| `logEmails` | [`?(LogEmail[])`](../../doc/models/log-email.md) | Optional | Log Email Information on `expand` | getLogEmails(): ?array | setLogEmails(?array logEmails): void |
-| `logSms` | [`?LogSms`](../../doc/models/log-sms.md) | Optional | Log Sms Information on `expand` | getLogSms(): ?LogSms | setLogSms(?LogSms logSms): void |
-| `transactions` | [`?(Transaction[])`](../../doc/models/transaction.md) | Optional | Transaction Information on `expand` | getTransactions(): ?array | setTransactions(?array transactions): void |
-| `ccProductTransaction` | [`?CcProductTransaction`](../../doc/models/cc-product-transaction.md) | Optional | Cc Product Transaction Information on `expand` | getCcProductTransaction(): ?CcProductTransaction | setCcProductTransaction(?CcProductTransaction ccProductTransaction): void |
-| `achProductTransaction` | [`?AchProductTransaction`](../../doc/models/ach-product-transaction.md) | Optional | Ach Product Transaction Information on `expand` | getAchProductTransaction(): ?AchProductTransaction | setAchProductTransaction(?AchProductTransaction achProductTransaction): void |
-| `emailBlacklist` | [`?EmailBlacklist`](../../doc/models/email-blacklist.md) | Optional | Email Blacklist Information on `expand` | getEmailBlacklist(): ?EmailBlacklist | setEmailBlacklist(?EmailBlacklist emailBlacklist): void |
-| `smsBlacklist` | [`?SmsBlacklist`](../../doc/models/sms-blacklist.md) | Optional | Sms Blacklist Information on `expand` | getSmsBlacklist(): ?SmsBlacklist | setSmsBlacklist(?SmsBlacklist smsBlacklist): void |
-| `paymentUrl` | `?string` | Optional | Payment Url Information on `expand` | getPaymentUrl(): ?string | setPaymentUrl(?string paymentUrl): void |
+| `productTransactions` | [`?(ProductTransaction1[])`](../../doc/models/product-transaction-1.md) | Optional | Product Transaction Information on `expand` | getProductTransactions(): ?array | setProductTransactions(?array productTransactions): void |
+| `terminalRouters` | [`?(TerminalRouter[])`](../../doc/models/terminal-router.md) | Optional | Terminal Router Information on `expand` | getTerminalRouters(): ?array | setTerminalRouters(?array terminalRouters): void |
+| `developerCompany` | [`?DeveloperCompany`](../../doc/models/developer-company.md) | Optional | Developer Company Information on `expand` | getDeveloperCompany(): ?DeveloperCompany | setDeveloperCompany(?DeveloperCompany developerCompany): void |
+| `developerCompanyId` | `?string` | Optional | Developer Company Id Information on `expand` | getDeveloperCompanyId(): ?string | setDeveloperCompanyId(?string developerCompanyId): void |
+| `helppages` | [`?(Helppage[])`](../../doc/models/helppage.md) | Optional | Helppage Information on `expand` | getHelppages(): ?array | setHelppages(?array helppages): void |
+| `quickInvoiceSetting` | [`?QuickInvoiceSetting`](../../doc/models/quick-invoice-setting.md) | Optional | Quick Invoice Setting Information on `expand` | getQuickInvoiceSetting(): ?QuickInvoiceSetting | setQuickInvoiceSetting(?QuickInvoiceSetting quickInvoiceSetting): void |
+| `locationBillingAccounts` | [`?(LocationBillingAccount[])`](../../doc/models/location-billing-account.md) | Optional | Location Billing Account Information on `expand` | getLocationBillingAccounts(): ?array | setLocationBillingAccounts(?array locationBillingAccounts): void |
+| `marketplaces` | [`?(Marketplace[])`](../../doc/models/marketplace.md) | Optional | Marketplace Information on `expand` | getMarketplaces(): ?array | setMarketplaces(?array marketplaces): void |
+| `locationmarketplaces` | [`?(Locationmarketplace[])`](../../doc/models/locationmarketplace.md) | Optional | Locationmarketplaces Information on `expand` | getLocationmarketplaces(): ?array | setLocationmarketplaces(?array locationmarketplaces): void |
+| `addons` | [`?(Addon[])`](../../doc/models/addon.md) | Optional | Addons Information on `expand` | getAddons(): ?array | setAddons(?array addons): void |
 
 ## Example (as JSON)
 
 ```json
 {
-  "location_id": "11e95f8ec39de8fbdb0a4f1a",
-  "title": "My terminal",
-  "cc_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
-  "due_date": "2021-12-01",
-  "item_list": {
-    "name": "Bread",
-    "amount": 20.15
-  },
   "id": "11e95f8ec39de8fbdb0a4f1a",
   "created_ts": 1422040992,
-  "modified_ts": 1422040992
+  "modified_ts": 1422040992,
+  "account_number": "5454545454545454",
+  "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
+  "contact_email_trx_receipt_default": true,
+  "default_ach": "11e608a7d515f1e093242bb2",
+  "default_cc": "11e608a442a5f1e092242dda",
+  "email_reply_to": "email@domain.com",
+  "fax": "3339998822",
+  "location_api_id": "location-111111",
+  "location_api_key": "AE34BBCAADF4AE34BBCAADF4",
+  "location_c1": "custom 1",
+  "location_c2": "custom 2",
+  "location_c3": "custom data 3",
+  "name": "Sample Company Headquarters",
+  "office_phone": "2481234567",
+  "office_ext_phone": "1021021209",
+  "tz": "America/New_York",
+  "parent_id": "11e95f8ec39de8fbdb0a4f1a",
+  "show_contact_notes": true,
+  "show_contact_files": true,
+  "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+  "location_type": "merchant",
+  "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+  "is_deletable": true,
+  "developer_company_id": "sample developer company id",
+  "address": {
+    "city": "city6",
+    "state": "state2",
+    "postal_code": "postal_code8",
+    "country": "US",
+    "street": "street6"
+  }
 }
 ```
 

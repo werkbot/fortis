@@ -18,14 +18,14 @@ class ValuesEnum
 {
     public const ACCOUNT_VAULT_ID = 'account_vault_id';
 
-    public const ACCOUNT_VAULT_API_ID = 'account_vault_api_id';
-
     public const TOKEN_ID = 'token_id';
+
+    public const ACCOUNT_VAULT_API_ID = 'account_vault_api_id';
 
     public const TOKEN_API_ID = 'token_api_id';
 
     private const _ALL_VALUES =
-        [self::ACCOUNT_VAULT_ID, self::ACCOUNT_VAULT_API_ID, self::TOKEN_ID, self::TOKEN_API_ID];
+        [self::ACCOUNT_VAULT_ID, self::TOKEN_ID, self::ACCOUNT_VAULT_API_ID, self::TOKEN_API_ID];
 
     /**
      * Ensures that all the given values are present in this Enum.

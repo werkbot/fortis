@@ -10,35 +10,26 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class ItemList implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $name;
 
     /**
-     * @var float
+     * @var int|null
      */
     private $amount;
-
-    /**
-     * @param string $name
-     * @param float $amount
-     */
-    public function __construct(string $name, float $amount)
-    {
-        $this->name = $name;
-        $this->amount = $amount;
-    }
 
     /**
      * Returns Name.
      * Item's Name, must be unique on the list
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -47,10 +38,9 @@ class ItemList implements \JsonSerializable
      * Sets Name.
      * Item's Name, must be unique on the list
      *
-     * @required
      * @maps name
      */
-    public function setName(string $name): void
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
@@ -59,7 +49,7 @@ class ItemList implements \JsonSerializable
      * Returns Amount.
      * Item's Amount
      */
-    public function getAmount(): float
+    public function getAmount(): ?int
     {
         return $this->amount;
     }
@@ -68,12 +58,56 @@ class ItemList implements \JsonSerializable
      * Sets Amount.
      * Item's Amount
      *
-     * @required
      * @maps amount
      */
-    public function setAmount(float $amount): void
+    public function setAmount(?int $amount): void
     {
         $this->amount = $amount;
+    }
+
+    /**
+     * Converts the ItemList object to a human-readable string representation.
+     *
+     * @return string The string representation of the ItemList object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'ItemList',
+            [
+                'name' => $this->name,
+                'amount' => $this->amount,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -88,8 +122,13 @@ class ItemList implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['name']   = $this->name;
-        $json['amount'] = $this->amount;
+        if (isset($this->name)) {
+            $json['name']   = $this->name;
+        }
+        if (isset($this->amount)) {
+            $json['amount'] = $this->amount;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

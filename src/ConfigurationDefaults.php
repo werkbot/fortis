@@ -41,6 +41,15 @@ class ConfigurationDefaults
 
     public const DEVELOPER_ID = '';
 
+    public const ACCESS_TOKEN = '';
+
+    public const PROXY_CONFIGURATION = [
+        'port' => 0,
+        'tunnel' => false,
+        'address' => '',
+        'auth' => ['user' => '', 'pass' => '', 'method' => CURLAUTH_BASIC]
+    ];
+
     /**
      * @var array Associative list of all default configurations
      */
@@ -57,6 +66,8 @@ class ConfigurationDefaults
         'environment' => self::ENVIRONMENT,
         'userId' => self::USER_ID,
         'userApiKey' => self::USER_API_KEY,
-        'developerId' => self::DEVELOPER_ID
+        'developerId' => self::DEVELOPER_ID,
+        'accessToken' => self::ACCESS_TOKEN,
+        'proxyConfiguration' => self::PROXY_CONFIGURATION
     ];
 }

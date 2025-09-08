@@ -9,7 +9,7 @@
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `skipCount` | `int` | Required | Skip Count<br>**Constraints**: `>= 1`, `<= 99` | getSkipCount(): int | setSkipCount(int skipCount): void |
+| `skipCount` | `int` | Required | Skip Count<br><br>**Constraints**: `>= 1`, `<= 99` | getSkipCount(): int | setSkipCount(int skipCount): void |
 
 ## Example (as JSON)
 

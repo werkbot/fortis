@@ -21,7 +21,9 @@ class FormatEnum
 {
     public const APIDEFAULT = 'api-default';
 
-    private const _ALL_VALUES = [self::APIDEFAULT];
+    public const PARTNER = 'partner';
+
+    private const _ALL_VALUES = [self::APIDEFAULT, self::PARTNER];
 
     /**
      * Ensures that all the given values are present in this Enum.

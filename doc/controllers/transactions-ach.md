@@ -16,6 +16,7 @@ $transactionsACHController = $client->getTransactionsACHController();
 * [ACH Debit](../../doc/controllers/transactions-ach.md#ach-debit)
 * [ACH Debit - Previous Transaction](../../doc/controllers/transactions-ach.md#ach-debit---previous-transaction)
 * [ACH Debit - Tokenized](../../doc/controllers/transactions-ach.md#ach-debit---tokenized)
+* [ACH Refund - Previous Transaction](../../doc/controllers/transactions-ach.md#ach-refund---previous-transaction)
 
 
 # ACH Credit
@@ -31,7 +32,7 @@ function aCHCredit(V1TransactionsAchCreditKeyedRequest $body, ?array $expand = n
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `body` | [`V1TransactionsAchCreditKeyedRequest`](../../doc/models/v1-transactions-ach-credit-keyed-request.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand47Enum)`](../../doc/models/expand-47-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand60Enum)[])`](../../doc/models/expand-60-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -40,18 +41,66 @@ function aCHCredit(V1TransactionsAchCreditKeyedRequest $body, ?array $expand = n
 ## Example Usage
 
 ```php
-$body_transactionAmount = 1;
-$body_accountHolderName = 'smith';
-$body_accountNumber = '24345';
-$body_accountType = Models\AccountType9Enum::CHECKING;
-$body_routingNumber = '051904524';
-$body = new Models\V1TransactionsAchCreditKeyedRequest(
-    $body_transactionAmount,
-    $body_accountHolderName,
-    $body_accountNumber,
-    $body_accountType,
-    $body_routingNumber
-);
+$body = V1TransactionsAchCreditKeyedRequestBuilder::init(
+    1,
+    'smith',
+    '24345',
+    AccountType16Enum::CHECKING,
+    '051904524'
+)
+    ->checkinDate('2021-12-01')
+    ->checkoutDate('2021-12-01')
+    ->clerkNumber('AE1234')
+    ->contactId('11e95f8ec39de8fbdb0a4f1a')
+    ->customData(ApiHelper::deserialize('{"data1":"custom1","data2":"custom2"}'))
+    ->customerId('customerid')
+    ->description('some description')
+    ->iiasInd(IiasIndEnum::ENUM_1)
+    ->imageFront('U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=')
+    ->imageBack('U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=')
+    ->installment(true)
+    ->installmentNumber(1)
+    ->installmentCount(1)
+    ->recurringFlag(RecurringFlagEnum::YES)
+    ->installmentCounter(1)
+    ->installmentTotal(1)
+    ->subscription(false)
+    ->standingOrder(false)
+    ->locationApiId('location-api-id-florida-2')
+    ->locationId('11e95f8ec39de8fbdb0a4f1a')
+    ->productTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->advanceDeposit(false)
+    ->noShow(false)
+    ->notificationEmailAddress('johnsmith@smiths.com')
+    ->orderNumber('433659378839')
+    ->poNumber('555555553123')
+    ->quickInvoiceId('11e95f8ec39de8fbdb0a4f1a')
+    ->recurring(false)
+    ->recurringNumber(1)
+    ->roomNum('303')
+    ->roomRate(95)
+    ->saveAccount(false)
+    ->saveAccountTitle('John Account')
+    ->subtotalAmount(599)
+    ->surchargeAmount(100)
+    ->tax(0)
+    ->tipAmount(0)
+    ->secondaryAmount(0)
+    ->transactionApiId('transaction-payment-abcd123')
+    ->transactionC1('custom-data-1')
+    ->transactionC2('custom-data-2')
+    ->transactionC3('custom-data-3')
+    ->bankFundedOnlyOverride(false)
+    ->allowPartialAuthorizationOverride(false)
+    ->autoDeclineCvvOverride(false)
+    ->autoDeclineStreetOverride(false)
+    ->autoDeclineZipOverride(false)
+    ->ebtType(EbtTypeEnum::FOOD_STAMP)
+    ->achIdentifier('P')
+    ->achSecCode(AchSecCode31Enum::C21)
+    ->effectiveDate('2021-12-01')
+    ->checkNumber('8520748520963')
+    ->build();
 
 $result = $transactionsACHController->aCHCredit($body);
 ```
@@ -74,8 +123,8 @@ $result = $transactionsACHController->aCHCredit($body);
       "city": "Novi",
       "state": "Michigan",
       "postal_code": "48375",
-      "street": "43155 Main Street STE 2310-C",
-      "phone": "3339998822"
+      "phone": "3339998822",
+      "country": "USA"
     },
     "checkin_date": "2021-12-01",
     "checkout_date": "2021-12-01",
@@ -84,17 +133,17 @@ $result = $transactionsACHController->aCHCredit($body);
     "custom_data": {},
     "customer_id": "customerid",
     "description": "some description",
-    "identity_verification": {
-      "dl_state": "MI",
-      "dl_number": "1235567",
-      "dob_year": "1980"
-    },
     "iias_ind": 1,
     "image_front": "U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=",
     "image_back": "U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=",
     "installment": true,
     "installment_number": 1,
     "installment_count": 1,
+    "recurring_flag": "yes",
+    "installment_counter": 1,
+    "installment_total": 1,
+    "subscription": false,
+    "standing_order": false,
     "location_api_id": "location-api-id-florida-2",
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
     "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -106,6 +155,13 @@ $result = $transactionsACHController->aCHCredit($body);
     "quick_invoice_id": "11e95f8ec39de8fbdb0a4f1a",
     "recurring": {
       "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+      "token_id": "11e95f8ec39de8fbdb0a4f1a",
+      "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_vault_api_id": "token1234abcd",
+      "token_api_id": "token1234abcd",
+      "_joi": {
+        "conditions": {}
+      },
       "active": true,
       "description": "Description",
       "end_date": "2021-12-01",
@@ -120,18 +176,25 @@ $result = $transactionsACHController->aCHCredit($body);
       "recurring_api_id": "recurring1234abcd",
       "start_date": "2021-12-01",
       "status": "active",
-      "transaction_amount": 3,
+      "transaction_amount": 300,
       "terms_agree": true,
       "terms_agree_ip": "192.168.0.10",
       "recurring_c1": "recurring custom data 1",
       "recurring_c2": "recurring custom data 2",
       "recurring_c3": "recurring custom data 3",
       "send_to_proc_as_recur": true,
+      "tags": [
+        "Walk-in Customer"
+      ],
+      "secondary_amount": 100,
+      "currency": "USD",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "next_run_date": "2021-12-01",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "recurring_type_id": "i"
+      "recurring_type_id": "i",
+      "installment_amount_total": 99999999,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "recurring_number": 1,
     "room_num": "303",
@@ -158,6 +221,11 @@ $result = $transactionsACHController->aCHCredit($body);
     "transaction_c2": "custom-data-2",
     "transaction_c3": "custom-data-3",
     "bank_funded_only_override": false,
+    "allow_partial_authorization_override": false,
+    "auto_decline_cvv_override": false,
+    "auto_decline_street_override": false,
+    "auto_decline_zip_override": false,
+    "ebt_type": "food_stamp",
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "created_ts": 1422040992,
     "modified_ts": 1422040992,
@@ -192,7 +260,7 @@ $result = $transactionsACHController->aCHCredit($body);
     "transaction_settlement_status": null,
     "charge_back_date": "2021-12-01",
     "is_recurring": true,
-    "notification_email_sent": "true",
+    "notification_email_sent": true,
     "par": "Q1J4Z28RKA1EBL470G9XYG90R5D3E",
     "reason_code_id": 1000,
     "recurring_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -200,26 +268,40 @@ $result = $transactionsACHController->aCHCredit($body);
     "status_code": 101,
     "transaction_batch_id": "11e95f8ec39de8fbdb0a4f1a",
     "verbiage": "APPROVED",
+    "voucher_number": "1234",
     "void_date": "2021-12-01",
     "batch": "2",
     "terms_agree": true,
     "response_message": null,
     "return_date": "2021-12-01",
     "trx_source_id": 8,
+    "routing_number": "051904524",
+    "trx_source_code": 8,
+    "paylink_id": "11e95f8ec39de8fbdb0a4f1a",
+    "is_accountvault": true,
+    "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "effective_date": "2021-12-01",
+    "is_token": true,
+    "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+    "hosted_payment_page_id": "11e95f8ec39de8fbdb0a4f1a",
     "account_vault": {
       "account_holder_name": "John Smith",
-      "account_number": "545454545454545",
       "account_vault_api_id": "accountvaultabcd",
+      "token_api_id": "tokenabcd",
       "accountvault_c1": "accountvault custom 1",
       "accountvault_c2": "accountvault custom 2",
       "accountvault_c3": "accountvault custom 3",
+      "token_c1": "token custom 1",
+      "token_c2": "token custom 2",
+      "token_c3": "token custom 3",
       "ach_sec_code": "WEB",
       "billing_address": {
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "street": "43155 Main Street STE 2310-C",
-        "phone": "3339998822"
+        "phone": "3339998822",
+        "country": "USA"
       },
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "customer_id": "123456",
@@ -231,11 +313,22 @@ $result = $transactionsACHController->aCHCredit($body);
       },
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
       "previous_account_vault_api_id": "previousaccountvault123456",
+      "previous_token_api_id": "previousaccountvault123456",
       "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
       "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_number": "545454545454545",
       "terms_agree": true,
       "terms_agree_ip": "192.168.0.10",
       "title": "Test CC Account",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+      "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "secure_protocol_version": 2,
+      "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+      "secure_collection_indicator": null,
+      "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+      "_joi": {},
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "account_type": "checking",
       "active": true,
@@ -246,13 +339,17 @@ $result = $transactionsACHController->aCHCredit($body);
       "e_format": null,
       "e_keyed_data": null,
       "expiring_in_months": null,
+      "exp_date": "0722",
       "first_six": "700953",
       "has_recurring": false,
       "last_four": "3657",
       "modified_ts": 1422040992,
       "payment_method": "cc",
       "ticket": null,
-      "track_data": null
+      "track_data": null,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "cau_last_updated_ts": 1422040992,
+      "routing_number": "051904524"
     },
     "quick_invoice": {
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -263,13 +360,15 @@ $result = $transactionsACHController->aCHCredit($body);
       "item_list": [
         {
           "name": "Bread",
-          "amount": 20.15
+          "amount": 2015
         }
       ],
       "allow_overpayment": true,
+      "bank_funded_only_override": true,
       "email": "email@domain.com",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_api_id": "contact12345",
+      "quick_invoice_api_id": "quickinvoice12345",
       "customer_id": "11e95f8ec39de8fbdb0a4f1a",
       "expire_date": "2021-12-01",
       "allow_partial_pay": true,
@@ -280,26 +379,34 @@ $result = $transactionsACHController->aCHCredit($body);
       "item_footer": "Thank you",
       "amount_due": 245.36,
       "notification_email": "email@domain.com",
-      "payment_status_id": 1,
       "status_id": 1,
+      "status_code": 1,
       "note": "some note",
       "notification_days_before_due_date": 3,
       "notification_days_after_due_date": 7,
       "notification_on_due_date": true,
       "send_text_to_pay": true,
       "files": [
-        null
+        {}
       ],
       "remaining_balance": 245.36,
-      "single_payment_min_amount": 5,
-      "single_payment_max_amount": 5000,
+      "single_payment_min_amount": 500,
+      "single_payment_max_amount": 500000,
       "cell_phone": "3339998822",
+      "tags": [
+        "Walk-in Customer"
+      ],
+      "quick_invoice_c1": "custom-data-1",
+      "quick_invoice_c2": "custom-data-2",
+      "quick_invoice_c3": "custom-data-3",
+      "auto_reopen": true,
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "active": true,
+      "payment_status_id": 1,
       "is_active": true
     },
     "log_emails": [
@@ -325,10 +432,8 @@ $result = $transactionsACHController->aCHCredit($body);
     "is_settled": true,
     "created_user": {
       "account_number": "5454545454545454",
-      "address": "43155 Main Street STE 2310-C",
       "branding_domain_url": "{branding_domain_url}",
       "cell_phone": "3339998822",
-      "city": "Novi",
       "company_name": "Fortis Payment Systems, LLC",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "date_of_birth": "2021-12-01",
@@ -343,7 +448,6 @@ $result = $transactionsACHController->aCHCredit($body);
       "office_ext_phone": "5",
       "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
       "requires_new_password": null,
-      "state": "Michigan",
       "terms_condition_code": "20220308",
       "tz": "America/New_York",
       "ui_prefs": {
@@ -360,7 +464,15 @@ $result = $transactionsACHController->aCHCredit($body);
       "password": null,
       "zip": "48375",
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
-      "status_id": true,
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "status": true,
       "login_attempts": 0,
@@ -370,7 +482,9 @@ $result = $transactionsACHController->aCHCredit($body);
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "terms_accepted_ts": 1422040992,
       "terms_agree_ip": "192.168.0.10",
-      "current_date_time": "2019-03-11T10:38:26-0700"
+      "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992
     },
     "location": {
       "id": "11e95f8ec39de8fbdb0a4f1a",
@@ -381,15 +495,12 @@ $result = $transactionsACHController->aCHCredit($body);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -400,10 +511,14 @@ $result = $transactionsACHController->aCHCredit($body);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     },
     "contact": {
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -417,8 +532,7 @@ $result = $transactionsACHController->aCHCredit($body);
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C"
+        "country": "USA"
       },
       "company_name": "Fortis Payment Systems, LLC",
       "header_message": "This is a sample message for you",
@@ -427,6 +541,9 @@ $result = $transactionsACHController->aCHCredit($body);
       "home_phone": "3339998822",
       "office_phone": "3339998822",
       "office_phone_ext": "5",
+      "home_phone_country_code": "+1",
+      "office_phone_country_code": "+1",
+      "cell_phone_country_code": "+1",
       "header_message_type": 0,
       "update_if_exists": 1,
       "contact_c1": "any",
@@ -434,10 +551,12 @@ $result = $transactionsACHController->aCHCredit($body);
       "contact_c3": "something",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
       "email": "email@domain.com",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "active": true
+      "active": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "changelogs": [
       {
@@ -493,6 +612,9 @@ $result = $transactionsACHController->aCHCredit($body);
       "card_type_amex": true,
       "card_type_diners": true,
       "card_type_jcb": true,
+      "card_type_ebt": true,
+      "allow_ebt_cash_benefit": true,
+      "allow_ebt_food_stamp": true,
       "invoice_location": true,
       "allow_partial_authorization": true,
       "allow_recurring_partial_authorization": true,
@@ -509,13 +631,51 @@ $result = $transactionsACHController->aCHCredit($body);
       "auto_decline_cavv": true,
       "current_batch": 34,
       "dup_check_per_batch": null,
+      "paylink_allow": false,
       "quick_invoice_allow": false,
       "level3_allow": false,
       "payfac_enable": false,
+      "enable_3ds": false,
       "sales_office_id": "11e95f8ec39de8fbdb0a4f1a",
       "hosted_payment_page_allow": false,
       "surcharge_id": "11e95f8ec39de8fbdb0a4f1a",
-      "level3_default": null,
+      "allow_big_commerce": false,
+      "level3_default": {
+        "destination_country_code": "840",
+        "duty_amount": 0,
+        "freight_amount": 0,
+        "national_tax": 2,
+        "sales_tax": 200,
+        "shipfrom_zip_code": "AZ12345",
+        "shipto_zip_code": "MI48335",
+        "tax_amount": 0,
+        "tax_exempt": "0",
+        "customer_vat_registration": "12345678",
+        "merchant_vat_registration": "123456",
+        "order_date": "171006",
+        "summary_commodity_code": "C1K2",
+        "tax_rate": 0,
+        "unique_vat_ref_number": "vat1234",
+        "line_items": [
+          {
+            "alternate_tax_id": "1234",
+            "debit_credit": "C",
+            "description": "cool drink",
+            "discount_amount": 10,
+            "discount_rate": 11,
+            "product_code": "coke12345678",
+            "quantity": 5,
+            "tax_amount": 3,
+            "tax_rate": 0,
+            "tax_type_applied": "22",
+            "tax_type_id": "a1",
+            "unit_code": "gll",
+            "unit_cost": 10,
+            "commodity_code": "cc123456",
+            "other_tax_amount": 0
+          }
+        ]
+      },
       "cau_subscribe_type_id": 0,
       "location_billing_account_id": "11eb88b873980c64a21e5fd2",
       "product_billing_group_id": "nofees",
@@ -531,12 +691,28 @@ $result = $transactionsACHController->aCHCredit($body);
       "vt_show_company_name": false,
       "receipt_show_company_name": false,
       "bank_funded_only": false,
+      "require_cvv_on_keyed_cnp": true,
+      "require_cvv_on_tokenized_cnp": true,
+      "show_secondary_amount": false,
+      "allow_secondary_amount": false,
+      "show_google_pay": true,
+      "show_apple_pay": true,
+      "batch_risk_config": {},
+      "currency_code": 840,
+      "enable_ach_validation": false,
+      "enable_ach_retry": false,
+      "allow_softpos": false,
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "active": true,
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
-      "modified_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "product_transaction_api_id": "11e95f8ec39de8fbdb0a4f1a",
+      "is_secondary_amount_allowed": false,
+      "fortis_id": "8149742",
+      "product_billing_group_code": "nofees",
+      "cau_subscribe_type_code": 0
     },
     "all_tags": [
       {
@@ -586,7 +762,7 @@ $result = $transactionsACHController->aCHCredit($body);
       "default_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
       "terminal_application_id": "11e95f8ec39de8fbdb0a4f1a",
       "terminal_cvm_id": "11e95f8ec39de8fbdb0a4f1a",
-      "terminal_manufacturer_code": 1,
+      "terminal_manufacturer_code": "1",
       "title": "My terminal",
       "mac_address": "3D:F2:C9:A6:B3:4F",
       "local_ip_address": "192.168.0.10",
@@ -632,6 +808,7 @@ $result = $transactionsACHController->aCHCredit($body);
       "tip_enable": false,
       "validated_decryption": false,
       "communication_type": "http",
+      "active": true,
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
@@ -647,7 +824,7 @@ $result = $transactionsACHController->aCHCredit($body);
       "title": "Sample title",
       "redirect_url_delay": 15,
       "min_payment_amount": 0,
-      "max_payment_amount": 99999999.99,
+      "max_payment_amount": 9999999999,
       "redirect_url_on_approve": null,
       "redirect_url_on_decline": null,
       "field_configuration": {
@@ -736,7 +913,7 @@ $result = $transactionsACHController->aCHCredit($body);
         "shipfrom_zip_code": "AZ1234",
         "shipto_zip_code": "FL1234",
         "tax_amount": 10,
-        "tax_exempt": 0,
+        "tax_exempt": "0",
         "customer_vat_registration": "12345678",
         "merchant_vat_registration": "123456",
         "order_date": "171006",
@@ -834,12 +1011,14 @@ $result = $transactionsACHController->aCHCredit($body);
       "settlement_file_name": "settement_file.txt",
       "batch_close_ts": 1531423693,
       "batch_close_detail": "BATCH_MISMATCH",
-      "total_sale_amount": 2342.45,
+      "total_sale_amount": 2342,
       "total_sale_count": 21,
-      "total_refund_amount": 2342.45,
+      "total_refund_amount": 2342,
       "total_refund_count": 18,
-      "total_void_amount": 2342.45,
-      "total_void_count": 17
+      "total_void_amount": 2342,
+      "total_void_count": 17,
+      "total_blind_refund_amount": 2342,
+      "total_blind_refund_count": 16
     },
     "transaction_splits": [
       {
@@ -870,6 +1049,103 @@ $result = $transactionsACHController->aCHCredit($body);
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "created_ts": 1422040992,
         "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      }
+    ],
+    "rejected_transaction_ach_retries": [
+      {
+        "rejected_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "id": "11e95f8ec39de8fbdb0a4f1a",
+        "retry_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "return_fee_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "created_ts": 1422040992,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      }
+    ],
+    "return_fee_transaction_ach_retry": {
+      "rejected_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "retry_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "return_fee_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+    },
+    "retry_transaction_ach_retry": {
+      "rejected_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "retry_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "return_fee_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+    },
+    "saved_account": {
+      "account_holder_name": "John Smith",
+      "account_vault_api_id": "accountvaultabcd",
+      "token_api_id": "tokenabcd",
+      "accountvault_c1": "accountvault custom 1",
+      "accountvault_c2": "accountvault custom 2",
+      "accountvault_c3": "accountvault custom 3",
+      "token_c1": "token custom 1",
+      "token_c2": "token custom 2",
+      "token_c3": "token custom 3",
+      "ach_sec_code": "WEB",
+      "billing_address": {
+        "city": "Novi",
+        "state": "Michigan",
+        "postal_code": "48375",
+        "phone": "3339998822",
+        "country": "USA"
+      },
+      "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+      "customer_id": "123456",
+      "identity_verification": {
+        "dl_state": "MI",
+        "dl_number": "1235567",
+        "ssn4": "8527",
+        "dob_year": "1980"
+      },
+      "location_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_account_vault_api_id": "previousaccountvault123456",
+      "previous_token_api_id": "previousaccountvault123456",
+      "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_number": "545454545454545",
+      "terms_agree": true,
+      "terms_agree_ip": "192.168.0.10",
+      "title": "Test CC Account",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+      "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "secure_protocol_version": 2,
+      "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+      "secure_collection_indicator": null,
+      "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+      "_joi": {},
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_type": "checking",
+      "active": true,
+      "cau_summary_status_id": 1,
+      "created_ts": 1422040992,
+      "e_serial_number": "1234567890",
+      "e_track_data": null,
+      "e_format": null,
+      "e_keyed_data": null,
+      "expiring_in_months": null,
+      "exp_date": "0722",
+      "first_six": "700953",
+      "has_recurring": false,
+      "last_four": "3657",
+      "modified_ts": 1422040992,
+      "payment_method": "cc",
+      "ticket": null,
+      "track_data": null,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "cau_last_updated_ts": 1422040992,
+      "routing_number": "051904524"
+    },
+    "balances": [
+      {
+        "amount": 1000
       }
     ]
   }
@@ -900,7 +1176,7 @@ function aCHCreditPreviousTransaction(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `body` | [`V1TransactionsAchCreditPrevTrxnRequest`](../../doc/models/v1-transactions-ach-credit-prev-trxn-request.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand47Enum)`](../../doc/models/expand-47-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand60Enum)[])`](../../doc/models/expand-60-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -909,12 +1185,63 @@ function aCHCreditPreviousTransaction(
 ## Example Usage
 
 ```php
-$body_transactionAmount = 1;
-$body_previousTransactionId = '11e95f8ec39de8fbdb0a4f1a';
-$body = new Models\V1TransactionsAchCreditPrevTrxnRequest(
-    $body_transactionAmount,
-    $body_previousTransactionId
-);
+$body = V1TransactionsAchCreditPrevTrxnRequestBuilder::init(
+    1
+)
+    ->checkinDate('2021-12-01')
+    ->checkoutDate('2021-12-01')
+    ->clerkNumber('AE1234')
+    ->contactId('11e95f8ec39de8fbdb0a4f1a')
+    ->customData(ApiHelper::deserialize('{"data1":"custom1","data2":"custom2"}'))
+    ->customerId('customerid')
+    ->description('some description')
+    ->iiasInd(IiasIndEnum::ENUM_1)
+    ->imageFront('U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=')
+    ->imageBack('U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=')
+    ->installment(true)
+    ->installmentNumber(1)
+    ->installmentCount(1)
+    ->recurringFlag(RecurringFlagEnum::YES)
+    ->installmentCounter(1)
+    ->installmentTotal(1)
+    ->subscription(false)
+    ->standingOrder(false)
+    ->locationApiId('location-api-id-florida-2')
+    ->locationId('11e95f8ec39de8fbdb0a4f1a')
+    ->productTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->advanceDeposit(false)
+    ->noShow(false)
+    ->notificationEmailAddress('johnsmith@smiths.com')
+    ->orderNumber('433659378839')
+    ->poNumber('555555553123')
+    ->quickInvoiceId('11e95f8ec39de8fbdb0a4f1a')
+    ->recurring(false)
+    ->recurringNumber(1)
+    ->roomNum('303')
+    ->roomRate(95)
+    ->saveAccount(false)
+    ->saveAccountTitle('John Account')
+    ->subtotalAmount(599)
+    ->surchargeAmount(100)
+    ->tax(0)
+    ->tipAmount(0)
+    ->secondaryAmount(0)
+    ->transactionApiId('transaction-payment-abcd123')
+    ->transactionC1('custom-data-1')
+    ->transactionC2('custom-data-2')
+    ->transactionC3('custom-data-3')
+    ->bankFundedOnlyOverride(false)
+    ->allowPartialAuthorizationOverride(false)
+    ->autoDeclineCvvOverride(false)
+    ->autoDeclineStreetOverride(false)
+    ->autoDeclineZipOverride(false)
+    ->ebtType(EbtTypeEnum::FOOD_STAMP)
+    ->achIdentifier('P')
+    ->achSecCode(AchSecCode31Enum::C21)
+    ->effectiveDate('2021-12-01')
+    ->accountHolderName('smith')
+    ->previousTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->build();
 
 $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
 ```
@@ -937,8 +1264,8 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
       "city": "Novi",
       "state": "Michigan",
       "postal_code": "48375",
-      "street": "43155 Main Street STE 2310-C",
-      "phone": "3339998822"
+      "phone": "3339998822",
+      "country": "USA"
     },
     "checkin_date": "2021-12-01",
     "checkout_date": "2021-12-01",
@@ -947,17 +1274,17 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
     "custom_data": {},
     "customer_id": "customerid",
     "description": "some description",
-    "identity_verification": {
-      "dl_state": "MI",
-      "dl_number": "1235567",
-      "dob_year": "1980"
-    },
     "iias_ind": 1,
     "image_front": "U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=",
     "image_back": "U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=",
     "installment": true,
     "installment_number": 1,
     "installment_count": 1,
+    "recurring_flag": "yes",
+    "installment_counter": 1,
+    "installment_total": 1,
+    "subscription": false,
+    "standing_order": false,
     "location_api_id": "location-api-id-florida-2",
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
     "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -969,6 +1296,13 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
     "quick_invoice_id": "11e95f8ec39de8fbdb0a4f1a",
     "recurring": {
       "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+      "token_id": "11e95f8ec39de8fbdb0a4f1a",
+      "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_vault_api_id": "token1234abcd",
+      "token_api_id": "token1234abcd",
+      "_joi": {
+        "conditions": {}
+      },
       "active": true,
       "description": "Description",
       "end_date": "2021-12-01",
@@ -983,18 +1317,25 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
       "recurring_api_id": "recurring1234abcd",
       "start_date": "2021-12-01",
       "status": "active",
-      "transaction_amount": 3,
+      "transaction_amount": 300,
       "terms_agree": true,
       "terms_agree_ip": "192.168.0.10",
       "recurring_c1": "recurring custom data 1",
       "recurring_c2": "recurring custom data 2",
       "recurring_c3": "recurring custom data 3",
       "send_to_proc_as_recur": true,
+      "tags": [
+        "Walk-in Customer"
+      ],
+      "secondary_amount": 100,
+      "currency": "USD",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "next_run_date": "2021-12-01",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "recurring_type_id": "i"
+      "recurring_type_id": "i",
+      "installment_amount_total": 99999999,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "recurring_number": 1,
     "room_num": "303",
@@ -1021,6 +1362,11 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
     "transaction_c2": "custom-data-2",
     "transaction_c3": "custom-data-3",
     "bank_funded_only_override": false,
+    "allow_partial_authorization_override": false,
+    "auto_decline_cvv_override": false,
+    "auto_decline_street_override": false,
+    "auto_decline_zip_override": false,
+    "ebt_type": "food_stamp",
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "created_ts": 1422040992,
     "modified_ts": 1422040992,
@@ -1055,7 +1401,7 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
     "transaction_settlement_status": null,
     "charge_back_date": "2021-12-01",
     "is_recurring": true,
-    "notification_email_sent": "true",
+    "notification_email_sent": true,
     "par": "Q1J4Z28RKA1EBL470G9XYG90R5D3E",
     "reason_code_id": 1000,
     "recurring_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -1063,26 +1409,40 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
     "status_code": 101,
     "transaction_batch_id": "11e95f8ec39de8fbdb0a4f1a",
     "verbiage": "APPROVED",
+    "voucher_number": "1234",
     "void_date": "2021-12-01",
     "batch": "2",
     "terms_agree": true,
     "response_message": null,
     "return_date": "2021-12-01",
     "trx_source_id": 8,
+    "routing_number": "051904524",
+    "trx_source_code": 8,
+    "paylink_id": "11e95f8ec39de8fbdb0a4f1a",
+    "is_accountvault": true,
+    "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "effective_date": "2021-12-01",
+    "is_token": true,
+    "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+    "hosted_payment_page_id": "11e95f8ec39de8fbdb0a4f1a",
     "account_vault": {
       "account_holder_name": "John Smith",
-      "account_number": "545454545454545",
       "account_vault_api_id": "accountvaultabcd",
+      "token_api_id": "tokenabcd",
       "accountvault_c1": "accountvault custom 1",
       "accountvault_c2": "accountvault custom 2",
       "accountvault_c3": "accountvault custom 3",
+      "token_c1": "token custom 1",
+      "token_c2": "token custom 2",
+      "token_c3": "token custom 3",
       "ach_sec_code": "WEB",
       "billing_address": {
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "street": "43155 Main Street STE 2310-C",
-        "phone": "3339998822"
+        "phone": "3339998822",
+        "country": "USA"
       },
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "customer_id": "123456",
@@ -1094,11 +1454,22 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
       },
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
       "previous_account_vault_api_id": "previousaccountvault123456",
+      "previous_token_api_id": "previousaccountvault123456",
       "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
       "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_number": "545454545454545",
       "terms_agree": true,
       "terms_agree_ip": "192.168.0.10",
       "title": "Test CC Account",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+      "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "secure_protocol_version": 2,
+      "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+      "secure_collection_indicator": null,
+      "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+      "_joi": {},
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "account_type": "checking",
       "active": true,
@@ -1109,13 +1480,17 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
       "e_format": null,
       "e_keyed_data": null,
       "expiring_in_months": null,
+      "exp_date": "0722",
       "first_six": "700953",
       "has_recurring": false,
       "last_four": "3657",
       "modified_ts": 1422040992,
       "payment_method": "cc",
       "ticket": null,
-      "track_data": null
+      "track_data": null,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "cau_last_updated_ts": 1422040992,
+      "routing_number": "051904524"
     },
     "quick_invoice": {
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -1126,13 +1501,15 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
       "item_list": [
         {
           "name": "Bread",
-          "amount": 20.15
+          "amount": 2015
         }
       ],
       "allow_overpayment": true,
+      "bank_funded_only_override": true,
       "email": "email@domain.com",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_api_id": "contact12345",
+      "quick_invoice_api_id": "quickinvoice12345",
       "customer_id": "11e95f8ec39de8fbdb0a4f1a",
       "expire_date": "2021-12-01",
       "allow_partial_pay": true,
@@ -1143,26 +1520,34 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
       "item_footer": "Thank you",
       "amount_due": 245.36,
       "notification_email": "email@domain.com",
-      "payment_status_id": 1,
       "status_id": 1,
+      "status_code": 1,
       "note": "some note",
       "notification_days_before_due_date": 3,
       "notification_days_after_due_date": 7,
       "notification_on_due_date": true,
       "send_text_to_pay": true,
       "files": [
-        null
+        {}
       ],
       "remaining_balance": 245.36,
-      "single_payment_min_amount": 5,
-      "single_payment_max_amount": 5000,
+      "single_payment_min_amount": 500,
+      "single_payment_max_amount": 500000,
       "cell_phone": "3339998822",
+      "tags": [
+        "Walk-in Customer"
+      ],
+      "quick_invoice_c1": "custom-data-1",
+      "quick_invoice_c2": "custom-data-2",
+      "quick_invoice_c3": "custom-data-3",
+      "auto_reopen": true,
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "active": true,
+      "payment_status_id": 1,
       "is_active": true
     },
     "log_emails": [
@@ -1188,10 +1573,8 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
     "is_settled": true,
     "created_user": {
       "account_number": "5454545454545454",
-      "address": "43155 Main Street STE 2310-C",
       "branding_domain_url": "{branding_domain_url}",
       "cell_phone": "3339998822",
-      "city": "Novi",
       "company_name": "Fortis Payment Systems, LLC",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "date_of_birth": "2021-12-01",
@@ -1206,7 +1589,6 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
       "office_ext_phone": "5",
       "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
       "requires_new_password": null,
-      "state": "Michigan",
       "terms_condition_code": "20220308",
       "tz": "America/New_York",
       "ui_prefs": {
@@ -1223,7 +1605,15 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
       "password": null,
       "zip": "48375",
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
-      "status_id": true,
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "status": true,
       "login_attempts": 0,
@@ -1233,7 +1623,9 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "terms_accepted_ts": 1422040992,
       "terms_agree_ip": "192.168.0.10",
-      "current_date_time": "2019-03-11T10:38:26-0700"
+      "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992
     },
     "location": {
       "id": "11e95f8ec39de8fbdb0a4f1a",
@@ -1244,15 +1636,12 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -1263,10 +1652,14 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     },
     "contact": {
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -1280,8 +1673,7 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C"
+        "country": "USA"
       },
       "company_name": "Fortis Payment Systems, LLC",
       "header_message": "This is a sample message for you",
@@ -1290,6 +1682,9 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
       "home_phone": "3339998822",
       "office_phone": "3339998822",
       "office_phone_ext": "5",
+      "home_phone_country_code": "+1",
+      "office_phone_country_code": "+1",
+      "cell_phone_country_code": "+1",
       "header_message_type": 0,
       "update_if_exists": 1,
       "contact_c1": "any",
@@ -1297,10 +1692,12 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
       "contact_c3": "something",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
       "email": "email@domain.com",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "active": true
+      "active": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "changelogs": [
       {
@@ -1356,6 +1753,9 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
       "card_type_amex": true,
       "card_type_diners": true,
       "card_type_jcb": true,
+      "card_type_ebt": true,
+      "allow_ebt_cash_benefit": true,
+      "allow_ebt_food_stamp": true,
       "invoice_location": true,
       "allow_partial_authorization": true,
       "allow_recurring_partial_authorization": true,
@@ -1372,13 +1772,51 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
       "auto_decline_cavv": true,
       "current_batch": 34,
       "dup_check_per_batch": null,
+      "paylink_allow": false,
       "quick_invoice_allow": false,
       "level3_allow": false,
       "payfac_enable": false,
+      "enable_3ds": false,
       "sales_office_id": "11e95f8ec39de8fbdb0a4f1a",
       "hosted_payment_page_allow": false,
       "surcharge_id": "11e95f8ec39de8fbdb0a4f1a",
-      "level3_default": null,
+      "allow_big_commerce": false,
+      "level3_default": {
+        "destination_country_code": "840",
+        "duty_amount": 0,
+        "freight_amount": 0,
+        "national_tax": 2,
+        "sales_tax": 200,
+        "shipfrom_zip_code": "AZ12345",
+        "shipto_zip_code": "MI48335",
+        "tax_amount": 0,
+        "tax_exempt": "0",
+        "customer_vat_registration": "12345678",
+        "merchant_vat_registration": "123456",
+        "order_date": "171006",
+        "summary_commodity_code": "C1K2",
+        "tax_rate": 0,
+        "unique_vat_ref_number": "vat1234",
+        "line_items": [
+          {
+            "alternate_tax_id": "1234",
+            "debit_credit": "C",
+            "description": "cool drink",
+            "discount_amount": 10,
+            "discount_rate": 11,
+            "product_code": "coke12345678",
+            "quantity": 5,
+            "tax_amount": 3,
+            "tax_rate": 0,
+            "tax_type_applied": "22",
+            "tax_type_id": "a1",
+            "unit_code": "gll",
+            "unit_cost": 10,
+            "commodity_code": "cc123456",
+            "other_tax_amount": 0
+          }
+        ]
+      },
       "cau_subscribe_type_id": 0,
       "location_billing_account_id": "11eb88b873980c64a21e5fd2",
       "product_billing_group_id": "nofees",
@@ -1394,12 +1832,28 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
       "vt_show_company_name": false,
       "receipt_show_company_name": false,
       "bank_funded_only": false,
+      "require_cvv_on_keyed_cnp": true,
+      "require_cvv_on_tokenized_cnp": true,
+      "show_secondary_amount": false,
+      "allow_secondary_amount": false,
+      "show_google_pay": true,
+      "show_apple_pay": true,
+      "batch_risk_config": {},
+      "currency_code": 840,
+      "enable_ach_validation": false,
+      "enable_ach_retry": false,
+      "allow_softpos": false,
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "active": true,
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
-      "modified_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "product_transaction_api_id": "11e95f8ec39de8fbdb0a4f1a",
+      "is_secondary_amount_allowed": false,
+      "fortis_id": "8149742",
+      "product_billing_group_code": "nofees",
+      "cau_subscribe_type_code": 0
     },
     "all_tags": [
       {
@@ -1449,7 +1903,7 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
       "default_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
       "terminal_application_id": "11e95f8ec39de8fbdb0a4f1a",
       "terminal_cvm_id": "11e95f8ec39de8fbdb0a4f1a",
-      "terminal_manufacturer_code": 1,
+      "terminal_manufacturer_code": "1",
       "title": "My terminal",
       "mac_address": "3D:F2:C9:A6:B3:4F",
       "local_ip_address": "192.168.0.10",
@@ -1495,6 +1949,7 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
       "tip_enable": false,
       "validated_decryption": false,
       "communication_type": "http",
+      "active": true,
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
@@ -1510,7 +1965,7 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
       "title": "Sample title",
       "redirect_url_delay": 15,
       "min_payment_amount": 0,
-      "max_payment_amount": 99999999.99,
+      "max_payment_amount": 9999999999,
       "redirect_url_on_approve": null,
       "redirect_url_on_decline": null,
       "field_configuration": {
@@ -1599,7 +2054,7 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
         "shipfrom_zip_code": "AZ1234",
         "shipto_zip_code": "FL1234",
         "tax_amount": 10,
-        "tax_exempt": 0,
+        "tax_exempt": "0",
         "customer_vat_registration": "12345678",
         "merchant_vat_registration": "123456",
         "order_date": "171006",
@@ -1697,12 +2152,14 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
       "settlement_file_name": "settement_file.txt",
       "batch_close_ts": 1531423693,
       "batch_close_detail": "BATCH_MISMATCH",
-      "total_sale_amount": 2342.45,
+      "total_sale_amount": 2342,
       "total_sale_count": 21,
-      "total_refund_amount": 2342.45,
+      "total_refund_amount": 2342,
       "total_refund_count": 18,
-      "total_void_amount": 2342.45,
-      "total_void_count": 17
+      "total_void_amount": 2342,
+      "total_void_count": 17,
+      "total_blind_refund_amount": 2342,
+      "total_blind_refund_count": 16
     },
     "transaction_splits": [
       {
@@ -1733,6 +2190,103 @@ $result = $transactionsACHController->aCHCreditPreviousTransaction($body);
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "created_ts": 1422040992,
         "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      }
+    ],
+    "rejected_transaction_ach_retries": [
+      {
+        "rejected_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "id": "11e95f8ec39de8fbdb0a4f1a",
+        "retry_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "return_fee_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "created_ts": 1422040992,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      }
+    ],
+    "return_fee_transaction_ach_retry": {
+      "rejected_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "retry_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "return_fee_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+    },
+    "retry_transaction_ach_retry": {
+      "rejected_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "retry_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "return_fee_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+    },
+    "saved_account": {
+      "account_holder_name": "John Smith",
+      "account_vault_api_id": "accountvaultabcd",
+      "token_api_id": "tokenabcd",
+      "accountvault_c1": "accountvault custom 1",
+      "accountvault_c2": "accountvault custom 2",
+      "accountvault_c3": "accountvault custom 3",
+      "token_c1": "token custom 1",
+      "token_c2": "token custom 2",
+      "token_c3": "token custom 3",
+      "ach_sec_code": "WEB",
+      "billing_address": {
+        "city": "Novi",
+        "state": "Michigan",
+        "postal_code": "48375",
+        "phone": "3339998822",
+        "country": "USA"
+      },
+      "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+      "customer_id": "123456",
+      "identity_verification": {
+        "dl_state": "MI",
+        "dl_number": "1235567",
+        "ssn4": "8527",
+        "dob_year": "1980"
+      },
+      "location_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_account_vault_api_id": "previousaccountvault123456",
+      "previous_token_api_id": "previousaccountvault123456",
+      "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_number": "545454545454545",
+      "terms_agree": true,
+      "terms_agree_ip": "192.168.0.10",
+      "title": "Test CC Account",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+      "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "secure_protocol_version": 2,
+      "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+      "secure_collection_indicator": null,
+      "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+      "_joi": {},
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_type": "checking",
+      "active": true,
+      "cau_summary_status_id": 1,
+      "created_ts": 1422040992,
+      "e_serial_number": "1234567890",
+      "e_track_data": null,
+      "e_format": null,
+      "e_keyed_data": null,
+      "expiring_in_months": null,
+      "exp_date": "0722",
+      "first_six": "700953",
+      "has_recurring": false,
+      "last_four": "3657",
+      "modified_ts": 1422040992,
+      "payment_method": "cc",
+      "ticket": null,
+      "track_data": null,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "cau_last_updated_ts": 1422040992,
+      "routing_number": "051904524"
+    },
+    "balances": [
+      {
+        "amount": 1000
       }
     ]
   }
@@ -1763,7 +2317,7 @@ function aCHCreditTokenized(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `body` | [`V1TransactionsAchCreditTokenRequest`](../../doc/models/v1-transactions-ach-credit-token-request.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand47Enum)`](../../doc/models/expand-47-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand60Enum)[])`](../../doc/models/expand-60-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -1772,10 +2326,64 @@ function aCHCreditTokenized(
 ## Example Usage
 
 ```php
-$body_transactionAmount = 1;
-$body = new Models\V1TransactionsAchCreditTokenRequest(
-    $body_transactionAmount
-);
+$body = V1TransactionsAchCreditTokenRequestBuilder::init(
+    1
+)
+    ->checkinDate('2021-12-01')
+    ->checkoutDate('2021-12-01')
+    ->clerkNumber('AE1234')
+    ->contactId('11e95f8ec39de8fbdb0a4f1a')
+    ->customData(ApiHelper::deserialize('{"data1":"custom1","data2":"custom2"}'))
+    ->customerId('customerid')
+    ->description('some description')
+    ->iiasInd(IiasIndEnum::ENUM_1)
+    ->imageFront('U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=')
+    ->imageBack('U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=')
+    ->installment(true)
+    ->installmentNumber(1)
+    ->installmentCount(1)
+    ->recurringFlag(RecurringFlagEnum::YES)
+    ->installmentCounter(1)
+    ->installmentTotal(1)
+    ->subscription(false)
+    ->standingOrder(false)
+    ->locationApiId('location-api-id-florida-2')
+    ->locationId('11e95f8ec39de8fbdb0a4f1a')
+    ->productTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->advanceDeposit(false)
+    ->noShow(false)
+    ->notificationEmailAddress('johnsmith@smiths.com')
+    ->orderNumber('433659378839')
+    ->poNumber('555555553123')
+    ->quickInvoiceId('11e95f8ec39de8fbdb0a4f1a')
+    ->recurring(false)
+    ->recurringNumber(1)
+    ->roomNum('303')
+    ->roomRate(95)
+    ->saveAccount(false)
+    ->saveAccountTitle('John Account')
+    ->subtotalAmount(599)
+    ->surchargeAmount(100)
+    ->tax(0)
+    ->tipAmount(0)
+    ->secondaryAmount(0)
+    ->transactionApiId('transaction-payment-abcd123')
+    ->transactionC1('custom-data-1')
+    ->transactionC2('custom-data-2')
+    ->transactionC3('custom-data-3')
+    ->bankFundedOnlyOverride(false)
+    ->allowPartialAuthorizationOverride(false)
+    ->autoDeclineCvvOverride(false)
+    ->autoDeclineStreetOverride(false)
+    ->autoDeclineZipOverride(false)
+    ->ebtType(EbtTypeEnum::FOOD_STAMP)
+    ->achIdentifier('P')
+    ->achSecCode(AchSecCode31Enum::C21)
+    ->effectiveDate('2021-12-01')
+    ->accountHolderName('smith')
+    ->accountVaultId('11e95f8ec39de8fbdb0a4f1a')
+    ->tokenId('11e95f8ec39de8fbdb0a4f1a')
+    ->build();
 
 $result = $transactionsACHController->aCHCreditTokenized($body);
 ```
@@ -1798,8 +2406,8 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
       "city": "Novi",
       "state": "Michigan",
       "postal_code": "48375",
-      "street": "43155 Main Street STE 2310-C",
-      "phone": "3339998822"
+      "phone": "3339998822",
+      "country": "USA"
     },
     "checkin_date": "2021-12-01",
     "checkout_date": "2021-12-01",
@@ -1808,17 +2416,17 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
     "custom_data": {},
     "customer_id": "customerid",
     "description": "some description",
-    "identity_verification": {
-      "dl_state": "MI",
-      "dl_number": "1235567",
-      "dob_year": "1980"
-    },
     "iias_ind": 1,
     "image_front": "U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=",
     "image_back": "U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=",
     "installment": true,
     "installment_number": 1,
     "installment_count": 1,
+    "recurring_flag": "yes",
+    "installment_counter": 1,
+    "installment_total": 1,
+    "subscription": false,
+    "standing_order": false,
     "location_api_id": "location-api-id-florida-2",
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
     "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -1830,6 +2438,13 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
     "quick_invoice_id": "11e95f8ec39de8fbdb0a4f1a",
     "recurring": {
       "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+      "token_id": "11e95f8ec39de8fbdb0a4f1a",
+      "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_vault_api_id": "token1234abcd",
+      "token_api_id": "token1234abcd",
+      "_joi": {
+        "conditions": {}
+      },
       "active": true,
       "description": "Description",
       "end_date": "2021-12-01",
@@ -1844,18 +2459,25 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
       "recurring_api_id": "recurring1234abcd",
       "start_date": "2021-12-01",
       "status": "active",
-      "transaction_amount": 3,
+      "transaction_amount": 300,
       "terms_agree": true,
       "terms_agree_ip": "192.168.0.10",
       "recurring_c1": "recurring custom data 1",
       "recurring_c2": "recurring custom data 2",
       "recurring_c3": "recurring custom data 3",
       "send_to_proc_as_recur": true,
+      "tags": [
+        "Walk-in Customer"
+      ],
+      "secondary_amount": 100,
+      "currency": "USD",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "next_run_date": "2021-12-01",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "recurring_type_id": "i"
+      "recurring_type_id": "i",
+      "installment_amount_total": 99999999,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "recurring_number": 1,
     "room_num": "303",
@@ -1882,6 +2504,11 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
     "transaction_c2": "custom-data-2",
     "transaction_c3": "custom-data-3",
     "bank_funded_only_override": false,
+    "allow_partial_authorization_override": false,
+    "auto_decline_cvv_override": false,
+    "auto_decline_street_override": false,
+    "auto_decline_zip_override": false,
+    "ebt_type": "food_stamp",
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "created_ts": 1422040992,
     "modified_ts": 1422040992,
@@ -1916,7 +2543,7 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
     "transaction_settlement_status": null,
     "charge_back_date": "2021-12-01",
     "is_recurring": true,
-    "notification_email_sent": "true",
+    "notification_email_sent": true,
     "par": "Q1J4Z28RKA1EBL470G9XYG90R5D3E",
     "reason_code_id": 1000,
     "recurring_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -1924,26 +2551,40 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
     "status_code": 101,
     "transaction_batch_id": "11e95f8ec39de8fbdb0a4f1a",
     "verbiage": "APPROVED",
+    "voucher_number": "1234",
     "void_date": "2021-12-01",
     "batch": "2",
     "terms_agree": true,
     "response_message": null,
     "return_date": "2021-12-01",
     "trx_source_id": 8,
+    "routing_number": "051904524",
+    "trx_source_code": 8,
+    "paylink_id": "11e95f8ec39de8fbdb0a4f1a",
+    "is_accountvault": true,
+    "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "effective_date": "2021-12-01",
+    "is_token": true,
+    "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+    "hosted_payment_page_id": "11e95f8ec39de8fbdb0a4f1a",
     "account_vault": {
       "account_holder_name": "John Smith",
-      "account_number": "545454545454545",
       "account_vault_api_id": "accountvaultabcd",
+      "token_api_id": "tokenabcd",
       "accountvault_c1": "accountvault custom 1",
       "accountvault_c2": "accountvault custom 2",
       "accountvault_c3": "accountvault custom 3",
+      "token_c1": "token custom 1",
+      "token_c2": "token custom 2",
+      "token_c3": "token custom 3",
       "ach_sec_code": "WEB",
       "billing_address": {
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "street": "43155 Main Street STE 2310-C",
-        "phone": "3339998822"
+        "phone": "3339998822",
+        "country": "USA"
       },
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "customer_id": "123456",
@@ -1955,11 +2596,22 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
       },
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
       "previous_account_vault_api_id": "previousaccountvault123456",
+      "previous_token_api_id": "previousaccountvault123456",
       "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
       "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_number": "545454545454545",
       "terms_agree": true,
       "terms_agree_ip": "192.168.0.10",
       "title": "Test CC Account",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+      "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "secure_protocol_version": 2,
+      "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+      "secure_collection_indicator": null,
+      "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+      "_joi": {},
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "account_type": "checking",
       "active": true,
@@ -1970,13 +2622,17 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
       "e_format": null,
       "e_keyed_data": null,
       "expiring_in_months": null,
+      "exp_date": "0722",
       "first_six": "700953",
       "has_recurring": false,
       "last_four": "3657",
       "modified_ts": 1422040992,
       "payment_method": "cc",
       "ticket": null,
-      "track_data": null
+      "track_data": null,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "cau_last_updated_ts": 1422040992,
+      "routing_number": "051904524"
     },
     "quick_invoice": {
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -1987,13 +2643,15 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
       "item_list": [
         {
           "name": "Bread",
-          "amount": 20.15
+          "amount": 2015
         }
       ],
       "allow_overpayment": true,
+      "bank_funded_only_override": true,
       "email": "email@domain.com",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_api_id": "contact12345",
+      "quick_invoice_api_id": "quickinvoice12345",
       "customer_id": "11e95f8ec39de8fbdb0a4f1a",
       "expire_date": "2021-12-01",
       "allow_partial_pay": true,
@@ -2004,26 +2662,34 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
       "item_footer": "Thank you",
       "amount_due": 245.36,
       "notification_email": "email@domain.com",
-      "payment_status_id": 1,
       "status_id": 1,
+      "status_code": 1,
       "note": "some note",
       "notification_days_before_due_date": 3,
       "notification_days_after_due_date": 7,
       "notification_on_due_date": true,
       "send_text_to_pay": true,
       "files": [
-        null
+        {}
       ],
       "remaining_balance": 245.36,
-      "single_payment_min_amount": 5,
-      "single_payment_max_amount": 5000,
+      "single_payment_min_amount": 500,
+      "single_payment_max_amount": 500000,
       "cell_phone": "3339998822",
+      "tags": [
+        "Walk-in Customer"
+      ],
+      "quick_invoice_c1": "custom-data-1",
+      "quick_invoice_c2": "custom-data-2",
+      "quick_invoice_c3": "custom-data-3",
+      "auto_reopen": true,
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "active": true,
+      "payment_status_id": 1,
       "is_active": true
     },
     "log_emails": [
@@ -2049,10 +2715,8 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
     "is_settled": true,
     "created_user": {
       "account_number": "5454545454545454",
-      "address": "43155 Main Street STE 2310-C",
       "branding_domain_url": "{branding_domain_url}",
       "cell_phone": "3339998822",
-      "city": "Novi",
       "company_name": "Fortis Payment Systems, LLC",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "date_of_birth": "2021-12-01",
@@ -2067,7 +2731,6 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
       "office_ext_phone": "5",
       "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
       "requires_new_password": null,
-      "state": "Michigan",
       "terms_condition_code": "20220308",
       "tz": "America/New_York",
       "ui_prefs": {
@@ -2084,7 +2747,15 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
       "password": null,
       "zip": "48375",
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
-      "status_id": true,
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "status": true,
       "login_attempts": 0,
@@ -2094,7 +2765,9 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "terms_accepted_ts": 1422040992,
       "terms_agree_ip": "192.168.0.10",
-      "current_date_time": "2019-03-11T10:38:26-0700"
+      "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992
     },
     "location": {
       "id": "11e95f8ec39de8fbdb0a4f1a",
@@ -2105,15 +2778,12 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -2124,10 +2794,14 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     },
     "contact": {
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -2141,8 +2815,7 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C"
+        "country": "USA"
       },
       "company_name": "Fortis Payment Systems, LLC",
       "header_message": "This is a sample message for you",
@@ -2151,6 +2824,9 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
       "home_phone": "3339998822",
       "office_phone": "3339998822",
       "office_phone_ext": "5",
+      "home_phone_country_code": "+1",
+      "office_phone_country_code": "+1",
+      "cell_phone_country_code": "+1",
       "header_message_type": 0,
       "update_if_exists": 1,
       "contact_c1": "any",
@@ -2158,10 +2834,12 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
       "contact_c3": "something",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
       "email": "email@domain.com",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "active": true
+      "active": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "changelogs": [
       {
@@ -2217,6 +2895,9 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
       "card_type_amex": true,
       "card_type_diners": true,
       "card_type_jcb": true,
+      "card_type_ebt": true,
+      "allow_ebt_cash_benefit": true,
+      "allow_ebt_food_stamp": true,
       "invoice_location": true,
       "allow_partial_authorization": true,
       "allow_recurring_partial_authorization": true,
@@ -2233,13 +2914,51 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
       "auto_decline_cavv": true,
       "current_batch": 34,
       "dup_check_per_batch": null,
+      "paylink_allow": false,
       "quick_invoice_allow": false,
       "level3_allow": false,
       "payfac_enable": false,
+      "enable_3ds": false,
       "sales_office_id": "11e95f8ec39de8fbdb0a4f1a",
       "hosted_payment_page_allow": false,
       "surcharge_id": "11e95f8ec39de8fbdb0a4f1a",
-      "level3_default": null,
+      "allow_big_commerce": false,
+      "level3_default": {
+        "destination_country_code": "840",
+        "duty_amount": 0,
+        "freight_amount": 0,
+        "national_tax": 2,
+        "sales_tax": 200,
+        "shipfrom_zip_code": "AZ12345",
+        "shipto_zip_code": "MI48335",
+        "tax_amount": 0,
+        "tax_exempt": "0",
+        "customer_vat_registration": "12345678",
+        "merchant_vat_registration": "123456",
+        "order_date": "171006",
+        "summary_commodity_code": "C1K2",
+        "tax_rate": 0,
+        "unique_vat_ref_number": "vat1234",
+        "line_items": [
+          {
+            "alternate_tax_id": "1234",
+            "debit_credit": "C",
+            "description": "cool drink",
+            "discount_amount": 10,
+            "discount_rate": 11,
+            "product_code": "coke12345678",
+            "quantity": 5,
+            "tax_amount": 3,
+            "tax_rate": 0,
+            "tax_type_applied": "22",
+            "tax_type_id": "a1",
+            "unit_code": "gll",
+            "unit_cost": 10,
+            "commodity_code": "cc123456",
+            "other_tax_amount": 0
+          }
+        ]
+      },
       "cau_subscribe_type_id": 0,
       "location_billing_account_id": "11eb88b873980c64a21e5fd2",
       "product_billing_group_id": "nofees",
@@ -2255,12 +2974,28 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
       "vt_show_company_name": false,
       "receipt_show_company_name": false,
       "bank_funded_only": false,
+      "require_cvv_on_keyed_cnp": true,
+      "require_cvv_on_tokenized_cnp": true,
+      "show_secondary_amount": false,
+      "allow_secondary_amount": false,
+      "show_google_pay": true,
+      "show_apple_pay": true,
+      "batch_risk_config": {},
+      "currency_code": 840,
+      "enable_ach_validation": false,
+      "enable_ach_retry": false,
+      "allow_softpos": false,
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "active": true,
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
-      "modified_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "product_transaction_api_id": "11e95f8ec39de8fbdb0a4f1a",
+      "is_secondary_amount_allowed": false,
+      "fortis_id": "8149742",
+      "product_billing_group_code": "nofees",
+      "cau_subscribe_type_code": 0
     },
     "all_tags": [
       {
@@ -2310,7 +3045,7 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
       "default_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
       "terminal_application_id": "11e95f8ec39de8fbdb0a4f1a",
       "terminal_cvm_id": "11e95f8ec39de8fbdb0a4f1a",
-      "terminal_manufacturer_code": 1,
+      "terminal_manufacturer_code": "1",
       "title": "My terminal",
       "mac_address": "3D:F2:C9:A6:B3:4F",
       "local_ip_address": "192.168.0.10",
@@ -2356,6 +3091,7 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
       "tip_enable": false,
       "validated_decryption": false,
       "communication_type": "http",
+      "active": true,
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
@@ -2371,7 +3107,7 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
       "title": "Sample title",
       "redirect_url_delay": 15,
       "min_payment_amount": 0,
-      "max_payment_amount": 99999999.99,
+      "max_payment_amount": 9999999999,
       "redirect_url_on_approve": null,
       "redirect_url_on_decline": null,
       "field_configuration": {
@@ -2460,7 +3196,7 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
         "shipfrom_zip_code": "AZ1234",
         "shipto_zip_code": "FL1234",
         "tax_amount": 10,
-        "tax_exempt": 0,
+        "tax_exempt": "0",
         "customer_vat_registration": "12345678",
         "merchant_vat_registration": "123456",
         "order_date": "171006",
@@ -2558,12 +3294,14 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
       "settlement_file_name": "settement_file.txt",
       "batch_close_ts": 1531423693,
       "batch_close_detail": "BATCH_MISMATCH",
-      "total_sale_amount": 2342.45,
+      "total_sale_amount": 2342,
       "total_sale_count": 21,
-      "total_refund_amount": 2342.45,
+      "total_refund_amount": 2342,
       "total_refund_count": 18,
-      "total_void_amount": 2342.45,
-      "total_void_count": 17
+      "total_void_amount": 2342,
+      "total_void_count": 17,
+      "total_blind_refund_amount": 2342,
+      "total_blind_refund_count": 16
     },
     "transaction_splits": [
       {
@@ -2594,6 +3332,103 @@ $result = $transactionsACHController->aCHCreditTokenized($body);
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "created_ts": 1422040992,
         "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      }
+    ],
+    "rejected_transaction_ach_retries": [
+      {
+        "rejected_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "id": "11e95f8ec39de8fbdb0a4f1a",
+        "retry_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "return_fee_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "created_ts": 1422040992,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      }
+    ],
+    "return_fee_transaction_ach_retry": {
+      "rejected_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "retry_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "return_fee_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+    },
+    "retry_transaction_ach_retry": {
+      "rejected_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "retry_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "return_fee_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+    },
+    "saved_account": {
+      "account_holder_name": "John Smith",
+      "account_vault_api_id": "accountvaultabcd",
+      "token_api_id": "tokenabcd",
+      "accountvault_c1": "accountvault custom 1",
+      "accountvault_c2": "accountvault custom 2",
+      "accountvault_c3": "accountvault custom 3",
+      "token_c1": "token custom 1",
+      "token_c2": "token custom 2",
+      "token_c3": "token custom 3",
+      "ach_sec_code": "WEB",
+      "billing_address": {
+        "city": "Novi",
+        "state": "Michigan",
+        "postal_code": "48375",
+        "phone": "3339998822",
+        "country": "USA"
+      },
+      "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+      "customer_id": "123456",
+      "identity_verification": {
+        "dl_state": "MI",
+        "dl_number": "1235567",
+        "ssn4": "8527",
+        "dob_year": "1980"
+      },
+      "location_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_account_vault_api_id": "previousaccountvault123456",
+      "previous_token_api_id": "previousaccountvault123456",
+      "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_number": "545454545454545",
+      "terms_agree": true,
+      "terms_agree_ip": "192.168.0.10",
+      "title": "Test CC Account",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+      "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "secure_protocol_version": 2,
+      "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+      "secure_collection_indicator": null,
+      "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+      "_joi": {},
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_type": "checking",
+      "active": true,
+      "cau_summary_status_id": 1,
+      "created_ts": 1422040992,
+      "e_serial_number": "1234567890",
+      "e_track_data": null,
+      "e_format": null,
+      "e_keyed_data": null,
+      "expiring_in_months": null,
+      "exp_date": "0722",
+      "first_six": "700953",
+      "has_recurring": false,
+      "last_four": "3657",
+      "modified_ts": 1422040992,
+      "payment_method": "cc",
+      "ticket": null,
+      "track_data": null,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "cau_last_updated_ts": 1422040992,
+      "routing_number": "051904524"
+    },
+    "balances": [
+      {
+        "amount": 1000
       }
     ]
   }
@@ -2621,7 +3456,7 @@ function aCHDebit(V1TransactionsAchDebitKeyedRequest $body, ?array $expand = nul
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `body` | [`V1TransactionsAchDebitKeyedRequest`](../../doc/models/v1-transactions-ach-debit-keyed-request.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand47Enum)`](../../doc/models/expand-47-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand60Enum)[])`](../../doc/models/expand-60-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -2630,18 +3465,66 @@ function aCHDebit(V1TransactionsAchDebitKeyedRequest $body, ?array $expand = nul
 ## Example Usage
 
 ```php
-$body_transactionAmount = 1;
-$body_accountHolderName = 'smith';
-$body_accountNumber = '24345';
-$body_accountType = Models\AccountType9Enum::CHECKING;
-$body_routingNumber = '051904524';
-$body = new Models\V1TransactionsAchDebitKeyedRequest(
-    $body_transactionAmount,
-    $body_accountHolderName,
-    $body_accountNumber,
-    $body_accountType,
-    $body_routingNumber
-);
+$body = V1TransactionsAchDebitKeyedRequestBuilder::init(
+    1,
+    'smith',
+    '24345',
+    AccountType16Enum::CHECKING,
+    '051904524'
+)
+    ->checkinDate('2021-12-01')
+    ->checkoutDate('2021-12-01')
+    ->clerkNumber('AE1234')
+    ->contactId('11e95f8ec39de8fbdb0a4f1a')
+    ->customData(ApiHelper::deserialize('{"data1":"custom1","data2":"custom2"}'))
+    ->customerId('customerid')
+    ->description('some description')
+    ->iiasInd(IiasIndEnum::ENUM_1)
+    ->imageFront('U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=')
+    ->imageBack('U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=')
+    ->installment(true)
+    ->installmentNumber(1)
+    ->installmentCount(1)
+    ->recurringFlag(RecurringFlagEnum::YES)
+    ->installmentCounter(1)
+    ->installmentTotal(1)
+    ->subscription(false)
+    ->standingOrder(false)
+    ->locationApiId('location-api-id-florida-2')
+    ->locationId('11e95f8ec39de8fbdb0a4f1a')
+    ->productTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->advanceDeposit(false)
+    ->noShow(false)
+    ->notificationEmailAddress('johnsmith@smiths.com')
+    ->orderNumber('433659378839')
+    ->poNumber('555555553123')
+    ->quickInvoiceId('11e95f8ec39de8fbdb0a4f1a')
+    ->recurring(false)
+    ->recurringNumber(1)
+    ->roomNum('303')
+    ->roomRate(95)
+    ->saveAccount(false)
+    ->saveAccountTitle('John Account')
+    ->subtotalAmount(599)
+    ->surchargeAmount(100)
+    ->tax(0)
+    ->tipAmount(0)
+    ->secondaryAmount(0)
+    ->transactionApiId('transaction-payment-abcd123')
+    ->transactionC1('custom-data-1')
+    ->transactionC2('custom-data-2')
+    ->transactionC3('custom-data-3')
+    ->bankFundedOnlyOverride(false)
+    ->allowPartialAuthorizationOverride(false)
+    ->autoDeclineCvvOverride(false)
+    ->autoDeclineStreetOverride(false)
+    ->autoDeclineZipOverride(false)
+    ->ebtType(EbtTypeEnum::FOOD_STAMP)
+    ->achIdentifier('P')
+    ->achSecCode(AchSecCode31Enum::C21)
+    ->effectiveDate('2021-12-01')
+    ->checkNumber('8520748520963')
+    ->build();
 
 $result = $transactionsACHController->aCHDebit($body);
 ```
@@ -2664,8 +3547,8 @@ $result = $transactionsACHController->aCHDebit($body);
       "city": "Novi",
       "state": "Michigan",
       "postal_code": "48375",
-      "street": "43155 Main Street STE 2310-C",
-      "phone": "3339998822"
+      "phone": "3339998822",
+      "country": "USA"
     },
     "checkin_date": "2021-12-01",
     "checkout_date": "2021-12-01",
@@ -2674,17 +3557,17 @@ $result = $transactionsACHController->aCHDebit($body);
     "custom_data": {},
     "customer_id": "customerid",
     "description": "some description",
-    "identity_verification": {
-      "dl_state": "MI",
-      "dl_number": "1235567",
-      "dob_year": "1980"
-    },
     "iias_ind": 1,
     "image_front": "U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=",
     "image_back": "U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=",
     "installment": true,
     "installment_number": 1,
     "installment_count": 1,
+    "recurring_flag": "yes",
+    "installment_counter": 1,
+    "installment_total": 1,
+    "subscription": false,
+    "standing_order": false,
     "location_api_id": "location-api-id-florida-2",
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
     "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -2696,6 +3579,13 @@ $result = $transactionsACHController->aCHDebit($body);
     "quick_invoice_id": "11e95f8ec39de8fbdb0a4f1a",
     "recurring": {
       "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+      "token_id": "11e95f8ec39de8fbdb0a4f1a",
+      "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_vault_api_id": "token1234abcd",
+      "token_api_id": "token1234abcd",
+      "_joi": {
+        "conditions": {}
+      },
       "active": true,
       "description": "Description",
       "end_date": "2021-12-01",
@@ -2710,18 +3600,25 @@ $result = $transactionsACHController->aCHDebit($body);
       "recurring_api_id": "recurring1234abcd",
       "start_date": "2021-12-01",
       "status": "active",
-      "transaction_amount": 3,
+      "transaction_amount": 300,
       "terms_agree": true,
       "terms_agree_ip": "192.168.0.10",
       "recurring_c1": "recurring custom data 1",
       "recurring_c2": "recurring custom data 2",
       "recurring_c3": "recurring custom data 3",
       "send_to_proc_as_recur": true,
+      "tags": [
+        "Walk-in Customer"
+      ],
+      "secondary_amount": 100,
+      "currency": "USD",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "next_run_date": "2021-12-01",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "recurring_type_id": "i"
+      "recurring_type_id": "i",
+      "installment_amount_total": 99999999,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "recurring_number": 1,
     "room_num": "303",
@@ -2748,6 +3645,11 @@ $result = $transactionsACHController->aCHDebit($body);
     "transaction_c2": "custom-data-2",
     "transaction_c3": "custom-data-3",
     "bank_funded_only_override": false,
+    "allow_partial_authorization_override": false,
+    "auto_decline_cvv_override": false,
+    "auto_decline_street_override": false,
+    "auto_decline_zip_override": false,
+    "ebt_type": "food_stamp",
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "created_ts": 1422040992,
     "modified_ts": 1422040992,
@@ -2782,7 +3684,7 @@ $result = $transactionsACHController->aCHDebit($body);
     "transaction_settlement_status": null,
     "charge_back_date": "2021-12-01",
     "is_recurring": true,
-    "notification_email_sent": "true",
+    "notification_email_sent": true,
     "par": "Q1J4Z28RKA1EBL470G9XYG90R5D3E",
     "reason_code_id": 1000,
     "recurring_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -2790,26 +3692,40 @@ $result = $transactionsACHController->aCHDebit($body);
     "status_code": 101,
     "transaction_batch_id": "11e95f8ec39de8fbdb0a4f1a",
     "verbiage": "APPROVED",
+    "voucher_number": "1234",
     "void_date": "2021-12-01",
     "batch": "2",
     "terms_agree": true,
     "response_message": null,
     "return_date": "2021-12-01",
     "trx_source_id": 8,
+    "routing_number": "051904524",
+    "trx_source_code": 8,
+    "paylink_id": "11e95f8ec39de8fbdb0a4f1a",
+    "is_accountvault": true,
+    "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "effective_date": "2021-12-01",
+    "is_token": true,
+    "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+    "hosted_payment_page_id": "11e95f8ec39de8fbdb0a4f1a",
     "account_vault": {
       "account_holder_name": "John Smith",
-      "account_number": "545454545454545",
       "account_vault_api_id": "accountvaultabcd",
+      "token_api_id": "tokenabcd",
       "accountvault_c1": "accountvault custom 1",
       "accountvault_c2": "accountvault custom 2",
       "accountvault_c3": "accountvault custom 3",
+      "token_c1": "token custom 1",
+      "token_c2": "token custom 2",
+      "token_c3": "token custom 3",
       "ach_sec_code": "WEB",
       "billing_address": {
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "street": "43155 Main Street STE 2310-C",
-        "phone": "3339998822"
+        "phone": "3339998822",
+        "country": "USA"
       },
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "customer_id": "123456",
@@ -2821,11 +3737,22 @@ $result = $transactionsACHController->aCHDebit($body);
       },
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
       "previous_account_vault_api_id": "previousaccountvault123456",
+      "previous_token_api_id": "previousaccountvault123456",
       "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
       "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_number": "545454545454545",
       "terms_agree": true,
       "terms_agree_ip": "192.168.0.10",
       "title": "Test CC Account",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+      "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "secure_protocol_version": 2,
+      "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+      "secure_collection_indicator": null,
+      "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+      "_joi": {},
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "account_type": "checking",
       "active": true,
@@ -2836,13 +3763,17 @@ $result = $transactionsACHController->aCHDebit($body);
       "e_format": null,
       "e_keyed_data": null,
       "expiring_in_months": null,
+      "exp_date": "0722",
       "first_six": "700953",
       "has_recurring": false,
       "last_four": "3657",
       "modified_ts": 1422040992,
       "payment_method": "cc",
       "ticket": null,
-      "track_data": null
+      "track_data": null,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "cau_last_updated_ts": 1422040992,
+      "routing_number": "051904524"
     },
     "quick_invoice": {
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -2853,13 +3784,15 @@ $result = $transactionsACHController->aCHDebit($body);
       "item_list": [
         {
           "name": "Bread",
-          "amount": 20.15
+          "amount": 2015
         }
       ],
       "allow_overpayment": true,
+      "bank_funded_only_override": true,
       "email": "email@domain.com",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_api_id": "contact12345",
+      "quick_invoice_api_id": "quickinvoice12345",
       "customer_id": "11e95f8ec39de8fbdb0a4f1a",
       "expire_date": "2021-12-01",
       "allow_partial_pay": true,
@@ -2870,26 +3803,34 @@ $result = $transactionsACHController->aCHDebit($body);
       "item_footer": "Thank you",
       "amount_due": 245.36,
       "notification_email": "email@domain.com",
-      "payment_status_id": 1,
       "status_id": 1,
+      "status_code": 1,
       "note": "some note",
       "notification_days_before_due_date": 3,
       "notification_days_after_due_date": 7,
       "notification_on_due_date": true,
       "send_text_to_pay": true,
       "files": [
-        null
+        {}
       ],
       "remaining_balance": 245.36,
-      "single_payment_min_amount": 5,
-      "single_payment_max_amount": 5000,
+      "single_payment_min_amount": 500,
+      "single_payment_max_amount": 500000,
       "cell_phone": "3339998822",
+      "tags": [
+        "Walk-in Customer"
+      ],
+      "quick_invoice_c1": "custom-data-1",
+      "quick_invoice_c2": "custom-data-2",
+      "quick_invoice_c3": "custom-data-3",
+      "auto_reopen": true,
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "active": true,
+      "payment_status_id": 1,
       "is_active": true
     },
     "log_emails": [
@@ -2915,10 +3856,8 @@ $result = $transactionsACHController->aCHDebit($body);
     "is_settled": true,
     "created_user": {
       "account_number": "5454545454545454",
-      "address": "43155 Main Street STE 2310-C",
       "branding_domain_url": "{branding_domain_url}",
       "cell_phone": "3339998822",
-      "city": "Novi",
       "company_name": "Fortis Payment Systems, LLC",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "date_of_birth": "2021-12-01",
@@ -2933,7 +3872,6 @@ $result = $transactionsACHController->aCHDebit($body);
       "office_ext_phone": "5",
       "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
       "requires_new_password": null,
-      "state": "Michigan",
       "terms_condition_code": "20220308",
       "tz": "America/New_York",
       "ui_prefs": {
@@ -2950,7 +3888,15 @@ $result = $transactionsACHController->aCHDebit($body);
       "password": null,
       "zip": "48375",
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
-      "status_id": true,
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "status": true,
       "login_attempts": 0,
@@ -2960,7 +3906,9 @@ $result = $transactionsACHController->aCHDebit($body);
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "terms_accepted_ts": 1422040992,
       "terms_agree_ip": "192.168.0.10",
-      "current_date_time": "2019-03-11T10:38:26-0700"
+      "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992
     },
     "location": {
       "id": "11e95f8ec39de8fbdb0a4f1a",
@@ -2971,15 +3919,12 @@ $result = $transactionsACHController->aCHDebit($body);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -2990,10 +3935,14 @@ $result = $transactionsACHController->aCHDebit($body);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     },
     "contact": {
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -3007,8 +3956,7 @@ $result = $transactionsACHController->aCHDebit($body);
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C"
+        "country": "USA"
       },
       "company_name": "Fortis Payment Systems, LLC",
       "header_message": "This is a sample message for you",
@@ -3017,6 +3965,9 @@ $result = $transactionsACHController->aCHDebit($body);
       "home_phone": "3339998822",
       "office_phone": "3339998822",
       "office_phone_ext": "5",
+      "home_phone_country_code": "+1",
+      "office_phone_country_code": "+1",
+      "cell_phone_country_code": "+1",
       "header_message_type": 0,
       "update_if_exists": 1,
       "contact_c1": "any",
@@ -3024,10 +3975,12 @@ $result = $transactionsACHController->aCHDebit($body);
       "contact_c3": "something",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
       "email": "email@domain.com",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "active": true
+      "active": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "changelogs": [
       {
@@ -3083,6 +4036,9 @@ $result = $transactionsACHController->aCHDebit($body);
       "card_type_amex": true,
       "card_type_diners": true,
       "card_type_jcb": true,
+      "card_type_ebt": true,
+      "allow_ebt_cash_benefit": true,
+      "allow_ebt_food_stamp": true,
       "invoice_location": true,
       "allow_partial_authorization": true,
       "allow_recurring_partial_authorization": true,
@@ -3099,13 +4055,51 @@ $result = $transactionsACHController->aCHDebit($body);
       "auto_decline_cavv": true,
       "current_batch": 34,
       "dup_check_per_batch": null,
+      "paylink_allow": false,
       "quick_invoice_allow": false,
       "level3_allow": false,
       "payfac_enable": false,
+      "enable_3ds": false,
       "sales_office_id": "11e95f8ec39de8fbdb0a4f1a",
       "hosted_payment_page_allow": false,
       "surcharge_id": "11e95f8ec39de8fbdb0a4f1a",
-      "level3_default": null,
+      "allow_big_commerce": false,
+      "level3_default": {
+        "destination_country_code": "840",
+        "duty_amount": 0,
+        "freight_amount": 0,
+        "national_tax": 2,
+        "sales_tax": 200,
+        "shipfrom_zip_code": "AZ12345",
+        "shipto_zip_code": "MI48335",
+        "tax_amount": 0,
+        "tax_exempt": "0",
+        "customer_vat_registration": "12345678",
+        "merchant_vat_registration": "123456",
+        "order_date": "171006",
+        "summary_commodity_code": "C1K2",
+        "tax_rate": 0,
+        "unique_vat_ref_number": "vat1234",
+        "line_items": [
+          {
+            "alternate_tax_id": "1234",
+            "debit_credit": "C",
+            "description": "cool drink",
+            "discount_amount": 10,
+            "discount_rate": 11,
+            "product_code": "coke12345678",
+            "quantity": 5,
+            "tax_amount": 3,
+            "tax_rate": 0,
+            "tax_type_applied": "22",
+            "tax_type_id": "a1",
+            "unit_code": "gll",
+            "unit_cost": 10,
+            "commodity_code": "cc123456",
+            "other_tax_amount": 0
+          }
+        ]
+      },
       "cau_subscribe_type_id": 0,
       "location_billing_account_id": "11eb88b873980c64a21e5fd2",
       "product_billing_group_id": "nofees",
@@ -3121,12 +4115,28 @@ $result = $transactionsACHController->aCHDebit($body);
       "vt_show_company_name": false,
       "receipt_show_company_name": false,
       "bank_funded_only": false,
+      "require_cvv_on_keyed_cnp": true,
+      "require_cvv_on_tokenized_cnp": true,
+      "show_secondary_amount": false,
+      "allow_secondary_amount": false,
+      "show_google_pay": true,
+      "show_apple_pay": true,
+      "batch_risk_config": {},
+      "currency_code": 840,
+      "enable_ach_validation": false,
+      "enable_ach_retry": false,
+      "allow_softpos": false,
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "active": true,
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
-      "modified_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "product_transaction_api_id": "11e95f8ec39de8fbdb0a4f1a",
+      "is_secondary_amount_allowed": false,
+      "fortis_id": "8149742",
+      "product_billing_group_code": "nofees",
+      "cau_subscribe_type_code": 0
     },
     "all_tags": [
       {
@@ -3176,7 +4186,7 @@ $result = $transactionsACHController->aCHDebit($body);
       "default_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
       "terminal_application_id": "11e95f8ec39de8fbdb0a4f1a",
       "terminal_cvm_id": "11e95f8ec39de8fbdb0a4f1a",
-      "terminal_manufacturer_code": 1,
+      "terminal_manufacturer_code": "1",
       "title": "My terminal",
       "mac_address": "3D:F2:C9:A6:B3:4F",
       "local_ip_address": "192.168.0.10",
@@ -3222,6 +4232,7 @@ $result = $transactionsACHController->aCHDebit($body);
       "tip_enable": false,
       "validated_decryption": false,
       "communication_type": "http",
+      "active": true,
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
@@ -3237,7 +4248,7 @@ $result = $transactionsACHController->aCHDebit($body);
       "title": "Sample title",
       "redirect_url_delay": 15,
       "min_payment_amount": 0,
-      "max_payment_amount": 99999999.99,
+      "max_payment_amount": 9999999999,
       "redirect_url_on_approve": null,
       "redirect_url_on_decline": null,
       "field_configuration": {
@@ -3326,7 +4337,7 @@ $result = $transactionsACHController->aCHDebit($body);
         "shipfrom_zip_code": "AZ1234",
         "shipto_zip_code": "FL1234",
         "tax_amount": 10,
-        "tax_exempt": 0,
+        "tax_exempt": "0",
         "customer_vat_registration": "12345678",
         "merchant_vat_registration": "123456",
         "order_date": "171006",
@@ -3424,12 +4435,14 @@ $result = $transactionsACHController->aCHDebit($body);
       "settlement_file_name": "settement_file.txt",
       "batch_close_ts": 1531423693,
       "batch_close_detail": "BATCH_MISMATCH",
-      "total_sale_amount": 2342.45,
+      "total_sale_amount": 2342,
       "total_sale_count": 21,
-      "total_refund_amount": 2342.45,
+      "total_refund_amount": 2342,
       "total_refund_count": 18,
-      "total_void_amount": 2342.45,
-      "total_void_count": 17
+      "total_void_amount": 2342,
+      "total_void_count": 17,
+      "total_blind_refund_amount": 2342,
+      "total_blind_refund_count": 16
     },
     "transaction_splits": [
       {
@@ -3460,6 +4473,103 @@ $result = $transactionsACHController->aCHDebit($body);
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "created_ts": 1422040992,
         "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      }
+    ],
+    "rejected_transaction_ach_retries": [
+      {
+        "rejected_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "id": "11e95f8ec39de8fbdb0a4f1a",
+        "retry_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "return_fee_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "created_ts": 1422040992,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      }
+    ],
+    "return_fee_transaction_ach_retry": {
+      "rejected_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "retry_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "return_fee_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+    },
+    "retry_transaction_ach_retry": {
+      "rejected_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "retry_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "return_fee_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+    },
+    "saved_account": {
+      "account_holder_name": "John Smith",
+      "account_vault_api_id": "accountvaultabcd",
+      "token_api_id": "tokenabcd",
+      "accountvault_c1": "accountvault custom 1",
+      "accountvault_c2": "accountvault custom 2",
+      "accountvault_c3": "accountvault custom 3",
+      "token_c1": "token custom 1",
+      "token_c2": "token custom 2",
+      "token_c3": "token custom 3",
+      "ach_sec_code": "WEB",
+      "billing_address": {
+        "city": "Novi",
+        "state": "Michigan",
+        "postal_code": "48375",
+        "phone": "3339998822",
+        "country": "USA"
+      },
+      "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+      "customer_id": "123456",
+      "identity_verification": {
+        "dl_state": "MI",
+        "dl_number": "1235567",
+        "ssn4": "8527",
+        "dob_year": "1980"
+      },
+      "location_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_account_vault_api_id": "previousaccountvault123456",
+      "previous_token_api_id": "previousaccountvault123456",
+      "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_number": "545454545454545",
+      "terms_agree": true,
+      "terms_agree_ip": "192.168.0.10",
+      "title": "Test CC Account",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+      "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "secure_protocol_version": 2,
+      "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+      "secure_collection_indicator": null,
+      "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+      "_joi": {},
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_type": "checking",
+      "active": true,
+      "cau_summary_status_id": 1,
+      "created_ts": 1422040992,
+      "e_serial_number": "1234567890",
+      "e_track_data": null,
+      "e_format": null,
+      "e_keyed_data": null,
+      "expiring_in_months": null,
+      "exp_date": "0722",
+      "first_six": "700953",
+      "has_recurring": false,
+      "last_four": "3657",
+      "modified_ts": 1422040992,
+      "payment_method": "cc",
+      "ticket": null,
+      "track_data": null,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "cau_last_updated_ts": 1422040992,
+      "routing_number": "051904524"
+    },
+    "balances": [
+      {
+        "amount": 1000
       }
     ]
   }
@@ -3490,7 +4600,7 @@ function aCHDebitPreviousTransaction(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `body` | [`V1TransactionsAchDebitPrevTrxnRequest`](../../doc/models/v1-transactions-ach-debit-prev-trxn-request.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand47Enum)`](../../doc/models/expand-47-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand60Enum)[])`](../../doc/models/expand-60-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -3499,12 +4609,63 @@ function aCHDebitPreviousTransaction(
 ## Example Usage
 
 ```php
-$body_transactionAmount = 1;
-$body_previousTransactionId = '11e95f8ec39de8fbdb0a4f1a';
-$body = new Models\V1TransactionsAchDebitPrevTrxnRequest(
-    $body_transactionAmount,
-    $body_previousTransactionId
-);
+$body = V1TransactionsAchDebitPrevTrxnRequestBuilder::init(
+    1
+)
+    ->checkinDate('2021-12-01')
+    ->checkoutDate('2021-12-01')
+    ->clerkNumber('AE1234')
+    ->contactId('11e95f8ec39de8fbdb0a4f1a')
+    ->customData(ApiHelper::deserialize('{"data1":"custom1","data2":"custom2"}'))
+    ->customerId('customerid')
+    ->description('some description')
+    ->iiasInd(IiasIndEnum::ENUM_1)
+    ->imageFront('U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=')
+    ->imageBack('U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=')
+    ->installment(true)
+    ->installmentNumber(1)
+    ->installmentCount(1)
+    ->recurringFlag(RecurringFlagEnum::YES)
+    ->installmentCounter(1)
+    ->installmentTotal(1)
+    ->subscription(false)
+    ->standingOrder(false)
+    ->locationApiId('location-api-id-florida-2')
+    ->locationId('11e95f8ec39de8fbdb0a4f1a')
+    ->productTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->advanceDeposit(false)
+    ->noShow(false)
+    ->notificationEmailAddress('johnsmith@smiths.com')
+    ->orderNumber('433659378839')
+    ->poNumber('555555553123')
+    ->quickInvoiceId('11e95f8ec39de8fbdb0a4f1a')
+    ->recurring(false)
+    ->recurringNumber(1)
+    ->roomNum('303')
+    ->roomRate(95)
+    ->saveAccount(false)
+    ->saveAccountTitle('John Account')
+    ->subtotalAmount(599)
+    ->surchargeAmount(100)
+    ->tax(0)
+    ->tipAmount(0)
+    ->secondaryAmount(0)
+    ->transactionApiId('transaction-payment-abcd123')
+    ->transactionC1('custom-data-1')
+    ->transactionC2('custom-data-2')
+    ->transactionC3('custom-data-3')
+    ->bankFundedOnlyOverride(false)
+    ->allowPartialAuthorizationOverride(false)
+    ->autoDeclineCvvOverride(false)
+    ->autoDeclineStreetOverride(false)
+    ->autoDeclineZipOverride(false)
+    ->ebtType(EbtTypeEnum::FOOD_STAMP)
+    ->achIdentifier('P')
+    ->achSecCode(AchSecCode31Enum::C21)
+    ->effectiveDate('2021-12-01')
+    ->accountHolderName('smith')
+    ->previousTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->build();
 
 $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
 ```
@@ -3527,8 +4688,8 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
       "city": "Novi",
       "state": "Michigan",
       "postal_code": "48375",
-      "street": "43155 Main Street STE 2310-C",
-      "phone": "3339998822"
+      "phone": "3339998822",
+      "country": "USA"
     },
     "checkin_date": "2021-12-01",
     "checkout_date": "2021-12-01",
@@ -3537,17 +4698,17 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
     "custom_data": {},
     "customer_id": "customerid",
     "description": "some description",
-    "identity_verification": {
-      "dl_state": "MI",
-      "dl_number": "1235567",
-      "dob_year": "1980"
-    },
     "iias_ind": 1,
     "image_front": "U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=",
     "image_back": "U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=",
     "installment": true,
     "installment_number": 1,
     "installment_count": 1,
+    "recurring_flag": "yes",
+    "installment_counter": 1,
+    "installment_total": 1,
+    "subscription": false,
+    "standing_order": false,
     "location_api_id": "location-api-id-florida-2",
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
     "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -3559,6 +4720,13 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
     "quick_invoice_id": "11e95f8ec39de8fbdb0a4f1a",
     "recurring": {
       "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+      "token_id": "11e95f8ec39de8fbdb0a4f1a",
+      "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_vault_api_id": "token1234abcd",
+      "token_api_id": "token1234abcd",
+      "_joi": {
+        "conditions": {}
+      },
       "active": true,
       "description": "Description",
       "end_date": "2021-12-01",
@@ -3573,18 +4741,25 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
       "recurring_api_id": "recurring1234abcd",
       "start_date": "2021-12-01",
       "status": "active",
-      "transaction_amount": 3,
+      "transaction_amount": 300,
       "terms_agree": true,
       "terms_agree_ip": "192.168.0.10",
       "recurring_c1": "recurring custom data 1",
       "recurring_c2": "recurring custom data 2",
       "recurring_c3": "recurring custom data 3",
       "send_to_proc_as_recur": true,
+      "tags": [
+        "Walk-in Customer"
+      ],
+      "secondary_amount": 100,
+      "currency": "USD",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "next_run_date": "2021-12-01",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "recurring_type_id": "i"
+      "recurring_type_id": "i",
+      "installment_amount_total": 99999999,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "recurring_number": 1,
     "room_num": "303",
@@ -3611,6 +4786,11 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
     "transaction_c2": "custom-data-2",
     "transaction_c3": "custom-data-3",
     "bank_funded_only_override": false,
+    "allow_partial_authorization_override": false,
+    "auto_decline_cvv_override": false,
+    "auto_decline_street_override": false,
+    "auto_decline_zip_override": false,
+    "ebt_type": "food_stamp",
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "created_ts": 1422040992,
     "modified_ts": 1422040992,
@@ -3645,7 +4825,7 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
     "transaction_settlement_status": null,
     "charge_back_date": "2021-12-01",
     "is_recurring": true,
-    "notification_email_sent": "true",
+    "notification_email_sent": true,
     "par": "Q1J4Z28RKA1EBL470G9XYG90R5D3E",
     "reason_code_id": 1000,
     "recurring_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -3653,26 +4833,40 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
     "status_code": 101,
     "transaction_batch_id": "11e95f8ec39de8fbdb0a4f1a",
     "verbiage": "APPROVED",
+    "voucher_number": "1234",
     "void_date": "2021-12-01",
     "batch": "2",
     "terms_agree": true,
     "response_message": null,
     "return_date": "2021-12-01",
     "trx_source_id": 8,
+    "routing_number": "051904524",
+    "trx_source_code": 8,
+    "paylink_id": "11e95f8ec39de8fbdb0a4f1a",
+    "is_accountvault": true,
+    "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "effective_date": "2021-12-01",
+    "is_token": true,
+    "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+    "hosted_payment_page_id": "11e95f8ec39de8fbdb0a4f1a",
     "account_vault": {
       "account_holder_name": "John Smith",
-      "account_number": "545454545454545",
       "account_vault_api_id": "accountvaultabcd",
+      "token_api_id": "tokenabcd",
       "accountvault_c1": "accountvault custom 1",
       "accountvault_c2": "accountvault custom 2",
       "accountvault_c3": "accountvault custom 3",
+      "token_c1": "token custom 1",
+      "token_c2": "token custom 2",
+      "token_c3": "token custom 3",
       "ach_sec_code": "WEB",
       "billing_address": {
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "street": "43155 Main Street STE 2310-C",
-        "phone": "3339998822"
+        "phone": "3339998822",
+        "country": "USA"
       },
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "customer_id": "123456",
@@ -3684,11 +4878,22 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
       },
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
       "previous_account_vault_api_id": "previousaccountvault123456",
+      "previous_token_api_id": "previousaccountvault123456",
       "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
       "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_number": "545454545454545",
       "terms_agree": true,
       "terms_agree_ip": "192.168.0.10",
       "title": "Test CC Account",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+      "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "secure_protocol_version": 2,
+      "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+      "secure_collection_indicator": null,
+      "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+      "_joi": {},
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "account_type": "checking",
       "active": true,
@@ -3699,13 +4904,17 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
       "e_format": null,
       "e_keyed_data": null,
       "expiring_in_months": null,
+      "exp_date": "0722",
       "first_six": "700953",
       "has_recurring": false,
       "last_four": "3657",
       "modified_ts": 1422040992,
       "payment_method": "cc",
       "ticket": null,
-      "track_data": null
+      "track_data": null,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "cau_last_updated_ts": 1422040992,
+      "routing_number": "051904524"
     },
     "quick_invoice": {
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -3716,13 +4925,15 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
       "item_list": [
         {
           "name": "Bread",
-          "amount": 20.15
+          "amount": 2015
         }
       ],
       "allow_overpayment": true,
+      "bank_funded_only_override": true,
       "email": "email@domain.com",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_api_id": "contact12345",
+      "quick_invoice_api_id": "quickinvoice12345",
       "customer_id": "11e95f8ec39de8fbdb0a4f1a",
       "expire_date": "2021-12-01",
       "allow_partial_pay": true,
@@ -3733,26 +4944,34 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
       "item_footer": "Thank you",
       "amount_due": 245.36,
       "notification_email": "email@domain.com",
-      "payment_status_id": 1,
       "status_id": 1,
+      "status_code": 1,
       "note": "some note",
       "notification_days_before_due_date": 3,
       "notification_days_after_due_date": 7,
       "notification_on_due_date": true,
       "send_text_to_pay": true,
       "files": [
-        null
+        {}
       ],
       "remaining_balance": 245.36,
-      "single_payment_min_amount": 5,
-      "single_payment_max_amount": 5000,
+      "single_payment_min_amount": 500,
+      "single_payment_max_amount": 500000,
       "cell_phone": "3339998822",
+      "tags": [
+        "Walk-in Customer"
+      ],
+      "quick_invoice_c1": "custom-data-1",
+      "quick_invoice_c2": "custom-data-2",
+      "quick_invoice_c3": "custom-data-3",
+      "auto_reopen": true,
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "active": true,
+      "payment_status_id": 1,
       "is_active": true
     },
     "log_emails": [
@@ -3778,10 +4997,8 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
     "is_settled": true,
     "created_user": {
       "account_number": "5454545454545454",
-      "address": "43155 Main Street STE 2310-C",
       "branding_domain_url": "{branding_domain_url}",
       "cell_phone": "3339998822",
-      "city": "Novi",
       "company_name": "Fortis Payment Systems, LLC",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "date_of_birth": "2021-12-01",
@@ -3796,7 +5013,6 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
       "office_ext_phone": "5",
       "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
       "requires_new_password": null,
-      "state": "Michigan",
       "terms_condition_code": "20220308",
       "tz": "America/New_York",
       "ui_prefs": {
@@ -3813,7 +5029,15 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
       "password": null,
       "zip": "48375",
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
-      "status_id": true,
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "status": true,
       "login_attempts": 0,
@@ -3823,7 +5047,9 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "terms_accepted_ts": 1422040992,
       "terms_agree_ip": "192.168.0.10",
-      "current_date_time": "2019-03-11T10:38:26-0700"
+      "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992
     },
     "location": {
       "id": "11e95f8ec39de8fbdb0a4f1a",
@@ -3834,15 +5060,12 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -3853,10 +5076,14 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     },
     "contact": {
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -3870,8 +5097,7 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C"
+        "country": "USA"
       },
       "company_name": "Fortis Payment Systems, LLC",
       "header_message": "This is a sample message for you",
@@ -3880,6 +5106,9 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
       "home_phone": "3339998822",
       "office_phone": "3339998822",
       "office_phone_ext": "5",
+      "home_phone_country_code": "+1",
+      "office_phone_country_code": "+1",
+      "cell_phone_country_code": "+1",
       "header_message_type": 0,
       "update_if_exists": 1,
       "contact_c1": "any",
@@ -3887,10 +5116,12 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
       "contact_c3": "something",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
       "email": "email@domain.com",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "active": true
+      "active": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "changelogs": [
       {
@@ -3946,6 +5177,9 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
       "card_type_amex": true,
       "card_type_diners": true,
       "card_type_jcb": true,
+      "card_type_ebt": true,
+      "allow_ebt_cash_benefit": true,
+      "allow_ebt_food_stamp": true,
       "invoice_location": true,
       "allow_partial_authorization": true,
       "allow_recurring_partial_authorization": true,
@@ -3962,13 +5196,51 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
       "auto_decline_cavv": true,
       "current_batch": 34,
       "dup_check_per_batch": null,
+      "paylink_allow": false,
       "quick_invoice_allow": false,
       "level3_allow": false,
       "payfac_enable": false,
+      "enable_3ds": false,
       "sales_office_id": "11e95f8ec39de8fbdb0a4f1a",
       "hosted_payment_page_allow": false,
       "surcharge_id": "11e95f8ec39de8fbdb0a4f1a",
-      "level3_default": null,
+      "allow_big_commerce": false,
+      "level3_default": {
+        "destination_country_code": "840",
+        "duty_amount": 0,
+        "freight_amount": 0,
+        "national_tax": 2,
+        "sales_tax": 200,
+        "shipfrom_zip_code": "AZ12345",
+        "shipto_zip_code": "MI48335",
+        "tax_amount": 0,
+        "tax_exempt": "0",
+        "customer_vat_registration": "12345678",
+        "merchant_vat_registration": "123456",
+        "order_date": "171006",
+        "summary_commodity_code": "C1K2",
+        "tax_rate": 0,
+        "unique_vat_ref_number": "vat1234",
+        "line_items": [
+          {
+            "alternate_tax_id": "1234",
+            "debit_credit": "C",
+            "description": "cool drink",
+            "discount_amount": 10,
+            "discount_rate": 11,
+            "product_code": "coke12345678",
+            "quantity": 5,
+            "tax_amount": 3,
+            "tax_rate": 0,
+            "tax_type_applied": "22",
+            "tax_type_id": "a1",
+            "unit_code": "gll",
+            "unit_cost": 10,
+            "commodity_code": "cc123456",
+            "other_tax_amount": 0
+          }
+        ]
+      },
       "cau_subscribe_type_id": 0,
       "location_billing_account_id": "11eb88b873980c64a21e5fd2",
       "product_billing_group_id": "nofees",
@@ -3984,12 +5256,28 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
       "vt_show_company_name": false,
       "receipt_show_company_name": false,
       "bank_funded_only": false,
+      "require_cvv_on_keyed_cnp": true,
+      "require_cvv_on_tokenized_cnp": true,
+      "show_secondary_amount": false,
+      "allow_secondary_amount": false,
+      "show_google_pay": true,
+      "show_apple_pay": true,
+      "batch_risk_config": {},
+      "currency_code": 840,
+      "enable_ach_validation": false,
+      "enable_ach_retry": false,
+      "allow_softpos": false,
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "active": true,
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
-      "modified_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "product_transaction_api_id": "11e95f8ec39de8fbdb0a4f1a",
+      "is_secondary_amount_allowed": false,
+      "fortis_id": "8149742",
+      "product_billing_group_code": "nofees",
+      "cau_subscribe_type_code": 0
     },
     "all_tags": [
       {
@@ -4039,7 +5327,7 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
       "default_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
       "terminal_application_id": "11e95f8ec39de8fbdb0a4f1a",
       "terminal_cvm_id": "11e95f8ec39de8fbdb0a4f1a",
-      "terminal_manufacturer_code": 1,
+      "terminal_manufacturer_code": "1",
       "title": "My terminal",
       "mac_address": "3D:F2:C9:A6:B3:4F",
       "local_ip_address": "192.168.0.10",
@@ -4085,6 +5373,7 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
       "tip_enable": false,
       "validated_decryption": false,
       "communication_type": "http",
+      "active": true,
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
@@ -4100,7 +5389,7 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
       "title": "Sample title",
       "redirect_url_delay": 15,
       "min_payment_amount": 0,
-      "max_payment_amount": 99999999.99,
+      "max_payment_amount": 9999999999,
       "redirect_url_on_approve": null,
       "redirect_url_on_decline": null,
       "field_configuration": {
@@ -4189,7 +5478,7 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
         "shipfrom_zip_code": "AZ1234",
         "shipto_zip_code": "FL1234",
         "tax_amount": 10,
-        "tax_exempt": 0,
+        "tax_exempt": "0",
         "customer_vat_registration": "12345678",
         "merchant_vat_registration": "123456",
         "order_date": "171006",
@@ -4287,12 +5576,14 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
       "settlement_file_name": "settement_file.txt",
       "batch_close_ts": 1531423693,
       "batch_close_detail": "BATCH_MISMATCH",
-      "total_sale_amount": 2342.45,
+      "total_sale_amount": 2342,
       "total_sale_count": 21,
-      "total_refund_amount": 2342.45,
+      "total_refund_amount": 2342,
       "total_refund_count": 18,
-      "total_void_amount": 2342.45,
-      "total_void_count": 17
+      "total_void_amount": 2342,
+      "total_void_count": 17,
+      "total_blind_refund_amount": 2342,
+      "total_blind_refund_count": 16
     },
     "transaction_splits": [
       {
@@ -4323,6 +5614,103 @@ $result = $transactionsACHController->aCHDebitPreviousTransaction($body);
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "created_ts": 1422040992,
         "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      }
+    ],
+    "rejected_transaction_ach_retries": [
+      {
+        "rejected_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "id": "11e95f8ec39de8fbdb0a4f1a",
+        "retry_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "return_fee_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "created_ts": 1422040992,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      }
+    ],
+    "return_fee_transaction_ach_retry": {
+      "rejected_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "retry_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "return_fee_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+    },
+    "retry_transaction_ach_retry": {
+      "rejected_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "retry_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "return_fee_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+    },
+    "saved_account": {
+      "account_holder_name": "John Smith",
+      "account_vault_api_id": "accountvaultabcd",
+      "token_api_id": "tokenabcd",
+      "accountvault_c1": "accountvault custom 1",
+      "accountvault_c2": "accountvault custom 2",
+      "accountvault_c3": "accountvault custom 3",
+      "token_c1": "token custom 1",
+      "token_c2": "token custom 2",
+      "token_c3": "token custom 3",
+      "ach_sec_code": "WEB",
+      "billing_address": {
+        "city": "Novi",
+        "state": "Michigan",
+        "postal_code": "48375",
+        "phone": "3339998822",
+        "country": "USA"
+      },
+      "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+      "customer_id": "123456",
+      "identity_verification": {
+        "dl_state": "MI",
+        "dl_number": "1235567",
+        "ssn4": "8527",
+        "dob_year": "1980"
+      },
+      "location_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_account_vault_api_id": "previousaccountvault123456",
+      "previous_token_api_id": "previousaccountvault123456",
+      "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_number": "545454545454545",
+      "terms_agree": true,
+      "terms_agree_ip": "192.168.0.10",
+      "title": "Test CC Account",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+      "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "secure_protocol_version": 2,
+      "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+      "secure_collection_indicator": null,
+      "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+      "_joi": {},
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_type": "checking",
+      "active": true,
+      "cau_summary_status_id": 1,
+      "created_ts": 1422040992,
+      "e_serial_number": "1234567890",
+      "e_track_data": null,
+      "e_format": null,
+      "e_keyed_data": null,
+      "expiring_in_months": null,
+      "exp_date": "0722",
+      "first_six": "700953",
+      "has_recurring": false,
+      "last_four": "3657",
+      "modified_ts": 1422040992,
+      "payment_method": "cc",
+      "ticket": null,
+      "track_data": null,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "cau_last_updated_ts": 1422040992,
+      "routing_number": "051904524"
+    },
+    "balances": [
+      {
+        "amount": 1000
       }
     ]
   }
@@ -4350,7 +5738,7 @@ function aCHDebitTokenized(V1TransactionsAchDebitTokenRequest $body, ?array $exp
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `body` | [`V1TransactionsAchDebitTokenRequest`](../../doc/models/v1-transactions-ach-debit-token-request.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand47Enum)`](../../doc/models/expand-47-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand60Enum)[])`](../../doc/models/expand-60-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -4359,10 +5747,64 @@ function aCHDebitTokenized(V1TransactionsAchDebitTokenRequest $body, ?array $exp
 ## Example Usage
 
 ```php
-$body_transactionAmount = 1;
-$body = new Models\V1TransactionsAchDebitTokenRequest(
-    $body_transactionAmount
-);
+$body = V1TransactionsAchDebitTokenRequestBuilder::init(
+    1
+)
+    ->checkinDate('2021-12-01')
+    ->checkoutDate('2021-12-01')
+    ->clerkNumber('AE1234')
+    ->contactId('11e95f8ec39de8fbdb0a4f1a')
+    ->customData(ApiHelper::deserialize('{"data1":"custom1","data2":"custom2"}'))
+    ->customerId('customerid')
+    ->description('some description')
+    ->iiasInd(IiasIndEnum::ENUM_1)
+    ->imageFront('U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=')
+    ->imageBack('U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=')
+    ->installment(true)
+    ->installmentNumber(1)
+    ->installmentCount(1)
+    ->recurringFlag(RecurringFlagEnum::YES)
+    ->installmentCounter(1)
+    ->installmentTotal(1)
+    ->subscription(false)
+    ->standingOrder(false)
+    ->locationApiId('location-api-id-florida-2')
+    ->locationId('11e95f8ec39de8fbdb0a4f1a')
+    ->productTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->advanceDeposit(false)
+    ->noShow(false)
+    ->notificationEmailAddress('johnsmith@smiths.com')
+    ->orderNumber('433659378839')
+    ->poNumber('555555553123')
+    ->quickInvoiceId('11e95f8ec39de8fbdb0a4f1a')
+    ->recurring(false)
+    ->recurringNumber(1)
+    ->roomNum('303')
+    ->roomRate(95)
+    ->saveAccount(false)
+    ->saveAccountTitle('John Account')
+    ->subtotalAmount(599)
+    ->surchargeAmount(100)
+    ->tax(0)
+    ->tipAmount(0)
+    ->secondaryAmount(0)
+    ->transactionApiId('transaction-payment-abcd123')
+    ->transactionC1('custom-data-1')
+    ->transactionC2('custom-data-2')
+    ->transactionC3('custom-data-3')
+    ->bankFundedOnlyOverride(false)
+    ->allowPartialAuthorizationOverride(false)
+    ->autoDeclineCvvOverride(false)
+    ->autoDeclineStreetOverride(false)
+    ->autoDeclineZipOverride(false)
+    ->ebtType(EbtTypeEnum::FOOD_STAMP)
+    ->achIdentifier('P')
+    ->achSecCode(AchSecCode31Enum::C21)
+    ->effectiveDate('2021-12-01')
+    ->accountHolderName('smith')
+    ->accountVaultId('11e95f8ec39de8fbdb0a4f1a')
+    ->tokenId('11e95f8ec39de8fbdb0a4f1a')
+    ->build();
 
 $result = $transactionsACHController->aCHDebitTokenized($body);
 ```
@@ -4385,8 +5827,8 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
       "city": "Novi",
       "state": "Michigan",
       "postal_code": "48375",
-      "street": "43155 Main Street STE 2310-C",
-      "phone": "3339998822"
+      "phone": "3339998822",
+      "country": "USA"
     },
     "checkin_date": "2021-12-01",
     "checkout_date": "2021-12-01",
@@ -4395,17 +5837,17 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
     "custom_data": {},
     "customer_id": "customerid",
     "description": "some description",
-    "identity_verification": {
-      "dl_state": "MI",
-      "dl_number": "1235567",
-      "dob_year": "1980"
-    },
     "iias_ind": 1,
     "image_front": "U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=",
     "image_back": "U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=",
     "installment": true,
     "installment_number": 1,
     "installment_count": 1,
+    "recurring_flag": "yes",
+    "installment_counter": 1,
+    "installment_total": 1,
+    "subscription": false,
+    "standing_order": false,
     "location_api_id": "location-api-id-florida-2",
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
     "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -4417,6 +5859,13 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
     "quick_invoice_id": "11e95f8ec39de8fbdb0a4f1a",
     "recurring": {
       "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+      "token_id": "11e95f8ec39de8fbdb0a4f1a",
+      "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_vault_api_id": "token1234abcd",
+      "token_api_id": "token1234abcd",
+      "_joi": {
+        "conditions": {}
+      },
       "active": true,
       "description": "Description",
       "end_date": "2021-12-01",
@@ -4431,18 +5880,25 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
       "recurring_api_id": "recurring1234abcd",
       "start_date": "2021-12-01",
       "status": "active",
-      "transaction_amount": 3,
+      "transaction_amount": 300,
       "terms_agree": true,
       "terms_agree_ip": "192.168.0.10",
       "recurring_c1": "recurring custom data 1",
       "recurring_c2": "recurring custom data 2",
       "recurring_c3": "recurring custom data 3",
       "send_to_proc_as_recur": true,
+      "tags": [
+        "Walk-in Customer"
+      ],
+      "secondary_amount": 100,
+      "currency": "USD",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "next_run_date": "2021-12-01",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "recurring_type_id": "i"
+      "recurring_type_id": "i",
+      "installment_amount_total": 99999999,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "recurring_number": 1,
     "room_num": "303",
@@ -4469,6 +5925,11 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
     "transaction_c2": "custom-data-2",
     "transaction_c3": "custom-data-3",
     "bank_funded_only_override": false,
+    "allow_partial_authorization_override": false,
+    "auto_decline_cvv_override": false,
+    "auto_decline_street_override": false,
+    "auto_decline_zip_override": false,
+    "ebt_type": "food_stamp",
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "created_ts": 1422040992,
     "modified_ts": 1422040992,
@@ -4503,7 +5964,7 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
     "transaction_settlement_status": null,
     "charge_back_date": "2021-12-01",
     "is_recurring": true,
-    "notification_email_sent": "true",
+    "notification_email_sent": true,
     "par": "Q1J4Z28RKA1EBL470G9XYG90R5D3E",
     "reason_code_id": 1000,
     "recurring_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -4511,26 +5972,40 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
     "status_code": 101,
     "transaction_batch_id": "11e95f8ec39de8fbdb0a4f1a",
     "verbiage": "APPROVED",
+    "voucher_number": "1234",
     "void_date": "2021-12-01",
     "batch": "2",
     "terms_agree": true,
     "response_message": null,
     "return_date": "2021-12-01",
     "trx_source_id": 8,
+    "routing_number": "051904524",
+    "trx_source_code": 8,
+    "paylink_id": "11e95f8ec39de8fbdb0a4f1a",
+    "is_accountvault": true,
+    "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "effective_date": "2021-12-01",
+    "is_token": true,
+    "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+    "hosted_payment_page_id": "11e95f8ec39de8fbdb0a4f1a",
     "account_vault": {
       "account_holder_name": "John Smith",
-      "account_number": "545454545454545",
       "account_vault_api_id": "accountvaultabcd",
+      "token_api_id": "tokenabcd",
       "accountvault_c1": "accountvault custom 1",
       "accountvault_c2": "accountvault custom 2",
       "accountvault_c3": "accountvault custom 3",
+      "token_c1": "token custom 1",
+      "token_c2": "token custom 2",
+      "token_c3": "token custom 3",
       "ach_sec_code": "WEB",
       "billing_address": {
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "street": "43155 Main Street STE 2310-C",
-        "phone": "3339998822"
+        "phone": "3339998822",
+        "country": "USA"
       },
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "customer_id": "123456",
@@ -4542,11 +6017,22 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
       },
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
       "previous_account_vault_api_id": "previousaccountvault123456",
+      "previous_token_api_id": "previousaccountvault123456",
       "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
       "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_number": "545454545454545",
       "terms_agree": true,
       "terms_agree_ip": "192.168.0.10",
       "title": "Test CC Account",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+      "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "secure_protocol_version": 2,
+      "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+      "secure_collection_indicator": null,
+      "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+      "_joi": {},
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "account_type": "checking",
       "active": true,
@@ -4557,13 +6043,17 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
       "e_format": null,
       "e_keyed_data": null,
       "expiring_in_months": null,
+      "exp_date": "0722",
       "first_six": "700953",
       "has_recurring": false,
       "last_four": "3657",
       "modified_ts": 1422040992,
       "payment_method": "cc",
       "ticket": null,
-      "track_data": null
+      "track_data": null,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "cau_last_updated_ts": 1422040992,
+      "routing_number": "051904524"
     },
     "quick_invoice": {
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -4574,13 +6064,15 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
       "item_list": [
         {
           "name": "Bread",
-          "amount": 20.15
+          "amount": 2015
         }
       ],
       "allow_overpayment": true,
+      "bank_funded_only_override": true,
       "email": "email@domain.com",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_api_id": "contact12345",
+      "quick_invoice_api_id": "quickinvoice12345",
       "customer_id": "11e95f8ec39de8fbdb0a4f1a",
       "expire_date": "2021-12-01",
       "allow_partial_pay": true,
@@ -4591,26 +6083,34 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
       "item_footer": "Thank you",
       "amount_due": 245.36,
       "notification_email": "email@domain.com",
-      "payment_status_id": 1,
       "status_id": 1,
+      "status_code": 1,
       "note": "some note",
       "notification_days_before_due_date": 3,
       "notification_days_after_due_date": 7,
       "notification_on_due_date": true,
       "send_text_to_pay": true,
       "files": [
-        null
+        {}
       ],
       "remaining_balance": 245.36,
-      "single_payment_min_amount": 5,
-      "single_payment_max_amount": 5000,
+      "single_payment_min_amount": 500,
+      "single_payment_max_amount": 500000,
       "cell_phone": "3339998822",
+      "tags": [
+        "Walk-in Customer"
+      ],
+      "quick_invoice_c1": "custom-data-1",
+      "quick_invoice_c2": "custom-data-2",
+      "quick_invoice_c3": "custom-data-3",
+      "auto_reopen": true,
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "active": true,
+      "payment_status_id": 1,
       "is_active": true
     },
     "log_emails": [
@@ -4636,10 +6136,8 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
     "is_settled": true,
     "created_user": {
       "account_number": "5454545454545454",
-      "address": "43155 Main Street STE 2310-C",
       "branding_domain_url": "{branding_domain_url}",
       "cell_phone": "3339998822",
-      "city": "Novi",
       "company_name": "Fortis Payment Systems, LLC",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "date_of_birth": "2021-12-01",
@@ -4654,7 +6152,6 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
       "office_ext_phone": "5",
       "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
       "requires_new_password": null,
-      "state": "Michigan",
       "terms_condition_code": "20220308",
       "tz": "America/New_York",
       "ui_prefs": {
@@ -4671,7 +6168,15 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
       "password": null,
       "zip": "48375",
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
-      "status_id": true,
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "status": true,
       "login_attempts": 0,
@@ -4681,7 +6186,9 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "terms_accepted_ts": 1422040992,
       "terms_agree_ip": "192.168.0.10",
-      "current_date_time": "2019-03-11T10:38:26-0700"
+      "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992
     },
     "location": {
       "id": "11e95f8ec39de8fbdb0a4f1a",
@@ -4692,15 +6199,12 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -4711,10 +6215,14 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     },
     "contact": {
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -4728,8 +6236,7 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C"
+        "country": "USA"
       },
       "company_name": "Fortis Payment Systems, LLC",
       "header_message": "This is a sample message for you",
@@ -4738,6 +6245,9 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
       "home_phone": "3339998822",
       "office_phone": "3339998822",
       "office_phone_ext": "5",
+      "home_phone_country_code": "+1",
+      "office_phone_country_code": "+1",
+      "cell_phone_country_code": "+1",
       "header_message_type": 0,
       "update_if_exists": 1,
       "contact_c1": "any",
@@ -4745,10 +6255,12 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
       "contact_c3": "something",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
       "email": "email@domain.com",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "active": true
+      "active": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "changelogs": [
       {
@@ -4804,6 +6316,9 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
       "card_type_amex": true,
       "card_type_diners": true,
       "card_type_jcb": true,
+      "card_type_ebt": true,
+      "allow_ebt_cash_benefit": true,
+      "allow_ebt_food_stamp": true,
       "invoice_location": true,
       "allow_partial_authorization": true,
       "allow_recurring_partial_authorization": true,
@@ -4820,13 +6335,51 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
       "auto_decline_cavv": true,
       "current_batch": 34,
       "dup_check_per_batch": null,
+      "paylink_allow": false,
       "quick_invoice_allow": false,
       "level3_allow": false,
       "payfac_enable": false,
+      "enable_3ds": false,
       "sales_office_id": "11e95f8ec39de8fbdb0a4f1a",
       "hosted_payment_page_allow": false,
       "surcharge_id": "11e95f8ec39de8fbdb0a4f1a",
-      "level3_default": null,
+      "allow_big_commerce": false,
+      "level3_default": {
+        "destination_country_code": "840",
+        "duty_amount": 0,
+        "freight_amount": 0,
+        "national_tax": 2,
+        "sales_tax": 200,
+        "shipfrom_zip_code": "AZ12345",
+        "shipto_zip_code": "MI48335",
+        "tax_amount": 0,
+        "tax_exempt": "0",
+        "customer_vat_registration": "12345678",
+        "merchant_vat_registration": "123456",
+        "order_date": "171006",
+        "summary_commodity_code": "C1K2",
+        "tax_rate": 0,
+        "unique_vat_ref_number": "vat1234",
+        "line_items": [
+          {
+            "alternate_tax_id": "1234",
+            "debit_credit": "C",
+            "description": "cool drink",
+            "discount_amount": 10,
+            "discount_rate": 11,
+            "product_code": "coke12345678",
+            "quantity": 5,
+            "tax_amount": 3,
+            "tax_rate": 0,
+            "tax_type_applied": "22",
+            "tax_type_id": "a1",
+            "unit_code": "gll",
+            "unit_cost": 10,
+            "commodity_code": "cc123456",
+            "other_tax_amount": 0
+          }
+        ]
+      },
       "cau_subscribe_type_id": 0,
       "location_billing_account_id": "11eb88b873980c64a21e5fd2",
       "product_billing_group_id": "nofees",
@@ -4842,12 +6395,28 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
       "vt_show_company_name": false,
       "receipt_show_company_name": false,
       "bank_funded_only": false,
+      "require_cvv_on_keyed_cnp": true,
+      "require_cvv_on_tokenized_cnp": true,
+      "show_secondary_amount": false,
+      "allow_secondary_amount": false,
+      "show_google_pay": true,
+      "show_apple_pay": true,
+      "batch_risk_config": {},
+      "currency_code": 840,
+      "enable_ach_validation": false,
+      "enable_ach_retry": false,
+      "allow_softpos": false,
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "active": true,
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
-      "modified_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "product_transaction_api_id": "11e95f8ec39de8fbdb0a4f1a",
+      "is_secondary_amount_allowed": false,
+      "fortis_id": "8149742",
+      "product_billing_group_code": "nofees",
+      "cau_subscribe_type_code": 0
     },
     "all_tags": [
       {
@@ -4897,7 +6466,7 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
       "default_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
       "terminal_application_id": "11e95f8ec39de8fbdb0a4f1a",
       "terminal_cvm_id": "11e95f8ec39de8fbdb0a4f1a",
-      "terminal_manufacturer_code": 1,
+      "terminal_manufacturer_code": "1",
       "title": "My terminal",
       "mac_address": "3D:F2:C9:A6:B3:4F",
       "local_ip_address": "192.168.0.10",
@@ -4943,6 +6512,7 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
       "tip_enable": false,
       "validated_decryption": false,
       "communication_type": "http",
+      "active": true,
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
@@ -4958,7 +6528,7 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
       "title": "Sample title",
       "redirect_url_delay": 15,
       "min_payment_amount": 0,
-      "max_payment_amount": 99999999.99,
+      "max_payment_amount": 9999999999,
       "redirect_url_on_approve": null,
       "redirect_url_on_decline": null,
       "field_configuration": {
@@ -5047,7 +6617,7 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
         "shipfrom_zip_code": "AZ1234",
         "shipto_zip_code": "FL1234",
         "tax_amount": 10,
-        "tax_exempt": 0,
+        "tax_exempt": "0",
         "customer_vat_registration": "12345678",
         "merchant_vat_registration": "123456",
         "order_date": "171006",
@@ -5145,12 +6715,14 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
       "settlement_file_name": "settement_file.txt",
       "batch_close_ts": 1531423693,
       "batch_close_detail": "BATCH_MISMATCH",
-      "total_sale_amount": 2342.45,
+      "total_sale_amount": 2342,
       "total_sale_count": 21,
-      "total_refund_amount": 2342.45,
+      "total_refund_amount": 2342,
       "total_refund_count": 18,
-      "total_void_amount": 2342.45,
-      "total_void_count": 17
+      "total_void_amount": 2342,
+      "total_void_count": 17,
+      "total_blind_refund_amount": 2342,
+      "total_blind_refund_count": 16
     },
     "transaction_splits": [
       {
@@ -5181,6 +6753,1244 @@ $result = $transactionsACHController->aCHDebitTokenized($body);
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "created_ts": 1422040992,
         "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      }
+    ],
+    "rejected_transaction_ach_retries": [
+      {
+        "rejected_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "id": "11e95f8ec39de8fbdb0a4f1a",
+        "retry_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "return_fee_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "created_ts": 1422040992,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      }
+    ],
+    "return_fee_transaction_ach_retry": {
+      "rejected_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "retry_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "return_fee_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+    },
+    "retry_transaction_ach_retry": {
+      "rejected_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "retry_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "return_fee_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+    },
+    "saved_account": {
+      "account_holder_name": "John Smith",
+      "account_vault_api_id": "accountvaultabcd",
+      "token_api_id": "tokenabcd",
+      "accountvault_c1": "accountvault custom 1",
+      "accountvault_c2": "accountvault custom 2",
+      "accountvault_c3": "accountvault custom 3",
+      "token_c1": "token custom 1",
+      "token_c2": "token custom 2",
+      "token_c3": "token custom 3",
+      "ach_sec_code": "WEB",
+      "billing_address": {
+        "city": "Novi",
+        "state": "Michigan",
+        "postal_code": "48375",
+        "phone": "3339998822",
+        "country": "USA"
+      },
+      "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+      "customer_id": "123456",
+      "identity_verification": {
+        "dl_state": "MI",
+        "dl_number": "1235567",
+        "ssn4": "8527",
+        "dob_year": "1980"
+      },
+      "location_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_account_vault_api_id": "previousaccountvault123456",
+      "previous_token_api_id": "previousaccountvault123456",
+      "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_number": "545454545454545",
+      "terms_agree": true,
+      "terms_agree_ip": "192.168.0.10",
+      "title": "Test CC Account",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+      "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "secure_protocol_version": 2,
+      "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+      "secure_collection_indicator": null,
+      "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+      "_joi": {},
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_type": "checking",
+      "active": true,
+      "cau_summary_status_id": 1,
+      "created_ts": 1422040992,
+      "e_serial_number": "1234567890",
+      "e_track_data": null,
+      "e_format": null,
+      "e_keyed_data": null,
+      "expiring_in_months": null,
+      "exp_date": "0722",
+      "first_six": "700953",
+      "has_recurring": false,
+      "last_four": "3657",
+      "modified_ts": 1422040992,
+      "payment_method": "cc",
+      "ticket": null,
+      "track_data": null,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "cau_last_updated_ts": 1422040992,
+      "routing_number": "051904524"
+    },
+    "balances": [
+      {
+        "amount": 1000
+      }
+    ]
+  }
+}
+```
+
+## Errors
+
+| HTTP Status Code | Error Description | Exception Class |
+|  --- | --- | --- |
+| 401 | Unauthorized | [`Response401tokenException`](../../doc/models/response-401-token-exception.md) |
+| 412 | Precondition Failed | [`Response412Exception`](../../doc/models/response-412-exception.md) |
+
+
+# ACH Refund - Previous Transaction
+
+Create a new ACH refund transaction using previous transaction id
+
+```php
+function aCHRefundPreviousTransaction(
+    V1TransactionsAchRefundPrevTrxnRequest $body,
+    ?array $expand = null
+): ResponseTransaction
+```
+
+## Parameters
+
+| Parameter | Type | Tags | Description |
+|  --- | --- | --- | --- |
+| `body` | [`V1TransactionsAchRefundPrevTrxnRequest`](../../doc/models/v1-transactions-ach-refund-prev-trxn-request.md) | Body, Required | - |
+| `expand` | [`?(string(Expand60Enum)[])`](../../doc/models/expand-60-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+
+## Response Type
+
+[`ResponseTransaction`](../../doc/models/response-transaction.md)
+
+## Example Usage
+
+```php
+$body = V1TransactionsAchRefundPrevTrxnRequestBuilder::init(
+    1
+)
+    ->checkinDate('2021-12-01')
+    ->checkoutDate('2021-12-01')
+    ->clerkNumber('AE1234')
+    ->contactId('11e95f8ec39de8fbdb0a4f1a')
+    ->customData(ApiHelper::deserialize('{"data1":"custom1","data2":"custom2"}'))
+    ->customerId('customerid')
+    ->description('some description')
+    ->iiasInd(IiasIndEnum::ENUM_1)
+    ->imageFront('U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=')
+    ->imageBack('U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=')
+    ->installment(true)
+    ->installmentNumber(1)
+    ->installmentCount(1)
+    ->recurringFlag(RecurringFlagEnum::YES)
+    ->installmentCounter(1)
+    ->installmentTotal(1)
+    ->subscription(false)
+    ->standingOrder(false)
+    ->locationApiId('location-api-id-florida-2')
+    ->locationId('11e95f8ec39de8fbdb0a4f1a')
+    ->productTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->advanceDeposit(false)
+    ->noShow(false)
+    ->notificationEmailAddress('johnsmith@smiths.com')
+    ->orderNumber('433659378839')
+    ->poNumber('555555553123')
+    ->quickInvoiceId('11e95f8ec39de8fbdb0a4f1a')
+    ->recurring(false)
+    ->recurringNumber(1)
+    ->roomNum('303')
+    ->roomRate(95)
+    ->saveAccount(false)
+    ->saveAccountTitle('John Account')
+    ->subtotalAmount(599)
+    ->surchargeAmount(100)
+    ->tax(0)
+    ->tipAmount(0)
+    ->secondaryAmount(0)
+    ->transactionApiId('transaction-payment-abcd123')
+    ->transactionC1('custom-data-1')
+    ->transactionC2('custom-data-2')
+    ->transactionC3('custom-data-3')
+    ->bankFundedOnlyOverride(false)
+    ->allowPartialAuthorizationOverride(false)
+    ->autoDeclineCvvOverride(false)
+    ->autoDeclineStreetOverride(false)
+    ->autoDeclineZipOverride(false)
+    ->ebtType(EbtTypeEnum::FOOD_STAMP)
+    ->achIdentifier('P')
+    ->achSecCode(AchSecCode31Enum::C21)
+    ->effectiveDate('2021-12-01')
+    ->accountHolderName('smith')
+    ->previousTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->build();
+
+$result = $transactionsACHController->aCHRefundPreviousTransaction($body);
+```
+
+## Example Response *(as JSON)*
+
+```json
+{
+  "type": "Transaction",
+  "data": {
+    "additional_amounts": [
+      {
+        "type": "cashback",
+        "amount": 10,
+        "account_type": "credit",
+        "currency": 840
+      }
+    ],
+    "billing_address": {
+      "city": "Novi",
+      "state": "Michigan",
+      "postal_code": "48375",
+      "phone": "3339998822",
+      "country": "USA"
+    },
+    "checkin_date": "2021-12-01",
+    "checkout_date": "2021-12-01",
+    "clerk_number": "AE1234",
+    "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+    "custom_data": {},
+    "customer_id": "customerid",
+    "description": "some description",
+    "iias_ind": 1,
+    "image_front": "U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=",
+    "image_back": "U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=",
+    "installment": true,
+    "installment_number": 1,
+    "installment_count": 1,
+    "recurring_flag": "yes",
+    "installment_counter": 1,
+    "installment_total": 1,
+    "subscription": false,
+    "standing_order": false,
+    "location_api_id": "location-api-id-florida-2",
+    "location_id": "11e95f8ec39de8fbdb0a4f1a",
+    "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+    "advance_deposit": false,
+    "no_show": false,
+    "notification_email_address": "johnsmith@smiths.com",
+    "order_number": "433659378839",
+    "po_number": "555555553123",
+    "quick_invoice_id": "11e95f8ec39de8fbdb0a4f1a",
+    "recurring": {
+      "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+      "token_id": "11e95f8ec39de8fbdb0a4f1a",
+      "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_vault_api_id": "token1234abcd",
+      "token_api_id": "token1234abcd",
+      "_joi": {
+        "conditions": {}
+      },
+      "active": true,
+      "description": "Description",
+      "end_date": "2021-12-01",
+      "installment_total_count": 20,
+      "interval": 1,
+      "interval_type": "d",
+      "location_id": "11e95f8ec39de8fbdb0a4f1a",
+      "notification_days": 2,
+      "payment_method": "cc",
+      "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "recurring_id": "11e95f8ec39de8fbdb0a4f1a",
+      "recurring_api_id": "recurring1234abcd",
+      "start_date": "2021-12-01",
+      "status": "active",
+      "transaction_amount": 300,
+      "terms_agree": true,
+      "terms_agree_ip": "192.168.0.10",
+      "recurring_c1": "recurring custom data 1",
+      "recurring_c2": "recurring custom data 2",
+      "recurring_c3": "recurring custom data 3",
+      "send_to_proc_as_recur": true,
+      "tags": [
+        "Walk-in Customer"
+      ],
+      "secondary_amount": 100,
+      "currency": "USD",
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "next_run_date": "2021-12-01",
+      "created_ts": 1422040992,
+      "modified_ts": 1422040992,
+      "recurring_type_id": "i",
+      "installment_amount_total": 99999999,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+    },
+    "recurring_number": 1,
+    "room_num": "303",
+    "room_rate": 95,
+    "save_account": false,
+    "save_account_title": "John Account",
+    "subtotal_amount": 599,
+    "surcharge_amount": 100,
+    "tags": [
+      {
+        "location_id": "11e95f8ec39de8fbdb0a4f1a",
+        "title": "My terminal",
+        "id": "11e95f8ec39de8fbdb0a4f1a",
+        "created_ts": 1422040992,
+        "modified_ts": 1422040992
+      }
+    ],
+    "tax": 0,
+    "tip_amount": 0,
+    "transaction_amount": 0,
+    "secondary_amount": 0,
+    "transaction_api_id": "transaction-payment-abcd123",
+    "transaction_c1": "custom-data-1",
+    "transaction_c2": "custom-data-2",
+    "transaction_c3": "custom-data-3",
+    "bank_funded_only_override": false,
+    "allow_partial_authorization_override": false,
+    "auto_decline_cvv_override": false,
+    "auto_decline_street_override": false,
+    "auto_decline_zip_override": false,
+    "ebt_type": "food_stamp",
+    "id": "11e95f8ec39de8fbdb0a4f1a",
+    "created_ts": 1422040992,
+    "modified_ts": 1422040992,
+    "terminal_id": "11e95f8ec39de8fbdb0a4f1a",
+    "account_holder_name": "smith",
+    "account_type": "checking",
+    "token_id": "11e95f8ec39de8fbdb0a4f1a",
+    "ach_identifier": "P",
+    "ach_sec_code": "C21",
+    "auth_amount": 1,
+    "auth_code": "BR349K",
+    "avs": "BAD",
+    "avs_enhanced": "N",
+    "cardholder_present": true,
+    "card_present": true,
+    "check_number": "8520748520963",
+    "customer_ip": "192.168.0.10",
+    "cvv_response": "N",
+    "entry_mode_id": "C",
+    "emv_receipt_data": {
+      "AID": "a0000000042203",
+      "APPLAB": "US Maestro",
+      "APPN": "US Maestro",
+      "CVM": "Pin Verified",
+      "TSI": "e800",
+      "TVR": "0800008000"
+    },
+    "first_six": "545454",
+    "last_four": "5454",
+    "payment_method": "cc",
+    "terminal_serial_number": "1234567890",
+    "transaction_settlement_status": null,
+    "charge_back_date": "2021-12-01",
+    "is_recurring": true,
+    "notification_email_sent": true,
+    "par": "Q1J4Z28RKA1EBL470G9XYG90R5D3E",
+    "reason_code_id": 1000,
+    "recurring_id": "11e95f8ec39de8fbdb0a4f1a",
+    "settle_date": "2021-12-01",
+    "status_code": 101,
+    "transaction_batch_id": "11e95f8ec39de8fbdb0a4f1a",
+    "verbiage": "APPROVED",
+    "voucher_number": "1234",
+    "void_date": "2021-12-01",
+    "batch": "2",
+    "terms_agree": true,
+    "response_message": null,
+    "return_date": "2021-12-01",
+    "trx_source_id": 8,
+    "routing_number": "051904524",
+    "trx_source_code": 8,
+    "paylink_id": "11e95f8ec39de8fbdb0a4f1a",
+    "is_accountvault": true,
+    "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "effective_date": "2021-12-01",
+    "is_token": true,
+    "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+    "hosted_payment_page_id": "11e95f8ec39de8fbdb0a4f1a",
+    "account_vault": {
+      "account_holder_name": "John Smith",
+      "account_vault_api_id": "accountvaultabcd",
+      "token_api_id": "tokenabcd",
+      "accountvault_c1": "accountvault custom 1",
+      "accountvault_c2": "accountvault custom 2",
+      "accountvault_c3": "accountvault custom 3",
+      "token_c1": "token custom 1",
+      "token_c2": "token custom 2",
+      "token_c3": "token custom 3",
+      "ach_sec_code": "WEB",
+      "billing_address": {
+        "city": "Novi",
+        "state": "Michigan",
+        "postal_code": "48375",
+        "phone": "3339998822",
+        "country": "USA"
+      },
+      "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+      "customer_id": "123456",
+      "identity_verification": {
+        "dl_state": "MI",
+        "dl_number": "1235567",
+        "ssn4": "8527",
+        "dob_year": "1980"
+      },
+      "location_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_account_vault_api_id": "previousaccountvault123456",
+      "previous_token_api_id": "previousaccountvault123456",
+      "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_number": "545454545454545",
+      "terms_agree": true,
+      "terms_agree_ip": "192.168.0.10",
+      "title": "Test CC Account",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+      "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "secure_protocol_version": 2,
+      "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+      "secure_collection_indicator": null,
+      "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+      "_joi": {},
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_type": "checking",
+      "active": true,
+      "cau_summary_status_id": 1,
+      "created_ts": 1422040992,
+      "e_serial_number": "1234567890",
+      "e_track_data": null,
+      "e_format": null,
+      "e_keyed_data": null,
+      "expiring_in_months": null,
+      "exp_date": "0722",
+      "first_six": "700953",
+      "has_recurring": false,
+      "last_four": "3657",
+      "modified_ts": 1422040992,
+      "payment_method": "cc",
+      "ticket": null,
+      "track_data": null,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "cau_last_updated_ts": 1422040992,
+      "routing_number": "051904524"
+    },
+    "quick_invoice": {
+      "location_id": "11e95f8ec39de8fbdb0a4f1a",
+      "title": "My terminal",
+      "cc_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "ach_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "due_date": "2021-12-01",
+      "item_list": [
+        {
+          "name": "Bread",
+          "amount": 2015
+        }
+      ],
+      "allow_overpayment": true,
+      "bank_funded_only_override": true,
+      "email": "email@domain.com",
+      "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+      "contact_api_id": "contact12345",
+      "quick_invoice_api_id": "quickinvoice12345",
+      "customer_id": "11e95f8ec39de8fbdb0a4f1a",
+      "expire_date": "2021-12-01",
+      "allow_partial_pay": true,
+      "attach_files_to_email": true,
+      "send_email": true,
+      "invoice_number": "invoice12345",
+      "item_header": "Quick invoice header sample",
+      "item_footer": "Thank you",
+      "amount_due": 245.36,
+      "notification_email": "email@domain.com",
+      "status_id": 1,
+      "status_code": 1,
+      "note": "some note",
+      "notification_days_before_due_date": 3,
+      "notification_days_after_due_date": 7,
+      "notification_on_due_date": true,
+      "send_text_to_pay": true,
+      "files": [
+        {}
+      ],
+      "remaining_balance": 245.36,
+      "single_payment_min_amount": 500,
+      "single_payment_max_amount": 500000,
+      "cell_phone": "3339998822",
+      "tags": [
+        "Walk-in Customer"
+      ],
+      "quick_invoice_c1": "custom-data-1",
+      "quick_invoice_c2": "custom-data-2",
+      "quick_invoice_c3": "custom-data-3",
+      "auto_reopen": true,
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "modified_ts": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "active": true,
+      "payment_status_id": 1,
+      "is_active": true
+    },
+    "log_emails": [
+      {
+        "subject": "Payment Receipt - 12skiestech",
+        "body": "This email is being sent from a server.",
+        "source_address": "\"12skiestech A7t3qi\" <noreply@zeamster.email>",
+        "return_path": "\"12skiestech A7t3qi\" <noreply@zeamster.email>",
+        "provider_id": "0100017e67bcc530-e1dd23b4-8a39-4a5b-8d5d-68d51c4c942f-000000",
+        "domain_id": "11e95f8ec39de8fbdb0a4f1a",
+        "reason_sent": "Contact Email",
+        "reason_model": "Transaction",
+        "reason_model_id": "11e95f8ec39de8fbdb0a4f1a",
+        "reply_to": "\"Zeamster\" <emma.p@zeamster.com>",
+        "id": "11e95f8ec39de8fbdb0a4f1a",
+        "created_ts": 1422040992
+      }
+    ],
+    "is_voidable": true,
+    "is_reversible": true,
+    "is_refundable": true,
+    "is_completable": true,
+    "is_settled": true,
+    "created_user": {
+      "account_number": "5454545454545454",
+      "branding_domain_url": "{branding_domain_url}",
+      "cell_phone": "3339998822",
+      "company_name": "Fortis Payment Systems, LLC",
+      "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+      "date_of_birth": "2021-12-01",
+      "domain_id": "11e95f8ec39de8fbdb0a4f1a",
+      "email": "email@domain.com",
+      "email_trx_receipt": true,
+      "home_phone": "3339998822",
+      "first_name": "John",
+      "last_name": "Smith",
+      "locale": "en-US",
+      "office_phone": "3339998822",
+      "office_ext_phone": "5",
+      "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
+      "requires_new_password": null,
+      "terms_condition_code": "20220308",
+      "tz": "America/New_York",
+      "ui_prefs": {
+        "entry_page": "dashboard",
+        "page_size": 2,
+        "report_export_type": "csv",
+        "process_method": "virtual_terminal",
+        "default_terminal": "11e95f8ec39de8fbdb0a4f1a"
+      },
+      "username": "{user_name}",
+      "user_api_key": "234bas8dfn8238f923w2",
+      "user_hash_key": null,
+      "user_type_code": 100,
+      "password": null,
+      "zip": "48375",
+      "location_id": "11e95f8ec39de8fbdb0a4f1a",
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "status": true,
+      "login_attempts": 0,
+      "last_login_ts": 1422040992,
+      "created_ts": 1422040992,
+      "modified_ts": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "terms_accepted_ts": 1422040992,
+      "terms_agree_ip": "192.168.0.10",
+      "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992
+    },
+    "location": {
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "modified_ts": 1422040992,
+      "account_number": "5454545454545454",
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
+      "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
+      "contact_email_trx_receipt_default": true,
+      "default_ach": "11e608a7d515f1e093242bb2",
+      "default_cc": "11e608a442a5f1e092242dda",
+      "email_reply_to": "email@domain.com",
+      "fax": "3339998822",
+      "location_api_id": "location-111111",
+      "location_api_key": "AE34BBCAADF4AE34BBCAADF4",
+      "location_c1": "custom 1",
+      "location_c2": "custom 2",
+      "location_c3": "custom data 3",
+      "name": "Sample Company Headquarters",
+      "office_phone": "2481234567",
+      "office_ext_phone": "1021021209",
+      "tz": "America/New_York",
+      "parent_id": "11e95f8ec39de8fbdb0a4f1a",
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
+    },
+    "contact": {
+      "location_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_number": "54545433332",
+      "contact_api_id": "137",
+      "first_name": "John",
+      "last_name": "Smith",
+      "cell_phone": "3339998822",
+      "balance": 245.36,
+      "address": {
+        "city": "Novi",
+        "state": "Michigan",
+        "postal_code": "48375",
+        "country": "USA"
+      },
+      "company_name": "Fortis Payment Systems, LLC",
+      "header_message": "This is a sample message for you",
+      "date_of_birth": "2021-12-01",
+      "email_trx_receipt": true,
+      "home_phone": "3339998822",
+      "office_phone": "3339998822",
+      "office_phone_ext": "5",
+      "home_phone_country_code": "+1",
+      "office_phone_country_code": "+1",
+      "cell_phone_country_code": "+1",
+      "header_message_type": 0,
+      "update_if_exists": 1,
+      "contact_c1": "any",
+      "contact_c2": "anything",
+      "contact_c3": "something",
+      "parent_id": "11e95f8ec39de8fbdb0a4f1a",
+      "email": "email@domain.com",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "modified_ts": 1422040992,
+      "active": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+    },
+    "changelogs": [
+      {
+        "id": "11e95f8ec39de8fbdb0a4f1a",
+        "created_ts": 1422040992,
+        "action": "CREATE",
+        "model": "TransactionRequest",
+        "model_id": "11ec829598f0d4008be9aba4",
+        "user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "changelog_details": [
+          {
+            "id": "11e95f8ec39de8fbdb0a4f1a",
+            "changelog_id": "11e95f8ec39de8fbdb0a4f1a",
+            "field": "next_run_ts",
+            "old_value": "1643616000"
+          }
+        ],
+        "user": {
+          "id": "11e95f8ec39de8fbdb0a4f1a",
+          "username": "email@domain.com",
+          "first_name": "Bob",
+          "last_name": "Fairview"
+        }
+      }
+    ],
+    "product_transaction": {
+      "processor_version": "1_0_0",
+      "title": "My terminal",
+      "payment_method": "cc",
+      "processor": "zgate",
+      "mcc": "1111",
+      "tax_surcharge_config": 2,
+      "partner": "standalone",
+      "location_id": "11e95f8ec39de8fbdb0a4f1a",
+      "surcharge": {},
+      "processor_data": {},
+      "vt_clerk_number": true,
+      "vt_billing_phone": true,
+      "vt_enable_tip": true,
+      "ach_allow_debit": true,
+      "ach_allow_credit": true,
+      "ach_allow_refund": true,
+      "vt_cvv": true,
+      "vt_street": true,
+      "vt_zip": true,
+      "vt_order_num": true,
+      "vt_enable": true,
+      "receipt_show_contact_name": true,
+      "display_avs": true,
+      "card_type_visa": true,
+      "card_type_mc": true,
+      "card_type_disc": true,
+      "card_type_amex": true,
+      "card_type_diners": true,
+      "card_type_jcb": true,
+      "card_type_ebt": true,
+      "allow_ebt_cash_benefit": true,
+      "allow_ebt_food_stamp": true,
+      "invoice_location": true,
+      "allow_partial_authorization": true,
+      "allow_recurring_partial_authorization": true,
+      "auto_decline_cvv": true,
+      "auto_decline_street": true,
+      "auto_decline_zip": true,
+      "split_payments_allow": true,
+      "vt_show_custom_fields": true,
+      "receipt_show_custom_fields": true,
+      "vt_override_sales_tax_allowed": true,
+      "vt_enable_sales_tax": true,
+      "vt_require_zip": true,
+      "vt_require_street": true,
+      "auto_decline_cavv": true,
+      "current_batch": 34,
+      "dup_check_per_batch": null,
+      "paylink_allow": false,
+      "quick_invoice_allow": false,
+      "level3_allow": false,
+      "payfac_enable": false,
+      "enable_3ds": false,
+      "sales_office_id": "11e95f8ec39de8fbdb0a4f1a",
+      "hosted_payment_page_allow": false,
+      "surcharge_id": "11e95f8ec39de8fbdb0a4f1a",
+      "allow_big_commerce": false,
+      "level3_default": {
+        "destination_country_code": "840",
+        "duty_amount": 0,
+        "freight_amount": 0,
+        "national_tax": 2,
+        "sales_tax": 200,
+        "shipfrom_zip_code": "AZ12345",
+        "shipto_zip_code": "MI48335",
+        "tax_amount": 0,
+        "tax_exempt": "0",
+        "customer_vat_registration": "12345678",
+        "merchant_vat_registration": "123456",
+        "order_date": "171006",
+        "summary_commodity_code": "C1K2",
+        "tax_rate": 0,
+        "unique_vat_ref_number": "vat1234",
+        "line_items": [
+          {
+            "alternate_tax_id": "1234",
+            "debit_credit": "C",
+            "description": "cool drink",
+            "discount_amount": 10,
+            "discount_rate": 11,
+            "product_code": "coke12345678",
+            "quantity": 5,
+            "tax_amount": 3,
+            "tax_rate": 0,
+            "tax_type_applied": "22",
+            "tax_type_id": "a1",
+            "unit_code": "gll",
+            "unit_cost": 10,
+            "commodity_code": "cc123456",
+            "other_tax_amount": 0
+          }
+        ]
+      },
+      "cau_subscribe_type_id": 0,
+      "location_billing_account_id": "11eb88b873980c64a21e5fd2",
+      "product_billing_group_id": "nofees",
+      "account_number": "12345678",
+      "run_avs_on_accountvault_create": false,
+      "accountvault_expire_notification_email_enable": false,
+      "debit_allow_void": false,
+      "quick_invoice_text_to_pay": false,
+      "sms_enable": false,
+      "vt_show_currency": true,
+      "receipt_show_currency": false,
+      "allow_blind_refund": false,
+      "vt_show_company_name": false,
+      "receipt_show_company_name": false,
+      "bank_funded_only": false,
+      "require_cvv_on_keyed_cnp": true,
+      "require_cvv_on_tokenized_cnp": true,
+      "show_secondary_amount": false,
+      "allow_secondary_amount": false,
+      "show_google_pay": true,
+      "show_apple_pay": true,
+      "batch_risk_config": {},
+      "currency_code": 840,
+      "enable_ach_validation": false,
+      "enable_ach_retry": false,
+      "allow_softpos": false,
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "active": true,
+      "created_ts": 1422040992,
+      "modified_ts": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "product_transaction_api_id": "11e95f8ec39de8fbdb0a4f1a",
+      "is_secondary_amount_allowed": false,
+      "fortis_id": "8149742",
+      "product_billing_group_code": "nofees",
+      "cau_subscribe_type_code": 0
+    },
+    "all_tags": [
+      {
+        "location_id": "11e95f8ec39de8fbdb0a4f1a",
+        "title": "My terminal",
+        "id": "11e95f8ec39de8fbdb0a4f1a",
+        "created_ts": 1422040992,
+        "modified_ts": 1422040992
+      }
+    ],
+    "tagTransactions": [
+      {
+        "id": "11e95f8ec39de8fbdb0a4f1a",
+        "tag_id": "Tag ID",
+        "transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "created_ts": 1422040992,
+        "modified_ts": 1422040992,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "modified_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      }
+    ],
+    "declined_recurring_notification": {
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "modified_ts": 1422040992,
+      "modified_user_id": "11e95f8ec39de8fbdb0a4f1a"
+    },
+    "payment_recurring_notification": {
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "modified_ts": 1422040992,
+      "modified_user_id": "11e95f8ec39de8fbdb0a4f1a"
+    },
+    "developer_company": {
+      "title": "My terminal",
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "active": true,
+      "created_ts": 1422040992,
+      "modified_ts": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "modified_user_id": "11e95f8ec39de8fbdb0a4f1a"
+    },
+    "terminal": {
+      "location_id": "11e95f8ec39de8fbdb0a4f1a",
+      "default_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "terminal_application_id": "11e95f8ec39de8fbdb0a4f1a",
+      "terminal_cvm_id": "11e95f8ec39de8fbdb0a4f1a",
+      "terminal_manufacturer_code": "1",
+      "title": "My terminal",
+      "mac_address": "3D:F2:C9:A6:B3:4F",
+      "local_ip_address": "192.168.0.10",
+      "port": 10009,
+      "serial_number": "1234567890",
+      "terminal_number": "973456789012367",
+      "terminal_timeouts": {
+        "card_entry_timeout": 47,
+        "device_terms_prompt_timeout": 30,
+        "overall_timeout": 125,
+        "pin_entry_timeout": 40,
+        "signature_input_timeout": 35,
+        "signature_submit_timeout": 38,
+        "status_display_time": 12,
+        "tip_cashback_timeout": 25,
+        "transaction_timeout": 17
+      },
+      "tip_percents": {
+        "percent_1": 0,
+        "percent_2": 2,
+        "percent_3": 99
+      },
+      "header_line_1": "line 1 sample",
+      "header_line_2": "line 2 sample",
+      "header_line_3": "line 3 sample",
+      "header_line_4": "line 4 sample",
+      "header_line_5": "line 5 sample",
+      "trailer_line_1": "trailer 1 sample",
+      "trailer_line_2": "trailer 2 sample",
+      "trailer_line_3": "trailer 3 sample",
+      "trailer_line_4": "trailer 4 sample",
+      "trailer_line_5": "trailer 5 sample",
+      "default_checkin": "2021-12-01",
+      "default_checkout": "2021-12-01",
+      "default_room_rate": 56,
+      "default_room_number": "303",
+      "debit": false,
+      "emv": false,
+      "cashback_enable": false,
+      "print_enable": false,
+      "sig_capture_enable": false,
+      "is_provisioned": false,
+      "tip_enable": false,
+      "validated_decryption": false,
+      "communication_type": "http",
+      "active": true,
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "modified_ts": 1422040992,
+      "last_registration_ts": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "modified_user_id": "11e95f8ec39de8fbdb0a4f1a"
+    },
+    "hosted_payment_page": {
+      "user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_api_id": null,
+      "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "title": "Sample title",
+      "redirect_url_delay": 15,
+      "min_payment_amount": 0,
+      "max_payment_amount": 9999999999,
+      "redirect_url_on_approve": null,
+      "redirect_url_on_decline": null,
+      "field_configuration": {
+        "css_mini": true,
+        "stack": "vertical",
+        "header": {
+          "settings": {
+            "enabled": true,
+            "columns": 1,
+            "rows": 1
+          },
+          "fields": [
+            {
+              "id": "transaction_amount",
+              "label": "Header",
+              "field_type": "heading",
+              "position": [
+                "1"
+              ],
+              "required": true,
+              "readonly": true,
+              "visible": true
+            }
+          ]
+        },
+        "body": {
+          "settings": {
+            "enabled": true,
+            "columns": 1,
+            "rows": 1
+          },
+          "fields": [
+            {
+              "id": "transaction_amount",
+              "label": "Header",
+              "field_type": "heading",
+              "position": [
+                "1"
+              ],
+              "required": true,
+              "readonly": true,
+              "visible": true
+            }
+          ]
+        },
+        "footer": {
+          "settings": {
+            "enabled": true,
+            "columns": 1,
+            "rows": 1
+          },
+          "fields": [
+            {
+              "id": "transaction_amount",
+              "label": "Header",
+              "field_type": "heading",
+              "position": [
+                "1"
+              ],
+              "required": true,
+              "readonly": true,
+              "visible": true
+            }
+          ]
+        }
+      },
+      "encryption_key": null,
+      "stylesheet_url": null,
+      "parent_send_message": true,
+      "hide_optional_fields": true,
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "modified_ts": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "modified_user_id": "11e95f8ec39de8fbdb0a4f1a"
+    },
+    "transaction_level3": {
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "level3_data": {
+        "destination_country_code": "840",
+        "duty_amount": 0,
+        "freight_amount": 0,
+        "national_tax": 2,
+        "sales_tax": 200,
+        "shipfrom_zip_code": "AZ1234",
+        "shipto_zip_code": "FL1234",
+        "tax_amount": 10,
+        "tax_exempt": "0",
+        "customer_vat_registration": "12345678",
+        "merchant_vat_registration": "123456",
+        "order_date": "171006",
+        "summary_commodity_code": "C1K2",
+        "tax_rate": 0,
+        "unique_vat_ref_number": "vat1234",
+        "line_items": [
+          {
+            "description": "cool drink",
+            "commodity_code": "cc123456",
+            "discount_amount": 0,
+            "other_tax_amount": 0,
+            "product_code": "fanta123456",
+            "quantity": 12,
+            "tax_amount": 4,
+            "tax_rate": 0,
+            "unit_code": "gll",
+            "unit_cost": 3,
+            "alternate_tax_id": "1234",
+            "debit_credit": "C",
+            "discount_rate": 11,
+            "tax_type_applied": "22",
+            "tax_type_id": "11"
+          }
+        ]
+      }
+    },
+    "developer_company_id": "Sample Developer Company ID",
+    "transaction_histories": [
+      {
+        "transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "id": "11e95f8ec39de8fbdb0a4f1a",
+        "status_id": 101,
+        "event_date_ts": 1422040992,
+        "location_id": "11e95f8ec39de8fbdb0a4f1a",
+        "created_ts": 1422040992,
+        "modified_ts": 1422040992
+      }
+    ],
+    "surcharge_transaction": {
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "model_name": "Model Name",
+      "transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "surcharge_fee": 0,
+      "surcharge_rate": 0,
+      "surcharge_amount": null,
+      "surcharge_transaction_min": null,
+      "surcharge_transaction_max": null,
+      "created": 1422040992,
+      "modified": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "modified_user_id": "11e95f8ec39de8fbdb0a4f1a"
+    },
+    "surcharge": {
+      "surcharge_fee": 10,
+      "surcharge_rate": 1,
+      "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "apply_to_user_type_id": "11e95f8ec39de8fbdb0a4f1a",
+      "title": null,
+      "surcharge_label": null,
+      "surcharge_transaction_product_id": "11e95f8ec39de8fbdb0a4f1a",
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "modified_ts": 1422040992
+    },
+    "signature": {
+      "signature": "iVBORw0KGgoAAAANSUhEUgAAANwAAAAsCAYAAAAOyNaYAAACvklEQVR4nO3bLZOqUBjA8ScaNxqNRiKRaCQaiXwEG7cRiUajH8FINBqJRCKR+NxyD4OIXtaXw2H3/5s5MwZ39rgz/zkvuKKqgar+YTAYnx/y7wUACwgOsIjgAIsIznFlWerlcpl6GngTgnNYVVW6WCxURDTLsqmngzcgOMdtNhsVERURDYJA8zyfekp4AcE5oCgKzfN8cOvYNM1VdCKiURRNMEu8A8FNrCzLm5j68Q1Fx2o3TwTngCzLNAiCq6D6UTVNo0mS6NfXF+HNGME5or+KeZ7XxrVcLjWOY83zXOu6vnqfeQ/bzHkgOIf0VzHP83Sz2eh6vW4D831fy7JsowvDsH1NdO4jOAfVdX0VXhRFWhSFRlHUrmr7/b4NLU3T9jVbTLcRnMO620ezep1Op3bF832/3XIORQr3EJzjumc7E9HQBUoYhjdnPKJzD8E5xjyT647T6aSr1UpFRPf7ffveuq41TdOHZzyicwvBTeBeVGEY3jwaGBrmWV3/Z82K1z/jca5zB8F9wFBQY6JaLBYax7EmSXJ3DD2v624rzUpoVrsgCDjXOWRWwVVVNfUUrvTDGrNK3YsqTdNRn69pGs2y7NshssV0w2yCK4pCRUSPx+Okc/hfWI9WqbFRPaMbYjc+s7ptt1uic8BsgsvzXEVED4fDR3/P2PPVUFifDOo7THxmPiY03/fZXk7s1wR371z1zPnKlbDGuvc9TKKz78cE9yio3W436vbv1fOV6/oPx010/Ee5PbMLbrfbPRWU53kPb/9+SlRj9L8ALcJ/lNsym+DO5/PTQaVpqnVdT/0RnGLOed0LlikvpH6L2QSnqoPX4QT1mu4FC3/Dz5tVcMDcERxgEcEBFhEcYBHBARYRHGARwQEWERxgEcEBFhEcYBHBARYRHGARwQEWERxgEcEBFhEcYBHBARYRHGDRX+EC0ah++pNrAAAAAElFTkSuQmCC",
+      "resource": "Transaction",
+      "resource_id": "11e95f8ec39de8fbdb0a4f1a",
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "modified_ts": 1422040992
+    },
+    "reason_code": {
+      "id": 50,
+      "title": "Sample Title"
+    },
+    "type": {
+      "id": 50,
+      "title": "Sample Title"
+    },
+    "status": {
+      "id": 50,
+      "title": "Sample Title"
+    },
+    "transaction_batch": {
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "processing_status_id": 2,
+      "batch_num": 4,
+      "is_open": 0,
+      "settlement_file_name": "settement_file.txt",
+      "batch_close_ts": 1531423693,
+      "batch_close_detail": "BATCH_MISMATCH",
+      "total_sale_amount": 2342,
+      "total_sale_count": 21,
+      "total_refund_amount": 2342,
+      "total_refund_count": 18,
+      "total_void_amount": 2342,
+      "total_void_count": 17,
+      "total_blind_refund_amount": 2342,
+      "total_blind_refund_count": 16
+    },
+    "transaction_splits": [
+      {
+        "transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+        "amount": 10,
+        "id": "11e95f8ec39de8fbdb0a4f1a",
+        "created_ts": 1422040992,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      }
+    ],
+    "postback_logs": [
+      {
+        "id": "11e95f8ec39de8fbdb0a4f1a",
+        "postback_config_id": "11e95f8ec39de8fbdb0a4f1a",
+        "changelog_id": "11e95f8ec39de8fbdb0a4f1a",
+        "next_run_ts": 1422040992,
+        "created_ts": 1422040992,
+        "model_id": "11e95f8ec39de8fbdb0a4f1a"
+      }
+    ],
+    "currency_type": {
+      "id": 50,
+      "title": "Sample Title"
+    },
+    "transaction_references": [
+      {
+        "id": "11e95f8ec39de8fbdb0a4f1a",
+        "created_ts": 1422040992,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      }
+    ],
+    "rejected_transaction_ach_retries": [
+      {
+        "rejected_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "id": "11e95f8ec39de8fbdb0a4f1a",
+        "retry_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "return_fee_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "created_ts": 1422040992,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      }
+    ],
+    "return_fee_transaction_ach_retry": {
+      "rejected_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "retry_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "return_fee_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+    },
+    "retry_transaction_ach_retry": {
+      "rejected_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "retry_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "return_fee_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+    },
+    "saved_account": {
+      "account_holder_name": "John Smith",
+      "account_vault_api_id": "accountvaultabcd",
+      "token_api_id": "tokenabcd",
+      "accountvault_c1": "accountvault custom 1",
+      "accountvault_c2": "accountvault custom 2",
+      "accountvault_c3": "accountvault custom 3",
+      "token_c1": "token custom 1",
+      "token_c2": "token custom 2",
+      "token_c3": "token custom 3",
+      "ach_sec_code": "WEB",
+      "billing_address": {
+        "city": "Novi",
+        "state": "Michigan",
+        "postal_code": "48375",
+        "phone": "3339998822",
+        "country": "USA"
+      },
+      "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+      "customer_id": "123456",
+      "identity_verification": {
+        "dl_state": "MI",
+        "dl_number": "1235567",
+        "ssn4": "8527",
+        "dob_year": "1980"
+      },
+      "location_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_account_vault_api_id": "previousaccountvault123456",
+      "previous_token_api_id": "previousaccountvault123456",
+      "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_number": "545454545454545",
+      "terms_agree": true,
+      "terms_agree_ip": "192.168.0.10",
+      "title": "Test CC Account",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+      "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "secure_protocol_version": 2,
+      "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+      "secure_collection_indicator": null,
+      "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+      "_joi": {},
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_type": "checking",
+      "active": true,
+      "cau_summary_status_id": 1,
+      "created_ts": 1422040992,
+      "e_serial_number": "1234567890",
+      "e_track_data": null,
+      "e_format": null,
+      "e_keyed_data": null,
+      "expiring_in_months": null,
+      "exp_date": "0722",
+      "first_six": "700953",
+      "has_recurring": false,
+      "last_four": "3657",
+      "modified_ts": 1422040992,
+      "payment_method": "cc",
+      "ticket": null,
+      "track_data": null,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "cau_last_updated_ts": 1422040992,
+      "routing_number": "051904524"
+    },
+    "balances": [
+      {
+        "amount": 1000
       }
     ]
   }

@@ -11,8 +11,8 @@ Forecast Information on `expand`
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `id` | `?string` | Optional | ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getId(): ?string | setId(?string id): void |
-| `recurringId` | `string` | Required | Recurring ID | getRecurringId(): string | setRecurringId(string recurringId): void |
+| `id` | `?string` | Optional | ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getId(): ?string | setId(?string id): void |
+| `recurringId` | `?string` | Optional | Recurring ID | getRecurringId(): ?string | setRecurringId(?string recurringId): void |
 | `recurringType` | `?float` | Optional | Recurring Type | getRecurringType(): ?float | setRecurringType(?float recurringType): void |
 | `amount` | `?float` | Optional | Amount | getAmount(): ?float | setAmount(?float amount): void |
 | `month` | `?string` | Optional | Month | getMonth(): ?string | setMonth(?string month): void |
@@ -23,7 +23,13 @@ Forecast Information on `expand`
 
 ```json
 {
-  "recurring_id": "Recurring ID"
+  "id": "11e95f8ec39de8fbdb0a4f1a",
+  "recurring_id": "Recurring ID",
+  "created_ts": 1422040992,
+  "modified_ts": 1422040992,
+  "recurring_type": 118.0,
+  "amount": 7.04,
+  "month": "month2"
 }
 ```
 

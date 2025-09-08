@@ -30,18 +30,29 @@ class QuickInvoicesControllerTest extends BaseTestController
         self::$controller = parent::getClient()->getQuickInvoicesController();
     }
 
-    public function testTestListAllQuickInvoicesRelated()
+    public function testListAllQuickInvoicesRelated()
     {
         // Parameters for the API call
         $page = null;
-        $sort = null;
-        $filter = null;
+        $order = null;
+        $filterBy = null;
         $expand = null;
+        $format = null;
+        $typeahead = null;
+        $fields = null;
 
         // Perform API call
         $result = null;
         try {
-            $result = self::$controller->listAllQuickInvoicesRelated($page, $sort, $filter, $expand);
+            $result = self::$controller->listAllQuickInvoicesRelated(
+                $page,
+                $order,
+                $filterBy,
+                $expand,
+                $format,
+                $typeahead,
+                $fields
+            );
         } catch (Exceptions\ApiException $e) {
         }
 
@@ -57,208 +68,260 @@ class QuickInvoicesControllerTest extends BaseTestController
                 '{"type":"QuickInvoicesCollection","list":[{"location_id":"11e95f8ec39de8fbdb0a' .
                 '4f1a","title":"My terminal","cc_product_transaction_id":"11e95f8ec39de8fbdb0a4f' .
                 '1a","ach_product_transaction_id":"11e95f8ec39de8fbdb0a4f1a","due_date":"2021-12' .
-                '-01","item_list":[{"name":"Bread","amount":20.15}],"allow_overpayment":true,"em' .
-                'ail":"email@domain.com","contact_id":"11e95f8ec39de8fbdb0a4f1a","contact_api_id' .
-                '":"contact12345","customer_id":"11e95f8ec39de8fbdb0a4f1a","expire_date":"2021-1' .
-                '2-01","allow_partial_pay":true,"attach_files_to_email":true,"send_email":true,"' .
-                'invoice_number":"invoice12345","item_header":"Quick invoice header sample","ite' .
-                'm_footer":"Thank you","amount_due":245.36,"notification_email":"email@domain.co' .
-                'm","payment_status_id":1,"status_id":1,"note":"some note","notification_days_be' .
-                'fore_due_date":3,"notification_days_after_due_date":7,"notification_on_due_date' .
-                '":true,"send_text_to_pay":true,"files":[{"file":{},"resource_id":"11e95f8ec39de' .
-                '8fbdb0a4f1a","resource":"Contact","product_file_id":"11e95f8ec39de8fbdb0a4f1a",' .
-                '"file_category_id":"11e95f8ec39de8fbdb0a4f1a","visibility_group_id":"11e95f8ec3' .
+                '-01","item_list":[{"name":"Bread","amount":2015}],"allow_overpayment":true,"ban' .
+                'k_funded_only_override":true,"email":"email@domain.com","contact_id":"11e95f8ec' .
+                '39de8fbdb0a4f1a","contact_api_id":"contact12345","quick_invoice_api_id":"quicki' .
+                'nvoice12345","customer_id":"11e95f8ec39de8fbdb0a4f1a","expire_date":"2021-12-01' .
+                '","allow_partial_pay":true,"attach_files_to_email":true,"send_email":true,"invo' .
+                'ice_number":"invoice12345","item_header":"Quick invoice header sample","item_fo' .
+                'oter":"Thank you","amount_due":245.36,"notification_email":"email@domain.com","' .
+                'status_id":1,"status_code":1,"note":"some note","notification_days_before_due_d' .
+                'ate":3,"notification_days_after_due_date":7,"notification_on_due_date":true,"se' .
+                'nd_text_to_pay":true,"files":[{"file":{},"resource_id":"11e95f8ec39de8fbdb0a4f1' .
+                'a","resource":"Contact","product_file_id":"11e95f8ec39de8fbdb0a4f1a","file_cate' .
+                'gory_id":"11e95f8ec39de8fbdb0a4f1a","visibility_group_id":"11e95f8ec39de8fbdb0a' .
+                '4f1a","id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"modified_ts":142' .
+                '2040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a"}],"remaining_balance":245.' .
+                '36,"single_payment_min_amount":500,"single_payment_max_amount":500000,"cell_pho' .
+                'ne":"3339998822","tags":[{"location_id":"11e95f8ec39de8fbdb0a4f1a","title":"My ' .
+                'terminal","id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"modified_ts"' .
+                ':1422040992}],"quick_invoice_c1":"custom-data-1","quick_invoice_c2":"custom-dat' .
+                'a-2","quick_invoice_c3":"custom-data-3","auto_reopen":true,"id":"11e95f8ec39de8' .
+                'fbdb0a4f1a","created_ts":1422040992,"modified_ts":1422040992,"created_user_id":' .
+                '"11e95f8ec39de8fbdb0a4f1a","modified_user_id":"11e95f8ec39de8fbdb0a4f1a","activ' .
+                'e":true,"payment_status_id":1,"is_active":true,"quick_invoice_setting":{"locati' .
+                'on_api_id":"11e95f8ec39de8fbdb0a4f1a","location_id":"11e95f8ec39de8fbdb0a4f1a",' .
+                '"quick_invoice_template":"<html>Template<html>","default_allow_partial_pay":tru' .
+                'e,"default_notification_on_due_date":true,"default_notification_days_after_due_' .
+                'date":7,"default_notification_days_before_due_date":3,"show_custom_fields":fals' .
+                'e,"id":"11e95f8ec39de8fbdb0a4f1a"},"quick_invoice_views":[{"id":"11e95f8ec39de8' .
+                'fbdb0a4f1a","quick_invoice_id":"Quick Invoice ID","created_ts":1422040992}],"lo' .
+                'cation":{"id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"modified_ts":' .
+                '1422040992,"account_number":"5454545454545454","address":{"city":"Novi","state"' .
+                ':"MI","postal_code":"48375","country":"US"},"branding_domain_id":"11e95f8ec39de' .
+                '8fbdb0a4f1a","contact_email_trx_receipt_default":true,"default_ach":"11e608a7d5' .
+                '15f1e093242bb2","default_cc":"11e608a442a5f1e092242dda","email_reply_to":"email' .
+                '@domain.com","fax":"3339998822","location_api_id":"location-111111","location_a' .
+                'pi_key":"AE34BBCAADF4AE34BBCAADF4","location_c1":"custom 1","location_c2":"cust' .
+                'om 2","location_c3":"custom data 3","name":"Sample Company Headquarters","offic' .
+                'e_phone":"2481234567","office_ext_phone":"1021021209","tz":"America/New_York","' .
+                'parent_id":"11e95f8ec39de8fbdb0a4f1a","show_contact_notes":true,"show_contact_f' .
+                'iles":true,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","location_type":"mercha' .
+                'nt","ticket_hash_key":"A5F443CADF4AE34BBCAADF4","additional_access":{}},"create' .
+                'd_user":{"account_number":"5454545454545454","branding_domain_url":"{branding_d' .
+                'omain_url}","cell_phone":"3339998822","company_name":"Fortis Payment Systems, L' .
+                'LC","contact_id":"11e95f8ec39de8fbdb0a4f1a","date_of_birth":"2021-12-01","domai' .
+                'n_id":"11e95f8ec39de8fbdb0a4f1a","email":"email@domain.com","email_trx_receipt"' .
+                ':true,"home_phone":"3339998822","first_name":"John","last_name":"Smith","locale' .
+                '":"en-US","office_phone":"3339998822","office_ext_phone":"5","primary_location_' .
+                'id":"11e95f8ec39de8fbdb0a4f1a","requires_new_password":null,"terms_condition_co' .
+                'de":"20220308","tz":"America/New_York","ui_prefs":{"entry_page":"dashboard","pa' .
+                'ge_size":2,"report_export_type":"csv","process_method":"virtual_terminal","defa' .
+                'ult_terminal":"11e95f8ec39de8fbdb0a4f1a"},"username":"{user_name}","user_api_ke' .
+                'y":"234bas8dfn8238f923w2","user_hash_key":null,"user_type_code":100,"password":' .
+                'null,"zip":"48375","location_id":"11e95f8ec39de8fbdb0a4f1a","status_code":1,"ap' .
+                'i_only":false,"is_invitation":false,"address":{"city":"Novi","state":"MI","post' .
+                'al_code":"48375","country":"US"},"id":"11e95f8ec39de8fbdb0a4f1a","status":true,' .
+                '"login_attempts":0,"last_login_ts":1422040992,"created_ts":1422040992,"modified' .
+                '_ts":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","terms_accepted_ts' .
+                '":1422040992,"terms_agree_ip":"192.168.0.10","current_date_time":"2019-03-11T10' .
+                ':38:26-0700","current_login":1422040992,"log_api_response_body_ts":1422040992},' .
+                '"modified_user":{"account_number":"5454545454545454","branding_domain_url":"{br' .
+                'anding_domain_url}","cell_phone":"3339998822","company_name":"Fortis Payment Sy' .
+                'stems, LLC","contact_id":"11e95f8ec39de8fbdb0a4f1a","date_of_birth":"2021-12-01' .
+                '","domain_id":"11e95f8ec39de8fbdb0a4f1a","email":"email@domain.com","email_trx_' .
+                'receipt":true,"home_phone":"3339998822","first_name":"John","last_name":"Smith"' .
+                ',"locale":"en-US","office_phone":"3339998822","office_ext_phone":"5","primary_l' .
+                'ocation_id":"11e95f8ec39de8fbdb0a4f1a","requires_new_password":null,"terms_cond' .
+                'ition_code":"20220308","tz":"America/New_York","ui_prefs":{"entry_page":"dashbo' .
+                'ard","page_size":2,"report_export_type":"csv","process_method":"virtual_termina' .
+                'l","default_terminal":"11e95f8ec39de8fbdb0a4f1a"},"username":"{user_name}","use' .
+                'r_api_key":"234bas8dfn8238f923w2","user_hash_key":null,"user_type_code":100,"pa' .
+                'ssword":null,"zip":"48375","location_id":"11e95f8ec39de8fbdb0a4f1a","status_cod' .
+                'e":1,"api_only":false,"is_invitation":false,"address":{"city":"Novi","state":"M' .
+                'I","postal_code":"48375","country":"US"},"id":"11e95f8ec39de8fbdb0a4f1a","statu' .
+                's":true,"login_attempts":0,"last_login_ts":1422040992,"created_ts":1422040992,"' .
+                'modified_ts":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","terms_acc' .
+                'epted_ts":1422040992,"terms_agree_ip":"192.168.0.10","current_date_time":"2019-' .
+                '03-11T10:38:26-0700","current_login":1422040992,"log_api_response_body_ts":1422' .
+                '040992},"changelogs":[{"id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,' .
+                '"action":"CREATE","model":"TransactionRequest","model_id":"11ec829598f0d4008be9' .
+                'aba4","user_id":"11e95f8ec39de8fbdb0a4f1a","changelog_details":[{"id":"11e95f8e' .
+                'c39de8fbdb0a4f1a","changelog_id":"11e95f8ec39de8fbdb0a4f1a","field":"next_run_t' .
+                's","old_value":"1643616000"}],"user":{"id":"11e95f8ec39de8fbdb0a4f1a","username' .
+                '":"email@domain.com","first_name":"Bob","last_name":"Fairview"}}],"contact":{"l' .
+                'ocation_id":"11e95f8ec39de8fbdb0a4f1a","account_number":"54545433332","contact_' .
+                'api_id":"137","first_name":"John","last_name":"Smith","cell_phone":"3339998822"' .
+                ',"balance":245.36,"address":{"city":"Novi","state":"Michigan","postal_code":"48' .
+                '375","country":"USA"},"company_name":"Fortis Payment Systems, LLC","header_mess' .
+                'age":"This is a sample message for you","date_of_birth":"2021-12-01","email_trx' .
+                '_receipt":true,"home_phone":"3339998822","office_phone":"3339998822","office_ph' .
+                'one_ext":"5","home_phone_country_code":"+1","office_phone_country_code":"+1","c' .
+                'ell_phone_country_code":"+1","header_message_type":0,"update_if_exists":1,"cont' .
+                'act_c1":"any","contact_c2":"anything","contact_c3":"something","parent_id":"11e' .
+                '95f8ec39de8fbdb0a4f1a","email":"email@domain.com","token_import_id":"11e95f8ec3' .
                 '9de8fbdb0a4f1a","id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"modifi' .
-                'ed_ts":1422040992}],"remaining_balance":245.36,"single_payment_min_amount":5,"s' .
-                'ingle_payment_max_amount":5000,"cell_phone":"3339998822","id":"11e95f8ec39de8fb' .
-                'db0a4f1a","created_ts":1422040992,"modified_ts":1422040992,"created_user_id":"1' .
-                '1e95f8ec39de8fbdb0a4f1a","modified_user_id":"11e95f8ec39de8fbdb0a4f1a","active"' .
-                ':true,"is_active":true,"quick_invoice_setting":{"location_api_id":"11e95f8ec39d' .
-                'e8fbdb0a4f1a","location_id":"11e95f8ec39de8fbdb0a4f1a","quick_invoice_template"' .
-                ':"<html>Template<html>","default_allow_partial_pay":true,"default_notification_' .
-                'on_due_date":true,"default_notification_days_after_due_date":7,"default_notific' .
-                'ation_days_before_due_date":3,"id":"11e95f8ec39de8fbdb0a4f1a"},"tags":[{"locati' .
-                'on_id":"11e95f8ec39de8fbdb0a4f1a","title":"My terminal","id":"11e95f8ec39de8fbd' .
-                'b0a4f1a","created_ts":1422040992,"modified_ts":1422040992}],"quick_invoice_view' .
-                's":[{"id":"11e95f8ec39de8fbdb0a4f1a","quick_invoice_id":"Quick Invoice ID","cre' .
-                'ated_ts":1422040992}],"location":{"id":"11e95f8ec39de8fbdb0a4f1a","created_ts":' .
-                '1422040992,"modified_ts":1422040992,"account_number":"5454545454545454","addres' .
-                's":{"city":"Novi","state":"MI","postal_code":"48375","country":"US","street":"4' .
-                '3155 Main Street STE 2310-C","street2":"43155 Main Street STE 2310-C"},"brandin' .
-                'g_domain_id":"11e95f8ec39de8fbdb0a4f1a","contact_email_trx_receipt_default":tru' .
-                'e,"default_ach":"11e608a7d515f1e093242bb2","default_cc":"11e608a442a5f1e092242d' .
-                'da","developer_company_id":"11e95f8ec39de8fbdb0a4f1a","email_reply_to":"email@d' .
-                'omain.com","fax":"3339998822","location_api_id":"location-111111","location_api' .
-                '_key":"AE34BBCAADF4AE34BBCAADF4","location_c1":"custom 1","location_c2":"custom' .
-                ' 2","location_c3":"custom data 3","name":"Sample Company Headquarters","office_' .
-                'phone":"2481234567","office_ext_phone":"1021021209","recurring_notification_day' .
-                's_default":0,"tz":"America/New_York","parent_id":"11e95f8ec39de8fbdb0a4f1a","ti' .
-                'cket_hash_key":"A5F443CADF4AE34BBCAADF4"},"created_user":{"account_number":"545' .
-                '4545454545454","address":"43155 Main Street STE 2310-C","branding_domain_url":"' .
-                '{branding_domain_url}","cell_phone":"3339998822","city":"Novi","company_name":"' .
-                'Fortis Payment Systems, LLC","contact_id":"11e95f8ec39de8fbdb0a4f1a","date_of_b' .
-                'irth":"2021-12-01","domain_id":"11e95f8ec39de8fbdb0a4f1a","email":"email@domain' .
-                '.com","email_trx_receipt":true,"home_phone":"3339998822","first_name":"John","l' .
-                'ast_name":"Smith","locale":"en-US","office_phone":"3339998822","office_ext_phon' .
-                'e":"5","primary_location_id":"11e95f8ec39de8fbdb0a4f1a","requires_new_password"' .
-                ':null,"state":"Michigan","terms_condition_code":"20220308","tz":"America/New_Yo' .
-                'rk","ui_prefs":{"entry_page":"dashboard","page_size":2,"report_export_type":"cs' .
-                'v","process_method":"virtual_terminal","default_terminal":"11e95f8ec39de8fbdb0a' .
-                '4f1a"},"username":"{user_name}","user_api_key":"234bas8dfn8238f923w2","user_has' .
-                'h_key":null,"user_type_code":100,"password":null,"zip":"48375","location_id":"1' .
-                '1e95f8ec39de8fbdb0a4f1a","status_id":true,"id":"11e95f8ec39de8fbdb0a4f1a","stat' .
-                'us":true,"login_attempts":0,"last_login_ts":1422040992,"created_ts":1422040992,' .
-                '"modified_ts":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","terms_ac' .
-                'cepted_ts":1422040992,"terms_agree_ip":"192.168.0.10","current_date_time":"2019' .
-                '-03-11T10:38:26-0700"},"modified_user":{"account_number":"5454545454545454","ad' .
-                'dress":"43155 Main Street STE 2310-C","branding_domain_url":"{branding_domain_u' .
-                'rl}","cell_phone":"3339998822","city":"Novi","company_name":"Fortis Payment Sys' .
-                'tems, LLC","contact_id":"11e95f8ec39de8fbdb0a4f1a","date_of_birth":"2021-12-01"' .
-                ',"domain_id":"11e95f8ec39de8fbdb0a4f1a","email":"email@domain.com","email_trx_r' .
-                'eceipt":true,"home_phone":"3339998822","first_name":"John","last_name":"Smith",' .
-                '"locale":"en-US","office_phone":"3339998822","office_ext_phone":"5","primary_lo' .
-                'cation_id":"11e95f8ec39de8fbdb0a4f1a","requires_new_password":null,"state":"Mic' .
-                'higan","terms_condition_code":"20220308","tz":"America/New_York","ui_prefs":{"e' .
-                'ntry_page":"dashboard","page_size":2,"report_export_type":"csv","process_method' .
-                '":"virtual_terminal","default_terminal":"11e95f8ec39de8fbdb0a4f1a"},"username":' .
-                '"{user_name}","user_api_key":"234bas8dfn8238f923w2","user_hash_key":null,"user_' .
-                'type_code":100,"password":null,"zip":"48375","location_id":"11e95f8ec39de8fbdb0' .
-                'a4f1a","status_id":true,"id":"11e95f8ec39de8fbdb0a4f1a","status":true,"login_at' .
-                'tempts":0,"last_login_ts":1422040992,"created_ts":1422040992,"modified_ts":1422' .
-                '040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","terms_accepted_ts":1422040' .
-                '992,"terms_agree_ip":"192.168.0.10","current_date_time":"2019-03-11T10:38:26-07' .
-                '00"},"changelogs":[{"id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"ac' .
-                'tion":"CREATE","model":"TransactionRequest","model_id":"11ec829598f0d4008be9aba' .
-                '4","user_id":"11e95f8ec39de8fbdb0a4f1a","changelog_details":[{"id":"11e95f8ec39' .
-                'de8fbdb0a4f1a","changelog_id":"11e95f8ec39de8fbdb0a4f1a","field":"next_run_ts",' .
-                '"old_value":"1643616000"}],"user":{"id":"11e95f8ec39de8fbdb0a4f1a","username":"' .
-                'email@domain.com","first_name":"Bob","last_name":"Fairview"}}],"contact":{"loca' .
-                'tion_id":"11e95f8ec39de8fbdb0a4f1a","account_number":"54545433332","contact_api' .
-                '_id":"137","first_name":"John","last_name":"Smith","cell_phone":"3339998822","b' .
-                'alance":245.36,"address":{"city":"Novi","state":"Michigan","postal_code":"48375' .
-                '","country":"US","street":"43155 Main Street STE 2310-C"},"company_name":"Forti' .
-                's Payment Systems, LLC","header_message":"This is a sample message for you","da' .
-                'te_of_birth":"2021-12-01","email_trx_receipt":true,"home_phone":"3339998822","o' .
-                'ffice_phone":"3339998822","office_phone_ext":"5","header_message_type":0,"updat' .
-                'e_if_exists":1,"contact_c1":"any","contact_c2":"anything","contact_c3":"somethi' .
-                'ng","parent_id":"11e95f8ec39de8fbdb0a4f1a","email":"email@domain.com","id":"11e' .
-                '95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"modified_ts":1422040992,"active' .
-                '":true},"log_emails":[{"subject":"Payment Receipt - 12skiestech","body":"This e' .
-                'mail is being sent from a server.","source_address":"\\"12skiestech A7t3qi\\" <' .
-                'noreply@zeamster.email>","return_path":"\\"12skiestech A7t3qi\\" <noreply@zeams' .
-                'ter.email>","provider_id":"0100017e67bcc530-e1dd23b4-8a39-4a5b-8d5d-68d51c4c942' .
-                'f-000000","domain_id":"11e95f8ec39de8fbdb0a4f1a","reason_sent":"Contact Email",' .
-                '"reason_model":"Transaction","reason_model_id":"11e95f8ec39de8fbdb0a4f1a","repl' .
-                'y_to":"\\"Zeamster\\" <emma.p@zeamster.com>","id":"11e95f8ec39de8fbdb0a4f1a","c' .
-                'reated_ts":1422040992}],"log_sms":{"id":"11e95f8ec39de8fbdb0a4f1a","body":" ","' .
-                'reason_model":" ","reason_model_id":" ","provider_id":" ","status":" ","sender"' .
-                ':" ","recipient":" ","created_ts":1422040992,"created_user_id":"11e95f8ec39de8f' .
-                'bdb0a4f1a"},"transactions":[{"additional_amounts":[{"type":"cashback","amount":' .
-                '10,"account_type":"credit","currency":840}],"billing_address":{"city":"Novi","s' .
-                'tate":"Michigan","postal_code":"48375","street":"43155 Main Street STE 2310-C",' .
-                '"phone":"3339998822"},"checkin_date":"2021-12-01","checkout_date":"2021-12-01",' .
-                '"clerk_number":"AE1234","contact_id":"11e95f8ec39de8fbdb0a4f1a","custom_data":{' .
-                '},"customer_id":"customerid","description":"some description","identity_verific' .
-                'ation":{"dl_state":"MI","dl_number":"1235567","dob_year":"1980"},"iias_ind":1,"' .
-                'image_front":"U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=","image_back":"U' .
-                '29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=","installment":true,"installmen' .
-                't_number":1,"installment_count":1,"location_api_id":"location-api-id-florida-2"' .
-                ',"location_id":"11e95f8ec39de8fbdb0a4f1a","product_transaction_id":"11e95f8ec39' .
-                'de8fbdb0a4f1a","advance_deposit":false,"no_show":false,"notification_email_addr' .
-                'ess":"johnsmith@smiths.com","order_number":"433659378839","po_number":"55555555' .
-                '3123","quick_invoice_id":"11e95f8ec39de8fbdb0a4f1a","recurring":false,"recurrin' .
-                'g_number":1,"room_num":"303","room_rate":95,"save_account":false,"save_account_' .
-                'title":"John Account","subtotal_amount":599,"surcharge_amount":100,"tags":["Wal' .
-                'k-in Customer"],"tax":0,"tip_amount":0,"transaction_amount":0,"secondary_amount' .
-                '":0,"transaction_api_id":"transaction-payment-abcd123","transaction_c1":"custom' .
-                '-data-1","transaction_c2":"custom-data-2","transaction_c3":"custom-data-3","ban' .
-                'k_funded_only_override":false,"id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422' .
-                '040992,"modified_ts":1422040992,"terminal_id":"11e95f8ec39de8fbdb0a4f1a","accou' .
-                'nt_holder_name":"smith","account_type":"checking","token_id":"11e95f8ec39de8fbd' .
-                'b0a4f1a","ach_identifier":"P","ach_sec_code":"C21","auth_amount":1,"auth_code":' .
-                '"BR349K","avs":"BAD","avs_enhanced":"N","cardholder_present":true,"card_present' .
-                '":true,"check_number":"8520748520963","customer_ip":"192.168.0.10","cvv_respons' .
-                'e":"N","entry_mode_id":"C","emv_receipt_data":{"AID":"a0000000042203","APPLAB":' .
-                '"US Maestro","APPN":"US Maestro","CVM":"Pin Verified","TSI":"e800","TVR":"08000' .
-                '08000"},"first_six":"545454","last_four":"5454","payment_method":"cc","terminal' .
-                '_serial_number":"1234567890","transaction_settlement_status":null,"charge_back_' .
-                'date":"2021-12-01","is_recurring":true,"notification_email_sent":"true","par":"' .
-                'Q1J4Z28RKA1EBL470G9XYG90R5D3E","reason_code_id":1000,"recurring_id":"11e95f8ec3' .
-                '9de8fbdb0a4f1a","settle_date":"2021-12-01","status_code":101,"transaction_batch' .
-                '_id":"11e95f8ec39de8fbdb0a4f1a","verbiage":"APPROVED","void_date":"2021-12-01",' .
-                '"batch":"2","terms_agree":true,"response_message":null,"return_date":"2021-12-0' .
-                '1","trx_source_id":8}],"cc_product_transaction":{"processor_version":"1_0_0","t' .
-                'itle":"My terminal","payment_method":"cc","processor":"zgate","mcc":"1111","tax' .
-                '_surcharge_config":2,"partner":"standalone","location_id":"11e95f8ec39de8fbdb0a' .
-                '4f1a","surcharge":{},"processor_data":{},"vt_clerk_number":true,"vt_billing_pho' .
-                'ne":true,"vt_enable_tip":true,"ach_allow_debit":true,"ach_allow_credit":true,"a' .
-                'ch_allow_refund":true,"vt_cvv":true,"vt_street":true,"vt_zip":true,"vt_order_nu' .
-                'm":true,"vt_enable":true,"receipt_show_contact_name":true,"display_avs":true,"c' .
-                'ard_type_visa":true,"card_type_mc":true,"card_type_disc":true,"card_type_amex":' .
-                'true,"card_type_diners":true,"card_type_jcb":true,"invoice_location":true,"allo' .
-                'w_partial_authorization":true,"allow_recurring_partial_authorization":true,"aut' .
-                'o_decline_cvv":true,"auto_decline_street":true,"auto_decline_zip":true,"split_p' .
-                'ayments_allow":true,"vt_show_custom_fields":true,"receipt_show_custom_fields":t' .
-                'rue,"vt_override_sales_tax_allowed":true,"vt_enable_sales_tax":true,"vt_require' .
-                '_zip":true,"vt_require_street":true,"auto_decline_cavv":true,"current_batch":34' .
-                ',"dup_check_per_batch":null,"quick_invoice_allow":false,"level3_allow":false,"p' .
-                'ayfac_enable":false,"sales_office_id":"11e95f8ec39de8fbdb0a4f1a","hosted_paymen' .
-                't_page_allow":false,"surcharge_id":"11e95f8ec39de8fbdb0a4f1a","level3_default":' .
-                'null,"cau_subscribe_type_id":0,"location_billing_account_id":"11eb88b873980c64a' .
-                '21e5fd2","product_billing_group_id":"nofees","account_number":"12345678","run_a' .
-                'vs_on_accountvault_create":false,"accountvault_expire_notification_email_enable' .
-                '":false,"debit_allow_void":false,"quick_invoice_text_to_pay":false,"sms_enable"' .
-                ':false,"vt_show_currency":true,"receipt_show_currency":false,"allow_blind_refun' .
-                'd":false,"vt_show_company_name":false,"receipt_show_company_name":false,"bank_f' .
-                'unded_only":false,"id":"11e95f8ec39de8fbdb0a4f1a","active":true,"created_ts":14' .
-                '22040992,"modified_ts":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a",' .
-                '"modified_user_id":"11e95f8ec39de8fbdb0a4f1a"},"ach_product_transaction":{"proc' .
-                'essor_version":"1_0_0","title":"My terminal","payment_method":"cc","processor":' .
-                '"zgate","mcc":"1111","tax_surcharge_config":2,"partner":"standalone","location_' .
-                'id":"11e95f8ec39de8fbdb0a4f1a","surcharge":{},"processor_data":{},"vt_clerk_num' .
-                'ber":true,"vt_billing_phone":true,"vt_enable_tip":true,"ach_allow_debit":true,"' .
-                'ach_allow_credit":true,"ach_allow_refund":true,"vt_cvv":true,"vt_street":true,"' .
-                'vt_zip":true,"vt_order_num":true,"vt_enable":true,"receipt_show_contact_name":t' .
-                'rue,"display_avs":true,"card_type_visa":true,"card_type_mc":true,"card_type_dis' .
-                'c":true,"card_type_amex":true,"card_type_diners":true,"card_type_jcb":true,"inv' .
-                'oice_location":true,"allow_partial_authorization":true,"allow_recurring_partial' .
-                '_authorization":true,"auto_decline_cvv":true,"auto_decline_street":true,"auto_d' .
-                'ecline_zip":true,"split_payments_allow":true,"vt_show_custom_fields":true,"rece' .
-                'ipt_show_custom_fields":true,"vt_override_sales_tax_allowed":true,"vt_enable_sa' .
-                'les_tax":true,"vt_require_zip":true,"vt_require_street":true,"auto_decline_cavv' .
-                '":true,"current_batch":34,"dup_check_per_batch":null,"quick_invoice_allow":fals' .
-                'e,"level3_allow":false,"payfac_enable":false,"sales_office_id":"11e95f8ec39de8f' .
-                'bdb0a4f1a","hosted_payment_page_allow":false,"surcharge_id":"11e95f8ec39de8fbdb' .
-                '0a4f1a","level3_default":null,"cau_subscribe_type_id":0,"location_billing_accou' .
-                'nt_id":"11eb88b873980c64a21e5fd2","product_billing_group_id":"nofees","account_' .
-                'number":"12345678","run_avs_on_accountvault_create":false,"accountvault_expire_' .
-                'notification_email_enable":false,"debit_allow_void":false,"quick_invoice_text_t' .
-                'o_pay":false,"sms_enable":false,"vt_show_currency":true,"receipt_show_currency"' .
-                ':false,"allow_blind_refund":false,"vt_show_company_name":false,"receipt_show_co' .
-                'mpany_name":false,"bank_funded_only":false,"id":"11e95f8ec39de8fbdb0a4f1a","act' .
-                'ive":true,"created_ts":1422040992,"modified_ts":1422040992,"created_user_id":"1' .
-                '1e95f8ec39de8fbdb0a4f1a","modified_user_id":"11e95f8ec39de8fbdb0a4f1a"},"email_' .
-                'blacklist":{"id":"11e95f8ec39de8fbdb0a4f1a","isBlacklisted":true,"detail":true,' .
-                '"created_ts":1422040992},"sms_blacklist":{"id":"11e95f8ec39de8fbdb0a4f1a","isBl' .
-                'acklisted":true,"detail":true,"created_ts":1422040992}}],"links":{"type":"Links' .
-                '","first":"/v1/endpoint?page[size]=10&page[number]=1","previous":"/v1/endpoint?' .
-                'page[size]=10&page[number]=5","last":"/v1/endpoint?page[size]=10&page[number]=4' .
-                '2"},"pagination":{"type":"Pagination","total_count":423,"page_count":42,"page_n' .
-                'umber":6,"page_size":10},"sort":{"type":"Sorting","fields":[{"field":"last_name' .
-                '","order":"asc"}]}}'
+                'ed_ts":1422040992,"active":true,"created_user_id":"11e95f8ec39de8fbdb0a4f1a"},"' .
+                'log_emails":[{"subject":"Payment Receipt - 12skiestech","body":"This email is b' .
+                'eing sent from a server.","source_address":"\\"12skiestech A7t3qi\\" <noreply@z' .
+                'eamster.email>","return_path":"\\"12skiestech A7t3qi\\" <noreply@zeamster.email' .
+                '>","provider_id":"0100017e67bcc530-e1dd23b4-8a39-4a5b-8d5d-68d51c4c942f-000000"' .
+                ',"domain_id":"11e95f8ec39de8fbdb0a4f1a","reason_sent":"Contact Email","reason_m' .
+                'odel":"Transaction","reason_model_id":"11e95f8ec39de8fbdb0a4f1a","reply_to":"' .
+                '\\"Zeamster\\" <emma.p@zeamster.com>","id":"11e95f8ec39de8fbdb0a4f1a","created_' .
+                'ts":1422040992}],"log_sms":{"id":"11e95f8ec39de8fbdb0a4f1a","body":" ","reason_' .
+                'model":" ","reason_model_id":" ","provider_id":" ","status":" ","sender":" ","r' .
+                'ecipient":" ","created_ts":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f' .
+                '1a"},"transactions":[{"additional_amounts":[{"type":"cashback","amount":10,"acc' .
+                'ount_type":"credit","currency":840}],"billing_address":{"city":"Novi","state":"' .
+                'Michigan","postal_code":"48375","phone":"3339998822","country":"USA"},"checkin_' .
+                'date":"2021-12-01","checkout_date":"2021-12-01","clerk_number":"AE1234","contac' .
+                't_id":"11e95f8ec39de8fbdb0a4f1a","custom_data":{},"customer_id":"customerid","d' .
+                'escription":"some description","identity_verification":{"dl_state":"MI","dl_num' .
+                'ber":"1235567","dob_year":"1980"},"iias_ind":1,"image_front":"U29tZVN0cmluZ09id' .
+                'mlvdXNseU5vdEJhc2U2NEVuY29kZWQ=","image_back":"U29tZVN0cmluZ09idmlvdXNseU5vdEJh' .
+                'c2U2NEVuY29kZWQ=","installment":true,"installment_number":1,"installment_count"' .
+                ':1,"recurring_flag":"yes","installment_counter":1,"installment_total":1,"subscr' .
+                'iption":false,"standing_order":false,"location_api_id":"location-api-id-florida' .
+                '-2","location_id":"11e95f8ec39de8fbdb0a4f1a","product_transaction_id":"11e95f8e' .
+                'c39de8fbdb0a4f1a","advance_deposit":false,"no_show":false,"notification_email_a' .
+                'ddress":"johnsmith@smiths.com","order_number":"433659378839","po_number":"55555' .
+                '5553123","quick_invoice_id":"11e95f8ec39de8fbdb0a4f1a","recurring":false,"recur' .
+                'ring_number":1,"room_num":"303","room_rate":95,"save_account":false,"save_accou' .
+                'nt_title":"John Account","subtotal_amount":599,"surcharge_amount":100,"tags":["' .
+                'Walk-in Customer"],"tax":0,"tip_amount":0,"transaction_amount":0,"secondary_amo' .
+                'unt":0,"transaction_api_id":"transaction-payment-abcd123","transaction_c1":"cus' .
+                'tom-data-1","transaction_c2":"custom-data-2","transaction_c3":"custom-data-3","' .
+                'bank_funded_only_override":false,"allow_partial_authorization_override":false,"' .
+                'auto_decline_cvv_override":false,"auto_decline_street_override":false,"auto_dec' .
+                'line_zip_override":false,"ebt_type":"food_stamp","id":"11e95f8ec39de8fbdb0a4f1a' .
+                '","created_ts":1422040992,"modified_ts":1422040992,"terminal_id":"11e95f8ec39de' .
+                '8fbdb0a4f1a","account_holder_name":"smith","account_type":"checking","token_id"' .
+                ':"11e95f8ec39de8fbdb0a4f1a","ach_identifier":"P","ach_sec_code":"C21","auth_amo' .
+                'unt":1,"auth_code":"BR349K","avs":"BAD","avs_enhanced":"N","cardholder_present"' .
+                ':true,"card_present":true,"check_number":"8520748520963","customer_ip":"192.168' .
+                '.0.10","cvv_response":"N","entry_mode_id":"C","emv_receipt_data":{"AID":"a00000' .
+                '00042203","APPLAB":"US Maestro","APPN":"US Maestro","CVM":"Pin Verified","TSI":' .
+                '"e800","TVR":"0800008000"},"first_six":"545454","last_four":"5454","payment_met' .
+                'hod":"cc","terminal_serial_number":"1234567890","transaction_settlement_status"' .
+                ':null,"charge_back_date":"2021-12-01","is_recurring":true,"notification_email_s' .
+                'ent":true,"par":"Q1J4Z28RKA1EBL470G9XYG90R5D3E","reason_code_id":1000,"recurrin' .
+                'g_id":"11e95f8ec39de8fbdb0a4f1a","settle_date":"2021-12-01","status_code":101,"' .
+                'transaction_batch_id":"11e95f8ec39de8fbdb0a4f1a","verbiage":"APPROVED","voucher' .
+                '_number":"1234","void_date":"2021-12-01","batch":"2","terms_agree":true,"respon' .
+                'se_message":null,"return_date":"2021-12-01","trx_source_id":8,"routing_number":' .
+                '"051904524","trx_source_code":8,"paylink_id":"11e95f8ec39de8fbdb0a4f1a","is_acc' .
+                'ountvault":true,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","modified_user_id"' .
+                ':"11e95f8ec39de8fbdb0a4f1a","effective_date":"2021-12-01","is_token":true,"acco' .
+                'unt_vault_id":"11e95f8ec39de8fbdb0a4f1a","hosted_payment_page_id":"11e95f8ec39d' .
+                'e8fbdb0a4f1a"}],"cc_product_transaction":{"processor_version":"1_0_0","title":"' .
+                'My terminal","payment_method":"cc","processor":"zgate","mcc":"1111","tax_surcha' .
+                'rge_config":2,"partner":"standalone","location_id":"11e95f8ec39de8fbdb0a4f1a","' .
+                'surcharge":{},"processor_data":{},"vt_clerk_number":true,"vt_billing_phone":tru' .
+                'e,"vt_enable_tip":true,"ach_allow_debit":true,"ach_allow_credit":true,"ach_allo' .
+                'w_refund":true,"vt_cvv":true,"vt_street":true,"vt_zip":true,"vt_order_num":true' .
+                ',"vt_enable":true,"receipt_show_contact_name":true,"display_avs":true,"card_typ' .
+                'e_visa":true,"card_type_mc":true,"card_type_disc":true,"card_type_amex":true,"c' .
+                'ard_type_diners":true,"card_type_jcb":true,"card_type_ebt":true,"allow_ebt_cash' .
+                '_benefit":true,"allow_ebt_food_stamp":true,"invoice_location":true,"allow_parti' .
+                'al_authorization":true,"allow_recurring_partial_authorization":true,"auto_decli' .
+                'ne_cvv":true,"auto_decline_street":true,"auto_decline_zip":true,"split_payments' .
+                '_allow":true,"vt_show_custom_fields":true,"receipt_show_custom_fields":true,"vt' .
+                '_override_sales_tax_allowed":true,"vt_enable_sales_tax":true,"vt_require_zip":t' .
+                'rue,"vt_require_street":true,"auto_decline_cavv":true,"current_batch":34,"dup_c' .
+                'heck_per_batch":null,"paylink_allow":false,"quick_invoice_allow":false,"level3_' .
+                'allow":false,"payfac_enable":false,"enable_3ds":false,"sales_office_id":"11e95f' .
+                '8ec39de8fbdb0a4f1a","hosted_payment_page_allow":false,"surcharge_id":"11e95f8ec' .
+                '39de8fbdb0a4f1a","allow_big_commerce":false,"level3_default":{"destination_coun' .
+                'try_code":"840","duty_amount":0,"freight_amount":0,"national_tax":2,"sales_tax"' .
+                ':200,"shipfrom_zip_code":"AZ12345","shipto_zip_code":"MI48335","tax_amount":0,"' .
+                'tax_exempt":"0","customer_vat_registration":"12345678","merchant_vat_registrati' .
+                'on":"123456","order_date":"171006","summary_commodity_code":"C1K2","tax_rate":0' .
+                ',"unique_vat_ref_number":"vat1234","line_items":[{"alternate_tax_id":"1234","de' .
+                'bit_credit":"C","description":"cool drink","discount_amount":10,"discount_rate"' .
+                ':11,"product_code":"coke12345678","quantity":5,"tax_amount":3,"tax_rate":0,"tax' .
+                '_type_applied":"22","tax_type_id":"a1","unit_code":"gll","unit_cost":10,"commod' .
+                'ity_code":"cc123456","other_tax_amount":0}]},"cau_subscribe_type_id":0,"locatio' .
+                'n_billing_account_id":"11eb88b873980c64a21e5fd2","product_billing_group_id":"no' .
+                'fees","account_number":"12345678","run_avs_on_accountvault_create":false,"accou' .
+                'ntvault_expire_notification_email_enable":false,"debit_allow_void":false,"quick' .
+                '_invoice_text_to_pay":false,"sms_enable":false,"vt_show_currency":true,"receipt' .
+                '_show_currency":false,"allow_blind_refund":false,"vt_show_company_name":false,"' .
+                'receipt_show_company_name":false,"bank_funded_only":false,"require_cvv_on_keyed' .
+                '_cnp":true,"require_cvv_on_tokenized_cnp":true,"show_secondary_amount":false,"a' .
+                'llow_secondary_amount":false,"show_google_pay":true,"show_apple_pay":true,"batc' .
+                'h_risk_config":{},"currency_code":840,"enable_ach_validation":false,"enable_ach' .
+                '_retry":false,"allow_softpos":false,"id":"11e95f8ec39de8fbdb0a4f1a","active":tr' .
+                'ue,"created_ts":1422040992,"modified_ts":1422040992,"created_user_id":"11e95f8e' .
+                'c39de8fbdb0a4f1a","modified_user_id":"11e95f8ec39de8fbdb0a4f1a","product_transa' .
+                'ction_api_id":"11e95f8ec39de8fbdb0a4f1a","is_secondary_amount_allowed":false,"f' .
+                'ortis_id":"8149742","product_billing_group_code":"nofees","cau_subscribe_type_c' .
+                'ode":0},"ach_product_transaction":{"processor_version":"1_0_0","title":"My term' .
+                'inal","payment_method":"cc","processor":"zgate","mcc":"1111","tax_surcharge_con' .
+                'fig":2,"partner":"standalone","location_id":"11e95f8ec39de8fbdb0a4f1a","surchar' .
+                'ge":{},"processor_data":{},"vt_clerk_number":true,"vt_billing_phone":true,"vt_e' .
+                'nable_tip":true,"ach_allow_debit":true,"ach_allow_credit":true,"ach_allow_refun' .
+                'd":true,"vt_cvv":true,"vt_street":true,"vt_zip":true,"vt_order_num":true,"vt_en' .
+                'able":true,"receipt_show_contact_name":true,"display_avs":true,"card_type_visa"' .
+                ':true,"card_type_mc":true,"card_type_disc":true,"card_type_amex":true,"card_typ' .
+                'e_diners":true,"card_type_jcb":true,"card_type_ebt":true,"allow_ebt_cash_benefi' .
+                't":true,"allow_ebt_food_stamp":true,"invoice_location":true,"allow_partial_auth' .
+                'orization":true,"allow_recurring_partial_authorization":true,"auto_decline_cvv"' .
+                ':true,"auto_decline_street":true,"auto_decline_zip":true,"split_payments_allow"' .
+                ':true,"vt_show_custom_fields":true,"receipt_show_custom_fields":true,"vt_overri' .
+                'de_sales_tax_allowed":true,"vt_enable_sales_tax":true,"vt_require_zip":true,"vt' .
+                '_require_street":true,"auto_decline_cavv":true,"current_batch":34,"dup_check_pe' .
+                'r_batch":null,"paylink_allow":false,"quick_invoice_allow":false,"level3_allow":' .
+                'false,"payfac_enable":false,"enable_3ds":false,"sales_office_id":"11e95f8ec39de' .
+                '8fbdb0a4f1a","hosted_payment_page_allow":false,"surcharge_id":"11e95f8ec39de8fb' .
+                'db0a4f1a","allow_big_commerce":false,"level3_default":{"destination_country_cod' .
+                'e":"840","duty_amount":0,"freight_amount":0,"national_tax":2,"sales_tax":200,"s' .
+                'hipfrom_zip_code":"AZ12345","shipto_zip_code":"MI48335","tax_amount":0,"tax_exe' .
+                'mpt":"0","customer_vat_registration":"12345678","merchant_vat_registration":"12' .
+                '3456","order_date":"171006","summary_commodity_code":"C1K2","tax_rate":0,"uniqu' .
+                'e_vat_ref_number":"vat1234","line_items":[{"alternate_tax_id":"1234","debit_cre' .
+                'dit":"C","description":"cool drink","discount_amount":10,"discount_rate":11,"pr' .
+                'oduct_code":"coke12345678","quantity":5,"tax_amount":3,"tax_rate":0,"tax_type_a' .
+                'pplied":"22","tax_type_id":"a1","unit_code":"gll","unit_cost":10,"commodity_cod' .
+                'e":"cc123456","other_tax_amount":0}]},"cau_subscribe_type_id":0,"location_billi' .
+                'ng_account_id":"11eb88b873980c64a21e5fd2","product_billing_group_id":"nofees","' .
+                'account_number":"12345678","run_avs_on_accountvault_create":false,"accountvault' .
+                '_expire_notification_email_enable":false,"debit_allow_void":false,"quick_invoic' .
+                'e_text_to_pay":false,"sms_enable":false,"vt_show_currency":true,"receipt_show_c' .
+                'urrency":false,"allow_blind_refund":false,"vt_show_company_name":false,"receipt' .
+                '_show_company_name":false,"bank_funded_only":false,"require_cvv_on_keyed_cnp":t' .
+                'rue,"require_cvv_on_tokenized_cnp":true,"show_secondary_amount":false,"allow_se' .
+                'condary_amount":false,"show_google_pay":true,"show_apple_pay":true,"batch_risk_' .
+                'config":{},"currency_code":840,"enable_ach_validation":false,"enable_ach_retry"' .
+                ':false,"allow_softpos":false,"id":"11e95f8ec39de8fbdb0a4f1a","active":true,"cre' .
+                'ated_ts":1422040992,"modified_ts":1422040992,"created_user_id":"11e95f8ec39de8f' .
+                'bdb0a4f1a","modified_user_id":"11e95f8ec39de8fbdb0a4f1a","product_transaction_a' .
+                'pi_id":"11e95f8ec39de8fbdb0a4f1a","is_secondary_amount_allowed":false,"fortis_i' .
+                'd":"8149742","product_billing_group_code":"nofees","cau_subscribe_type_code":0}' .
+                ',"email_blacklist":{"id":"11e95f8ec39de8fbdb0a4f1a","isBlacklisted":true,"detai' .
+                'l":true,"created_ts":1422040992},"sms_blacklist":{"id":"11e95f8ec39de8fbdb0a4f1' .
+                'a","isBlacklisted":true,"detail":true,"created_ts":1422040992}}],"links":{"type' .
+                '":"Links","first":"/v1/endpoint?page[size]=10&page[number]=1","previous":"/v1/e' .
+                'ndpoint?page[size]=10&page[number]=5","next":"/v1/endpoint?page[size]=10&page[n' .
+                'umber]=7","last":"/v1/endpoint?page[size]=10&page[number]=42"},"pagination":{"t' .
+                'ype":"Pagination","total_count":423,"page_count":42,"page_number":6,"page_size"' .
+                ':10},"sort":{"type":"Sorting","fields":[{"field":"last_name","order":"asc"}]}}'
             )))
             ->assert();
     }
 
-    public function testTestResendNotificationEmail()
+    public function testResend()
     {
         // Parameters for the API call
         $quickInvoiceId = '11e95f8ec39de8fbdb0a4f1a';
+        $expand = null;
+        $email = null;
+        $sms = null;
 
         // Perform API call
         $result = null;
         try {
-            $result = self::$controller->resendNotificationEmail($quickInvoiceId);
+            $result = self::$controller->resend($quickInvoiceId, $expand, $email, $sms);
         } catch (Exceptions\ApiException $e) {
         }
 
@@ -271,198 +334,14 @@ class QuickInvoicesControllerTest extends BaseTestController
             ->allowExtraHeaders()
             ->expectHeaders($headers)
             ->bodyMatcher(KeysBodyMatcher::init(TestParam::object(
-                '{"type":"QuickInvoice","data":{"location_id":"11e95f8ec39de8fbdb0a4f1a","title' .
-                '":"My terminal","cc_product_transaction_id":"11e95f8ec39de8fbdb0a4f1a","ach_pro' .
-                'duct_transaction_id":"11e95f8ec39de8fbdb0a4f1a","due_date":"2021-12-01","item_l' .
-                'ist":[{"name":"Bread","amount":20.15}],"allow_overpayment":true,"email":"email@' .
-                'domain.com","contact_id":"11e95f8ec39de8fbdb0a4f1a","contact_api_id":"contact12' .
-                '345","customer_id":"11e95f8ec39de8fbdb0a4f1a","expire_date":"2021-12-01","allow' .
-                '_partial_pay":true,"attach_files_to_email":true,"send_email":true,"invoice_numb' .
-                'er":"invoice12345","item_header":"Quick invoice header sample","item_footer":"T' .
-                'hank you","amount_due":245.36,"notification_email":"email@domain.com","payment_' .
-                'status_id":1,"status_id":1,"note":"some note","notification_days_before_due_dat' .
-                'e":3,"notification_days_after_due_date":7,"notification_on_due_date":true,"send' .
-                '_text_to_pay":true,"files":[{"file":{},"resource_id":"11e95f8ec39de8fbdb0a4f1a"' .
-                ',"resource":"Contact","product_file_id":"11e95f8ec39de8fbdb0a4f1a","file_catego' .
-                'ry_id":"11e95f8ec39de8fbdb0a4f1a","visibility_group_id":"11e95f8ec39de8fbdb0a4f' .
-                '1a","id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"modified_ts":14220' .
-                '40992}],"remaining_balance":245.36,"single_payment_min_amount":5,"single_paymen' .
-                't_max_amount":5000,"cell_phone":"3339998822","id":"11e95f8ec39de8fbdb0a4f1a","c' .
-                'reated_ts":1422040992,"modified_ts":1422040992,"created_user_id":"11e95f8ec39de' .
-                '8fbdb0a4f1a","modified_user_id":"11e95f8ec39de8fbdb0a4f1a","active":true,"is_ac' .
-                'tive":true,"quick_invoice_setting":{"location_api_id":"11e95f8ec39de8fbdb0a4f1a' .
-                '","location_id":"11e95f8ec39de8fbdb0a4f1a","quick_invoice_template":"<html>Temp' .
-                'late<html>","default_allow_partial_pay":true,"default_notification_on_due_date"' .
-                ':true,"default_notification_days_after_due_date":7,"default_notification_days_b' .
-                'efore_due_date":3,"id":"11e95f8ec39de8fbdb0a4f1a"},"tags":[{"location_id":"11e9' .
-                '5f8ec39de8fbdb0a4f1a","title":"My terminal","id":"11e95f8ec39de8fbdb0a4f1a","cr' .
-                'eated_ts":1422040992,"modified_ts":1422040992}],"quick_invoice_views":[{"id":"1' .
-                '1e95f8ec39de8fbdb0a4f1a","quick_invoice_id":"Quick Invoice ID","created_ts":142' .
-                '2040992}],"location":{"id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"' .
-                'modified_ts":1422040992,"account_number":"5454545454545454","address":{"city":"' .
-                'Novi","state":"MI","postal_code":"48375","country":"US","street":"43155 Main St' .
-                'reet STE 2310-C","street2":"43155 Main Street STE 2310-C"},"branding_domain_id"' .
-                ':"11e95f8ec39de8fbdb0a4f1a","contact_email_trx_receipt_default":true,"default_a' .
-                'ch":"11e608a7d515f1e093242bb2","default_cc":"11e608a442a5f1e092242dda","develop' .
-                'er_company_id":"11e95f8ec39de8fbdb0a4f1a","email_reply_to":"email@domain.com","' .
-                'fax":"3339998822","location_api_id":"location-111111","location_api_key":"AE34B' .
-                'BCAADF4AE34BBCAADF4","location_c1":"custom 1","location_c2":"custom 2","locatio' .
-                'n_c3":"custom data 3","name":"Sample Company Headquarters","office_phone":"2481' .
-                '234567","office_ext_phone":"1021021209","recurring_notification_days_default":0' .
-                ',"tz":"America/New_York","parent_id":"11e95f8ec39de8fbdb0a4f1a","ticket_hash_ke' .
-                'y":"A5F443CADF4AE34BBCAADF4"},"created_user":{"account_number":"545454545454545' .
-                '4","address":"43155 Main Street STE 2310-C","branding_domain_url":"{branding_do' .
-                'main_url}","cell_phone":"3339998822","city":"Novi","company_name":"Fortis Payme' .
-                'nt Systems, LLC","contact_id":"11e95f8ec39de8fbdb0a4f1a","date_of_birth":"2021-' .
-                '12-01","domain_id":"11e95f8ec39de8fbdb0a4f1a","email":"email@domain.com","email' .
-                '_trx_receipt":true,"home_phone":"3339998822","first_name":"John","last_name":"S' .
-                'mith","locale":"en-US","office_phone":"3339998822","office_ext_phone":"5","prim' .
-                'ary_location_id":"11e95f8ec39de8fbdb0a4f1a","requires_new_password":null,"state' .
-                '":"Michigan","terms_condition_code":"20220308","tz":"America/New_York","ui_pref' .
-                's":{"entry_page":"dashboard","page_size":2,"report_export_type":"csv","process_' .
-                'method":"virtual_terminal","default_terminal":"11e95f8ec39de8fbdb0a4f1a"},"user' .
-                'name":"{user_name}","user_api_key":"234bas8dfn8238f923w2","user_hash_key":null,' .
-                '"user_type_code":100,"password":null,"zip":"48375","location_id":"11e95f8ec39de' .
-                '8fbdb0a4f1a","status_id":true,"id":"11e95f8ec39de8fbdb0a4f1a","status":true,"lo' .
-                'gin_attempts":0,"last_login_ts":1422040992,"created_ts":1422040992,"modified_ts' .
-                '":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","terms_accepted_ts":1' .
-                '422040992,"terms_agree_ip":"192.168.0.10","current_date_time":"2019-03-11T10:38' .
-                ':26-0700"},"modified_user":{"account_number":"5454545454545454","address":"4315' .
-                '5 Main Street STE 2310-C","branding_domain_url":"{branding_domain_url}","cell_p' .
-                'hone":"3339998822","city":"Novi","company_name":"Fortis Payment Systems, LLC","' .
-                'contact_id":"11e95f8ec39de8fbdb0a4f1a","date_of_birth":"2021-12-01","domain_id"' .
-                ':"11e95f8ec39de8fbdb0a4f1a","email":"email@domain.com","email_trx_receipt":true' .
-                ',"home_phone":"3339998822","first_name":"John","last_name":"Smith","locale":"en' .
-                '-US","office_phone":"3339998822","office_ext_phone":"5","primary_location_id":"' .
-                '11e95f8ec39de8fbdb0a4f1a","requires_new_password":null,"state":"Michigan","term' .
-                's_condition_code":"20220308","tz":"America/New_York","ui_prefs":{"entry_page":"' .
-                'dashboard","page_size":2,"report_export_type":"csv","process_method":"virtual_t' .
-                'erminal","default_terminal":"11e95f8ec39de8fbdb0a4f1a"},"username":"{user_name}' .
-                '","user_api_key":"234bas8dfn8238f923w2","user_hash_key":null,"user_type_code":1' .
-                '00,"password":null,"zip":"48375","location_id":"11e95f8ec39de8fbdb0a4f1a","stat' .
-                'us_id":true,"id":"11e95f8ec39de8fbdb0a4f1a","status":true,"login_attempts":0,"l' .
-                'ast_login_ts":1422040992,"created_ts":1422040992,"modified_ts":1422040992,"crea' .
-                'ted_user_id":"11e95f8ec39de8fbdb0a4f1a","terms_accepted_ts":1422040992,"terms_a' .
-                'gree_ip":"192.168.0.10","current_date_time":"2019-03-11T10:38:26-0700"},"change' .
-                'logs":[{"id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"action":"CREAT' .
-                'E","model":"TransactionRequest","model_id":"11ec829598f0d4008be9aba4","user_id"' .
-                ':"11e95f8ec39de8fbdb0a4f1a","changelog_details":[{"id":"11e95f8ec39de8fbdb0a4f1' .
-                'a","changelog_id":"11e95f8ec39de8fbdb0a4f1a","field":"next_run_ts","old_value":' .
-                '"1643616000"}],"user":{"id":"11e95f8ec39de8fbdb0a4f1a","username":"email@domain' .
-                '.com","first_name":"Bob","last_name":"Fairview"}}],"contact":{"location_id":"11' .
-                'e95f8ec39de8fbdb0a4f1a","account_number":"54545433332","contact_api_id":"137","' .
-                'first_name":"John","last_name":"Smith","cell_phone":"3339998822","balance":245.' .
-                '36,"address":{"city":"Novi","state":"Michigan","postal_code":"48375","country":' .
-                '"US","street":"43155 Main Street STE 2310-C"},"company_name":"Fortis Payment Sy' .
-                'stems, LLC","header_message":"This is a sample message for you","date_of_birth"' .
-                ':"2021-12-01","email_trx_receipt":true,"home_phone":"3339998822","office_phone"' .
-                ':"3339998822","office_phone_ext":"5","header_message_type":0,"update_if_exists"' .
-                ':1,"contact_c1":"any","contact_c2":"anything","contact_c3":"something","parent_' .
-                'id":"11e95f8ec39de8fbdb0a4f1a","email":"email@domain.com","id":"11e95f8ec39de8f' .
-                'bdb0a4f1a","created_ts":1422040992,"modified_ts":1422040992,"active":true},"log' .
-                '_emails":[{"subject":"Payment Receipt - 12skiestech","body":"This email is bein' .
-                'g sent from a server.","source_address":"\\"12skiestech A7t3qi\\" <noreply@zeam' .
-                'ster.email>","return_path":"\\"12skiestech A7t3qi\\" <noreply@zeamster.email>",' .
-                '"provider_id":"0100017e67bcc530-e1dd23b4-8a39-4a5b-8d5d-68d51c4c942f-000000","d' .
-                'omain_id":"11e95f8ec39de8fbdb0a4f1a","reason_sent":"Contact Email","reason_mode' .
-                'l":"Transaction","reason_model_id":"11e95f8ec39de8fbdb0a4f1a","reply_to":"\\"Ze' .
-                'amster\\" <emma.p@zeamster.com>","id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1' .
-                '422040992}],"log_sms":{"id":"11e95f8ec39de8fbdb0a4f1a","body":" ","reason_model' .
-                '":" ","reason_model_id":" ","provider_id":" ","status":" ","sender":" ","recipi' .
-                'ent":" ","created_ts":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a"},' .
-                '"transactions":[{"additional_amounts":[{"type":"cashback","amount":10,"account_' .
-                'type":"credit","currency":840}],"billing_address":{"city":"Novi","state":"Michi' .
-                'gan","postal_code":"48375","street":"43155 Main Street STE 2310-C","phone":"333' .
-                '9998822"},"checkin_date":"2021-12-01","checkout_date":"2021-12-01","clerk_numbe' .
-                'r":"AE1234","contact_id":"11e95f8ec39de8fbdb0a4f1a","custom_data":{},"customer_' .
-                'id":"customerid","description":"some description","identity_verification":{"dl_' .
-                'state":"MI","dl_number":"1235567","dob_year":"1980"},"iias_ind":1,"image_front"' .
-                ':"U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=","image_back":"U29tZVN0cmluZ' .
-                '09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=","installment":true,"installment_number":1,' .
-                '"installment_count":1,"location_api_id":"location-api-id-florida-2","location_i' .
-                'd":"11e95f8ec39de8fbdb0a4f1a","product_transaction_id":"11e95f8ec39de8fbdb0a4f1' .
-                'a","advance_deposit":false,"no_show":false,"notification_email_address":"johnsm' .
-                'ith@smiths.com","order_number":"433659378839","po_number":"555555553123","quick' .
-                '_invoice_id":"11e95f8ec39de8fbdb0a4f1a","recurring":false,"recurring_number":1,' .
-                '"room_num":"303","room_rate":95,"save_account":false,"save_account_title":"John' .
-                ' Account","subtotal_amount":599,"surcharge_amount":100,"tags":["Walk-in Custome' .
-                'r"],"tax":0,"tip_amount":0,"transaction_amount":0,"secondary_amount":0,"transac' .
-                'tion_api_id":"transaction-payment-abcd123","transaction_c1":"custom-data-1","tr' .
-                'ansaction_c2":"custom-data-2","transaction_c3":"custom-data-3","bank_funded_onl' .
-                'y_override":false,"id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"modi' .
-                'fied_ts":1422040992,"terminal_id":"11e95f8ec39de8fbdb0a4f1a","account_holder_na' .
-                'me":"smith","account_type":"checking","token_id":"11e95f8ec39de8fbdb0a4f1a","ac' .
-                'h_identifier":"P","ach_sec_code":"C21","auth_amount":1,"auth_code":"BR349K","av' .
-                's":"BAD","avs_enhanced":"N","cardholder_present":true,"card_present":true,"chec' .
-                'k_number":"8520748520963","customer_ip":"192.168.0.10","cvv_response":"N","entr' .
-                'y_mode_id":"C","emv_receipt_data":{"AID":"a0000000042203","APPLAB":"US Maestro"' .
-                ',"APPN":"US Maestro","CVM":"Pin Verified","TSI":"e800","TVR":"0800008000"},"fir' .
-                'st_six":"545454","last_four":"5454","payment_method":"cc","terminal_serial_numb' .
-                'er":"1234567890","transaction_settlement_status":null,"charge_back_date":"2021-' .
-                '12-01","is_recurring":true,"notification_email_sent":"true","par":"Q1J4Z28RKA1E' .
-                'BL470G9XYG90R5D3E","reason_code_id":1000,"recurring_id":"11e95f8ec39de8fbdb0a4f' .
-                '1a","settle_date":"2021-12-01","status_code":101,"transaction_batch_id":"11e95f' .
-                '8ec39de8fbdb0a4f1a","verbiage":"APPROVED","void_date":"2021-12-01","batch":"2",' .
-                '"terms_agree":true,"response_message":null,"return_date":"2021-12-01","trx_sour' .
-                'ce_id":8}],"cc_product_transaction":{"processor_version":"1_0_0","title":"My te' .
-                'rminal","payment_method":"cc","processor":"zgate","mcc":"1111","tax_surcharge_c' .
-                'onfig":2,"partner":"standalone","location_id":"11e95f8ec39de8fbdb0a4f1a","surch' .
-                'arge":{},"processor_data":{},"vt_clerk_number":true,"vt_billing_phone":true,"vt' .
-                '_enable_tip":true,"ach_allow_debit":true,"ach_allow_credit":true,"ach_allow_ref' .
-                'und":true,"vt_cvv":true,"vt_street":true,"vt_zip":true,"vt_order_num":true,"vt_' .
-                'enable":true,"receipt_show_contact_name":true,"display_avs":true,"card_type_vis' .
-                'a":true,"card_type_mc":true,"card_type_disc":true,"card_type_amex":true,"card_t' .
-                'ype_diners":true,"card_type_jcb":true,"invoice_location":true,"allow_partial_au' .
-                'thorization":true,"allow_recurring_partial_authorization":true,"auto_decline_cv' .
-                'v":true,"auto_decline_street":true,"auto_decline_zip":true,"split_payments_allo' .
-                'w":true,"vt_show_custom_fields":true,"receipt_show_custom_fields":true,"vt_over' .
-                'ride_sales_tax_allowed":true,"vt_enable_sales_tax":true,"vt_require_zip":true,"' .
-                'vt_require_street":true,"auto_decline_cavv":true,"current_batch":34,"dup_check_' .
-                'per_batch":null,"quick_invoice_allow":false,"level3_allow":false,"payfac_enable' .
-                '":false,"sales_office_id":"11e95f8ec39de8fbdb0a4f1a","hosted_payment_page_allow' .
-                '":false,"surcharge_id":"11e95f8ec39de8fbdb0a4f1a","level3_default":null,"cau_su' .
-                'bscribe_type_id":0,"location_billing_account_id":"11eb88b873980c64a21e5fd2","pr' .
-                'oduct_billing_group_id":"nofees","account_number":"12345678","run_avs_on_accoun' .
-                'tvault_create":false,"accountvault_expire_notification_email_enable":false,"deb' .
-                'it_allow_void":false,"quick_invoice_text_to_pay":false,"sms_enable":false,"vt_s' .
-                'how_currency":true,"receipt_show_currency":false,"allow_blind_refund":false,"vt' .
-                '_show_company_name":false,"receipt_show_company_name":false,"bank_funded_only":' .
-                'false,"id":"11e95f8ec39de8fbdb0a4f1a","active":true,"created_ts":1422040992,"mo' .
-                'dified_ts":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","modified_us' .
-                'er_id":"11e95f8ec39de8fbdb0a4f1a"},"ach_product_transaction":{"processor_versio' .
-                'n":"1_0_0","title":"My terminal","payment_method":"cc","processor":"zgate","mcc' .
-                '":"1111","tax_surcharge_config":2,"partner":"standalone","location_id":"11e95f8' .
-                'ec39de8fbdb0a4f1a","surcharge":{},"processor_data":{},"vt_clerk_number":true,"v' .
-                't_billing_phone":true,"vt_enable_tip":true,"ach_allow_debit":true,"ach_allow_cr' .
-                'edit":true,"ach_allow_refund":true,"vt_cvv":true,"vt_street":true,"vt_zip":true' .
-                ',"vt_order_num":true,"vt_enable":true,"receipt_show_contact_name":true,"display' .
-                '_avs":true,"card_type_visa":true,"card_type_mc":true,"card_type_disc":true,"car' .
-                'd_type_amex":true,"card_type_diners":true,"card_type_jcb":true,"invoice_locatio' .
-                'n":true,"allow_partial_authorization":true,"allow_recurring_partial_authorizati' .
-                'on":true,"auto_decline_cvv":true,"auto_decline_street":true,"auto_decline_zip":' .
-                'true,"split_payments_allow":true,"vt_show_custom_fields":true,"receipt_show_cus' .
-                'tom_fields":true,"vt_override_sales_tax_allowed":true,"vt_enable_sales_tax":tru' .
-                'e,"vt_require_zip":true,"vt_require_street":true,"auto_decline_cavv":true,"curr' .
-                'ent_batch":34,"dup_check_per_batch":null,"quick_invoice_allow":false,"level3_al' .
-                'low":false,"payfac_enable":false,"sales_office_id":"11e95f8ec39de8fbdb0a4f1a","' .
-                'hosted_payment_page_allow":false,"surcharge_id":"11e95f8ec39de8fbdb0a4f1a","lev' .
-                'el3_default":null,"cau_subscribe_type_id":0,"location_billing_account_id":"11eb' .
-                '88b873980c64a21e5fd2","product_billing_group_id":"nofees","account_number":"123' .
-                '45678","run_avs_on_accountvault_create":false,"accountvault_expire_notification' .
-                '_email_enable":false,"debit_allow_void":false,"quick_invoice_text_to_pay":false' .
-                ',"sms_enable":false,"vt_show_currency":true,"receipt_show_currency":false,"allo' .
-                'w_blind_refund":false,"vt_show_company_name":false,"receipt_show_company_name":' .
-                'false,"bank_funded_only":false,"id":"11e95f8ec39de8fbdb0a4f1a","active":true,"c' .
-                'reated_ts":1422040992,"modified_ts":1422040992,"created_user_id":"11e95f8ec39de' .
-                '8fbdb0a4f1a","modified_user_id":"11e95f8ec39de8fbdb0a4f1a"},"email_blacklist":{' .
-                '"id":"11e95f8ec39de8fbdb0a4f1a","isBlacklisted":true,"detail":true,"created_ts"' .
-                ':1422040992},"sms_blacklist":{"id":"11e95f8ec39de8fbdb0a4f1a","isBlacklisted":t' .
-                'rue,"detail":true,"created_ts":1422040992}}}'
+                '{"type":"QuickInvoiceResend","data":{"id":"11e95f8ec39de8fbdb0a4f1a","email_lo' .
+                'g_id":"11e95f8ec39de8fbdb0a4f1a","sms_log_id":"11e95f8ec39de8fbdb0a4f1a","succe' .
+                'ss":true,"sms_success":true,"email":"email@domain.com"}}'
             )))
             ->assert();
     }
 
-    public function testTestDeleteQuickInvoice()
+    public function testDeleteQuickInvoice()
     {
         // Parameters for the API call
         $quickInvoiceId = '11e95f8ec39de8fbdb0a4f1a';
@@ -486,204 +365,254 @@ class QuickInvoicesControllerTest extends BaseTestController
                 '{"type":"QuickInvoice","data":{"location_id":"11e95f8ec39de8fbdb0a4f1a","title' .
                 '":"My terminal","cc_product_transaction_id":"11e95f8ec39de8fbdb0a4f1a","ach_pro' .
                 'duct_transaction_id":"11e95f8ec39de8fbdb0a4f1a","due_date":"2021-12-01","item_l' .
-                'ist":[{"name":"Bread","amount":20.15}],"allow_overpayment":true,"email":"email@' .
-                'domain.com","contact_id":"11e95f8ec39de8fbdb0a4f1a","contact_api_id":"contact12' .
-                '345","customer_id":"11e95f8ec39de8fbdb0a4f1a","expire_date":"2021-12-01","allow' .
-                '_partial_pay":true,"attach_files_to_email":true,"send_email":true,"invoice_numb' .
-                'er":"invoice12345","item_header":"Quick invoice header sample","item_footer":"T' .
-                'hank you","amount_due":245.36,"notification_email":"email@domain.com","payment_' .
-                'status_id":1,"status_id":1,"note":"some note","notification_days_before_due_dat' .
-                'e":3,"notification_days_after_due_date":7,"notification_on_due_date":true,"send' .
-                '_text_to_pay":true,"files":[{"file":{},"resource_id":"11e95f8ec39de8fbdb0a4f1a"' .
-                ',"resource":"Contact","product_file_id":"11e95f8ec39de8fbdb0a4f1a","file_catego' .
-                'ry_id":"11e95f8ec39de8fbdb0a4f1a","visibility_group_id":"11e95f8ec39de8fbdb0a4f' .
+                'ist":[{"name":"Bread","amount":2015}],"allow_overpayment":true,"bank_funded_onl' .
+                'y_override":true,"email":"email@domain.com","contact_id":"11e95f8ec39de8fbdb0a4' .
+                'f1a","contact_api_id":"contact12345","quick_invoice_api_id":"quickinvoice12345"' .
+                ',"customer_id":"11e95f8ec39de8fbdb0a4f1a","expire_date":"2021-12-01","allow_par' .
+                'tial_pay":true,"attach_files_to_email":true,"send_email":true,"invoice_number":' .
+                '"invoice12345","item_header":"Quick invoice header sample","item_footer":"Thank' .
+                ' you","amount_due":245.36,"notification_email":"email@domain.com","status_id":1' .
+                ',"status_code":1,"note":"some note","notification_days_before_due_date":3,"noti' .
+                'fication_days_after_due_date":7,"notification_on_due_date":true,"send_text_to_p' .
+                'ay":true,"files":[{"file":{},"resource_id":"11e95f8ec39de8fbdb0a4f1a","resource' .
+                '":"Contact","product_file_id":"11e95f8ec39de8fbdb0a4f1a","file_category_id":"11' .
+                'e95f8ec39de8fbdb0a4f1a","visibility_group_id":"11e95f8ec39de8fbdb0a4f1a","id":"' .
+                '11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"modified_ts":1422040992,"cre' .
+                'ated_user_id":"11e95f8ec39de8fbdb0a4f1a"}],"remaining_balance":245.36,"single_p' .
+                'ayment_min_amount":500,"single_payment_max_amount":500000,"cell_phone":"3339998' .
+                '822","tags":[{"location_id":"11e95f8ec39de8fbdb0a4f1a","title":"My terminal","i' .
+                'd":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"modified_ts":1422040992}' .
+                '],"quick_invoice_c1":"custom-data-1","quick_invoice_c2":"custom-data-2","quick_' .
+                'invoice_c3":"custom-data-3","auto_reopen":true,"id":"11e95f8ec39de8fbdb0a4f1a",' .
+                '"created_ts":1422040992,"modified_ts":1422040992,"created_user_id":"11e95f8ec39' .
+                'de8fbdb0a4f1a","modified_user_id":"11e95f8ec39de8fbdb0a4f1a","active":true,"pay' .
+                'ment_status_id":1,"is_active":true,"quick_invoice_setting":{"location_api_id":"' .
+                '11e95f8ec39de8fbdb0a4f1a","location_id":"11e95f8ec39de8fbdb0a4f1a","quick_invoi' .
+                'ce_template":"<html>Template<html>","default_allow_partial_pay":true,"default_n' .
+                'otification_on_due_date":true,"default_notification_days_after_due_date":7,"def' .
+                'ault_notification_days_before_due_date":3,"show_custom_fields":false,"id":"11e9' .
+                '5f8ec39de8fbdb0a4f1a"},"quick_invoice_views":[{"id":"11e95f8ec39de8fbdb0a4f1a",' .
+                '"quick_invoice_id":"Quick Invoice ID","created_ts":1422040992}],"location":{"id' .
+                '":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"modified_ts":1422040992,"' .
+                'account_number":"5454545454545454","address":{"city":"Novi","state":"MI","posta' .
+                'l_code":"48375","country":"US"},"branding_domain_id":"11e95f8ec39de8fbdb0a4f1a"' .
+                ',"contact_email_trx_receipt_default":true,"default_ach":"11e608a7d515f1e093242b' .
+                'b2","default_cc":"11e608a442a5f1e092242dda","email_reply_to":"email@domain.com"' .
+                ',"fax":"3339998822","location_api_id":"location-111111","location_api_key":"AE3' .
+                '4BBCAADF4AE34BBCAADF4","location_c1":"custom 1","location_c2":"custom 2","locat' .
+                'ion_c3":"custom data 3","name":"Sample Company Headquarters","office_phone":"24' .
+                '81234567","office_ext_phone":"1021021209","tz":"America/New_York","parent_id":"' .
+                '11e95f8ec39de8fbdb0a4f1a","show_contact_notes":true,"show_contact_files":true,"' .
+                'created_user_id":"11e95f8ec39de8fbdb0a4f1a","location_type":"merchant","ticket_' .
+                'hash_key":"A5F443CADF4AE34BBCAADF4","additional_access":{}},"created_user":{"ac' .
+                'count_number":"5454545454545454","branding_domain_url":"{branding_domain_url}",' .
+                '"cell_phone":"3339998822","company_name":"Fortis Payment Systems, LLC","contact' .
+                '_id":"11e95f8ec39de8fbdb0a4f1a","date_of_birth":"2021-12-01","domain_id":"11e95' .
+                'f8ec39de8fbdb0a4f1a","email":"email@domain.com","email_trx_receipt":true,"home_' .
+                'phone":"3339998822","first_name":"John","last_name":"Smith","locale":"en-US","o' .
+                'ffice_phone":"3339998822","office_ext_phone":"5","primary_location_id":"11e95f8' .
+                'ec39de8fbdb0a4f1a","requires_new_password":null,"terms_condition_code":"2022030' .
+                '8","tz":"America/New_York","ui_prefs":{"entry_page":"dashboard","page_size":2,"' .
+                'report_export_type":"csv","process_method":"virtual_terminal","default_terminal' .
+                '":"11e95f8ec39de8fbdb0a4f1a"},"username":"{user_name}","user_api_key":"234bas8d' .
+                'fn8238f923w2","user_hash_key":null,"user_type_code":100,"password":null,"zip":"' .
+                '48375","location_id":"11e95f8ec39de8fbdb0a4f1a","status_code":1,"api_only":fals' .
+                'e,"is_invitation":false,"address":{"city":"Novi","state":"MI","postal_code":"48' .
+                '375","country":"US"},"id":"11e95f8ec39de8fbdb0a4f1a","status":true,"login_attem' .
+                'pts":0,"last_login_ts":1422040992,"created_ts":1422040992,"modified_ts":1422040' .
+                '992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","terms_accepted_ts":1422040992' .
+                ',"terms_agree_ip":"192.168.0.10","current_date_time":"2019-03-11T10:38:26-0700"' .
+                ',"current_login":1422040992,"log_api_response_body_ts":1422040992},"modified_us' .
+                'er":{"account_number":"5454545454545454","branding_domain_url":"{branding_domai' .
+                'n_url}","cell_phone":"3339998822","company_name":"Fortis Payment Systems, LLC",' .
+                '"contact_id":"11e95f8ec39de8fbdb0a4f1a","date_of_birth":"2021-12-01","domain_id' .
+                '":"11e95f8ec39de8fbdb0a4f1a","email":"email@domain.com","email_trx_receipt":tru' .
+                'e,"home_phone":"3339998822","first_name":"John","last_name":"Smith","locale":"e' .
+                'n-US","office_phone":"3339998822","office_ext_phone":"5","primary_location_id":' .
+                '"11e95f8ec39de8fbdb0a4f1a","requires_new_password":null,"terms_condition_code":' .
+                '"20220308","tz":"America/New_York","ui_prefs":{"entry_page":"dashboard","page_s' .
+                'ize":2,"report_export_type":"csv","process_method":"virtual_terminal","default_' .
+                'terminal":"11e95f8ec39de8fbdb0a4f1a"},"username":"{user_name}","user_api_key":"' .
+                '234bas8dfn8238f923w2","user_hash_key":null,"user_type_code":100,"password":null' .
+                ',"zip":"48375","location_id":"11e95f8ec39de8fbdb0a4f1a","status_code":1,"api_on' .
+                'ly":false,"is_invitation":false,"address":{"city":"Novi","state":"MI","postal_c' .
+                'ode":"48375","country":"US"},"id":"11e95f8ec39de8fbdb0a4f1a","status":true,"log' .
+                'in_attempts":0,"last_login_ts":1422040992,"created_ts":1422040992,"modified_ts"' .
+                ':1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","terms_accepted_ts":14' .
+                '22040992,"terms_agree_ip":"192.168.0.10","current_date_time":"2019-03-11T10:38:' .
+                '26-0700","current_login":1422040992,"log_api_response_body_ts":1422040992},"cha' .
+                'ngelogs":[{"id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"action":"CR' .
+                'EATE","model":"TransactionRequest","model_id":"11ec829598f0d4008be9aba4","user_' .
+                'id":"11e95f8ec39de8fbdb0a4f1a","changelog_details":[{"id":"11e95f8ec39de8fbdb0a' .
+                '4f1a","changelog_id":"11e95f8ec39de8fbdb0a4f1a","field":"next_run_ts","old_valu' .
+                'e":"1643616000"}],"user":{"id":"11e95f8ec39de8fbdb0a4f1a","username":"email@dom' .
+                'ain.com","first_name":"Bob","last_name":"Fairview"}}],"contact":{"location_id":' .
+                '"11e95f8ec39de8fbdb0a4f1a","account_number":"54545433332","contact_api_id":"137' .
+                '","first_name":"John","last_name":"Smith","cell_phone":"3339998822","balance":2' .
+                '45.36,"address":{"city":"Novi","state":"Michigan","postal_code":"48375","countr' .
+                'y":"USA"},"company_name":"Fortis Payment Systems, LLC","header_message":"This i' .
+                's a sample message for you","date_of_birth":"2021-12-01","email_trx_receipt":tr' .
+                'ue,"home_phone":"3339998822","office_phone":"3339998822","office_phone_ext":"5"' .
+                ',"home_phone_country_code":"+1","office_phone_country_code":"+1","cell_phone_co' .
+                'untry_code":"+1","header_message_type":0,"update_if_exists":1,"contact_c1":"any' .
+                '","contact_c2":"anything","contact_c3":"something","parent_id":"11e95f8ec39de8f' .
+                'bdb0a4f1a","email":"email@domain.com","token_import_id":"11e95f8ec39de8fbdb0a4f' .
                 '1a","id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"modified_ts":14220' .
-                '40992}],"remaining_balance":245.36,"single_payment_min_amount":5,"single_paymen' .
-                't_max_amount":5000,"cell_phone":"3339998822","id":"11e95f8ec39de8fbdb0a4f1a","c' .
-                'reated_ts":1422040992,"modified_ts":1422040992,"created_user_id":"11e95f8ec39de' .
-                '8fbdb0a4f1a","modified_user_id":"11e95f8ec39de8fbdb0a4f1a","active":true,"is_ac' .
-                'tive":true,"quick_invoice_setting":{"location_api_id":"11e95f8ec39de8fbdb0a4f1a' .
-                '","location_id":"11e95f8ec39de8fbdb0a4f1a","quick_invoice_template":"<html>Temp' .
-                'late<html>","default_allow_partial_pay":true,"default_notification_on_due_date"' .
-                ':true,"default_notification_days_after_due_date":7,"default_notification_days_b' .
-                'efore_due_date":3,"id":"11e95f8ec39de8fbdb0a4f1a"},"tags":[{"location_id":"11e9' .
-                '5f8ec39de8fbdb0a4f1a","title":"My terminal","id":"11e95f8ec39de8fbdb0a4f1a","cr' .
-                'eated_ts":1422040992,"modified_ts":1422040992}],"quick_invoice_views":[{"id":"1' .
-                '1e95f8ec39de8fbdb0a4f1a","quick_invoice_id":"Quick Invoice ID","created_ts":142' .
-                '2040992}],"location":{"id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"' .
-                'modified_ts":1422040992,"account_number":"5454545454545454","address":{"city":"' .
-                'Novi","state":"MI","postal_code":"48375","country":"US","street":"43155 Main St' .
-                'reet STE 2310-C","street2":"43155 Main Street STE 2310-C"},"branding_domain_id"' .
-                ':"11e95f8ec39de8fbdb0a4f1a","contact_email_trx_receipt_default":true,"default_a' .
-                'ch":"11e608a7d515f1e093242bb2","default_cc":"11e608a442a5f1e092242dda","develop' .
-                'er_company_id":"11e95f8ec39de8fbdb0a4f1a","email_reply_to":"email@domain.com","' .
-                'fax":"3339998822","location_api_id":"location-111111","location_api_key":"AE34B' .
-                'BCAADF4AE34BBCAADF4","location_c1":"custom 1","location_c2":"custom 2","locatio' .
-                'n_c3":"custom data 3","name":"Sample Company Headquarters","office_phone":"2481' .
-                '234567","office_ext_phone":"1021021209","recurring_notification_days_default":0' .
-                ',"tz":"America/New_York","parent_id":"11e95f8ec39de8fbdb0a4f1a","ticket_hash_ke' .
-                'y":"A5F443CADF4AE34BBCAADF4"},"created_user":{"account_number":"545454545454545' .
-                '4","address":"43155 Main Street STE 2310-C","branding_domain_url":"{branding_do' .
-                'main_url}","cell_phone":"3339998822","city":"Novi","company_name":"Fortis Payme' .
-                'nt Systems, LLC","contact_id":"11e95f8ec39de8fbdb0a4f1a","date_of_birth":"2021-' .
-                '12-01","domain_id":"11e95f8ec39de8fbdb0a4f1a","email":"email@domain.com","email' .
-                '_trx_receipt":true,"home_phone":"3339998822","first_name":"John","last_name":"S' .
-                'mith","locale":"en-US","office_phone":"3339998822","office_ext_phone":"5","prim' .
-                'ary_location_id":"11e95f8ec39de8fbdb0a4f1a","requires_new_password":null,"state' .
-                '":"Michigan","terms_condition_code":"20220308","tz":"America/New_York","ui_pref' .
-                's":{"entry_page":"dashboard","page_size":2,"report_export_type":"csv","process_' .
-                'method":"virtual_terminal","default_terminal":"11e95f8ec39de8fbdb0a4f1a"},"user' .
-                'name":"{user_name}","user_api_key":"234bas8dfn8238f923w2","user_hash_key":null,' .
-                '"user_type_code":100,"password":null,"zip":"48375","location_id":"11e95f8ec39de' .
-                '8fbdb0a4f1a","status_id":true,"id":"11e95f8ec39de8fbdb0a4f1a","status":true,"lo' .
-                'gin_attempts":0,"last_login_ts":1422040992,"created_ts":1422040992,"modified_ts' .
-                '":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","terms_accepted_ts":1' .
-                '422040992,"terms_agree_ip":"192.168.0.10","current_date_time":"2019-03-11T10:38' .
-                ':26-0700"},"modified_user":{"account_number":"5454545454545454","address":"4315' .
-                '5 Main Street STE 2310-C","branding_domain_url":"{branding_domain_url}","cell_p' .
-                'hone":"3339998822","city":"Novi","company_name":"Fortis Payment Systems, LLC","' .
-                'contact_id":"11e95f8ec39de8fbdb0a4f1a","date_of_birth":"2021-12-01","domain_id"' .
-                ':"11e95f8ec39de8fbdb0a4f1a","email":"email@domain.com","email_trx_receipt":true' .
-                ',"home_phone":"3339998822","first_name":"John","last_name":"Smith","locale":"en' .
-                '-US","office_phone":"3339998822","office_ext_phone":"5","primary_location_id":"' .
-                '11e95f8ec39de8fbdb0a4f1a","requires_new_password":null,"state":"Michigan","term' .
-                's_condition_code":"20220308","tz":"America/New_York","ui_prefs":{"entry_page":"' .
-                'dashboard","page_size":2,"report_export_type":"csv","process_method":"virtual_t' .
-                'erminal","default_terminal":"11e95f8ec39de8fbdb0a4f1a"},"username":"{user_name}' .
-                '","user_api_key":"234bas8dfn8238f923w2","user_hash_key":null,"user_type_code":1' .
-                '00,"password":null,"zip":"48375","location_id":"11e95f8ec39de8fbdb0a4f1a","stat' .
-                'us_id":true,"id":"11e95f8ec39de8fbdb0a4f1a","status":true,"login_attempts":0,"l' .
-                'ast_login_ts":1422040992,"created_ts":1422040992,"modified_ts":1422040992,"crea' .
-                'ted_user_id":"11e95f8ec39de8fbdb0a4f1a","terms_accepted_ts":1422040992,"terms_a' .
-                'gree_ip":"192.168.0.10","current_date_time":"2019-03-11T10:38:26-0700"},"change' .
-                'logs":[{"id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"action":"CREAT' .
-                'E","model":"TransactionRequest","model_id":"11ec829598f0d4008be9aba4","user_id"' .
-                ':"11e95f8ec39de8fbdb0a4f1a","changelog_details":[{"id":"11e95f8ec39de8fbdb0a4f1' .
-                'a","changelog_id":"11e95f8ec39de8fbdb0a4f1a","field":"next_run_ts","old_value":' .
-                '"1643616000"}],"user":{"id":"11e95f8ec39de8fbdb0a4f1a","username":"email@domain' .
-                '.com","first_name":"Bob","last_name":"Fairview"}}],"contact":{"location_id":"11' .
-                'e95f8ec39de8fbdb0a4f1a","account_number":"54545433332","contact_api_id":"137","' .
-                'first_name":"John","last_name":"Smith","cell_phone":"3339998822","balance":245.' .
-                '36,"address":{"city":"Novi","state":"Michigan","postal_code":"48375","country":' .
-                '"US","street":"43155 Main Street STE 2310-C"},"company_name":"Fortis Payment Sy' .
-                'stems, LLC","header_message":"This is a sample message for you","date_of_birth"' .
-                ':"2021-12-01","email_trx_receipt":true,"home_phone":"3339998822","office_phone"' .
-                ':"3339998822","office_phone_ext":"5","header_message_type":0,"update_if_exists"' .
-                ':1,"contact_c1":"any","contact_c2":"anything","contact_c3":"something","parent_' .
-                'id":"11e95f8ec39de8fbdb0a4f1a","email":"email@domain.com","id":"11e95f8ec39de8f' .
-                'bdb0a4f1a","created_ts":1422040992,"modified_ts":1422040992,"active":true},"log' .
-                '_emails":[{"subject":"Payment Receipt - 12skiestech","body":"This email is bein' .
-                'g sent from a server.","source_address":"\\"12skiestech A7t3qi\\" <noreply@zeam' .
-                'ster.email>","return_path":"\\"12skiestech A7t3qi\\" <noreply@zeamster.email>",' .
-                '"provider_id":"0100017e67bcc530-e1dd23b4-8a39-4a5b-8d5d-68d51c4c942f-000000","d' .
-                'omain_id":"11e95f8ec39de8fbdb0a4f1a","reason_sent":"Contact Email","reason_mode' .
-                'l":"Transaction","reason_model_id":"11e95f8ec39de8fbdb0a4f1a","reply_to":"\\"Ze' .
-                'amster\\" <emma.p@zeamster.com>","id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1' .
-                '422040992}],"log_sms":{"id":"11e95f8ec39de8fbdb0a4f1a","body":" ","reason_model' .
-                '":" ","reason_model_id":" ","provider_id":" ","status":" ","sender":" ","recipi' .
-                'ent":" ","created_ts":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a"},' .
-                '"transactions":[{"additional_amounts":[{"type":"cashback","amount":10,"account_' .
-                'type":"credit","currency":840}],"billing_address":{"city":"Novi","state":"Michi' .
-                'gan","postal_code":"48375","street":"43155 Main Street STE 2310-C","phone":"333' .
-                '9998822"},"checkin_date":"2021-12-01","checkout_date":"2021-12-01","clerk_numbe' .
-                'r":"AE1234","contact_id":"11e95f8ec39de8fbdb0a4f1a","custom_data":{},"customer_' .
-                'id":"customerid","description":"some description","identity_verification":{"dl_' .
-                'state":"MI","dl_number":"1235567","dob_year":"1980"},"iias_ind":1,"image_front"' .
-                ':"U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=","image_back":"U29tZVN0cmluZ' .
-                '09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=","installment":true,"installment_number":1,' .
-                '"installment_count":1,"location_api_id":"location-api-id-florida-2","location_i' .
-                'd":"11e95f8ec39de8fbdb0a4f1a","product_transaction_id":"11e95f8ec39de8fbdb0a4f1' .
-                'a","advance_deposit":false,"no_show":false,"notification_email_address":"johnsm' .
-                'ith@smiths.com","order_number":"433659378839","po_number":"555555553123","quick' .
-                '_invoice_id":"11e95f8ec39de8fbdb0a4f1a","recurring":false,"recurring_number":1,' .
-                '"room_num":"303","room_rate":95,"save_account":false,"save_account_title":"John' .
-                ' Account","subtotal_amount":599,"surcharge_amount":100,"tags":["Walk-in Custome' .
-                'r"],"tax":0,"tip_amount":0,"transaction_amount":0,"secondary_amount":0,"transac' .
-                'tion_api_id":"transaction-payment-abcd123","transaction_c1":"custom-data-1","tr' .
-                'ansaction_c2":"custom-data-2","transaction_c3":"custom-data-3","bank_funded_onl' .
-                'y_override":false,"id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"modi' .
-                'fied_ts":1422040992,"terminal_id":"11e95f8ec39de8fbdb0a4f1a","account_holder_na' .
-                'me":"smith","account_type":"checking","token_id":"11e95f8ec39de8fbdb0a4f1a","ac' .
-                'h_identifier":"P","ach_sec_code":"C21","auth_amount":1,"auth_code":"BR349K","av' .
-                's":"BAD","avs_enhanced":"N","cardholder_present":true,"card_present":true,"chec' .
-                'k_number":"8520748520963","customer_ip":"192.168.0.10","cvv_response":"N","entr' .
-                'y_mode_id":"C","emv_receipt_data":{"AID":"a0000000042203","APPLAB":"US Maestro"' .
-                ',"APPN":"US Maestro","CVM":"Pin Verified","TSI":"e800","TVR":"0800008000"},"fir' .
-                'st_six":"545454","last_four":"5454","payment_method":"cc","terminal_serial_numb' .
-                'er":"1234567890","transaction_settlement_status":null,"charge_back_date":"2021-' .
-                '12-01","is_recurring":true,"notification_email_sent":"true","par":"Q1J4Z28RKA1E' .
-                'BL470G9XYG90R5D3E","reason_code_id":1000,"recurring_id":"11e95f8ec39de8fbdb0a4f' .
-                '1a","settle_date":"2021-12-01","status_code":101,"transaction_batch_id":"11e95f' .
-                '8ec39de8fbdb0a4f1a","verbiage":"APPROVED","void_date":"2021-12-01","batch":"2",' .
-                '"terms_agree":true,"response_message":null,"return_date":"2021-12-01","trx_sour' .
-                'ce_id":8}],"cc_product_transaction":{"processor_version":"1_0_0","title":"My te' .
-                'rminal","payment_method":"cc","processor":"zgate","mcc":"1111","tax_surcharge_c' .
-                'onfig":2,"partner":"standalone","location_id":"11e95f8ec39de8fbdb0a4f1a","surch' .
-                'arge":{},"processor_data":{},"vt_clerk_number":true,"vt_billing_phone":true,"vt' .
-                '_enable_tip":true,"ach_allow_debit":true,"ach_allow_credit":true,"ach_allow_ref' .
-                'und":true,"vt_cvv":true,"vt_street":true,"vt_zip":true,"vt_order_num":true,"vt_' .
-                'enable":true,"receipt_show_contact_name":true,"display_avs":true,"card_type_vis' .
-                'a":true,"card_type_mc":true,"card_type_disc":true,"card_type_amex":true,"card_t' .
-                'ype_diners":true,"card_type_jcb":true,"invoice_location":true,"allow_partial_au' .
-                'thorization":true,"allow_recurring_partial_authorization":true,"auto_decline_cv' .
-                'v":true,"auto_decline_street":true,"auto_decline_zip":true,"split_payments_allo' .
-                'w":true,"vt_show_custom_fields":true,"receipt_show_custom_fields":true,"vt_over' .
-                'ride_sales_tax_allowed":true,"vt_enable_sales_tax":true,"vt_require_zip":true,"' .
-                'vt_require_street":true,"auto_decline_cavv":true,"current_batch":34,"dup_check_' .
-                'per_batch":null,"quick_invoice_allow":false,"level3_allow":false,"payfac_enable' .
-                '":false,"sales_office_id":"11e95f8ec39de8fbdb0a4f1a","hosted_payment_page_allow' .
-                '":false,"surcharge_id":"11e95f8ec39de8fbdb0a4f1a","level3_default":null,"cau_su' .
-                'bscribe_type_id":0,"location_billing_account_id":"11eb88b873980c64a21e5fd2","pr' .
-                'oduct_billing_group_id":"nofees","account_number":"12345678","run_avs_on_accoun' .
-                'tvault_create":false,"accountvault_expire_notification_email_enable":false,"deb' .
-                'it_allow_void":false,"quick_invoice_text_to_pay":false,"sms_enable":false,"vt_s' .
-                'how_currency":true,"receipt_show_currency":false,"allow_blind_refund":false,"vt' .
-                '_show_company_name":false,"receipt_show_company_name":false,"bank_funded_only":' .
-                'false,"id":"11e95f8ec39de8fbdb0a4f1a","active":true,"created_ts":1422040992,"mo' .
-                'dified_ts":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","modified_us' .
-                'er_id":"11e95f8ec39de8fbdb0a4f1a"},"ach_product_transaction":{"processor_versio' .
-                'n":"1_0_0","title":"My terminal","payment_method":"cc","processor":"zgate","mcc' .
-                '":"1111","tax_surcharge_config":2,"partner":"standalone","location_id":"11e95f8' .
-                'ec39de8fbdb0a4f1a","surcharge":{},"processor_data":{},"vt_clerk_number":true,"v' .
-                't_billing_phone":true,"vt_enable_tip":true,"ach_allow_debit":true,"ach_allow_cr' .
-                'edit":true,"ach_allow_refund":true,"vt_cvv":true,"vt_street":true,"vt_zip":true' .
-                ',"vt_order_num":true,"vt_enable":true,"receipt_show_contact_name":true,"display' .
-                '_avs":true,"card_type_visa":true,"card_type_mc":true,"card_type_disc":true,"car' .
-                'd_type_amex":true,"card_type_diners":true,"card_type_jcb":true,"invoice_locatio' .
-                'n":true,"allow_partial_authorization":true,"allow_recurring_partial_authorizati' .
-                'on":true,"auto_decline_cvv":true,"auto_decline_street":true,"auto_decline_zip":' .
-                'true,"split_payments_allow":true,"vt_show_custom_fields":true,"receipt_show_cus' .
-                'tom_fields":true,"vt_override_sales_tax_allowed":true,"vt_enable_sales_tax":tru' .
-                'e,"vt_require_zip":true,"vt_require_street":true,"auto_decline_cavv":true,"curr' .
-                'ent_batch":34,"dup_check_per_batch":null,"quick_invoice_allow":false,"level3_al' .
-                'low":false,"payfac_enable":false,"sales_office_id":"11e95f8ec39de8fbdb0a4f1a","' .
-                'hosted_payment_page_allow":false,"surcharge_id":"11e95f8ec39de8fbdb0a4f1a","lev' .
-                'el3_default":null,"cau_subscribe_type_id":0,"location_billing_account_id":"11eb' .
-                '88b873980c64a21e5fd2","product_billing_group_id":"nofees","account_number":"123' .
-                '45678","run_avs_on_accountvault_create":false,"accountvault_expire_notification' .
-                '_email_enable":false,"debit_allow_void":false,"quick_invoice_text_to_pay":false' .
-                ',"sms_enable":false,"vt_show_currency":true,"receipt_show_currency":false,"allo' .
-                'w_blind_refund":false,"vt_show_company_name":false,"receipt_show_company_name":' .
-                'false,"bank_funded_only":false,"id":"11e95f8ec39de8fbdb0a4f1a","active":true,"c' .
-                'reated_ts":1422040992,"modified_ts":1422040992,"created_user_id":"11e95f8ec39de' .
-                '8fbdb0a4f1a","modified_user_id":"11e95f8ec39de8fbdb0a4f1a"},"email_blacklist":{' .
-                '"id":"11e95f8ec39de8fbdb0a4f1a","isBlacklisted":true,"detail":true,"created_ts"' .
-                ':1422040992},"sms_blacklist":{"id":"11e95f8ec39de8fbdb0a4f1a","isBlacklisted":t' .
-                'rue,"detail":true,"created_ts":1422040992}}}'
+                '40992,"active":true,"created_user_id":"11e95f8ec39de8fbdb0a4f1a"},"log_emails":' .
+                '[{"subject":"Payment Receipt - 12skiestech","body":"This email is being sent fr' .
+                'om a server.","source_address":"\\"12skiestech A7t3qi\\" <noreply@zeamster.emai' .
+                'l>","return_path":"\\"12skiestech A7t3qi\\" <noreply@zeamster.email>","provider' .
+                '_id":"0100017e67bcc530-e1dd23b4-8a39-4a5b-8d5d-68d51c4c942f-000000","domain_id"' .
+                ':"11e95f8ec39de8fbdb0a4f1a","reason_sent":"Contact Email","reason_model":"Trans' .
+                'action","reason_model_id":"11e95f8ec39de8fbdb0a4f1a","reply_to":"\\"Zeamster\\"' .
+                ' <emma.p@zeamster.com>","id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992' .
+                '}],"log_sms":{"id":"11e95f8ec39de8fbdb0a4f1a","body":" ","reason_model":" ","re' .
+                'ason_model_id":" ","provider_id":" ","status":" ","sender":" ","recipient":" ",' .
+                '"created_ts":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a"},"transact' .
+                'ions":[{"additional_amounts":[{"type":"cashback","amount":10,"account_type":"cr' .
+                'edit","currency":840}],"billing_address":{"city":"Novi","state":"Michigan","pos' .
+                'tal_code":"48375","phone":"3339998822","country":"USA"},"checkin_date":"2021-12' .
+                '-01","checkout_date":"2021-12-01","clerk_number":"AE1234","contact_id":"11e95f8' .
+                'ec39de8fbdb0a4f1a","custom_data":{},"customer_id":"customerid","description":"s' .
+                'ome description","identity_verification":{"dl_state":"MI","dl_number":"1235567"' .
+                ',"dob_year":"1980"},"iias_ind":1,"image_front":"U29tZVN0cmluZ09idmlvdXNseU5vdEJ' .
+                'hc2U2NEVuY29kZWQ=","image_back":"U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZW' .
+                'Q=","installment":true,"installment_number":1,"installment_count":1,"recurring_' .
+                'flag":"yes","installment_counter":1,"installment_total":1,"subscription":false,' .
+                '"standing_order":false,"location_api_id":"location-api-id-florida-2","location_' .
+                'id":"11e95f8ec39de8fbdb0a4f1a","product_transaction_id":"11e95f8ec39de8fbdb0a4f' .
+                '1a","advance_deposit":false,"no_show":false,"notification_email_address":"johns' .
+                'mith@smiths.com","order_number":"433659378839","po_number":"555555553123","quic' .
+                'k_invoice_id":"11e95f8ec39de8fbdb0a4f1a","recurring":false,"recurring_number":1' .
+                ',"room_num":"303","room_rate":95,"save_account":false,"save_account_title":"Joh' .
+                'n Account","subtotal_amount":599,"surcharge_amount":100,"tags":["Walk-in Custom' .
+                'er"],"tax":0,"tip_amount":0,"transaction_amount":0,"secondary_amount":0,"transa' .
+                'ction_api_id":"transaction-payment-abcd123","transaction_c1":"custom-data-1","t' .
+                'ransaction_c2":"custom-data-2","transaction_c3":"custom-data-3","bank_funded_on' .
+                'ly_override":false,"allow_partial_authorization_override":false,"auto_decline_c' .
+                'vv_override":false,"auto_decline_street_override":false,"auto_decline_zip_overr' .
+                'ide":false,"ebt_type":"food_stamp","id":"11e95f8ec39de8fbdb0a4f1a","created_ts"' .
+                ':1422040992,"modified_ts":1422040992,"terminal_id":"11e95f8ec39de8fbdb0a4f1a","' .
+                'account_holder_name":"smith","account_type":"checking","token_id":"11e95f8ec39d' .
+                'e8fbdb0a4f1a","ach_identifier":"P","ach_sec_code":"C21","auth_amount":1,"auth_c' .
+                'ode":"BR349K","avs":"BAD","avs_enhanced":"N","cardholder_present":true,"card_pr' .
+                'esent":true,"check_number":"8520748520963","customer_ip":"192.168.0.10","cvv_re' .
+                'sponse":"N","entry_mode_id":"C","emv_receipt_data":{"AID":"a0000000042203","APP' .
+                'LAB":"US Maestro","APPN":"US Maestro","CVM":"Pin Verified","TSI":"e800","TVR":"' .
+                '0800008000"},"first_six":"545454","last_four":"5454","payment_method":"cc","ter' .
+                'minal_serial_number":"1234567890","transaction_settlement_status":null,"charge_' .
+                'back_date":"2021-12-01","is_recurring":true,"notification_email_sent":true,"par' .
+                '":"Q1J4Z28RKA1EBL470G9XYG90R5D3E","reason_code_id":1000,"recurring_id":"11e95f8' .
+                'ec39de8fbdb0a4f1a","settle_date":"2021-12-01","status_code":101,"transaction_ba' .
+                'tch_id":"11e95f8ec39de8fbdb0a4f1a","verbiage":"APPROVED","voucher_number":"1234' .
+                '","void_date":"2021-12-01","batch":"2","terms_agree":true,"response_message":nu' .
+                'll,"return_date":"2021-12-01","trx_source_id":8,"routing_number":"051904524","t' .
+                'rx_source_code":8,"paylink_id":"11e95f8ec39de8fbdb0a4f1a","is_accountvault":tru' .
+                'e,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","modified_user_id":"11e95f8ec39d' .
+                'e8fbdb0a4f1a","effective_date":"2021-12-01","is_token":true,"account_vault_id":' .
+                '"11e95f8ec39de8fbdb0a4f1a","hosted_payment_page_id":"11e95f8ec39de8fbdb0a4f1a"}' .
+                '],"cc_product_transaction":{"processor_version":"1_0_0","title":"My terminal","' .
+                'payment_method":"cc","processor":"zgate","mcc":"1111","tax_surcharge_config":2,' .
+                '"partner":"standalone","location_id":"11e95f8ec39de8fbdb0a4f1a","surcharge":{},' .
+                '"processor_data":{},"vt_clerk_number":true,"vt_billing_phone":true,"vt_enable_t' .
+                'ip":true,"ach_allow_debit":true,"ach_allow_credit":true,"ach_allow_refund":true' .
+                ',"vt_cvv":true,"vt_street":true,"vt_zip":true,"vt_order_num":true,"vt_enable":t' .
+                'rue,"receipt_show_contact_name":true,"display_avs":true,"card_type_visa":true,"' .
+                'card_type_mc":true,"card_type_disc":true,"card_type_amex":true,"card_type_diner' .
+                's":true,"card_type_jcb":true,"card_type_ebt":true,"allow_ebt_cash_benefit":true' .
+                ',"allow_ebt_food_stamp":true,"invoice_location":true,"allow_partial_authorizati' .
+                'on":true,"allow_recurring_partial_authorization":true,"auto_decline_cvv":true,"' .
+                'auto_decline_street":true,"auto_decline_zip":true,"split_payments_allow":true,"' .
+                'vt_show_custom_fields":true,"receipt_show_custom_fields":true,"vt_override_sale' .
+                's_tax_allowed":true,"vt_enable_sales_tax":true,"vt_require_zip":true,"vt_requir' .
+                'e_street":true,"auto_decline_cavv":true,"current_batch":34,"dup_check_per_batch' .
+                '":null,"paylink_allow":false,"quick_invoice_allow":false,"level3_allow":false,"' .
+                'payfac_enable":false,"enable_3ds":false,"sales_office_id":"11e95f8ec39de8fbdb0a' .
+                '4f1a","hosted_payment_page_allow":false,"surcharge_id":"11e95f8ec39de8fbdb0a4f1' .
+                'a","allow_big_commerce":false,"level3_default":{"destination_country_code":"840' .
+                '","duty_amount":0,"freight_amount":0,"national_tax":2,"sales_tax":200,"shipfrom' .
+                '_zip_code":"AZ12345","shipto_zip_code":"MI48335","tax_amount":0,"tax_exempt":"0' .
+                '","customer_vat_registration":"12345678","merchant_vat_registration":"123456","' .
+                'order_date":"171006","summary_commodity_code":"C1K2","tax_rate":0,"unique_vat_r' .
+                'ef_number":"vat1234","line_items":[{"alternate_tax_id":"1234","debit_credit":"C' .
+                '","description":"cool drink","discount_amount":10,"discount_rate":11,"product_c' .
+                'ode":"coke12345678","quantity":5,"tax_amount":3,"tax_rate":0,"tax_type_applied"' .
+                ':"22","tax_type_id":"a1","unit_code":"gll","unit_cost":10,"commodity_code":"cc1' .
+                '23456","other_tax_amount":0}]},"cau_subscribe_type_id":0,"location_billing_acco' .
+                'unt_id":"11eb88b873980c64a21e5fd2","product_billing_group_id":"nofees","account' .
+                '_number":"12345678","run_avs_on_accountvault_create":false,"accountvault_expire' .
+                '_notification_email_enable":false,"debit_allow_void":false,"quick_invoice_text_' .
+                'to_pay":false,"sms_enable":false,"vt_show_currency":true,"receipt_show_currency' .
+                '":false,"allow_blind_refund":false,"vt_show_company_name":false,"receipt_show_c' .
+                'ompany_name":false,"bank_funded_only":false,"require_cvv_on_keyed_cnp":true,"re' .
+                'quire_cvv_on_tokenized_cnp":true,"show_secondary_amount":false,"allow_secondary' .
+                '_amount":false,"show_google_pay":true,"show_apple_pay":true,"batch_risk_config"' .
+                ':{},"currency_code":840,"enable_ach_validation":false,"enable_ach_retry":false,' .
+                '"allow_softpos":false,"id":"11e95f8ec39de8fbdb0a4f1a","active":true,"created_ts' .
+                '":1422040992,"modified_ts":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f' .
+                '1a","modified_user_id":"11e95f8ec39de8fbdb0a4f1a","product_transaction_api_id":' .
+                '"11e95f8ec39de8fbdb0a4f1a","is_secondary_amount_allowed":false,"fortis_id":"814' .
+                '9742","product_billing_group_code":"nofees","cau_subscribe_type_code":0},"ach_p' .
+                'roduct_transaction":{"processor_version":"1_0_0","title":"My terminal","payment' .
+                '_method":"cc","processor":"zgate","mcc":"1111","tax_surcharge_config":2,"partne' .
+                'r":"standalone","location_id":"11e95f8ec39de8fbdb0a4f1a","surcharge":{},"proces' .
+                'sor_data":{},"vt_clerk_number":true,"vt_billing_phone":true,"vt_enable_tip":tru' .
+                'e,"ach_allow_debit":true,"ach_allow_credit":true,"ach_allow_refund":true,"vt_cv' .
+                'v":true,"vt_street":true,"vt_zip":true,"vt_order_num":true,"vt_enable":true,"re' .
+                'ceipt_show_contact_name":true,"display_avs":true,"card_type_visa":true,"card_ty' .
+                'pe_mc":true,"card_type_disc":true,"card_type_amex":true,"card_type_diners":true' .
+                ',"card_type_jcb":true,"card_type_ebt":true,"allow_ebt_cash_benefit":true,"allow' .
+                '_ebt_food_stamp":true,"invoice_location":true,"allow_partial_authorization":tru' .
+                'e,"allow_recurring_partial_authorization":true,"auto_decline_cvv":true,"auto_de' .
+                'cline_street":true,"auto_decline_zip":true,"split_payments_allow":true,"vt_show' .
+                '_custom_fields":true,"receipt_show_custom_fields":true,"vt_override_sales_tax_a' .
+                'llowed":true,"vt_enable_sales_tax":true,"vt_require_zip":true,"vt_require_stree' .
+                't":true,"auto_decline_cavv":true,"current_batch":34,"dup_check_per_batch":null,' .
+                '"paylink_allow":false,"quick_invoice_allow":false,"level3_allow":false,"payfac_' .
+                'enable":false,"enable_3ds":false,"sales_office_id":"11e95f8ec39de8fbdb0a4f1a","' .
+                'hosted_payment_page_allow":false,"surcharge_id":"11e95f8ec39de8fbdb0a4f1a","all' .
+                'ow_big_commerce":false,"level3_default":{"destination_country_code":"840","duty' .
+                '_amount":0,"freight_amount":0,"national_tax":2,"sales_tax":200,"shipfrom_zip_co' .
+                'de":"AZ12345","shipto_zip_code":"MI48335","tax_amount":0,"tax_exempt":"0","cust' .
+                'omer_vat_registration":"12345678","merchant_vat_registration":"123456","order_d' .
+                'ate":"171006","summary_commodity_code":"C1K2","tax_rate":0,"unique_vat_ref_numb' .
+                'er":"vat1234","line_items":[{"alternate_tax_id":"1234","debit_credit":"C","desc' .
+                'ription":"cool drink","discount_amount":10,"discount_rate":11,"product_code":"c' .
+                'oke12345678","quantity":5,"tax_amount":3,"tax_rate":0,"tax_type_applied":"22","' .
+                'tax_type_id":"a1","unit_code":"gll","unit_cost":10,"commodity_code":"cc123456",' .
+                '"other_tax_amount":0}]},"cau_subscribe_type_id":0,"location_billing_account_id"' .
+                ':"11eb88b873980c64a21e5fd2","product_billing_group_id":"nofees","account_number' .
+                '":"12345678","run_avs_on_accountvault_create":false,"accountvault_expire_notifi' .
+                'cation_email_enable":false,"debit_allow_void":false,"quick_invoice_text_to_pay"' .
+                ':false,"sms_enable":false,"vt_show_currency":true,"receipt_show_currency":false' .
+                ',"allow_blind_refund":false,"vt_show_company_name":false,"receipt_show_company_' .
+                'name":false,"bank_funded_only":false,"require_cvv_on_keyed_cnp":true,"require_c' .
+                'vv_on_tokenized_cnp":true,"show_secondary_amount":false,"allow_secondary_amount' .
+                '":false,"show_google_pay":true,"show_apple_pay":true,"batch_risk_config":{},"cu' .
+                'rrency_code":840,"enable_ach_validation":false,"enable_ach_retry":false,"allow_' .
+                'softpos":false,"id":"11e95f8ec39de8fbdb0a4f1a","active":true,"created_ts":14220' .
+                '40992,"modified_ts":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","mo' .
+                'dified_user_id":"11e95f8ec39de8fbdb0a4f1a","product_transaction_api_id":"11e95f' .
+                '8ec39de8fbdb0a4f1a","is_secondary_amount_allowed":false,"fortis_id":"8149742","' .
+                'product_billing_group_code":"nofees","cau_subscribe_type_code":0},"email_blackl' .
+                'ist":{"id":"11e95f8ec39de8fbdb0a4f1a","isBlacklisted":true,"detail":true,"creat' .
+                'ed_ts":1422040992},"sms_blacklist":{"id":"11e95f8ec39de8fbdb0a4f1a","isBlacklis' .
+                'ted":true,"detail":true,"created_ts":1422040992}}}'
             )))
             ->assert();
     }
 
-    public function testTestViewSingleQuickInvoiceRecord()
+    public function testViewSingleQuickInvoiceRecord()
     {
         // Parameters for the API call
         $quickInvoiceId = '11e95f8ec39de8fbdb0a4f1a';
         $expand = null;
+        $fields = null;
 
         // Perform API call
         $result = null;
         try {
-            $result = self::$controller->viewSingleQuickInvoiceRecord($quickInvoiceId, $expand);
+            $result = self::$controller->viewSingleQuickInvoiceRecord($quickInvoiceId, $expand, $fields);
         } catch (Exceptions\ApiException $e) {
         }
 
@@ -699,190 +628,500 @@ class QuickInvoicesControllerTest extends BaseTestController
                 '{"type":"QuickInvoice","data":{"location_id":"11e95f8ec39de8fbdb0a4f1a","title' .
                 '":"My terminal","cc_product_transaction_id":"11e95f8ec39de8fbdb0a4f1a","ach_pro' .
                 'duct_transaction_id":"11e95f8ec39de8fbdb0a4f1a","due_date":"2021-12-01","item_l' .
-                'ist":[{"name":"Bread","amount":20.15}],"allow_overpayment":true,"email":"email@' .
-                'domain.com","contact_id":"11e95f8ec39de8fbdb0a4f1a","contact_api_id":"contact12' .
-                '345","customer_id":"11e95f8ec39de8fbdb0a4f1a","expire_date":"2021-12-01","allow' .
-                '_partial_pay":true,"attach_files_to_email":true,"send_email":true,"invoice_numb' .
-                'er":"invoice12345","item_header":"Quick invoice header sample","item_footer":"T' .
-                'hank you","amount_due":245.36,"notification_email":"email@domain.com","payment_' .
-                'status_id":1,"status_id":1,"note":"some note","notification_days_before_due_dat' .
-                'e":3,"notification_days_after_due_date":7,"notification_on_due_date":true,"send' .
-                '_text_to_pay":true,"files":[{"file":{},"resource_id":"11e95f8ec39de8fbdb0a4f1a"' .
-                ',"resource":"Contact","product_file_id":"11e95f8ec39de8fbdb0a4f1a","file_catego' .
-                'ry_id":"11e95f8ec39de8fbdb0a4f1a","visibility_group_id":"11e95f8ec39de8fbdb0a4f' .
+                'ist":[{"name":"Bread","amount":2015}],"allow_overpayment":true,"bank_funded_onl' .
+                'y_override":true,"email":"email@domain.com","contact_id":"11e95f8ec39de8fbdb0a4' .
+                'f1a","contact_api_id":"contact12345","quick_invoice_api_id":"quickinvoice12345"' .
+                ',"customer_id":"11e95f8ec39de8fbdb0a4f1a","expire_date":"2021-12-01","allow_par' .
+                'tial_pay":true,"attach_files_to_email":true,"send_email":true,"invoice_number":' .
+                '"invoice12345","item_header":"Quick invoice header sample","item_footer":"Thank' .
+                ' you","amount_due":245.36,"notification_email":"email@domain.com","status_id":1' .
+                ',"status_code":1,"note":"some note","notification_days_before_due_date":3,"noti' .
+                'fication_days_after_due_date":7,"notification_on_due_date":true,"send_text_to_p' .
+                'ay":true,"files":[{"file":{},"resource_id":"11e95f8ec39de8fbdb0a4f1a","resource' .
+                '":"Contact","product_file_id":"11e95f8ec39de8fbdb0a4f1a","file_category_id":"11' .
+                'e95f8ec39de8fbdb0a4f1a","visibility_group_id":"11e95f8ec39de8fbdb0a4f1a","id":"' .
+                '11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"modified_ts":1422040992,"cre' .
+                'ated_user_id":"11e95f8ec39de8fbdb0a4f1a"}],"remaining_balance":245.36,"single_p' .
+                'ayment_min_amount":500,"single_payment_max_amount":500000,"cell_phone":"3339998' .
+                '822","tags":[{"location_id":"11e95f8ec39de8fbdb0a4f1a","title":"My terminal","i' .
+                'd":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"modified_ts":1422040992}' .
+                '],"quick_invoice_c1":"custom-data-1","quick_invoice_c2":"custom-data-2","quick_' .
+                'invoice_c3":"custom-data-3","auto_reopen":true,"id":"11e95f8ec39de8fbdb0a4f1a",' .
+                '"created_ts":1422040992,"modified_ts":1422040992,"created_user_id":"11e95f8ec39' .
+                'de8fbdb0a4f1a","modified_user_id":"11e95f8ec39de8fbdb0a4f1a","active":true,"pay' .
+                'ment_status_id":1,"is_active":true,"quick_invoice_setting":{"location_api_id":"' .
+                '11e95f8ec39de8fbdb0a4f1a","location_id":"11e95f8ec39de8fbdb0a4f1a","quick_invoi' .
+                'ce_template":"<html>Template<html>","default_allow_partial_pay":true,"default_n' .
+                'otification_on_due_date":true,"default_notification_days_after_due_date":7,"def' .
+                'ault_notification_days_before_due_date":3,"show_custom_fields":false,"id":"11e9' .
+                '5f8ec39de8fbdb0a4f1a"},"quick_invoice_views":[{"id":"11e95f8ec39de8fbdb0a4f1a",' .
+                '"quick_invoice_id":"Quick Invoice ID","created_ts":1422040992}],"location":{"id' .
+                '":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"modified_ts":1422040992,"' .
+                'account_number":"5454545454545454","address":{"city":"Novi","state":"MI","posta' .
+                'l_code":"48375","country":"US"},"branding_domain_id":"11e95f8ec39de8fbdb0a4f1a"' .
+                ',"contact_email_trx_receipt_default":true,"default_ach":"11e608a7d515f1e093242b' .
+                'b2","default_cc":"11e608a442a5f1e092242dda","email_reply_to":"email@domain.com"' .
+                ',"fax":"3339998822","location_api_id":"location-111111","location_api_key":"AE3' .
+                '4BBCAADF4AE34BBCAADF4","location_c1":"custom 1","location_c2":"custom 2","locat' .
+                'ion_c3":"custom data 3","name":"Sample Company Headquarters","office_phone":"24' .
+                '81234567","office_ext_phone":"1021021209","tz":"America/New_York","parent_id":"' .
+                '11e95f8ec39de8fbdb0a4f1a","show_contact_notes":true,"show_contact_files":true,"' .
+                'created_user_id":"11e95f8ec39de8fbdb0a4f1a","location_type":"merchant","ticket_' .
+                'hash_key":"A5F443CADF4AE34BBCAADF4","additional_access":{}},"created_user":{"ac' .
+                'count_number":"5454545454545454","branding_domain_url":"{branding_domain_url}",' .
+                '"cell_phone":"3339998822","company_name":"Fortis Payment Systems, LLC","contact' .
+                '_id":"11e95f8ec39de8fbdb0a4f1a","date_of_birth":"2021-12-01","domain_id":"11e95' .
+                'f8ec39de8fbdb0a4f1a","email":"email@domain.com","email_trx_receipt":true,"home_' .
+                'phone":"3339998822","first_name":"John","last_name":"Smith","locale":"en-US","o' .
+                'ffice_phone":"3339998822","office_ext_phone":"5","primary_location_id":"11e95f8' .
+                'ec39de8fbdb0a4f1a","requires_new_password":null,"terms_condition_code":"2022030' .
+                '8","tz":"America/New_York","ui_prefs":{"entry_page":"dashboard","page_size":2,"' .
+                'report_export_type":"csv","process_method":"virtual_terminal","default_terminal' .
+                '":"11e95f8ec39de8fbdb0a4f1a"},"username":"{user_name}","user_api_key":"234bas8d' .
+                'fn8238f923w2","user_hash_key":null,"user_type_code":100,"password":null,"zip":"' .
+                '48375","location_id":"11e95f8ec39de8fbdb0a4f1a","status_code":1,"api_only":fals' .
+                'e,"is_invitation":false,"address":{"city":"Novi","state":"MI","postal_code":"48' .
+                '375","country":"US"},"id":"11e95f8ec39de8fbdb0a4f1a","status":true,"login_attem' .
+                'pts":0,"last_login_ts":1422040992,"created_ts":1422040992,"modified_ts":1422040' .
+                '992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","terms_accepted_ts":1422040992' .
+                ',"terms_agree_ip":"192.168.0.10","current_date_time":"2019-03-11T10:38:26-0700"' .
+                ',"current_login":1422040992,"log_api_response_body_ts":1422040992},"modified_us' .
+                'er":{"account_number":"5454545454545454","branding_domain_url":"{branding_domai' .
+                'n_url}","cell_phone":"3339998822","company_name":"Fortis Payment Systems, LLC",' .
+                '"contact_id":"11e95f8ec39de8fbdb0a4f1a","date_of_birth":"2021-12-01","domain_id' .
+                '":"11e95f8ec39de8fbdb0a4f1a","email":"email@domain.com","email_trx_receipt":tru' .
+                'e,"home_phone":"3339998822","first_name":"John","last_name":"Smith","locale":"e' .
+                'n-US","office_phone":"3339998822","office_ext_phone":"5","primary_location_id":' .
+                '"11e95f8ec39de8fbdb0a4f1a","requires_new_password":null,"terms_condition_code":' .
+                '"20220308","tz":"America/New_York","ui_prefs":{"entry_page":"dashboard","page_s' .
+                'ize":2,"report_export_type":"csv","process_method":"virtual_terminal","default_' .
+                'terminal":"11e95f8ec39de8fbdb0a4f1a"},"username":"{user_name}","user_api_key":"' .
+                '234bas8dfn8238f923w2","user_hash_key":null,"user_type_code":100,"password":null' .
+                ',"zip":"48375","location_id":"11e95f8ec39de8fbdb0a4f1a","status_code":1,"api_on' .
+                'ly":false,"is_invitation":false,"address":{"city":"Novi","state":"MI","postal_c' .
+                'ode":"48375","country":"US"},"id":"11e95f8ec39de8fbdb0a4f1a","status":true,"log' .
+                'in_attempts":0,"last_login_ts":1422040992,"created_ts":1422040992,"modified_ts"' .
+                ':1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","terms_accepted_ts":14' .
+                '22040992,"terms_agree_ip":"192.168.0.10","current_date_time":"2019-03-11T10:38:' .
+                '26-0700","current_login":1422040992,"log_api_response_body_ts":1422040992},"cha' .
+                'ngelogs":[{"id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"action":"CR' .
+                'EATE","model":"TransactionRequest","model_id":"11ec829598f0d4008be9aba4","user_' .
+                'id":"11e95f8ec39de8fbdb0a4f1a","changelog_details":[{"id":"11e95f8ec39de8fbdb0a' .
+                '4f1a","changelog_id":"11e95f8ec39de8fbdb0a4f1a","field":"next_run_ts","old_valu' .
+                'e":"1643616000"}],"user":{"id":"11e95f8ec39de8fbdb0a4f1a","username":"email@dom' .
+                'ain.com","first_name":"Bob","last_name":"Fairview"}}],"contact":{"location_id":' .
+                '"11e95f8ec39de8fbdb0a4f1a","account_number":"54545433332","contact_api_id":"137' .
+                '","first_name":"John","last_name":"Smith","cell_phone":"3339998822","balance":2' .
+                '45.36,"address":{"city":"Novi","state":"Michigan","postal_code":"48375","countr' .
+                'y":"USA"},"company_name":"Fortis Payment Systems, LLC","header_message":"This i' .
+                's a sample message for you","date_of_birth":"2021-12-01","email_trx_receipt":tr' .
+                'ue,"home_phone":"3339998822","office_phone":"3339998822","office_phone_ext":"5"' .
+                ',"home_phone_country_code":"+1","office_phone_country_code":"+1","cell_phone_co' .
+                'untry_code":"+1","header_message_type":0,"update_if_exists":1,"contact_c1":"any' .
+                '","contact_c2":"anything","contact_c3":"something","parent_id":"11e95f8ec39de8f' .
+                'bdb0a4f1a","email":"email@domain.com","token_import_id":"11e95f8ec39de8fbdb0a4f' .
                 '1a","id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"modified_ts":14220' .
-                '40992}],"remaining_balance":245.36,"single_payment_min_amount":5,"single_paymen' .
-                't_max_amount":5000,"cell_phone":"3339998822","id":"11e95f8ec39de8fbdb0a4f1a","c' .
-                'reated_ts":1422040992,"modified_ts":1422040992,"created_user_id":"11e95f8ec39de' .
-                '8fbdb0a4f1a","modified_user_id":"11e95f8ec39de8fbdb0a4f1a","active":true,"is_ac' .
-                'tive":true,"quick_invoice_setting":{"location_api_id":"11e95f8ec39de8fbdb0a4f1a' .
-                '","location_id":"11e95f8ec39de8fbdb0a4f1a","quick_invoice_template":"<html>Temp' .
-                'late<html>","default_allow_partial_pay":true,"default_notification_on_due_date"' .
-                ':true,"default_notification_days_after_due_date":7,"default_notification_days_b' .
-                'efore_due_date":3,"id":"11e95f8ec39de8fbdb0a4f1a"},"tags":[{"location_id":"11e9' .
-                '5f8ec39de8fbdb0a4f1a","title":"My terminal","id":"11e95f8ec39de8fbdb0a4f1a","cr' .
-                'eated_ts":1422040992,"modified_ts":1422040992}],"quick_invoice_views":[{"id":"1' .
-                '1e95f8ec39de8fbdb0a4f1a","quick_invoice_id":"Quick Invoice ID","created_ts":142' .
-                '2040992}],"location":{"id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"' .
-                'modified_ts":1422040992,"account_number":"5454545454545454","address":{"city":"' .
-                'Novi","state":"MI","postal_code":"48375","country":"US","street":"43155 Main St' .
-                'reet STE 2310-C","street2":"43155 Main Street STE 2310-C"},"branding_domain_id"' .
-                ':"11e95f8ec39de8fbdb0a4f1a","contact_email_trx_receipt_default":true,"default_a' .
-                'ch":"11e608a7d515f1e093242bb2","default_cc":"11e608a442a5f1e092242dda","develop' .
-                'er_company_id":"11e95f8ec39de8fbdb0a4f1a","email_reply_to":"email@domain.com","' .
-                'fax":"3339998822","location_api_id":"location-111111","location_api_key":"AE34B' .
-                'BCAADF4AE34BBCAADF4","location_c1":"custom 1","location_c2":"custom 2","locatio' .
-                'n_c3":"custom data 3","name":"Sample Company Headquarters","office_phone":"2481' .
-                '234567","office_ext_phone":"1021021209","recurring_notification_days_default":0' .
-                ',"tz":"America/New_York","parent_id":"11e95f8ec39de8fbdb0a4f1a","ticket_hash_ke' .
-                'y":"A5F443CADF4AE34BBCAADF4"},"created_user":{"account_number":"545454545454545' .
-                '4","address":"43155 Main Street STE 2310-C","branding_domain_url":"{branding_do' .
-                'main_url}","cell_phone":"3339998822","city":"Novi","company_name":"Fortis Payme' .
-                'nt Systems, LLC","contact_id":"11e95f8ec39de8fbdb0a4f1a","date_of_birth":"2021-' .
-                '12-01","domain_id":"11e95f8ec39de8fbdb0a4f1a","email":"email@domain.com","email' .
-                '_trx_receipt":true,"home_phone":"3339998822","first_name":"John","last_name":"S' .
-                'mith","locale":"en-US","office_phone":"3339998822","office_ext_phone":"5","prim' .
-                'ary_location_id":"11e95f8ec39de8fbdb0a4f1a","requires_new_password":null,"state' .
-                '":"Michigan","terms_condition_code":"20220308","tz":"America/New_York","ui_pref' .
-                's":{"entry_page":"dashboard","page_size":2,"report_export_type":"csv","process_' .
-                'method":"virtual_terminal","default_terminal":"11e95f8ec39de8fbdb0a4f1a"},"user' .
-                'name":"{user_name}","user_api_key":"234bas8dfn8238f923w2","user_hash_key":null,' .
-                '"user_type_code":100,"password":null,"zip":"48375","location_id":"11e95f8ec39de' .
-                '8fbdb0a4f1a","status_id":true,"id":"11e95f8ec39de8fbdb0a4f1a","status":true,"lo' .
-                'gin_attempts":0,"last_login_ts":1422040992,"created_ts":1422040992,"modified_ts' .
-                '":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","terms_accepted_ts":1' .
-                '422040992,"terms_agree_ip":"192.168.0.10","current_date_time":"2019-03-11T10:38' .
-                ':26-0700"},"modified_user":{"account_number":"5454545454545454","address":"4315' .
-                '5 Main Street STE 2310-C","branding_domain_url":"{branding_domain_url}","cell_p' .
-                'hone":"3339998822","city":"Novi","company_name":"Fortis Payment Systems, LLC","' .
-                'contact_id":"11e95f8ec39de8fbdb0a4f1a","date_of_birth":"2021-12-01","domain_id"' .
-                ':"11e95f8ec39de8fbdb0a4f1a","email":"email@domain.com","email_trx_receipt":true' .
-                ',"home_phone":"3339998822","first_name":"John","last_name":"Smith","locale":"en' .
-                '-US","office_phone":"3339998822","office_ext_phone":"5","primary_location_id":"' .
-                '11e95f8ec39de8fbdb0a4f1a","requires_new_password":null,"state":"Michigan","term' .
-                's_condition_code":"20220308","tz":"America/New_York","ui_prefs":{"entry_page":"' .
-                'dashboard","page_size":2,"report_export_type":"csv","process_method":"virtual_t' .
-                'erminal","default_terminal":"11e95f8ec39de8fbdb0a4f1a"},"username":"{user_name}' .
-                '","user_api_key":"234bas8dfn8238f923w2","user_hash_key":null,"user_type_code":1' .
-                '00,"password":null,"zip":"48375","location_id":"11e95f8ec39de8fbdb0a4f1a","stat' .
-                'us_id":true,"id":"11e95f8ec39de8fbdb0a4f1a","status":true,"login_attempts":0,"l' .
-                'ast_login_ts":1422040992,"created_ts":1422040992,"modified_ts":1422040992,"crea' .
-                'ted_user_id":"11e95f8ec39de8fbdb0a4f1a","terms_accepted_ts":1422040992,"terms_a' .
-                'gree_ip":"192.168.0.10","current_date_time":"2019-03-11T10:38:26-0700"},"change' .
-                'logs":[{"id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"action":"CREAT' .
-                'E","model":"TransactionRequest","model_id":"11ec829598f0d4008be9aba4","user_id"' .
-                ':"11e95f8ec39de8fbdb0a4f1a","changelog_details":[{"id":"11e95f8ec39de8fbdb0a4f1' .
-                'a","changelog_id":"11e95f8ec39de8fbdb0a4f1a","field":"next_run_ts","old_value":' .
-                '"1643616000"}],"user":{"id":"11e95f8ec39de8fbdb0a4f1a","username":"email@domain' .
-                '.com","first_name":"Bob","last_name":"Fairview"}}],"contact":{"location_id":"11' .
-                'e95f8ec39de8fbdb0a4f1a","account_number":"54545433332","contact_api_id":"137","' .
-                'first_name":"John","last_name":"Smith","cell_phone":"3339998822","balance":245.' .
-                '36,"address":{"city":"Novi","state":"Michigan","postal_code":"48375","country":' .
-                '"US","street":"43155 Main Street STE 2310-C"},"company_name":"Fortis Payment Sy' .
-                'stems, LLC","header_message":"This is a sample message for you","date_of_birth"' .
-                ':"2021-12-01","email_trx_receipt":true,"home_phone":"3339998822","office_phone"' .
-                ':"3339998822","office_phone_ext":"5","header_message_type":0,"update_if_exists"' .
-                ':1,"contact_c1":"any","contact_c2":"anything","contact_c3":"something","parent_' .
-                'id":"11e95f8ec39de8fbdb0a4f1a","email":"email@domain.com","id":"11e95f8ec39de8f' .
-                'bdb0a4f1a","created_ts":1422040992,"modified_ts":1422040992,"active":true},"log' .
-                '_emails":[{"subject":"Payment Receipt - 12skiestech","body":"This email is bein' .
-                'g sent from a server.","source_address":"\\"12skiestech A7t3qi\\" <noreply@zeam' .
-                'ster.email>","return_path":"\\"12skiestech A7t3qi\\" <noreply@zeamster.email>",' .
-                '"provider_id":"0100017e67bcc530-e1dd23b4-8a39-4a5b-8d5d-68d51c4c942f-000000","d' .
-                'omain_id":"11e95f8ec39de8fbdb0a4f1a","reason_sent":"Contact Email","reason_mode' .
-                'l":"Transaction","reason_model_id":"11e95f8ec39de8fbdb0a4f1a","reply_to":"\\"Ze' .
-                'amster\\" <emma.p@zeamster.com>","id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1' .
-                '422040992}],"log_sms":{"id":"11e95f8ec39de8fbdb0a4f1a","body":" ","reason_model' .
-                '":" ","reason_model_id":" ","provider_id":" ","status":" ","sender":" ","recipi' .
-                'ent":" ","created_ts":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a"},' .
-                '"transactions":[{"additional_amounts":[{"type":"cashback","amount":10,"account_' .
-                'type":"credit","currency":840}],"billing_address":{"city":"Novi","state":"Michi' .
-                'gan","postal_code":"48375","street":"43155 Main Street STE 2310-C","phone":"333' .
-                '9998822"},"checkin_date":"2021-12-01","checkout_date":"2021-12-01","clerk_numbe' .
-                'r":"AE1234","contact_id":"11e95f8ec39de8fbdb0a4f1a","custom_data":{},"customer_' .
-                'id":"customerid","description":"some description","identity_verification":{"dl_' .
-                'state":"MI","dl_number":"1235567","dob_year":"1980"},"iias_ind":1,"image_front"' .
-                ':"U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=","image_back":"U29tZVN0cmluZ' .
-                '09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=","installment":true,"installment_number":1,' .
-                '"installment_count":1,"location_api_id":"location-api-id-florida-2","location_i' .
-                'd":"11e95f8ec39de8fbdb0a4f1a","product_transaction_id":"11e95f8ec39de8fbdb0a4f1' .
-                'a","advance_deposit":false,"no_show":false,"notification_email_address":"johnsm' .
-                'ith@smiths.com","order_number":"433659378839","po_number":"555555553123","quick' .
-                '_invoice_id":"11e95f8ec39de8fbdb0a4f1a","recurring":false,"recurring_number":1,' .
-                '"room_num":"303","room_rate":95,"save_account":false,"save_account_title":"John' .
-                ' Account","subtotal_amount":599,"surcharge_amount":100,"tags":["Walk-in Custome' .
-                'r"],"tax":0,"tip_amount":0,"transaction_amount":0,"secondary_amount":0,"transac' .
-                'tion_api_id":"transaction-payment-abcd123","transaction_c1":"custom-data-1","tr' .
-                'ansaction_c2":"custom-data-2","transaction_c3":"custom-data-3","bank_funded_onl' .
-                'y_override":false,"id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"modi' .
-                'fied_ts":1422040992,"terminal_id":"11e95f8ec39de8fbdb0a4f1a","account_holder_na' .
-                'me":"smith","account_type":"checking","token_id":"11e95f8ec39de8fbdb0a4f1a","ac' .
-                'h_identifier":"P","ach_sec_code":"C21","auth_amount":1,"auth_code":"BR349K","av' .
-                's":"BAD","avs_enhanced":"N","cardholder_present":true,"card_present":true,"chec' .
-                'k_number":"8520748520963","customer_ip":"192.168.0.10","cvv_response":"N","entr' .
-                'y_mode_id":"C","emv_receipt_data":{"AID":"a0000000042203","APPLAB":"US Maestro"' .
-                ',"APPN":"US Maestro","CVM":"Pin Verified","TSI":"e800","TVR":"0800008000"},"fir' .
-                'st_six":"545454","last_four":"5454","payment_method":"cc","terminal_serial_numb' .
-                'er":"1234567890","transaction_settlement_status":null,"charge_back_date":"2021-' .
-                '12-01","is_recurring":true,"notification_email_sent":"true","par":"Q1J4Z28RKA1E' .
-                'BL470G9XYG90R5D3E","reason_code_id":1000,"recurring_id":"11e95f8ec39de8fbdb0a4f' .
-                '1a","settle_date":"2021-12-01","status_code":101,"transaction_batch_id":"11e95f' .
-                '8ec39de8fbdb0a4f1a","verbiage":"APPROVED","void_date":"2021-12-01","batch":"2",' .
-                '"terms_agree":true,"response_message":null,"return_date":"2021-12-01","trx_sour' .
-                'ce_id":8}],"cc_product_transaction":{"processor_version":"1_0_0","title":"My te' .
-                'rminal","payment_method":"cc","processor":"zgate","mcc":"1111","tax_surcharge_c' .
-                'onfig":2,"partner":"standalone","location_id":"11e95f8ec39de8fbdb0a4f1a","surch' .
-                'arge":{},"processor_data":{},"vt_clerk_number":true,"vt_billing_phone":true,"vt' .
-                '_enable_tip":true,"ach_allow_debit":true,"ach_allow_credit":true,"ach_allow_ref' .
-                'und":true,"vt_cvv":true,"vt_street":true,"vt_zip":true,"vt_order_num":true,"vt_' .
-                'enable":true,"receipt_show_contact_name":true,"display_avs":true,"card_type_vis' .
-                'a":true,"card_type_mc":true,"card_type_disc":true,"card_type_amex":true,"card_t' .
-                'ype_diners":true,"card_type_jcb":true,"invoice_location":true,"allow_partial_au' .
-                'thorization":true,"allow_recurring_partial_authorization":true,"auto_decline_cv' .
-                'v":true,"auto_decline_street":true,"auto_decline_zip":true,"split_payments_allo' .
-                'w":true,"vt_show_custom_fields":true,"receipt_show_custom_fields":true,"vt_over' .
-                'ride_sales_tax_allowed":true,"vt_enable_sales_tax":true,"vt_require_zip":true,"' .
-                'vt_require_street":true,"auto_decline_cavv":true,"current_batch":34,"dup_check_' .
-                'per_batch":null,"quick_invoice_allow":false,"level3_allow":false,"payfac_enable' .
-                '":false,"sales_office_id":"11e95f8ec39de8fbdb0a4f1a","hosted_payment_page_allow' .
-                '":false,"surcharge_id":"11e95f8ec39de8fbdb0a4f1a","level3_default":null,"cau_su' .
-                'bscribe_type_id":0,"location_billing_account_id":"11eb88b873980c64a21e5fd2","pr' .
-                'oduct_billing_group_id":"nofees","account_number":"12345678","run_avs_on_accoun' .
-                'tvault_create":false,"accountvault_expire_notification_email_enable":false,"deb' .
-                'it_allow_void":false,"quick_invoice_text_to_pay":false,"sms_enable":false,"vt_s' .
-                'how_currency":true,"receipt_show_currency":false,"allow_blind_refund":false,"vt' .
-                '_show_company_name":false,"receipt_show_company_name":false,"bank_funded_only":' .
-                'false,"id":"11e95f8ec39de8fbdb0a4f1a","active":true,"created_ts":1422040992,"mo' .
-                'dified_ts":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","modified_us' .
-                'er_id":"11e95f8ec39de8fbdb0a4f1a"},"ach_product_transaction":{"processor_versio' .
-                'n":"1_0_0","title":"My terminal","payment_method":"cc","processor":"zgate","mcc' .
-                '":"1111","tax_surcharge_config":2,"partner":"standalone","location_id":"11e95f8' .
-                'ec39de8fbdb0a4f1a","surcharge":{},"processor_data":{},"vt_clerk_number":true,"v' .
-                't_billing_phone":true,"vt_enable_tip":true,"ach_allow_debit":true,"ach_allow_cr' .
-                'edit":true,"ach_allow_refund":true,"vt_cvv":true,"vt_street":true,"vt_zip":true' .
-                ',"vt_order_num":true,"vt_enable":true,"receipt_show_contact_name":true,"display' .
-                '_avs":true,"card_type_visa":true,"card_type_mc":true,"card_type_disc":true,"car' .
-                'd_type_amex":true,"card_type_diners":true,"card_type_jcb":true,"invoice_locatio' .
-                'n":true,"allow_partial_authorization":true,"allow_recurring_partial_authorizati' .
-                'on":true,"auto_decline_cvv":true,"auto_decline_street":true,"auto_decline_zip":' .
-                'true,"split_payments_allow":true,"vt_show_custom_fields":true,"receipt_show_cus' .
-                'tom_fields":true,"vt_override_sales_tax_allowed":true,"vt_enable_sales_tax":tru' .
-                'e,"vt_require_zip":true,"vt_require_street":true,"auto_decline_cavv":true,"curr' .
-                'ent_batch":34,"dup_check_per_batch":null,"quick_invoice_allow":false,"level3_al' .
-                'low":false,"payfac_enable":false,"sales_office_id":"11e95f8ec39de8fbdb0a4f1a","' .
-                'hosted_payment_page_allow":false,"surcharge_id":"11e95f8ec39de8fbdb0a4f1a","lev' .
-                'el3_default":null,"cau_subscribe_type_id":0,"location_billing_account_id":"11eb' .
-                '88b873980c64a21e5fd2","product_billing_group_id":"nofees","account_number":"123' .
-                '45678","run_avs_on_accountvault_create":false,"accountvault_expire_notification' .
-                '_email_enable":false,"debit_allow_void":false,"quick_invoice_text_to_pay":false' .
-                ',"sms_enable":false,"vt_show_currency":true,"receipt_show_currency":false,"allo' .
-                'w_blind_refund":false,"vt_show_company_name":false,"receipt_show_company_name":' .
-                'false,"bank_funded_only":false,"id":"11e95f8ec39de8fbdb0a4f1a","active":true,"c' .
-                'reated_ts":1422040992,"modified_ts":1422040992,"created_user_id":"11e95f8ec39de' .
-                '8fbdb0a4f1a","modified_user_id":"11e95f8ec39de8fbdb0a4f1a"},"email_blacklist":{' .
-                '"id":"11e95f8ec39de8fbdb0a4f1a","isBlacklisted":true,"detail":true,"created_ts"' .
-                ':1422040992},"sms_blacklist":{"id":"11e95f8ec39de8fbdb0a4f1a","isBlacklisted":t' .
-                'rue,"detail":true,"created_ts":1422040992}}}'
+                '40992,"active":true,"created_user_id":"11e95f8ec39de8fbdb0a4f1a"},"log_emails":' .
+                '[{"subject":"Payment Receipt - 12skiestech","body":"This email is being sent fr' .
+                'om a server.","source_address":"\\"12skiestech A7t3qi\\" <noreply@zeamster.emai' .
+                'l>","return_path":"\\"12skiestech A7t3qi\\" <noreply@zeamster.email>","provider' .
+                '_id":"0100017e67bcc530-e1dd23b4-8a39-4a5b-8d5d-68d51c4c942f-000000","domain_id"' .
+                ':"11e95f8ec39de8fbdb0a4f1a","reason_sent":"Contact Email","reason_model":"Trans' .
+                'action","reason_model_id":"11e95f8ec39de8fbdb0a4f1a","reply_to":"\\"Zeamster\\"' .
+                ' <emma.p@zeamster.com>","id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992' .
+                '}],"log_sms":{"id":"11e95f8ec39de8fbdb0a4f1a","body":" ","reason_model":" ","re' .
+                'ason_model_id":" ","provider_id":" ","status":" ","sender":" ","recipient":" ",' .
+                '"created_ts":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a"},"transact' .
+                'ions":[{"additional_amounts":[{"type":"cashback","amount":10,"account_type":"cr' .
+                'edit","currency":840}],"billing_address":{"city":"Novi","state":"Michigan","pos' .
+                'tal_code":"48375","phone":"3339998822","country":"USA"},"checkin_date":"2021-12' .
+                '-01","checkout_date":"2021-12-01","clerk_number":"AE1234","contact_id":"11e95f8' .
+                'ec39de8fbdb0a4f1a","custom_data":{},"customer_id":"customerid","description":"s' .
+                'ome description","identity_verification":{"dl_state":"MI","dl_number":"1235567"' .
+                ',"dob_year":"1980"},"iias_ind":1,"image_front":"U29tZVN0cmluZ09idmlvdXNseU5vdEJ' .
+                'hc2U2NEVuY29kZWQ=","image_back":"U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZW' .
+                'Q=","installment":true,"installment_number":1,"installment_count":1,"recurring_' .
+                'flag":"yes","installment_counter":1,"installment_total":1,"subscription":false,' .
+                '"standing_order":false,"location_api_id":"location-api-id-florida-2","location_' .
+                'id":"11e95f8ec39de8fbdb0a4f1a","product_transaction_id":"11e95f8ec39de8fbdb0a4f' .
+                '1a","advance_deposit":false,"no_show":false,"notification_email_address":"johns' .
+                'mith@smiths.com","order_number":"433659378839","po_number":"555555553123","quic' .
+                'k_invoice_id":"11e95f8ec39de8fbdb0a4f1a","recurring":false,"recurring_number":1' .
+                ',"room_num":"303","room_rate":95,"save_account":false,"save_account_title":"Joh' .
+                'n Account","subtotal_amount":599,"surcharge_amount":100,"tags":["Walk-in Custom' .
+                'er"],"tax":0,"tip_amount":0,"transaction_amount":0,"secondary_amount":0,"transa' .
+                'ction_api_id":"transaction-payment-abcd123","transaction_c1":"custom-data-1","t' .
+                'ransaction_c2":"custom-data-2","transaction_c3":"custom-data-3","bank_funded_on' .
+                'ly_override":false,"allow_partial_authorization_override":false,"auto_decline_c' .
+                'vv_override":false,"auto_decline_street_override":false,"auto_decline_zip_overr' .
+                'ide":false,"ebt_type":"food_stamp","id":"11e95f8ec39de8fbdb0a4f1a","created_ts"' .
+                ':1422040992,"modified_ts":1422040992,"terminal_id":"11e95f8ec39de8fbdb0a4f1a","' .
+                'account_holder_name":"smith","account_type":"checking","token_id":"11e95f8ec39d' .
+                'e8fbdb0a4f1a","ach_identifier":"P","ach_sec_code":"C21","auth_amount":1,"auth_c' .
+                'ode":"BR349K","avs":"BAD","avs_enhanced":"N","cardholder_present":true,"card_pr' .
+                'esent":true,"check_number":"8520748520963","customer_ip":"192.168.0.10","cvv_re' .
+                'sponse":"N","entry_mode_id":"C","emv_receipt_data":{"AID":"a0000000042203","APP' .
+                'LAB":"US Maestro","APPN":"US Maestro","CVM":"Pin Verified","TSI":"e800","TVR":"' .
+                '0800008000"},"first_six":"545454","last_four":"5454","payment_method":"cc","ter' .
+                'minal_serial_number":"1234567890","transaction_settlement_status":null,"charge_' .
+                'back_date":"2021-12-01","is_recurring":true,"notification_email_sent":true,"par' .
+                '":"Q1J4Z28RKA1EBL470G9XYG90R5D3E","reason_code_id":1000,"recurring_id":"11e95f8' .
+                'ec39de8fbdb0a4f1a","settle_date":"2021-12-01","status_code":101,"transaction_ba' .
+                'tch_id":"11e95f8ec39de8fbdb0a4f1a","verbiage":"APPROVED","voucher_number":"1234' .
+                '","void_date":"2021-12-01","batch":"2","terms_agree":true,"response_message":nu' .
+                'll,"return_date":"2021-12-01","trx_source_id":8,"routing_number":"051904524","t' .
+                'rx_source_code":8,"paylink_id":"11e95f8ec39de8fbdb0a4f1a","is_accountvault":tru' .
+                'e,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","modified_user_id":"11e95f8ec39d' .
+                'e8fbdb0a4f1a","effective_date":"2021-12-01","is_token":true,"account_vault_id":' .
+                '"11e95f8ec39de8fbdb0a4f1a","hosted_payment_page_id":"11e95f8ec39de8fbdb0a4f1a"}' .
+                '],"cc_product_transaction":{"processor_version":"1_0_0","title":"My terminal","' .
+                'payment_method":"cc","processor":"zgate","mcc":"1111","tax_surcharge_config":2,' .
+                '"partner":"standalone","location_id":"11e95f8ec39de8fbdb0a4f1a","surcharge":{},' .
+                '"processor_data":{},"vt_clerk_number":true,"vt_billing_phone":true,"vt_enable_t' .
+                'ip":true,"ach_allow_debit":true,"ach_allow_credit":true,"ach_allow_refund":true' .
+                ',"vt_cvv":true,"vt_street":true,"vt_zip":true,"vt_order_num":true,"vt_enable":t' .
+                'rue,"receipt_show_contact_name":true,"display_avs":true,"card_type_visa":true,"' .
+                'card_type_mc":true,"card_type_disc":true,"card_type_amex":true,"card_type_diner' .
+                's":true,"card_type_jcb":true,"card_type_ebt":true,"allow_ebt_cash_benefit":true' .
+                ',"allow_ebt_food_stamp":true,"invoice_location":true,"allow_partial_authorizati' .
+                'on":true,"allow_recurring_partial_authorization":true,"auto_decline_cvv":true,"' .
+                'auto_decline_street":true,"auto_decline_zip":true,"split_payments_allow":true,"' .
+                'vt_show_custom_fields":true,"receipt_show_custom_fields":true,"vt_override_sale' .
+                's_tax_allowed":true,"vt_enable_sales_tax":true,"vt_require_zip":true,"vt_requir' .
+                'e_street":true,"auto_decline_cavv":true,"current_batch":34,"dup_check_per_batch' .
+                '":null,"paylink_allow":false,"quick_invoice_allow":false,"level3_allow":false,"' .
+                'payfac_enable":false,"enable_3ds":false,"sales_office_id":"11e95f8ec39de8fbdb0a' .
+                '4f1a","hosted_payment_page_allow":false,"surcharge_id":"11e95f8ec39de8fbdb0a4f1' .
+                'a","allow_big_commerce":false,"level3_default":{"destination_country_code":"840' .
+                '","duty_amount":0,"freight_amount":0,"national_tax":2,"sales_tax":200,"shipfrom' .
+                '_zip_code":"AZ12345","shipto_zip_code":"MI48335","tax_amount":0,"tax_exempt":"0' .
+                '","customer_vat_registration":"12345678","merchant_vat_registration":"123456","' .
+                'order_date":"171006","summary_commodity_code":"C1K2","tax_rate":0,"unique_vat_r' .
+                'ef_number":"vat1234","line_items":[{"alternate_tax_id":"1234","debit_credit":"C' .
+                '","description":"cool drink","discount_amount":10,"discount_rate":11,"product_c' .
+                'ode":"coke12345678","quantity":5,"tax_amount":3,"tax_rate":0,"tax_type_applied"' .
+                ':"22","tax_type_id":"a1","unit_code":"gll","unit_cost":10,"commodity_code":"cc1' .
+                '23456","other_tax_amount":0}]},"cau_subscribe_type_id":0,"location_billing_acco' .
+                'unt_id":"11eb88b873980c64a21e5fd2","product_billing_group_id":"nofees","account' .
+                '_number":"12345678","run_avs_on_accountvault_create":false,"accountvault_expire' .
+                '_notification_email_enable":false,"debit_allow_void":false,"quick_invoice_text_' .
+                'to_pay":false,"sms_enable":false,"vt_show_currency":true,"receipt_show_currency' .
+                '":false,"allow_blind_refund":false,"vt_show_company_name":false,"receipt_show_c' .
+                'ompany_name":false,"bank_funded_only":false,"require_cvv_on_keyed_cnp":true,"re' .
+                'quire_cvv_on_tokenized_cnp":true,"show_secondary_amount":false,"allow_secondary' .
+                '_amount":false,"show_google_pay":true,"show_apple_pay":true,"batch_risk_config"' .
+                ':{},"currency_code":840,"enable_ach_validation":false,"enable_ach_retry":false,' .
+                '"allow_softpos":false,"id":"11e95f8ec39de8fbdb0a4f1a","active":true,"created_ts' .
+                '":1422040992,"modified_ts":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f' .
+                '1a","modified_user_id":"11e95f8ec39de8fbdb0a4f1a","product_transaction_api_id":' .
+                '"11e95f8ec39de8fbdb0a4f1a","is_secondary_amount_allowed":false,"fortis_id":"814' .
+                '9742","product_billing_group_code":"nofees","cau_subscribe_type_code":0},"ach_p' .
+                'roduct_transaction":{"processor_version":"1_0_0","title":"My terminal","payment' .
+                '_method":"cc","processor":"zgate","mcc":"1111","tax_surcharge_config":2,"partne' .
+                'r":"standalone","location_id":"11e95f8ec39de8fbdb0a4f1a","surcharge":{},"proces' .
+                'sor_data":{},"vt_clerk_number":true,"vt_billing_phone":true,"vt_enable_tip":tru' .
+                'e,"ach_allow_debit":true,"ach_allow_credit":true,"ach_allow_refund":true,"vt_cv' .
+                'v":true,"vt_street":true,"vt_zip":true,"vt_order_num":true,"vt_enable":true,"re' .
+                'ceipt_show_contact_name":true,"display_avs":true,"card_type_visa":true,"card_ty' .
+                'pe_mc":true,"card_type_disc":true,"card_type_amex":true,"card_type_diners":true' .
+                ',"card_type_jcb":true,"card_type_ebt":true,"allow_ebt_cash_benefit":true,"allow' .
+                '_ebt_food_stamp":true,"invoice_location":true,"allow_partial_authorization":tru' .
+                'e,"allow_recurring_partial_authorization":true,"auto_decline_cvv":true,"auto_de' .
+                'cline_street":true,"auto_decline_zip":true,"split_payments_allow":true,"vt_show' .
+                '_custom_fields":true,"receipt_show_custom_fields":true,"vt_override_sales_tax_a' .
+                'llowed":true,"vt_enable_sales_tax":true,"vt_require_zip":true,"vt_require_stree' .
+                't":true,"auto_decline_cavv":true,"current_batch":34,"dup_check_per_batch":null,' .
+                '"paylink_allow":false,"quick_invoice_allow":false,"level3_allow":false,"payfac_' .
+                'enable":false,"enable_3ds":false,"sales_office_id":"11e95f8ec39de8fbdb0a4f1a","' .
+                'hosted_payment_page_allow":false,"surcharge_id":"11e95f8ec39de8fbdb0a4f1a","all' .
+                'ow_big_commerce":false,"level3_default":{"destination_country_code":"840","duty' .
+                '_amount":0,"freight_amount":0,"national_tax":2,"sales_tax":200,"shipfrom_zip_co' .
+                'de":"AZ12345","shipto_zip_code":"MI48335","tax_amount":0,"tax_exempt":"0","cust' .
+                'omer_vat_registration":"12345678","merchant_vat_registration":"123456","order_d' .
+                'ate":"171006","summary_commodity_code":"C1K2","tax_rate":0,"unique_vat_ref_numb' .
+                'er":"vat1234","line_items":[{"alternate_tax_id":"1234","debit_credit":"C","desc' .
+                'ription":"cool drink","discount_amount":10,"discount_rate":11,"product_code":"c' .
+                'oke12345678","quantity":5,"tax_amount":3,"tax_rate":0,"tax_type_applied":"22","' .
+                'tax_type_id":"a1","unit_code":"gll","unit_cost":10,"commodity_code":"cc123456",' .
+                '"other_tax_amount":0}]},"cau_subscribe_type_id":0,"location_billing_account_id"' .
+                ':"11eb88b873980c64a21e5fd2","product_billing_group_id":"nofees","account_number' .
+                '":"12345678","run_avs_on_accountvault_create":false,"accountvault_expire_notifi' .
+                'cation_email_enable":false,"debit_allow_void":false,"quick_invoice_text_to_pay"' .
+                ':false,"sms_enable":false,"vt_show_currency":true,"receipt_show_currency":false' .
+                ',"allow_blind_refund":false,"vt_show_company_name":false,"receipt_show_company_' .
+                'name":false,"bank_funded_only":false,"require_cvv_on_keyed_cnp":true,"require_c' .
+                'vv_on_tokenized_cnp":true,"show_secondary_amount":false,"allow_secondary_amount' .
+                '":false,"show_google_pay":true,"show_apple_pay":true,"batch_risk_config":{},"cu' .
+                'rrency_code":840,"enable_ach_validation":false,"enable_ach_retry":false,"allow_' .
+                'softpos":false,"id":"11e95f8ec39de8fbdb0a4f1a","active":true,"created_ts":14220' .
+                '40992,"modified_ts":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","mo' .
+                'dified_user_id":"11e95f8ec39de8fbdb0a4f1a","product_transaction_api_id":"11e95f' .
+                '8ec39de8fbdb0a4f1a","is_secondary_amount_allowed":false,"fortis_id":"8149742","' .
+                'product_billing_group_code":"nofees","cau_subscribe_type_code":0},"email_blackl' .
+                'ist":{"id":"11e95f8ec39de8fbdb0a4f1a","isBlacklisted":true,"detail":true,"creat' .
+                'ed_ts":1422040992},"sms_blacklist":{"id":"11e95f8ec39de8fbdb0a4f1a","isBlacklis' .
+                'ted":true,"detail":true,"created_ts":1422040992}}}'
+            )))
+            ->assert();
+    }
+
+    public function testReopenQuickInvoice()
+    {
+        // Parameters for the API call
+        $quickInvoiceId = '11e95f8ec39de8fbdb0a4f1a';
+
+        // Perform API call
+        $result = null;
+        try {
+            $result = self::$controller->reopenQuickInvoice($quickInvoiceId);
+        } catch (Exceptions\ApiException $e) {
+        }
+
+        $headers = [];
+        $headers['Content-Type'] = ['application/json', true];
+
+        // Assert result with expected response
+        $this->newTestCase($result)
+            ->expectStatus(201)
+            ->allowExtraHeaders()
+            ->expectHeaders($headers)
+            ->bodyMatcher(KeysBodyMatcher::init(TestParam::object(
+                '{"type":"QuickInvoice","data":{"location_id":"11e95f8ec39de8fbdb0a4f1a","title' .
+                '":"My terminal","cc_product_transaction_id":"11e95f8ec39de8fbdb0a4f1a","ach_pro' .
+                'duct_transaction_id":"11e95f8ec39de8fbdb0a4f1a","due_date":"2021-12-01","item_l' .
+                'ist":[{"name":"Bread","amount":2015}],"allow_overpayment":true,"bank_funded_onl' .
+                'y_override":true,"email":"email@domain.com","contact_id":"11e95f8ec39de8fbdb0a4' .
+                'f1a","contact_api_id":"contact12345","quick_invoice_api_id":"quickinvoice12345"' .
+                ',"customer_id":"11e95f8ec39de8fbdb0a4f1a","expire_date":"2021-12-01","allow_par' .
+                'tial_pay":true,"attach_files_to_email":true,"send_email":true,"invoice_number":' .
+                '"invoice12345","item_header":"Quick invoice header sample","item_footer":"Thank' .
+                ' you","amount_due":245.36,"notification_email":"email@domain.com","status_id":1' .
+                ',"status_code":1,"note":"some note","notification_days_before_due_date":3,"noti' .
+                'fication_days_after_due_date":7,"notification_on_due_date":true,"send_text_to_p' .
+                'ay":true,"files":[{"file":{},"resource_id":"11e95f8ec39de8fbdb0a4f1a","resource' .
+                '":"Contact","product_file_id":"11e95f8ec39de8fbdb0a4f1a","file_category_id":"11' .
+                'e95f8ec39de8fbdb0a4f1a","visibility_group_id":"11e95f8ec39de8fbdb0a4f1a","id":"' .
+                '11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"modified_ts":1422040992,"cre' .
+                'ated_user_id":"11e95f8ec39de8fbdb0a4f1a"}],"remaining_balance":245.36,"single_p' .
+                'ayment_min_amount":500,"single_payment_max_amount":500000,"cell_phone":"3339998' .
+                '822","tags":[{"location_id":"11e95f8ec39de8fbdb0a4f1a","title":"My terminal","i' .
+                'd":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"modified_ts":1422040992}' .
+                '],"quick_invoice_c1":"custom-data-1","quick_invoice_c2":"custom-data-2","quick_' .
+                'invoice_c3":"custom-data-3","auto_reopen":true,"id":"11e95f8ec39de8fbdb0a4f1a",' .
+                '"created_ts":1422040992,"modified_ts":1422040992,"created_user_id":"11e95f8ec39' .
+                'de8fbdb0a4f1a","modified_user_id":"11e95f8ec39de8fbdb0a4f1a","active":true,"pay' .
+                'ment_status_id":1,"is_active":true,"quick_invoice_setting":{"location_api_id":"' .
+                '11e95f8ec39de8fbdb0a4f1a","location_id":"11e95f8ec39de8fbdb0a4f1a","quick_invoi' .
+                'ce_template":"<html>Template<html>","default_allow_partial_pay":true,"default_n' .
+                'otification_on_due_date":true,"default_notification_days_after_due_date":7,"def' .
+                'ault_notification_days_before_due_date":3,"show_custom_fields":false,"id":"11e9' .
+                '5f8ec39de8fbdb0a4f1a"},"quick_invoice_views":[{"id":"11e95f8ec39de8fbdb0a4f1a",' .
+                '"quick_invoice_id":"Quick Invoice ID","created_ts":1422040992}],"location":{"id' .
+                '":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"modified_ts":1422040992,"' .
+                'account_number":"5454545454545454","address":{"city":"Novi","state":"MI","posta' .
+                'l_code":"48375","country":"US"},"branding_domain_id":"11e95f8ec39de8fbdb0a4f1a"' .
+                ',"contact_email_trx_receipt_default":true,"default_ach":"11e608a7d515f1e093242b' .
+                'b2","default_cc":"11e608a442a5f1e092242dda","email_reply_to":"email@domain.com"' .
+                ',"fax":"3339998822","location_api_id":"location-111111","location_api_key":"AE3' .
+                '4BBCAADF4AE34BBCAADF4","location_c1":"custom 1","location_c2":"custom 2","locat' .
+                'ion_c3":"custom data 3","name":"Sample Company Headquarters","office_phone":"24' .
+                '81234567","office_ext_phone":"1021021209","tz":"America/New_York","parent_id":"' .
+                '11e95f8ec39de8fbdb0a4f1a","show_contact_notes":true,"show_contact_files":true,"' .
+                'created_user_id":"11e95f8ec39de8fbdb0a4f1a","location_type":"merchant","ticket_' .
+                'hash_key":"A5F443CADF4AE34BBCAADF4","additional_access":{}},"created_user":{"ac' .
+                'count_number":"5454545454545454","branding_domain_url":"{branding_domain_url}",' .
+                '"cell_phone":"3339998822","company_name":"Fortis Payment Systems, LLC","contact' .
+                '_id":"11e95f8ec39de8fbdb0a4f1a","date_of_birth":"2021-12-01","domain_id":"11e95' .
+                'f8ec39de8fbdb0a4f1a","email":"email@domain.com","email_trx_receipt":true,"home_' .
+                'phone":"3339998822","first_name":"John","last_name":"Smith","locale":"en-US","o' .
+                'ffice_phone":"3339998822","office_ext_phone":"5","primary_location_id":"11e95f8' .
+                'ec39de8fbdb0a4f1a","requires_new_password":null,"terms_condition_code":"2022030' .
+                '8","tz":"America/New_York","ui_prefs":{"entry_page":"dashboard","page_size":2,"' .
+                'report_export_type":"csv","process_method":"virtual_terminal","default_terminal' .
+                '":"11e95f8ec39de8fbdb0a4f1a"},"username":"{user_name}","user_api_key":"234bas8d' .
+                'fn8238f923w2","user_hash_key":null,"user_type_code":100,"password":null,"zip":"' .
+                '48375","location_id":"11e95f8ec39de8fbdb0a4f1a","status_code":1,"api_only":fals' .
+                'e,"is_invitation":false,"address":{"city":"Novi","state":"MI","postal_code":"48' .
+                '375","country":"US"},"id":"11e95f8ec39de8fbdb0a4f1a","status":true,"login_attem' .
+                'pts":0,"last_login_ts":1422040992,"created_ts":1422040992,"modified_ts":1422040' .
+                '992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","terms_accepted_ts":1422040992' .
+                ',"terms_agree_ip":"192.168.0.10","current_date_time":"2019-03-11T10:38:26-0700"' .
+                ',"current_login":1422040992,"log_api_response_body_ts":1422040992},"modified_us' .
+                'er":{"account_number":"5454545454545454","branding_domain_url":"{branding_domai' .
+                'n_url}","cell_phone":"3339998822","company_name":"Fortis Payment Systems, LLC",' .
+                '"contact_id":"11e95f8ec39de8fbdb0a4f1a","date_of_birth":"2021-12-01","domain_id' .
+                '":"11e95f8ec39de8fbdb0a4f1a","email":"email@domain.com","email_trx_receipt":tru' .
+                'e,"home_phone":"3339998822","first_name":"John","last_name":"Smith","locale":"e' .
+                'n-US","office_phone":"3339998822","office_ext_phone":"5","primary_location_id":' .
+                '"11e95f8ec39de8fbdb0a4f1a","requires_new_password":null,"terms_condition_code":' .
+                '"20220308","tz":"America/New_York","ui_prefs":{"entry_page":"dashboard","page_s' .
+                'ize":2,"report_export_type":"csv","process_method":"virtual_terminal","default_' .
+                'terminal":"11e95f8ec39de8fbdb0a4f1a"},"username":"{user_name}","user_api_key":"' .
+                '234bas8dfn8238f923w2","user_hash_key":null,"user_type_code":100,"password":null' .
+                ',"zip":"48375","location_id":"11e95f8ec39de8fbdb0a4f1a","status_code":1,"api_on' .
+                'ly":false,"is_invitation":false,"address":{"city":"Novi","state":"MI","postal_c' .
+                'ode":"48375","country":"US"},"id":"11e95f8ec39de8fbdb0a4f1a","status":true,"log' .
+                'in_attempts":0,"last_login_ts":1422040992,"created_ts":1422040992,"modified_ts"' .
+                ':1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","terms_accepted_ts":14' .
+                '22040992,"terms_agree_ip":"192.168.0.10","current_date_time":"2019-03-11T10:38:' .
+                '26-0700","current_login":1422040992,"log_api_response_body_ts":1422040992},"cha' .
+                'ngelogs":[{"id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"action":"CR' .
+                'EATE","model":"TransactionRequest","model_id":"11ec829598f0d4008be9aba4","user_' .
+                'id":"11e95f8ec39de8fbdb0a4f1a","changelog_details":[{"id":"11e95f8ec39de8fbdb0a' .
+                '4f1a","changelog_id":"11e95f8ec39de8fbdb0a4f1a","field":"next_run_ts","old_valu' .
+                'e":"1643616000"}],"user":{"id":"11e95f8ec39de8fbdb0a4f1a","username":"email@dom' .
+                'ain.com","first_name":"Bob","last_name":"Fairview"}}],"contact":{"location_id":' .
+                '"11e95f8ec39de8fbdb0a4f1a","account_number":"54545433332","contact_api_id":"137' .
+                '","first_name":"John","last_name":"Smith","cell_phone":"3339998822","balance":2' .
+                '45.36,"address":{"city":"Novi","state":"Michigan","postal_code":"48375","countr' .
+                'y":"USA"},"company_name":"Fortis Payment Systems, LLC","header_message":"This i' .
+                's a sample message for you","date_of_birth":"2021-12-01","email_trx_receipt":tr' .
+                'ue,"home_phone":"3339998822","office_phone":"3339998822","office_phone_ext":"5"' .
+                ',"home_phone_country_code":"+1","office_phone_country_code":"+1","cell_phone_co' .
+                'untry_code":"+1","header_message_type":0,"update_if_exists":1,"contact_c1":"any' .
+                '","contact_c2":"anything","contact_c3":"something","parent_id":"11e95f8ec39de8f' .
+                'bdb0a4f1a","email":"email@domain.com","token_import_id":"11e95f8ec39de8fbdb0a4f' .
+                '1a","id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992,"modified_ts":14220' .
+                '40992,"active":true,"created_user_id":"11e95f8ec39de8fbdb0a4f1a"},"log_emails":' .
+                '[{"subject":"Payment Receipt - 12skiestech","body":"This email is being sent fr' .
+                'om a server.","source_address":"\\"12skiestech A7t3qi\\" <noreply@zeamster.emai' .
+                'l>","return_path":"\\"12skiestech A7t3qi\\" <noreply@zeamster.email>","provider' .
+                '_id":"0100017e67bcc530-e1dd23b4-8a39-4a5b-8d5d-68d51c4c942f-000000","domain_id"' .
+                ':"11e95f8ec39de8fbdb0a4f1a","reason_sent":"Contact Email","reason_model":"Trans' .
+                'action","reason_model_id":"11e95f8ec39de8fbdb0a4f1a","reply_to":"\\"Zeamster\\"' .
+                ' <emma.p@zeamster.com>","id":"11e95f8ec39de8fbdb0a4f1a","created_ts":1422040992' .
+                '}],"log_sms":{"id":"11e95f8ec39de8fbdb0a4f1a","body":" ","reason_model":" ","re' .
+                'ason_model_id":" ","provider_id":" ","status":" ","sender":" ","recipient":" ",' .
+                '"created_ts":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a"},"transact' .
+                'ions":[{"additional_amounts":[{"type":"cashback","amount":10,"account_type":"cr' .
+                'edit","currency":840}],"billing_address":{"city":"Novi","state":"Michigan","pos' .
+                'tal_code":"48375","phone":"3339998822","country":"USA"},"checkin_date":"2021-12' .
+                '-01","checkout_date":"2021-12-01","clerk_number":"AE1234","contact_id":"11e95f8' .
+                'ec39de8fbdb0a4f1a","custom_data":{},"customer_id":"customerid","description":"s' .
+                'ome description","identity_verification":{"dl_state":"MI","dl_number":"1235567"' .
+                ',"dob_year":"1980"},"iias_ind":1,"image_front":"U29tZVN0cmluZ09idmlvdXNseU5vdEJ' .
+                'hc2U2NEVuY29kZWQ=","image_back":"U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZW' .
+                'Q=","installment":true,"installment_number":1,"installment_count":1,"recurring_' .
+                'flag":"yes","installment_counter":1,"installment_total":1,"subscription":false,' .
+                '"standing_order":false,"location_api_id":"location-api-id-florida-2","location_' .
+                'id":"11e95f8ec39de8fbdb0a4f1a","product_transaction_id":"11e95f8ec39de8fbdb0a4f' .
+                '1a","advance_deposit":false,"no_show":false,"notification_email_address":"johns' .
+                'mith@smiths.com","order_number":"433659378839","po_number":"555555553123","quic' .
+                'k_invoice_id":"11e95f8ec39de8fbdb0a4f1a","recurring":false,"recurring_number":1' .
+                ',"room_num":"303","room_rate":95,"save_account":false,"save_account_title":"Joh' .
+                'n Account","subtotal_amount":599,"surcharge_amount":100,"tags":["Walk-in Custom' .
+                'er"],"tax":0,"tip_amount":0,"transaction_amount":0,"secondary_amount":0,"transa' .
+                'ction_api_id":"transaction-payment-abcd123","transaction_c1":"custom-data-1","t' .
+                'ransaction_c2":"custom-data-2","transaction_c3":"custom-data-3","bank_funded_on' .
+                'ly_override":false,"allow_partial_authorization_override":false,"auto_decline_c' .
+                'vv_override":false,"auto_decline_street_override":false,"auto_decline_zip_overr' .
+                'ide":false,"ebt_type":"food_stamp","id":"11e95f8ec39de8fbdb0a4f1a","created_ts"' .
+                ':1422040992,"modified_ts":1422040992,"terminal_id":"11e95f8ec39de8fbdb0a4f1a","' .
+                'account_holder_name":"smith","account_type":"checking","token_id":"11e95f8ec39d' .
+                'e8fbdb0a4f1a","ach_identifier":"P","ach_sec_code":"C21","auth_amount":1,"auth_c' .
+                'ode":"BR349K","avs":"BAD","avs_enhanced":"N","cardholder_present":true,"card_pr' .
+                'esent":true,"check_number":"8520748520963","customer_ip":"192.168.0.10","cvv_re' .
+                'sponse":"N","entry_mode_id":"C","emv_receipt_data":{"AID":"a0000000042203","APP' .
+                'LAB":"US Maestro","APPN":"US Maestro","CVM":"Pin Verified","TSI":"e800","TVR":"' .
+                '0800008000"},"first_six":"545454","last_four":"5454","payment_method":"cc","ter' .
+                'minal_serial_number":"1234567890","transaction_settlement_status":null,"charge_' .
+                'back_date":"2021-12-01","is_recurring":true,"notification_email_sent":true,"par' .
+                '":"Q1J4Z28RKA1EBL470G9XYG90R5D3E","reason_code_id":1000,"recurring_id":"11e95f8' .
+                'ec39de8fbdb0a4f1a","settle_date":"2021-12-01","status_code":101,"transaction_ba' .
+                'tch_id":"11e95f8ec39de8fbdb0a4f1a","verbiage":"APPROVED","voucher_number":"1234' .
+                '","void_date":"2021-12-01","batch":"2","terms_agree":true,"response_message":nu' .
+                'll,"return_date":"2021-12-01","trx_source_id":8,"routing_number":"051904524","t' .
+                'rx_source_code":8,"paylink_id":"11e95f8ec39de8fbdb0a4f1a","is_accountvault":tru' .
+                'e,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","modified_user_id":"11e95f8ec39d' .
+                'e8fbdb0a4f1a","effective_date":"2021-12-01","is_token":true,"account_vault_id":' .
+                '"11e95f8ec39de8fbdb0a4f1a","hosted_payment_page_id":"11e95f8ec39de8fbdb0a4f1a"}' .
+                '],"cc_product_transaction":{"processor_version":"1_0_0","title":"My terminal","' .
+                'payment_method":"cc","processor":"zgate","mcc":"1111","tax_surcharge_config":2,' .
+                '"partner":"standalone","location_id":"11e95f8ec39de8fbdb0a4f1a","surcharge":{},' .
+                '"processor_data":{},"vt_clerk_number":true,"vt_billing_phone":true,"vt_enable_t' .
+                'ip":true,"ach_allow_debit":true,"ach_allow_credit":true,"ach_allow_refund":true' .
+                ',"vt_cvv":true,"vt_street":true,"vt_zip":true,"vt_order_num":true,"vt_enable":t' .
+                'rue,"receipt_show_contact_name":true,"display_avs":true,"card_type_visa":true,"' .
+                'card_type_mc":true,"card_type_disc":true,"card_type_amex":true,"card_type_diner' .
+                's":true,"card_type_jcb":true,"card_type_ebt":true,"allow_ebt_cash_benefit":true' .
+                ',"allow_ebt_food_stamp":true,"invoice_location":true,"allow_partial_authorizati' .
+                'on":true,"allow_recurring_partial_authorization":true,"auto_decline_cvv":true,"' .
+                'auto_decline_street":true,"auto_decline_zip":true,"split_payments_allow":true,"' .
+                'vt_show_custom_fields":true,"receipt_show_custom_fields":true,"vt_override_sale' .
+                's_tax_allowed":true,"vt_enable_sales_tax":true,"vt_require_zip":true,"vt_requir' .
+                'e_street":true,"auto_decline_cavv":true,"current_batch":34,"dup_check_per_batch' .
+                '":null,"paylink_allow":false,"quick_invoice_allow":false,"level3_allow":false,"' .
+                'payfac_enable":false,"enable_3ds":false,"sales_office_id":"11e95f8ec39de8fbdb0a' .
+                '4f1a","hosted_payment_page_allow":false,"surcharge_id":"11e95f8ec39de8fbdb0a4f1' .
+                'a","allow_big_commerce":false,"level3_default":{"destination_country_code":"840' .
+                '","duty_amount":0,"freight_amount":0,"national_tax":2,"sales_tax":200,"shipfrom' .
+                '_zip_code":"AZ12345","shipto_zip_code":"MI48335","tax_amount":0,"tax_exempt":"0' .
+                '","customer_vat_registration":"12345678","merchant_vat_registration":"123456","' .
+                'order_date":"171006","summary_commodity_code":"C1K2","tax_rate":0,"unique_vat_r' .
+                'ef_number":"vat1234","line_items":[{"alternate_tax_id":"1234","debit_credit":"C' .
+                '","description":"cool drink","discount_amount":10,"discount_rate":11,"product_c' .
+                'ode":"coke12345678","quantity":5,"tax_amount":3,"tax_rate":0,"tax_type_applied"' .
+                ':"22","tax_type_id":"a1","unit_code":"gll","unit_cost":10,"commodity_code":"cc1' .
+                '23456","other_tax_amount":0}]},"cau_subscribe_type_id":0,"location_billing_acco' .
+                'unt_id":"11eb88b873980c64a21e5fd2","product_billing_group_id":"nofees","account' .
+                '_number":"12345678","run_avs_on_accountvault_create":false,"accountvault_expire' .
+                '_notification_email_enable":false,"debit_allow_void":false,"quick_invoice_text_' .
+                'to_pay":false,"sms_enable":false,"vt_show_currency":true,"receipt_show_currency' .
+                '":false,"allow_blind_refund":false,"vt_show_company_name":false,"receipt_show_c' .
+                'ompany_name":false,"bank_funded_only":false,"require_cvv_on_keyed_cnp":true,"re' .
+                'quire_cvv_on_tokenized_cnp":true,"show_secondary_amount":false,"allow_secondary' .
+                '_amount":false,"show_google_pay":true,"show_apple_pay":true,"batch_risk_config"' .
+                ':{},"currency_code":840,"enable_ach_validation":false,"enable_ach_retry":false,' .
+                '"allow_softpos":false,"id":"11e95f8ec39de8fbdb0a4f1a","active":true,"created_ts' .
+                '":1422040992,"modified_ts":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f' .
+                '1a","modified_user_id":"11e95f8ec39de8fbdb0a4f1a","product_transaction_api_id":' .
+                '"11e95f8ec39de8fbdb0a4f1a","is_secondary_amount_allowed":false,"fortis_id":"814' .
+                '9742","product_billing_group_code":"nofees","cau_subscribe_type_code":0},"ach_p' .
+                'roduct_transaction":{"processor_version":"1_0_0","title":"My terminal","payment' .
+                '_method":"cc","processor":"zgate","mcc":"1111","tax_surcharge_config":2,"partne' .
+                'r":"standalone","location_id":"11e95f8ec39de8fbdb0a4f1a","surcharge":{},"proces' .
+                'sor_data":{},"vt_clerk_number":true,"vt_billing_phone":true,"vt_enable_tip":tru' .
+                'e,"ach_allow_debit":true,"ach_allow_credit":true,"ach_allow_refund":true,"vt_cv' .
+                'v":true,"vt_street":true,"vt_zip":true,"vt_order_num":true,"vt_enable":true,"re' .
+                'ceipt_show_contact_name":true,"display_avs":true,"card_type_visa":true,"card_ty' .
+                'pe_mc":true,"card_type_disc":true,"card_type_amex":true,"card_type_diners":true' .
+                ',"card_type_jcb":true,"card_type_ebt":true,"allow_ebt_cash_benefit":true,"allow' .
+                '_ebt_food_stamp":true,"invoice_location":true,"allow_partial_authorization":tru' .
+                'e,"allow_recurring_partial_authorization":true,"auto_decline_cvv":true,"auto_de' .
+                'cline_street":true,"auto_decline_zip":true,"split_payments_allow":true,"vt_show' .
+                '_custom_fields":true,"receipt_show_custom_fields":true,"vt_override_sales_tax_a' .
+                'llowed":true,"vt_enable_sales_tax":true,"vt_require_zip":true,"vt_require_stree' .
+                't":true,"auto_decline_cavv":true,"current_batch":34,"dup_check_per_batch":null,' .
+                '"paylink_allow":false,"quick_invoice_allow":false,"level3_allow":false,"payfac_' .
+                'enable":false,"enable_3ds":false,"sales_office_id":"11e95f8ec39de8fbdb0a4f1a","' .
+                'hosted_payment_page_allow":false,"surcharge_id":"11e95f8ec39de8fbdb0a4f1a","all' .
+                'ow_big_commerce":false,"level3_default":{"destination_country_code":"840","duty' .
+                '_amount":0,"freight_amount":0,"national_tax":2,"sales_tax":200,"shipfrom_zip_co' .
+                'de":"AZ12345","shipto_zip_code":"MI48335","tax_amount":0,"tax_exempt":"0","cust' .
+                'omer_vat_registration":"12345678","merchant_vat_registration":"123456","order_d' .
+                'ate":"171006","summary_commodity_code":"C1K2","tax_rate":0,"unique_vat_ref_numb' .
+                'er":"vat1234","line_items":[{"alternate_tax_id":"1234","debit_credit":"C","desc' .
+                'ription":"cool drink","discount_amount":10,"discount_rate":11,"product_code":"c' .
+                'oke12345678","quantity":5,"tax_amount":3,"tax_rate":0,"tax_type_applied":"22","' .
+                'tax_type_id":"a1","unit_code":"gll","unit_cost":10,"commodity_code":"cc123456",' .
+                '"other_tax_amount":0}]},"cau_subscribe_type_id":0,"location_billing_account_id"' .
+                ':"11eb88b873980c64a21e5fd2","product_billing_group_id":"nofees","account_number' .
+                '":"12345678","run_avs_on_accountvault_create":false,"accountvault_expire_notifi' .
+                'cation_email_enable":false,"debit_allow_void":false,"quick_invoice_text_to_pay"' .
+                ':false,"sms_enable":false,"vt_show_currency":true,"receipt_show_currency":false' .
+                ',"allow_blind_refund":false,"vt_show_company_name":false,"receipt_show_company_' .
+                'name":false,"bank_funded_only":false,"require_cvv_on_keyed_cnp":true,"require_c' .
+                'vv_on_tokenized_cnp":true,"show_secondary_amount":false,"allow_secondary_amount' .
+                '":false,"show_google_pay":true,"show_apple_pay":true,"batch_risk_config":{},"cu' .
+                'rrency_code":840,"enable_ach_validation":false,"enable_ach_retry":false,"allow_' .
+                'softpos":false,"id":"11e95f8ec39de8fbdb0a4f1a","active":true,"created_ts":14220' .
+                '40992,"modified_ts":1422040992,"created_user_id":"11e95f8ec39de8fbdb0a4f1a","mo' .
+                'dified_user_id":"11e95f8ec39de8fbdb0a4f1a","product_transaction_api_id":"11e95f' .
+                '8ec39de8fbdb0a4f1a","is_secondary_amount_allowed":false,"fortis_id":"8149742","' .
+                'product_billing_group_code":"nofees","cau_subscribe_type_code":0},"email_blackl' .
+                'ist":{"id":"11e95f8ec39de8fbdb0a4f1a","isBlacklisted":true,"detail":true,"creat' .
+                'ed_ts":1422040992},"sms_blacklist":{"id":"11e95f8ec39de8fbdb0a4f1a","isBlacklis' .
+                'ted":true,"detail":true,"created_ts":1422040992}}}'
             )))
             ->assert();
     }

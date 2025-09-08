@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class V1OnboardingRequest implements \JsonSerializable
@@ -20,7 +21,7 @@ class V1OnboardingRequest implements \JsonSerializable
     private $parentId = [];
 
     /**
-     * @var PrimaryPrincipal
+     * @var PrimaryPrincipal1
      */
     private $primaryPrincipal;
 
@@ -40,7 +41,7 @@ class V1OnboardingRequest implements \JsonSerializable
     private $dbaName;
 
     /**
-     * @var Location4
+     * @var Location20
      */
     private $location;
 
@@ -125,12 +126,12 @@ class V1OnboardingRequest implements \JsonSerializable
     private $website = [];
 
     /**
-     * @var BankAccount
+     * @var BankAccount|null
      */
     private $bankAccount;
 
     /**
-     * @var AltBankAccount
+     * @var AltBankAccount|null
      */
     private $altBankAccount;
 
@@ -140,7 +141,7 @@ class V1OnboardingRequest implements \JsonSerializable
     private $legalName = [];
 
     /**
-     * @var Contact
+     * @var Contact11
      */
     private $contact;
 
@@ -150,26 +151,27 @@ class V1OnboardingRequest implements \JsonSerializable
     private $clientAppId = [];
 
     /**
-     * @param PrimaryPrincipal $primaryPrincipal
+     * @var string[]|null
+     */
+    private $secCodes;
+
+    /**
+     * @param PrimaryPrincipal1 $primaryPrincipal
      * @param string $templateCode
      * @param string $email
      * @param string $dbaName
-     * @param Location4 $location
+     * @param Location20 $location
      * @param string $appDelivery
-     * @param BankAccount $bankAccount
-     * @param AltBankAccount $altBankAccount
-     * @param Contact $contact
+     * @param Contact11 $contact
      */
     public function __construct(
-        PrimaryPrincipal $primaryPrincipal,
+        PrimaryPrincipal1 $primaryPrincipal,
         string $templateCode,
         string $email,
         string $dbaName,
-        Location4 $location,
+        Location20 $location,
         string $appDelivery,
-        BankAccount $bankAccount,
-        AltBankAccount $altBankAccount,
-        Contact $contact
+        Contact11 $contact
     ) {
         $this->primaryPrincipal = $primaryPrincipal;
         $this->templateCode = $templateCode;
@@ -177,8 +179,6 @@ class V1OnboardingRequest implements \JsonSerializable
         $this->dbaName = $dbaName;
         $this->location = $location;
         $this->appDelivery = $appDelivery;
-        $this->bankAccount = $bankAccount;
-        $this->altBankAccount = $altBankAccount;
         $this->contact = $contact;
     }
 
@@ -218,7 +218,7 @@ class V1OnboardingRequest implements \JsonSerializable
      * Returns Primary Principal.
      * The Primary Principal.
      */
-    public function getPrimaryPrincipal(): PrimaryPrincipal
+    public function getPrimaryPrincipal(): PrimaryPrincipal1
     {
         return $this->primaryPrincipal;
     }
@@ -230,7 +230,7 @@ class V1OnboardingRequest implements \JsonSerializable
      * @required
      * @maps primary_principal
      */
-    public function setPrimaryPrincipal(PrimaryPrincipal $primaryPrincipal): void
+    public function setPrimaryPrincipal(PrimaryPrincipal1 $primaryPrincipal): void
     {
         $this->primaryPrincipal = $primaryPrincipal;
     }
@@ -302,7 +302,7 @@ class V1OnboardingRequest implements \JsonSerializable
      * Returns Location.
      * The Location.
      */
-    public function getLocation(): Location4
+    public function getLocation(): Location20
     {
         return $this->location;
     }
@@ -314,7 +314,7 @@ class V1OnboardingRequest implements \JsonSerializable
      * @required
      * @maps location
      */
-    public function setLocation(Location4 $location): void
+    public function setLocation(Location20 $location): void
     {
         $this->location = $location;
     }
@@ -344,6 +344,9 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Returns Business Category.
      * The Category of the merchant's business
+     * >(Required if "business_type" is provided). Note: "business_type" must belong to the appropriate
+     * "business_category"
+     * >
      */
     public function getBusinessCategory(): ?string
     {
@@ -356,6 +359,9 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Sets Business Category.
      * The Category of the merchant's business
+     * >(Required if "business_type" is provided). Note: "business_type" must belong to the appropriate
+     * "business_category"
+     * >
      *
      * @maps business_category
      * @factory \FortisAPILib\Models\BusinessCategoryEnum::checkValue
@@ -368,6 +374,9 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Unsets Business Category.
      * The Category of the merchant's business
+     * >(Required if "business_type" is provided). Note: "business_type" must belong to the appropriate
+     * "business_category"
+     * >
      */
     public function unsetBusinessCategory(): void
     {
@@ -442,6 +451,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Returns Swiped Percent.
      * Card present/swiped percentage
+     * >The sum total of "swiped_percent", "keyed_percent" and "ecommerce_percent" must add up to 100.
+     * >
      */
     public function getSwipedPercent(): ?int
     {
@@ -454,6 +465,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Sets Swiped Percent.
      * Card present/swiped percentage
+     * >The sum total of "swiped_percent", "keyed_percent" and "ecommerce_percent" must add up to 100.
+     * >
      *
      * @maps swiped_percent
      */
@@ -465,6 +478,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Unsets Swiped Percent.
      * Card present/swiped percentage
+     * >The sum total of "swiped_percent", "keyed_percent" and "ecommerce_percent" must add up to 100.
+     * >
      */
     public function unsetSwipedPercent(): void
     {
@@ -474,6 +489,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Returns Keyed Percent.
      * Card not present/keyed percentage
+     * >The sum total of "swiped_percent", "keyed_percent" and "ecommerce_percent" must add up to 100.
+     * >
      */
     public function getKeyedPercent(): ?int
     {
@@ -486,6 +503,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Sets Keyed Percent.
      * Card not present/keyed percentage
+     * >The sum total of "swiped_percent", "keyed_percent" and "ecommerce_percent" must add up to 100.
+     * >
      *
      * @maps keyed_percent
      */
@@ -497,6 +516,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Unsets Keyed Percent.
      * Card not present/keyed percentage
+     * >The sum total of "swiped_percent", "keyed_percent" and "ecommerce_percent" must add up to 100.
+     * >
      */
     public function unsetKeyedPercent(): void
     {
@@ -506,6 +527,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Returns Ecommerce Percent.
      * eCommerce percentage.
+     * >The sum total of "swiped_percent", "keyed_percent" and "ecommerce_percent" must add up to 100.
+     * >
      */
     public function getEcommercePercent(): ?int
     {
@@ -518,6 +541,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Sets Ecommerce Percent.
      * eCommerce percentage.
+     * >The sum total of "swiped_percent", "keyed_percent" and "ecommerce_percent" must add up to 100.
+     * >
      *
      * @maps ecommerce_percent
      */
@@ -529,6 +554,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Unsets Ecommerce Percent.
      * eCommerce percentage.
+     * >The sum total of "swiped_percent", "keyed_percent" and "ecommerce_percent" must add up to 100.
+     * >
      */
     public function unsetEcommercePercent(): void
     {
@@ -603,6 +630,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Returns Cc Average Ticket Range.
      * Average Transaction Amount Range
+     * >(Applicable when Template Application Type is 'credit_card' or 'both').
+     * >
      */
     public function getCcAverageTicketRange(): ?int
     {
@@ -615,6 +644,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Sets Cc Average Ticket Range.
      * Average Transaction Amount Range
+     * >(Applicable when Template Application Type is 'credit_card' or 'both').
+     * >
      *
      * @maps cc_average_ticket_range
      */
@@ -626,6 +657,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Unsets Cc Average Ticket Range.
      * Average Transaction Amount Range
+     * >(Applicable when Template Application Type is 'credit_card' or 'both').
+     * >
      */
     public function unsetCcAverageTicketRange(): void
     {
@@ -635,6 +668,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Returns Cc Monthly Volume Range.
      * Monthly Processing Volume Range
+     * >(Applicable when Template Application Type is 'credit_card' or 'both').
+     * >
      */
     public function getCcMonthlyVolumeRange(): ?int
     {
@@ -647,6 +682,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Sets Cc Monthly Volume Range.
      * Monthly Processing Volume Range
+     * >(Applicable when Template Application Type is 'credit_card' or 'both').
+     * >
      *
      * @maps cc_monthly_volume_range
      */
@@ -658,6 +695,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Unsets Cc Monthly Volume Range.
      * Monthly Processing Volume Range
+     * >(Applicable when Template Application Type is 'credit_card' or 'both').
+     * >
      */
     public function unsetCcMonthlyVolumeRange(): void
     {
@@ -667,6 +706,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Returns Cc High Ticket.
      * Highest transaction amount rounded to the next dollar
+     * > (No decimal and applicable when Template Application Type is 'credit_card' or 'both').
+     * >
      */
     public function getCcHighTicket(): ?int
     {
@@ -679,6 +720,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Sets Cc High Ticket.
      * Highest transaction amount rounded to the next dollar
+     * > (No decimal and applicable when Template Application Type is 'credit_card' or 'both').
+     * >
      *
      * @maps cc_high_ticket
      */
@@ -690,6 +733,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Unsets Cc High Ticket.
      * Highest transaction amount rounded to the next dollar
+     * > (No decimal and applicable when Template Application Type is 'credit_card' or 'both').
+     * >
      */
     public function unsetCcHighTicket(): void
     {
@@ -699,6 +744,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Returns Ec Average Ticket Range.
      * Average Transaction Amount Range
+     * >(Applicable when Template Application Type is 'echeck' or 'both').
+     * >
      */
     public function getEcAverageTicketRange(): ?int
     {
@@ -711,6 +758,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Sets Ec Average Ticket Range.
      * Average Transaction Amount Range
+     * >(Applicable when Template Application Type is 'echeck' or 'both').
+     * >
      *
      * @maps ec_average_ticket_range
      */
@@ -722,6 +771,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Unsets Ec Average Ticket Range.
      * Average Transaction Amount Range
+     * >(Applicable when Template Application Type is 'echeck' or 'both').
+     * >
      */
     public function unsetEcAverageTicketRange(): void
     {
@@ -731,6 +782,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Returns Ec Monthly Volume Range.
      * Monthly Processing Volume Range
+     * >(Applicable when Template Application Type is 'echeck' or 'both').
+     * >
      */
     public function getEcMonthlyVolumeRange(): ?int
     {
@@ -743,6 +796,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Sets Ec Monthly Volume Range.
      * Monthly Processing Volume Range
+     * >(Applicable when Template Application Type is 'echeck' or 'both').
+     * >
      *
      * @maps ec_monthly_volume_range
      */
@@ -754,6 +809,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Unsets Ec Monthly Volume Range.
      * Monthly Processing Volume Range
+     * >(Applicable when Template Application Type is 'echeck' or 'both').
+     * >
      */
     public function unsetEcMonthlyVolumeRange(): void
     {
@@ -763,6 +820,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Returns Ec High Ticket.
      * Highest transaction amount rounded to the next dollar
+     * >(No decimal and applicable when Template Application Type is 'echeck' or 'both').
+     * >
      */
     public function getEcHighTicket(): ?int
     {
@@ -775,6 +834,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Sets Ec High Ticket.
      * Highest transaction amount rounded to the next dollar
+     * >(No decimal and applicable when Template Application Type is 'echeck' or 'both').
+     * >
      *
      * @maps ec_high_ticket
      */
@@ -786,6 +847,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Unsets Ec High Ticket.
      * Highest transaction amount rounded to the next dollar
+     * >(No decimal and applicable when Template Application Type is 'echeck' or 'both').
+     * >
      */
     public function unsetEcHighTicket(): void
     {
@@ -795,6 +858,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Returns Website.
      * Merchant's business website.
+     * >(Required if "ecommerce_percent" is greater than 0).
+     * >
      */
     public function getWebsite(): ?string
     {
@@ -807,6 +872,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Sets Website.
      * Merchant's business website.
+     * >(Required if "ecommerce_percent" is greater than 0).
+     * >
      *
      * @maps website
      */
@@ -818,6 +885,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Unsets Website.
      * Merchant's business website.
+     * >(Required if "ecommerce_percent" is greater than 0).
+     * >
      */
     public function unsetWebsite(): void
     {
@@ -828,7 +897,7 @@ class V1OnboardingRequest implements \JsonSerializable
      * Returns Bank Account.
      * The Bank Account.
      */
-    public function getBankAccount(): BankAccount
+    public function getBankAccount(): ?BankAccount
     {
         return $this->bankAccount;
     }
@@ -837,10 +906,9 @@ class V1OnboardingRequest implements \JsonSerializable
      * Sets Bank Account.
      * The Bank Account.
      *
-     * @required
      * @maps bank_account
      */
-    public function setBankAccount(BankAccount $bankAccount): void
+    public function setBankAccount(?BankAccount $bankAccount): void
     {
         $this->bankAccount = $bankAccount;
     }
@@ -849,7 +917,7 @@ class V1OnboardingRequest implements \JsonSerializable
      * Returns Alt Bank Account.
      * The Alternative Bank Account.
      */
-    public function getAltBankAccount(): AltBankAccount
+    public function getAltBankAccount(): ?AltBankAccount
     {
         return $this->altBankAccount;
     }
@@ -858,10 +926,9 @@ class V1OnboardingRequest implements \JsonSerializable
      * Sets Alt Bank Account.
      * The Alternative Bank Account.
      *
-     * @required
      * @maps alt_bank_account
      */
-    public function setAltBankAccount(AltBankAccount $altBankAccount): void
+    public function setAltBankAccount(?AltBankAccount $altBankAccount): void
     {
         $this->altBankAccount = $altBankAccount;
     }
@@ -869,6 +936,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Returns Legal Name.
      * Merchant legal name.
+     * >(leave blank if same as DBA name).
+     * >
      */
     public function getLegalName(): ?string
     {
@@ -881,6 +950,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Sets Legal Name.
      * Merchant legal name.
+     * >(leave blank if same as DBA name).
+     * >
      *
      * @maps legal_name
      */
@@ -892,6 +963,8 @@ class V1OnboardingRequest implements \JsonSerializable
     /**
      * Unsets Legal Name.
      * Merchant legal name.
+     * >(leave blank if same as DBA name).
+     * >
      */
     public function unsetLegalName(): void
     {
@@ -902,7 +975,7 @@ class V1OnboardingRequest implements \JsonSerializable
      * Returns Contact.
      * The Contact.
      */
-    public function getContact(): Contact
+    public function getContact(): Contact11
     {
         return $this->contact;
     }
@@ -914,14 +987,16 @@ class V1OnboardingRequest implements \JsonSerializable
      * @required
      * @maps contact
      */
-    public function setContact(Contact $contact): void
+    public function setContact(Contact11 $contact): void
     {
         $this->contact = $contact;
     }
 
     /**
      * Returns Client App Id.
-     * Client-Issued ID to uniquely identify the merchant (Returned unmodified).
+     * Client Issues Id to track that can be used to track each submitted merchant application. This id
+     * should be generated and sent in the request payload, and will be returned in the response payload.
+     * If no id is submitted in the payload request, this field will be null in the response.
      */
     public function getClientAppId(): ?string
     {
@@ -933,7 +1008,9 @@ class V1OnboardingRequest implements \JsonSerializable
 
     /**
      * Sets Client App Id.
-     * Client-Issued ID to uniquely identify the merchant (Returned unmodified).
+     * Client Issues Id to track that can be used to track each submitted merchant application. This id
+     * should be generated and sent in the request payload, and will be returned in the response payload.
+     * If no id is submitted in the payload request, this field will be null in the response.
      *
      * @maps client_app_id
      */
@@ -944,11 +1021,111 @@ class V1OnboardingRequest implements \JsonSerializable
 
     /**
      * Unsets Client App Id.
-     * Client-Issued ID to uniquely identify the merchant (Returned unmodified).
+     * Client Issues Id to track that can be used to track each submitted merchant application. This id
+     * should be generated and sent in the request payload, and will be returned in the response payload.
+     * If no id is submitted in the payload request, this field will be null in the response.
      */
     public function unsetClientAppId(): void
     {
         $this->clientAppId = [];
+    }
+
+    /**
+     * Returns Sec Codes.
+     * Array of SEC codes that will be allowed, Only applicable for ACH. Valid values are 'PPD', 'WEB',
+     * 'TEL', 'CCD'.
+     *
+     * @return string[]|null
+     */
+    public function getSecCodes(): ?array
+    {
+        return $this->secCodes;
+    }
+
+    /**
+     * Sets Sec Codes.
+     * Array of SEC codes that will be allowed, Only applicable for ACH. Valid values are 'PPD', 'WEB',
+     * 'TEL', 'CCD'.
+     *
+     * @maps sec_codes
+     * @factory \FortisAPILib\Models\SecCodeEnum::checkValue
+     *
+     * @param string[]|null $secCodes
+     */
+    public function setSecCodes(?array $secCodes): void
+    {
+        $this->secCodes = $secCodes;
+    }
+
+    /**
+     * Converts the V1OnboardingRequest object to a human-readable string representation.
+     *
+     * @return string The string representation of the V1OnboardingRequest object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'V1OnboardingRequest',
+            [
+                'parentId' => $this->getParentId(),
+                'primaryPrincipal' => $this->primaryPrincipal,
+                'templateCode' => $this->templateCode,
+                'email' => $this->email,
+                'dbaName' => $this->dbaName,
+                'location' => $this->location,
+                'appDelivery' => $this->appDelivery,
+                'businessCategory' => $this->getBusinessCategory(),
+                'businessType' => $this->getBusinessType(),
+                'businessDescription' => $this->getBusinessDescription(),
+                'swipedPercent' => $this->getSwipedPercent(),
+                'keyedPercent' => $this->getKeyedPercent(),
+                'ecommercePercent' => $this->getEcommercePercent(),
+                'ownershipType' => $this->getOwnershipType(),
+                'fedTaxId' => $this->getFedTaxId(),
+                'ccAverageTicketRange' => $this->getCcAverageTicketRange(),
+                'ccMonthlyVolumeRange' => $this->getCcMonthlyVolumeRange(),
+                'ccHighTicket' => $this->getCcHighTicket(),
+                'ecAverageTicketRange' => $this->getEcAverageTicketRange(),
+                'ecMonthlyVolumeRange' => $this->getEcMonthlyVolumeRange(),
+                'ecHighTicket' => $this->getEcHighTicket(),
+                'website' => $this->getWebsite(),
+                'bankAccount' => $this->bankAccount,
+                'altBankAccount' => $this->altBankAccount,
+                'legalName' => $this->getLegalName(),
+                'contact' => $this->contact,
+                'clientAppId' => $this->getClientAppId(),
+                'secCodes' => $this->secCodes,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -1017,8 +1194,12 @@ class V1OnboardingRequest implements \JsonSerializable
         if (!empty($this->website)) {
             $json['website']                 = $this->website['value'];
         }
-        $json['bank_account']                = $this->bankAccount;
-        $json['alt_bank_account']            = $this->altBankAccount;
+        if (isset($this->bankAccount)) {
+            $json['bank_account']            = $this->bankAccount;
+        }
+        if (isset($this->altBankAccount)) {
+            $json['alt_bank_account']        = $this->altBankAccount;
+        }
         if (!empty($this->legalName)) {
             $json['legal_name']              = $this->legalName['value'];
         }
@@ -1026,6 +1207,10 @@ class V1OnboardingRequest implements \JsonSerializable
         if (!empty($this->clientAppId)) {
             $json['client_app_id']           = $this->clientAppId['value'];
         }
+        if (isset($this->secCodes)) {
+            $json['sec_codes']               = SecCodeEnum::checkValue($this->secCodes);
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

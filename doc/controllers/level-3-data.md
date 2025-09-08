@@ -18,58 +18,73 @@ $level3DataController = $client->getLevel3DataController();
 
 # Create a New Level 3 Entry for a Master Card
 
-Create a new Level3 entry for a MasterCard
-
 ```php
 function createANewLevel3EntryForAMasterCard(
     string $transactionId,
     V1TransactionsLevel3MasterCardRequest $body
-): ResponseTransationLevel3Master
+): ResponseTransactionLevel3Master
 ```
 
 ## Parameters
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `transactionId` | `string` | Template, Required | Transaction ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `transactionId` | `string` | Template, Required | Transaction ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
 | `body` | [`V1TransactionsLevel3MasterCardRequest`](../../doc/models/v1-transactions-level-3-master-card-request.md) | Body, Required | - |
 
 ## Response Type
 
-[`ResponseTransationLevel3Master`](../../doc/models/response-transation-level-3-master.md)
+[`ResponseTransactionLevel3Master`](../../doc/models/response-transaction-level-3-master.md)
 
 ## Example Usage
 
 ```php
 $transactionId = '11e95f8ec39de8fbdb0a4f1a';
-$body_level3Data_lineItems = [];
 
-$body_level3Data_lineItems_0_description = 'cool drink';
-$body_level3Data_lineItems_0_productCode = 'coke12345678';
-$body_level3Data_lineItems_0_unitCode = 'gll';
-$body_level3Data_lineItems_0_unitCost = 10;
-$body_level3Data_lineItems[0] = new Models\LineItem5(
-    $body_level3Data_lineItems_0_description,
-    $body_level3Data_lineItems_0_productCode,
-    $body_level3Data_lineItems_0_unitCode,
-    $body_level3Data_lineItems_0_unitCost
-);
+$body = V1TransactionsLevel3MasterCardRequestBuilder::init(
+    Level3Data5Builder::init(
+        [
+            LineItem19Builder::init(
+                'cool drink',
+                'coke12345678',
+                'gll',
+                10
+            )
+                ->alternateTaxId('1234')
+                ->debitCredit(DebitCreditEnum::C)
+                ->discountAmount(10)
+                ->discountRate(11)
+                ->quantity(5)
+                ->taxAmount(3)
+                ->taxRate(0)
+                ->taxTypeApplied('22')
+                ->taxTypeId('a1')
+                ->build()
+        ]
+    )
+        ->destinationCountryCode('840')
+        ->dutyAmount(0)
+        ->freightAmount(0)
+        ->nationalTax(2)
+        ->salesTax(200)
+        ->shipfromZipCode('AZ12345')
+        ->shiptoZipCode('MI48335')
+        ->taxAmount(0)
+        ->taxExempt(TaxExemptEnum::ENUM_0)
+        ->build()
+)->build();
 
-$body_level3Data = new Models\Level3Data5(
-    $body_level3Data_lineItems
+$result = $level3DataController->createANewLevel3EntryForAMasterCard(
+    $transactionId,
+    $body
 );
-$body = new Models\V1TransactionsLevel3MasterCardRequest(
-    $body_level3Data
-);
-
-$result = $level3DataController->createANewLevel3EntryForAMasterCard($transactionId, $body);
 ```
 
 ## Example Response *(as JSON)*
 
 ```json
 {
-  "type": "TransationLevel3Master",
+  "type": "TransactionLevel3Master",
   "data": {
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "transaction_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -82,7 +97,7 @@ $result = $level3DataController->createANewLevel3EntryForAMasterCard($transactio
       "shipfrom_zip_code": "AZ1234",
       "shipto_zip_code": "FL1234",
       "tax_amount": 10,
-      "tax_exempt": 0,
+      "tax_exempt": "0",
       "customer_vat_registration": "12345678",
       "merchant_vat_registration": "123456",
       "order_date": "171006",
@@ -123,60 +138,76 @@ $result = $level3DataController->createANewLevel3EntryForAMasterCard($transactio
 
 # Create a New Level 3 Entry for a Visa
 
-Create a new Level3 entry for a Visa
-
 ```php
 function createANewLevel3EntryForAVisa(
     string $transactionId,
     V1TransactionsLevel3VisaRequest $body
-): ResponseTransationLevel3Visa
+): ResponseTransactionLevel3Visa
 ```
 
 ## Parameters
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `transactionId` | `string` | Template, Required | Transaction ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `transactionId` | `string` | Template, Required | Transaction ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
 | `body` | [`V1TransactionsLevel3VisaRequest`](../../doc/models/v1-transactions-level-3-visa-request.md) | Body, Required | - |
 
 ## Response Type
 
-[`ResponseTransationLevel3Visa`](../../doc/models/response-transation-level-3-visa.md)
+[`ResponseTransactionLevel3Visa`](../../doc/models/response-transaction-level-3-visa.md)
 
 ## Example Usage
 
 ```php
 $transactionId = '11e95f8ec39de8fbdb0a4f1a';
-$body_level3Data_lineItems = [];
 
-$body_level3Data_lineItems_0_description = 'cool drink';
-$body_level3Data_lineItems_0_commodityCode = 'cc123456';
-$body_level3Data_lineItems_0_productCode = 'fanta123456';
-$body_level3Data_lineItems_0_unitCode = 'gll';
-$body_level3Data_lineItems_0_unitCost = 3;
-$body_level3Data_lineItems[0] = new Models\LineItem6(
-    $body_level3Data_lineItems_0_description,
-    $body_level3Data_lineItems_0_commodityCode,
-    $body_level3Data_lineItems_0_productCode,
-    $body_level3Data_lineItems_0_unitCode,
-    $body_level3Data_lineItems_0_unitCost
-);
+$body = V1TransactionsLevel3VisaRequestBuilder::init(
+    Level3Data6Builder::init(
+        [
+            LineItem20Builder::init(
+                'cool drink',
+                'cc123456',
+                'fanta123456',
+                'gll',
+                3
+            )
+                ->discountAmount(0)
+                ->otherTaxAmount(0)
+                ->quantity(12)
+                ->taxAmount(4)
+                ->taxRate(0)
+                ->build()
+        ]
+    )
+        ->destinationCountryCode('840')
+        ->dutyAmount(0)
+        ->freightAmount(0)
+        ->nationalTax(2)
+        ->salesTax(200)
+        ->shipfromZipCode('AZ1234')
+        ->shiptoZipCode('FL1234')
+        ->taxAmount(10)
+        ->taxExempt(TaxExemptEnum::ENUM_0)
+        ->customerVatRegistration('12345678')
+        ->merchantVatRegistration('123456')
+        ->orderDate('171006')
+        ->summaryCommodityCode('C1K2')
+        ->taxRate(0)
+        ->uniqueVatRefNumber('vat1234')
+        ->build()
+)->build();
 
-$body_level3Data = new Models\Level3Data6(
-    $body_level3Data_lineItems
+$result = $level3DataController->createANewLevel3EntryForAVisa(
+    $transactionId,
+    $body
 );
-$body = new Models\V1TransactionsLevel3VisaRequest(
-    $body_level3Data
-);
-
-$result = $level3DataController->createANewLevel3EntryForAVisa($transactionId, $body);
 ```
 
 ## Example Response *(as JSON)*
 
 ```json
 {
-  "type": "TransationLevel3Visa",
+  "type": "TransactionLevel3Visa",
   "data": {
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "transaction_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -189,7 +220,7 @@ $result = $level3DataController->createANewLevel3EntryForAVisa($transactionId, $
       "shipfrom_zip_code": "AZ1234",
       "shipto_zip_code": "FL1234",
       "tax_amount": 10,
-      "tax_exempt": 0,
+      "tax_exempt": "0",
       "customer_vat_registration": "12345678",
       "merchant_vat_registration": "123456",
       "order_date": "171006",
@@ -230,37 +261,39 @@ $result = $level3DataController->createANewLevel3EntryForAVisa($transactionId, $
 
 # Delete a Single Level 3 Record
 
-Delete a single level3 record
-
 ```php
-function deleteASingleLevel3Record(string $transactionId, string $level3Id): ResponseTransationLevel3
+function deleteASingleLevel3Record(string $transactionId, string $level3Id): ResponseTransactionLevel3
 ```
 
 ## Parameters
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `transactionId` | `string` | Template, Required | Transaction ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
-| `level3Id` | `string` | Template, Required | Level 3 ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `transactionId` | `string` | Template, Required | Transaction ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `level3Id` | `string` | Template, Required | Level 3 ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
 
 ## Response Type
 
-[`ResponseTransationLevel3`](../../doc/models/response-transation-level-3.md)
+[`ResponseTransactionLevel3`](../../doc/models/response-transaction-level-3.md)
 
 ## Example Usage
 
 ```php
 $transactionId = '11e95f8ec39de8fbdb0a4f1a';
+
 $level3Id = '11e95f8ec39de8fbdb0a4f1a';
 
-$result = $level3DataController->deleteASingleLevel3Record($transactionId, $level3Id);
+$result = $level3DataController->deleteASingleLevel3Record(
+    $transactionId,
+    $level3Id
+);
 ```
 
 ## Example Response *(as JSON)*
 
 ```json
 {
-  "type": "TransationLevel3",
+  "type": "TransactionLevel3",
   "data": {
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "transaction_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -273,7 +306,7 @@ $result = $level3DataController->deleteASingleLevel3Record($transactionId, $leve
       "shipfrom_zip_code": "AZ1234",
       "shipto_zip_code": "FL1234",
       "tax_amount": 10,
-      "tax_exempt": 0,
+      "tax_exempt": "0",
       "customer_vat_registration": "12345678",
       "merchant_vat_registration": "123456",
       "order_date": "171006",
@@ -313,37 +346,39 @@ $result = $level3DataController->deleteASingleLevel3Record($transactionId, $leve
 
 # View Single Level 3 Record
 
-View single level3 record
-
 ```php
-function viewSingleLevel3Record(string $transactionId, string $level3Id): ResponseTransationLevel3
+function viewSingleLevel3Record(string $transactionId, string $level3Id): ResponseTransactionLevel3
 ```
 
 ## Parameters
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `transactionId` | `string` | Template, Required | Transaction ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
-| `level3Id` | `string` | Template, Required | Level 3 ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `transactionId` | `string` | Template, Required | Transaction ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `level3Id` | `string` | Template, Required | Level 3 ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
 
 ## Response Type
 
-[`ResponseTransationLevel3`](../../doc/models/response-transation-level-3.md)
+[`ResponseTransactionLevel3`](../../doc/models/response-transaction-level-3.md)
 
 ## Example Usage
 
 ```php
 $transactionId = '11e95f8ec39de8fbdb0a4f1a';
+
 $level3Id = '11e95f8ec39de8fbdb0a4f1a';
 
-$result = $level3DataController->viewSingleLevel3Record($transactionId, $level3Id);
+$result = $level3DataController->viewSingleLevel3Record(
+    $transactionId,
+    $level3Id
+);
 ```
 
 ## Example Response *(as JSON)*
 
 ```json
 {
-  "type": "TransationLevel3",
+  "type": "TransactionLevel3",
   "data": {
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "transaction_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -356,7 +391,7 @@ $result = $level3DataController->viewSingleLevel3Record($transactionId, $level3I
       "shipfrom_zip_code": "AZ1234",
       "shipto_zip_code": "FL1234",
       "tax_amount": 10,
-      "tax_exempt": 0,
+      "tax_exempt": "0",
       "customer_vat_registration": "12345678",
       "merchant_vat_registration": "123456",
       "order_date": "171006",

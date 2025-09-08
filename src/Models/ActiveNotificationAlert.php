@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class ActiveNotificationAlert implements \JsonSerializable
@@ -25,12 +26,12 @@ class ActiveNotificationAlert implements \JsonSerializable
     private $locationApiId = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $dateStart;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $dateEnd;
 
@@ -70,17 +71,17 @@ class ActiveNotificationAlert implements \JsonSerializable
     private $alertMessage = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $modifiedTs;
 
@@ -93,22 +94,6 @@ class ActiveNotificationAlert implements \JsonSerializable
      * @var array
      */
     private $modifiedUserId = [];
-
-    /**
-     * @param string $dateStart
-     * @param string $dateEnd
-     * @param string $id
-     * @param int $createdTs
-     * @param int $modifiedTs
-     */
-    public function __construct(string $dateStart, string $dateEnd, string $id, int $createdTs, int $modifiedTs)
-    {
-        $this->dateStart = $dateStart;
-        $this->dateEnd = $dateEnd;
-        $this->id = $id;
-        $this->createdTs = $createdTs;
-        $this->modifiedTs = $modifiedTs;
-    }
 
     /**
      * Returns Location Id.
@@ -178,7 +163,7 @@ class ActiveNotificationAlert implements \JsonSerializable
      * Returns Date Start.
      * Date Start
      */
-    public function getDateStart(): string
+    public function getDateStart(): ?string
     {
         return $this->dateStart;
     }
@@ -187,10 +172,9 @@ class ActiveNotificationAlert implements \JsonSerializable
      * Sets Date Start.
      * Date Start
      *
-     * @required
      * @maps date_start
      */
-    public function setDateStart(string $dateStart): void
+    public function setDateStart(?string $dateStart): void
     {
         $this->dateStart = $dateStart;
     }
@@ -199,7 +183,7 @@ class ActiveNotificationAlert implements \JsonSerializable
      * Returns Date End.
      * Date End
      */
-    public function getDateEnd(): string
+    public function getDateEnd(): ?string
     {
         return $this->dateEnd;
     }
@@ -208,10 +192,9 @@ class ActiveNotificationAlert implements \JsonSerializable
      * Sets Date End.
      * Date End
      *
-     * @required
      * @maps date_end
      */
-    public function setDateEnd(string $dateEnd): void
+    public function setDateEnd(?string $dateEnd): void
     {
         $this->dateEnd = $dateEnd;
     }
@@ -410,7 +393,7 @@ class ActiveNotificationAlert implements \JsonSerializable
      * Returns Id.
      * Notification Alert ID
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -419,10 +402,9 @@ class ActiveNotificationAlert implements \JsonSerializable
      * Sets Id.
      * Notification Alert ID
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -431,7 +413,7 @@ class ActiveNotificationAlert implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -440,10 +422,9 @@ class ActiveNotificationAlert implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -452,7 +433,7 @@ class ActiveNotificationAlert implements \JsonSerializable
      * Returns Modified Ts.
      * Modified Time Stamp
      */
-    public function getModifiedTs(): int
+    public function getModifiedTs(): ?int
     {
         return $this->modifiedTs;
     }
@@ -461,10 +442,9 @@ class ActiveNotificationAlert implements \JsonSerializable
      * Sets Modified Ts.
      * Modified Time Stamp
      *
-     * @required
      * @maps modified_ts
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setModifiedTs(?int $modifiedTs): void
     {
         $this->modifiedTs = $modifiedTs;
     }
@@ -534,6 +514,65 @@ class ActiveNotificationAlert implements \JsonSerializable
     }
 
     /**
+     * Converts the ActiveNotificationAlert object to a human-readable string representation.
+     *
+     * @return string The string representation of the ActiveNotificationAlert object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'ActiveNotificationAlert',
+            [
+                'locationId' => $this->getLocationId(),
+                'locationApiId' => $this->getLocationApiId(),
+                'dateStart' => $this->dateStart,
+                'dateEnd' => $this->dateEnd,
+                'userLocation' => $this->userLocation,
+                'userContact' => $this->userContact,
+                'includeChildren' => $this->includeChildren,
+                'alertType' => $this->getAlertType(),
+                'alertTypeId' => $this->getAlertTypeId(),
+                'description' => $this->getDescription(),
+                'alertMessage' => $this->getAlertMessage(),
+                'id' => $this->id,
+                'createdTs' => $this->createdTs,
+                'modifiedTs' => $this->modifiedTs,
+                'createdUserId' => $this->getCreatedUserId(),
+                'modifiedUserId' => $this->getModifiedUserId(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -551,8 +590,12 @@ class ActiveNotificationAlert implements \JsonSerializable
         if (!empty($this->locationApiId)) {
             $json['location_api_id']  = $this->locationApiId['value'];
         }
-        $json['date_start']           = $this->dateStart;
-        $json['date_end']             = $this->dateEnd;
+        if (isset($this->dateStart)) {
+            $json['date_start']       = $this->dateStart;
+        }
+        if (isset($this->dateEnd)) {
+            $json['date_end']         = $this->dateEnd;
+        }
         if (isset($this->userLocation)) {
             $json['user_location']    = $this->userLocation;
         }
@@ -574,15 +617,22 @@ class ActiveNotificationAlert implements \JsonSerializable
         if (!empty($this->alertMessage)) {
             $json['alert_message']    = $this->alertMessage['value'];
         }
-        $json['id']                   = $this->id;
-        $json['created_ts']           = $this->createdTs;
-        $json['modified_ts']          = $this->modifiedTs;
+        if (isset($this->id)) {
+            $json['id']               = $this->id;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']       = $this->createdTs;
+        }
+        if (isset($this->modifiedTs)) {
+            $json['modified_ts']      = $this->modifiedTs;
+        }
         if (!empty($this->createdUserId)) {
             $json['created_user_id']  = $this->createdUserId['value'];
         }
         if (!empty($this->modifiedUserId)) {
             $json['modified_user_id'] = $this->modifiedUserId['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

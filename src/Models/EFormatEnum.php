@@ -27,7 +27,14 @@ class EFormatEnum
 
     public const MAGNESAFE = 'magnesafe';
 
-    private const _ALL_VALUES = [self::KSN, self::KSNPIN, self::IDTECH, self::MAGNESAFE];
+    public const MAGTEK = 'magtek';
+
+    public const FULLTRACK = 'fulltrack';
+
+    public const KEYED = 'keyed';
+
+    private const _ALL_VALUES =
+        [self::KSN, self::KSNPIN, self::IDTECH, self::MAGNESAFE, self::MAGTEK, self::FULLTRACK, self::KEYED];
 
     /**
      * Ensures that all the given values are present in this Enum.

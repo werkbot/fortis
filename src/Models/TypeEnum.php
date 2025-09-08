@@ -15,15 +15,13 @@ use Exception;
 use stdClass;
 
 /**
- * Payment type. Must be unique.
+ * Resource Type
  */
 class TypeEnum
 {
-    public const ACH = 'ach';
+    public const ASYNCSTATUS = 'AsyncStatus';
 
-    public const CC = 'cc';
-
-    private const _ALL_VALUES = [self::ACH, self::CC];
+    private const _ALL_VALUES = [self::ASYNCSTATUS];
 
     /**
      * Ensures that all the given values are present in this Enum.

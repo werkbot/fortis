@@ -12,6 +12,11 @@ namespace FortisAPILib;
 
 use Core\Types\Sdk\CoreCallback;
 use Core\Utils\CoreHelper;
+use FortisAPILib\Authentication\AccessTokenCredentialsBuilder;
+use FortisAPILib\Authentication\DeveloperIdCredentialsBuilder;
+use FortisAPILib\Authentication\UserApiKeyCredentialsBuilder;
+use FortisAPILib\Authentication\UserIdCredentialsBuilder;
+use FortisAPILib\Proxy\ProxyConfigurationBuilder;
 
 class FortisAPIClientBuilder
 {
@@ -107,21 +112,27 @@ class FortisAPIClientBuilder
         return $this;
     }
 
-    public function userId(string $userId): self
+    public function userIdCredentials(UserIdCredentialsBuilder $userId): self
     {
-        $this->config['userId'] = $userId;
+        $this->config = array_merge($this->config, $userId->getConfiguration());
         return $this;
     }
 
-    public function userApiKey(string $userApiKey): self
+    public function userApiKeyCredentials(UserApiKeyCredentialsBuilder $userApiKey): self
     {
-        $this->config['userApiKey'] = $userApiKey;
+        $this->config = array_merge($this->config, $userApiKey->getConfiguration());
         return $this;
     }
 
-    public function developerId(string $developerId): self
+    public function developerIdCredentials(DeveloperIdCredentialsBuilder $developerId): self
     {
-        $this->config['developerId'] = $developerId;
+        $this->config = array_merge($this->config, $developerId->getConfiguration());
+        return $this;
+    }
+
+    public function accessTokenCredentials(AccessTokenCredentialsBuilder $accessToken): self
+    {
+        $this->config = array_merge($this->config, $accessToken->getConfiguration());
         return $this;
     }
 
@@ -131,6 +142,12 @@ class FortisAPIClientBuilder
             return $this;
         }
         $this->config['httpCallback'] = $httpCallback;
+        return $this;
+    }
+
+    public function proxyConfiguration(ProxyConfigurationBuilder $proxyConfiguration): self
+    {
+        $this->config['proxyConfiguration'] = $proxyConfiguration->getConfiguration();
         return $this;
     }
 

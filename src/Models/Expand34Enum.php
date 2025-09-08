@@ -16,32 +16,9 @@ use stdClass;
 
 class Expand34Enum
 {
-    public const LOCATION = 'location';
+    public const RAW_SIGNATURE = 'raw_signature';
 
-    public const CREATED_USER = 'created_user';
-
-    public const TERMINAL_APPLICATION = 'terminal_application';
-
-    public const CHANGELOGS = 'changelogs';
-
-    public const TERMINAL_ROUTERS = 'terminal_routers';
-
-    public const HAS_TERMINAL_ROUTERS = 'has_terminal_routers';
-
-    public const TERMINAL_CVM = 'terminal_cvm';
-
-    public const TERMINAL_MANUFACTURER = 'terminal_manufacturer';
-
-    private const _ALL_VALUES = [
-        self::LOCATION,
-        self::CREATED_USER,
-        self::TERMINAL_APPLICATION,
-        self::CHANGELOGS,
-        self::TERMINAL_ROUTERS,
-        self::HAS_TERMINAL_ROUTERS,
-        self::TERMINAL_CVM,
-        self::TERMINAL_MANUFACTURER
-    ];
+    private const _ALL_VALUES = [self::RAW_SIGNATURE];
 
     /**
      * Ensures that all the given values are present in this Enum.

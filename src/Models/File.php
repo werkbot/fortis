@@ -10,22 +10,23 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class File implements \JsonSerializable
 {
     /**
-     * @var array
+     * @var array|null
      */
     private $file;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $resourceId;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $resource;
 
@@ -50,7 +51,7 @@ class File implements \JsonSerializable
     private $fileDescription = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
@@ -70,44 +71,25 @@ class File implements \JsonSerializable
     private $fileSizeBytes = [];
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $modifiedTs;
 
     /**
-     * @param array $file
-     * @param string $resourceId
-     * @param string $resource
-     * @param string $id
-     * @param int $createdTs
-     * @param int $modifiedTs
+     * @var array
      */
-    public function __construct(
-        array $file,
-        string $resourceId,
-        string $resource,
-        string $id,
-        int $createdTs,
-        int $modifiedTs
-    ) {
-        $this->file = $file;
-        $this->resourceId = $resourceId;
-        $this->resource = $resource;
-        $this->id = $id;
-        $this->createdTs = $createdTs;
-        $this->modifiedTs = $modifiedTs;
-    }
+    private $createdUserId = [];
 
     /**
      * Returns File.
      * File Object
      */
-    public function getFile(): array
+    public function getFile(): ?array
     {
         return $this->file;
     }
@@ -116,10 +98,9 @@ class File implements \JsonSerializable
      * Sets File.
      * File Object
      *
-     * @required
      * @maps file
      */
-    public function setFile(array $file): void
+    public function setFile(?array $file): void
     {
         $this->file = $file;
     }
@@ -128,7 +109,7 @@ class File implements \JsonSerializable
      * Returns Resource Id.
      * Resource Id
      */
-    public function getResourceId(): string
+    public function getResourceId(): ?string
     {
         return $this->resourceId;
     }
@@ -137,10 +118,9 @@ class File implements \JsonSerializable
      * Sets Resource Id.
      * Resource Id
      *
-     * @required
      * @maps resource_id
      */
-    public function setResourceId(string $resourceId): void
+    public function setResourceId(?string $resourceId): void
     {
         $this->resourceId = $resourceId;
     }
@@ -149,7 +129,7 @@ class File implements \JsonSerializable
      * Returns Resource.
      * Resource
      */
-    public function getResource(): string
+    public function getResource(): ?string
     {
         return $this->resource;
     }
@@ -158,11 +138,10 @@ class File implements \JsonSerializable
      * Sets Resource.
      * Resource
      *
-     * @required
      * @maps resource
      * @factory \FortisAPILib\Models\Resource2Enum::checkValue
      */
-    public function setResource(string $resource): void
+    public function setResource(?string $resource): void
     {
         $this->resource = $resource;
     }
@@ -299,7 +278,7 @@ class File implements \JsonSerializable
      * Returns Id.
      * Resource
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -308,10 +287,9 @@ class File implements \JsonSerializable
      * Sets Id.
      * Resource
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -416,7 +394,7 @@ class File implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -425,10 +403,9 @@ class File implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -437,7 +414,7 @@ class File implements \JsonSerializable
      * Returns Modified Ts.
      * Modified Time Stamp
      */
-    public function getModifiedTs(): int
+    public function getModifiedTs(): ?int
     {
         return $this->modifiedTs;
     }
@@ -446,12 +423,100 @@ class File implements \JsonSerializable
      * Sets Modified Ts.
      * Modified Time Stamp
      *
-     * @required
      * @maps modified_ts
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setModifiedTs(?int $modifiedTs): void
     {
         $this->modifiedTs = $modifiedTs;
+    }
+
+    /**
+     * Returns Created User Id.
+     * User ID Created the register
+     */
+    public function getCreatedUserId(): ?string
+    {
+        if (count($this->createdUserId) == 0) {
+            return null;
+        }
+        return $this->createdUserId['value'];
+    }
+
+    /**
+     * Sets Created User Id.
+     * User ID Created the register
+     *
+     * @maps created_user_id
+     */
+    public function setCreatedUserId(?string $createdUserId): void
+    {
+        $this->createdUserId['value'] = $createdUserId;
+    }
+
+    /**
+     * Unsets Created User Id.
+     * User ID Created the register
+     */
+    public function unsetCreatedUserId(): void
+    {
+        $this->createdUserId = [];
+    }
+
+    /**
+     * Converts the File object to a human-readable string representation.
+     *
+     * @return string The string representation of the File object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'File',
+            [
+                'file' => $this->file,
+                'resourceId' => $this->resourceId,
+                'resource' => $this->resource,
+                'productFileId' => $this->getProductFileId(),
+                'fileCategoryId' => $this->getFileCategoryId(),
+                'visibilityGroupId' => $this->getVisibilityGroupId(),
+                'fileDescription' => $this->getFileDescription(),
+                'id' => $this->id,
+                'fileName' => $this->getFileName(),
+                'fileExtension' => $this->getFileExtension(),
+                'fileSizeBytes' => $this->getFileSizeBytes(),
+                'createdTs' => $this->createdTs,
+                'modifiedTs' => $this->modifiedTs,
+                'createdUserId' => $this->getCreatedUserId(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -466,9 +531,15 @@ class File implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['file']                    = $this->file;
-        $json['resource_id']             = $this->resourceId;
-        $json['resource']                = Resource2Enum::checkValue($this->resource);
+        if (isset($this->file)) {
+            $json['file']                = $this->file;
+        }
+        if (isset($this->resourceId)) {
+            $json['resource_id']         = $this->resourceId;
+        }
+        if (isset($this->resource)) {
+            $json['resource']            = Resource2Enum::checkValue($this->resource);
+        }
         if (!empty($this->productFileId)) {
             $json['product_file_id']     = $this->productFileId['value'];
         }
@@ -481,7 +552,9 @@ class File implements \JsonSerializable
         if (!empty($this->fileDescription)) {
             $json['file_description']    = $this->fileDescription['value'];
         }
-        $json['id']                      = $this->id;
+        if (isset($this->id)) {
+            $json['id']                  = $this->id;
+        }
         if (!empty($this->fileName)) {
             $json['file_name']           = $this->fileName['value'];
         }
@@ -491,8 +564,16 @@ class File implements \JsonSerializable
         if (!empty($this->fileSizeBytes)) {
             $json['file_size_bytes']     = $this->fileSizeBytes['value'];
         }
-        $json['created_ts']              = $this->createdTs;
-        $json['modified_ts']             = $this->modifiedTs;
+        if (isset($this->createdTs)) {
+            $json['created_ts']          = $this->createdTs;
+        }
+        if (isset($this->modifiedTs)) {
+            $json['modified_ts']         = $this->modifiedTs;
+        }
+        if (!empty($this->createdUserId)) {
+            $json['created_user_id']     = $this->createdUserId['value'];
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

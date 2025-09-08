@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -93,12 +94,12 @@ class Level3Data6 implements \JsonSerializable
     private $uniqueVatRefNumber = [];
 
     /**
-     * @var LineItem6[]
+     * @var LineItem20[]
      */
     private $lineItems;
 
     /**
-     * @param LineItem6[] $lineItems
+     * @param LineItem20[] $lineItems
      */
     public function __construct(array $lineItems)
     {
@@ -141,7 +142,7 @@ class Level3Data6 implements \JsonSerializable
      * Returns Duty Amount.
      * Fee amount associated with the import of the purchased goods ,Can accept Two (2) decimal places
      */
-    public function getDutyAmount(): ?float
+    public function getDutyAmount(): ?int
     {
         if (count($this->dutyAmount) == 0) {
             return null;
@@ -155,7 +156,7 @@ class Level3Data6 implements \JsonSerializable
      *
      * @maps duty_amount
      */
-    public function setDutyAmount(?float $dutyAmount): void
+    public function setDutyAmount(?int $dutyAmount): void
     {
         $this->dutyAmount['value'] = $dutyAmount;
     }
@@ -173,7 +174,7 @@ class Level3Data6 implements \JsonSerializable
      * Returns Freight Amount.
      * Freight or shipping portion of the total transaction amount ,Can accept Two (2) decimal places.
      */
-    public function getFreightAmount(): ?float
+    public function getFreightAmount(): ?int
     {
         if (count($this->freightAmount) == 0) {
             return null;
@@ -187,7 +188,7 @@ class Level3Data6 implements \JsonSerializable
      *
      * @maps freight_amount
      */
-    public function setFreightAmount(?float $freightAmount): void
+    public function setFreightAmount(?int $freightAmount): void
     {
         $this->freightAmount['value'] = $freightAmount;
     }
@@ -205,7 +206,7 @@ class Level3Data6 implements \JsonSerializable
      * Returns National Tax.
      * National tax for the transaction ,Can accept Two (2) decimal places.
      */
-    public function getNationalTax(): ?float
+    public function getNationalTax(): ?int
     {
         if (count($this->nationalTax) == 0) {
             return null;
@@ -219,7 +220,7 @@ class Level3Data6 implements \JsonSerializable
      *
      * @maps national_tax
      */
-    public function setNationalTax(?float $nationalTax): void
+    public function setNationalTax(?int $nationalTax): void
     {
         $this->nationalTax['value'] = $nationalTax;
     }
@@ -237,7 +238,7 @@ class Level3Data6 implements \JsonSerializable
      * Returns Sales Tax.
      * Sales tax for the transaction ,Can accept Two (2) decimal places.
      */
-    public function getSalesTax(): ?float
+    public function getSalesTax(): ?int
     {
         if (count($this->salesTax) == 0) {
             return null;
@@ -251,7 +252,7 @@ class Level3Data6 implements \JsonSerializable
      *
      * @maps sales_tax
      */
-    public function setSalesTax(?float $salesTax): void
+    public function setSalesTax(?int $salesTax): void
     {
         $this->salesTax['value'] = $salesTax;
     }
@@ -333,7 +334,7 @@ class Level3Data6 implements \JsonSerializable
      * Returns Tax Amount.
      * Amount of any value added taxes ,Can accept Two (2) decimal places.
      */
-    public function getTaxAmount(): ?float
+    public function getTaxAmount(): ?int
     {
         if (count($this->taxAmount) == 0) {
             return null;
@@ -347,7 +348,7 @@ class Level3Data6 implements \JsonSerializable
      *
      * @maps tax_amount
      */
-    public function setTaxAmount(?float $taxAmount): void
+    public function setTaxAmount(?int $taxAmount): void
     {
         $this->taxAmount['value'] = $taxAmount;
     }
@@ -365,7 +366,7 @@ class Level3Data6 implements \JsonSerializable
      * Returns Tax Exempt.
      * Sales Tax Exempt. Allowed values: “1”, “0”.
      */
-    public function getTaxExempt(): ?int
+    public function getTaxExempt(): ?string
     {
         if (count($this->taxExempt) == 0) {
             return null;
@@ -380,7 +381,7 @@ class Level3Data6 implements \JsonSerializable
      * @maps tax_exempt
      * @factory \FortisAPILib\Models\TaxExemptEnum::checkValue
      */
-    public function setTaxExempt(?int $taxExempt): void
+    public function setTaxExempt(?string $taxExempt): void
     {
         $this->taxExempt['value'] = $taxExempt;
     }
@@ -526,7 +527,7 @@ class Level3Data6 implements \JsonSerializable
      * Returns Tax Rate.
      * Tax rate used to calculate the sales tax amount, can accept 2 decimal places.
      */
-    public function getTaxRate(): ?float
+    public function getTaxRate(): ?int
     {
         if (count($this->taxRate) == 0) {
             return null;
@@ -540,7 +541,7 @@ class Level3Data6 implements \JsonSerializable
      *
      * @maps tax_rate
      */
-    public function setTaxRate(?float $taxRate): void
+    public function setTaxRate(?int $taxRate): void
     {
         $this->taxRate['value'] = $taxRate;
     }
@@ -590,7 +591,7 @@ class Level3Data6 implements \JsonSerializable
      * Returns Line Items.
      * Array of line items in transaction
      *
-     * @return LineItem6[]
+     * @return LineItem20[]
      */
     public function getLineItems(): array
     {
@@ -604,11 +605,70 @@ class Level3Data6 implements \JsonSerializable
      * @required
      * @maps line_items
      *
-     * @param LineItem6[] $lineItems
+     * @param LineItem20[] $lineItems
      */
     public function setLineItems(array $lineItems): void
     {
         $this->lineItems = $lineItems;
+    }
+
+    /**
+     * Converts the Level3Data6 object to a human-readable string representation.
+     *
+     * @return string The string representation of the Level3Data6 object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Level3Data6',
+            [
+                'destinationCountryCode' => $this->getDestinationCountryCode(),
+                'dutyAmount' => $this->getDutyAmount(),
+                'freightAmount' => $this->getFreightAmount(),
+                'nationalTax' => $this->getNationalTax(),
+                'salesTax' => $this->getSalesTax(),
+                'shipfromZipCode' => $this->getShipfromZipCode(),
+                'shiptoZipCode' => $this->getShiptoZipCode(),
+                'taxAmount' => $this->getTaxAmount(),
+                'taxExempt' => $this->getTaxExempt(),
+                'customerVatRegistration' => $this->getCustomerVatRegistration(),
+                'merchantVatRegistration' => $this->getMerchantVatRegistration(),
+                'orderDate' => $this->getOrderDate(),
+                'summaryCommodityCode' => $this->getSummaryCommodityCode(),
+                'taxRate' => $this->getTaxRate(),
+                'uniqueVatRefNumber' => $this->getUniqueVatRefNumber(),
+                'lineItems' => $this->lineItems,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -669,6 +729,7 @@ class Level3Data6 implements \JsonSerializable
             $json['unique_vat_ref_number']     = $this->uniqueVatRefNumber['value'];
         }
         $json['line_items']                    = $this->lineItems;
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

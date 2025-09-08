@@ -18,10 +18,16 @@
 
 ```json
 {
-  "message": null,
-  "path": null,
-  "type": null,
-  "context": null
+  "message": "\"fieldName\" is required",
+  "type": "any.required",
+  "path": [
+    "path8",
+    "path9"
+  ],
+  "context": {
+    "key": "key2",
+    "label": "label2"
+  }
 }
 ```
 

@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace FortisAPILib\Exceptions;
 
 use CoreInterfaces\Sdk\ExceptionInterface;
+use FortisAPILib\ApiHelper;
 use FortisAPILib\Http\HttpResponse;
 use FortisAPILib\Http\HttpRequest;
 
@@ -36,8 +37,9 @@ class ApiException extends \Exception implements ExceptionInterface
     /**
      * @param string $reason the reason for raising an exception
      * @param HttpRequest $request
+     * @param HttpResponse|null $response
      */
-    public function __construct(string $reason, HttpRequest $request, ?HttpResponse $response = null)
+    public function __construct(string $reason, HttpRequest $request, ?HttpResponse $response)
     {
         parent::__construct($reason, \is_null($response) ? 0 : $response->getStatusCode());
         $this->request = $request;
@@ -66,5 +68,21 @@ class ApiException extends \Exception implements ExceptionInterface
     public function hasResponse(): bool
     {
         return !\is_null($this->response);
+    }
+
+    /**
+     * Converts the ApiException object to a human-readable string representation.
+     *
+     * @return string The string representation of the ApiException object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'ApiException',
+            [
+                'statusCode' => $this->getCode(),
+                'message' => $this->getMessage()
+            ]
+        );
     }
 }

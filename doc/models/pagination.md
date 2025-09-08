@@ -11,7 +11,7 @@ Pagination info
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `type` | `string` | Required, Constant | Object type<br>**Default**: `'Pagination'` | getType(): string | setType(string type): void |
+| `type` | [`?string(Type3Enum)`](../../doc/models/type-3-enum.md) | Optional | Object type | getType(): ?string | setType(?string type): void |
 | `totalCount` | `?int` | Optional | Total records count | getTotalCount(): ?int | setTotalCount(?int totalCount): void |
 | `pageCount` | `?int` | Optional | Total page count | getPageCount(): ?int | setPageCount(?int pageCount): void |
 | `pageNumber` | `?int` | Optional | Current page | getPageNumber(): ?int | setPageNumber(?int pageNumber): void |
@@ -21,7 +21,11 @@ Pagination info
 
 ```json
 {
-  "type": "Pagination"
+  "type": "Pagination",
+  "total_count": 423,
+  "page_count": 42,
+  "page_number": 6,
+  "page_size": 10
 }
 ```
 

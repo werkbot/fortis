@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -18,17 +19,17 @@ use stdClass;
 class TerminalManufacturer implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $title;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $idtype;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $code;
 
@@ -53,22 +54,10 @@ class TerminalManufacturer implements \JsonSerializable
     private $modifiedUserId = [];
 
     /**
-     * @param string $title
-     * @param string $idtype
-     * @param string $code
-     */
-    public function __construct(string $title, string $idtype, string $code)
-    {
-        $this->title = $title;
-        $this->idtype = $idtype;
-        $this->code = $code;
-    }
-
-    /**
      * Returns Title.
      * Terminal Manufacturer Title
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -77,10 +66,9 @@ class TerminalManufacturer implements \JsonSerializable
      * Sets Title.
      * Terminal Manufacturer Title
      *
-     * @required
      * @maps title
      */
-    public function setTitle(string $title): void
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -89,7 +77,7 @@ class TerminalManufacturer implements \JsonSerializable
      * Returns Idtype.
      * Terminal Manufacturer ID Type
      */
-    public function getIdtype(): string
+    public function getIdtype(): ?string
     {
         return $this->idtype;
     }
@@ -98,11 +86,10 @@ class TerminalManufacturer implements \JsonSerializable
      * Sets Idtype.
      * Terminal Manufacturer ID Type
      *
-     * @required
      * @maps idtype
      * @factory \FortisAPILib\Models\IdtypeEnum::checkValue
      */
-    public function setIdtype(string $idtype): void
+    public function setIdtype(?string $idtype): void
     {
         $this->idtype = $idtype;
     }
@@ -111,7 +98,7 @@ class TerminalManufacturer implements \JsonSerializable
      * Returns Code.
      * Terminal Manufacture Code
      */
-    public function getCode(): string
+    public function getCode(): ?string
     {
         return $this->code;
     }
@@ -120,10 +107,9 @@ class TerminalManufacturer implements \JsonSerializable
      * Sets Code.
      * Terminal Manufacture Code
      *
-     * @required
      * @maps code
      */
-    public function setCode(string $code): void
+    public function setCode(?string $code): void
     {
         $this->code = $code;
     }
@@ -257,6 +243,56 @@ class TerminalManufacturer implements \JsonSerializable
     }
 
     /**
+     * Converts the TerminalManufacturer object to a human-readable string representation.
+     *
+     * @return string The string representation of the TerminalManufacturer object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'TerminalManufacturer',
+            [
+                'title' => $this->title,
+                'idtype' => $this->idtype,
+                'code' => $this->code,
+                'createdTs' => $this->getCreatedTs(),
+                'modifiedTs' => $this->getModifiedTs(),
+                'createdUserId' => $this->getCreatedUserId(),
+                'modifiedUserId' => $this->getModifiedUserId(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -268,9 +304,15 @@ class TerminalManufacturer implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['title']                = $this->title;
-        $json['idtype']               = IdtypeEnum::checkValue($this->idtype);
-        $json['code']                 = $this->code;
+        if (isset($this->title)) {
+            $json['title']            = $this->title;
+        }
+        if (isset($this->idtype)) {
+            $json['idtype']           = IdtypeEnum::checkValue($this->idtype);
+        }
+        if (isset($this->code)) {
+            $json['code']             = $this->code;
+        }
         if (!empty($this->createdTs)) {
             $json['created_ts']       = $this->createdTs['value'];
         }
@@ -283,6 +325,7 @@ class TerminalManufacturer implements \JsonSerializable
         if (!empty($this->modifiedUserId)) {
             $json['modified_user_id'] = $this->modifiedUserId['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

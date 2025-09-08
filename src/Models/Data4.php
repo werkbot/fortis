@@ -10,306 +10,547 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class Data4 implements \JsonSerializable
 {
     /**
-     * @var array
+     * @var string|null
      */
-    private $action = ['value' => ActionEnum::SALE];
+    private $declinedRecurringTransactionId;
 
     /**
-     * @var Method[]|null
+     * @var string|null
      */
-    private $methods;
+    private $accountNumber;
+
+    /**
+     * @var array
+     */
+    private $accountHolderName = [];
+
+    /**
+     * @var string|null
+     */
+    private $expDate;
 
     /**
      * @var int|null
      */
-    private $amount;
+    private $transactionAmount;
+
+    /**
+     * @var string|null
+     */
+    private $description;
+
+    /**
+     * @var BillingAddress|null
+     */
+    private $billingAddress;
+
+    /**
+     * @var array
+     */
+    private $tags = [];
+
+    /**
+     * @var string|null
+     */
+    private $id;
+
+    /**
+     * @var string|null
+     */
+    private $firstSix;
+
+    /**
+     * @var string|null
+     */
+    private $lastFour;
+
+    /**
+     * @var array
+     */
+    private $routing = [];
+
+    /**
+     * @var float|null
+     */
+    private $statusId;
+
+    /**
+     * @var array
+     */
+    private $reasonCodeId = [];
+
+    /**
+     * @var float|null
+     */
+    private $typeId;
 
     /**
      * @var int|null
      */
-    private $taxAmount;
+    private $createdTs;
 
     /**
-     * @var array
+     * @var string|null
      */
-    private $locationId = [];
+    private $createdUserId;
 
     /**
-     * @var array
+     * Returns Declined Recurring Transaction Id.
+     * Declined Recurring Transaction Id
      */
-    private $contactId = [];
-
-    /**
-     * @var bool|null
-     */
-    private $saveAccount;
-
-    /**
-     * @var array
-     */
-    private $achSecCode = ['value' => AchSecCodeEnum::WEB];
-
-    /**
-     * @var string
-     */
-    private $clientToken;
-
-    /**
-     * @param string $clientToken
-     */
-    public function __construct(string $clientToken)
+    public function getDeclinedRecurringTransactionId(): ?string
     {
-        $this->clientToken = $clientToken;
+        return $this->declinedRecurringTransactionId;
     }
 
     /**
-     * Returns Action.
-     * The action to be performed
+     * Sets Declined Recurring Transaction Id.
+     * Declined Recurring Transaction Id
+     *
+     * @maps declined_recurring_transaction_id
      */
-    public function getAction(): ?string
+    public function setDeclinedRecurringTransactionId(?string $declinedRecurringTransactionId): void
     {
-        if (count($this->action) == 0) {
+        $this->declinedRecurringTransactionId = $declinedRecurringTransactionId;
+    }
+
+    /**
+     * Returns Account Number.
+     * Account Number
+     */
+    public function getAccountNumber(): ?string
+    {
+        return $this->accountNumber;
+    }
+
+    /**
+     * Sets Account Number.
+     * Account Number
+     *
+     * @maps account_number
+     */
+    public function setAccountNumber(?string $accountNumber): void
+    {
+        $this->accountNumber = $accountNumber;
+    }
+
+    /**
+     * Returns Account Holder Name.
+     * Account Holder Name
+     */
+    public function getAccountHolderName(): ?string
+    {
+        if (count($this->accountHolderName) == 0) {
             return null;
         }
-        return $this->action['value'];
+        return $this->accountHolderName['value'];
     }
 
     /**
-     * Sets Action.
-     * The action to be performed
+     * Sets Account Holder Name.
+     * Account Holder Name
      *
-     * @maps action
-     * @factory \FortisAPILib\Models\ActionEnum::checkValue
+     * @maps account_holder_name
      */
-    public function setAction(?string $action): void
+    public function setAccountHolderName(?string $accountHolderName): void
     {
-        $this->action['value'] = $action;
+        $this->accountHolderName['value'] = $accountHolderName;
     }
 
     /**
-     * Unsets Action.
-     * The action to be performed
+     * Unsets Account Holder Name.
+     * Account Holder Name
      */
-    public function unsetAction(): void
+    public function unsetAccountHolderName(): void
     {
-        $this->action = [];
+        $this->accountHolderName = [];
     }
 
     /**
-     * Returns Methods.
-     * Byt default the system will try to offer all the availables payment methods from your account. But
-     * if you like, you can specify exactly what services you want to use.
+     * Returns Exp Date.
+     * Exp Date
+     */
+    public function getExpDate(): ?string
+    {
+        return $this->expDate;
+    }
+
+    /**
+     * Sets Exp Date.
+     * Exp Date
      *
-     * @return Method[]|null
+     * @maps exp_date
      */
-    public function getMethods(): ?array
+    public function setExpDate(?string $expDate): void
     {
-        return $this->methods;
+        $this->expDate = $expDate;
     }
 
     /**
-     * Sets Methods.
-     * Byt default the system will try to offer all the availables payment methods from your account. But
-     * if you like, you can specify exactly what services you want to use.
+     * Returns Transaction Amount.
+     * Transaction Amount
+     */
+    public function getTransactionAmount(): ?int
+    {
+        return $this->transactionAmount;
+    }
+
+    /**
+     * Sets Transaction Amount.
+     * Transaction Amount
      *
-     * @maps methods
+     * @maps transaction_amount
+     */
+    public function setTransactionAmount(?int $transactionAmount): void
+    {
+        $this->transactionAmount = $transactionAmount;
+    }
+
+    /**
+     * Returns Description.
+     * Description
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    /**
+     * Sets Description.
+     * Description
      *
-     * @param Method[]|null $methods
+     * @maps description
      */
-    public function setMethods(?array $methods): void
+    public function setDescription(?string $description): void
     {
-        $this->methods = $methods;
+        $this->description = $description;
     }
 
     /**
-     * Returns Amount.
-     * The total amount to be charged. Allowed on the actions: `sale`, `auth-only`, `refund`
+     * Returns Billing Address.
+     * Billing Address Object
      */
-    public function getAmount(): ?int
+    public function getBillingAddress(): ?BillingAddress
     {
-        return $this->amount;
+        return $this->billingAddress;
     }
 
     /**
-     * Sets Amount.
-     * The total amount to be charged. Allowed on the actions: `sale`, `auth-only`, `refund`
+     * Sets Billing Address.
+     * Billing Address Object
      *
-     * @maps amount
+     * @maps billing_address
      */
-    public function setAmount(?int $amount): void
+    public function setBillingAddress(?BillingAddress $billingAddress): void
     {
-        $this->amount = $amount;
+        $this->billingAddress = $billingAddress;
     }
 
     /**
-     * Returns Tax Amount.
-     * Amount of Sales Tax. If supplied, this amount should be already included in the transaction amount.
-     * Allowed on the actions: `sale`, `auth-only`, `refund`
-     */
-    public function getTaxAmount(): ?int
-    {
-        return $this->taxAmount;
-    }
-
-    /**
-     * Sets Tax Amount.
-     * Amount of Sales Tax. If supplied, this amount should be already included in the transaction amount.
-     * Allowed on the actions: `sale`, `auth-only`, `refund`
+     * Returns Tags.
+     * Tags
      *
-     * @maps tax_amount
+     * @return string[]|null
      */
-    public function setTaxAmount(?int $taxAmount): void
+    public function getTags(): ?array
     {
-        $this->taxAmount = $taxAmount;
-    }
-
-    /**
-     * Returns Location Id.
-     * Location ID
-     */
-    public function getLocationId(): ?string
-    {
-        if (count($this->locationId) == 0) {
+        if (count($this->tags) == 0) {
             return null;
         }
-        return $this->locationId['value'];
+        return $this->tags['value'];
     }
 
     /**
-     * Sets Location Id.
-     * Location ID
+     * Sets Tags.
+     * Tags
      *
-     * @maps location_id
+     * @maps tags
+     *
+     * @param string[]|null $tags
      */
-    public function setLocationId(?string $locationId): void
+    public function setTags(?array $tags): void
     {
-        $this->locationId['value'] = $locationId;
+        $this->tags['value'] = $tags;
     }
 
     /**
-     * Unsets Location Id.
-     * Location ID
+     * Unsets Tags.
+     * Tags
      */
-    public function unsetLocationId(): void
+    public function unsetTags(): void
     {
-        $this->locationId = [];
+        $this->tags = [];
     }
 
     /**
-     * Returns Contact Id.
-     * Contact ID
+     * Returns Id.
+     * Id
      */
-    public function getContactId(): ?string
+    public function getId(): ?string
     {
-        if (count($this->contactId) == 0) {
+        return $this->id;
+    }
+
+    /**
+     * Sets Id.
+     * Id
+     *
+     * @maps id
+     */
+    public function setId(?string $id): void
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * Returns First Six.
+     * First Six
+     */
+    public function getFirstSix(): ?string
+    {
+        return $this->firstSix;
+    }
+
+    /**
+     * Sets First Six.
+     * First Six
+     *
+     * @maps first_six
+     */
+    public function setFirstSix(?string $firstSix): void
+    {
+        $this->firstSix = $firstSix;
+    }
+
+    /**
+     * Returns Last Four.
+     * Last Four
+     */
+    public function getLastFour(): ?string
+    {
+        return $this->lastFour;
+    }
+
+    /**
+     * Sets Last Four.
+     * Last Four
+     *
+     * @maps last_four
+     */
+    public function setLastFour(?string $lastFour): void
+    {
+        $this->lastFour = $lastFour;
+    }
+
+    /**
+     * Returns Routing.
+     * Routing
+     */
+    public function getRouting(): ?string
+    {
+        if (count($this->routing) == 0) {
             return null;
         }
-        return $this->contactId['value'];
+        return $this->routing['value'];
     }
 
     /**
-     * Sets Contact Id.
-     * Contact ID
+     * Sets Routing.
+     * Routing
      *
-     * @maps contact_id
+     * @maps routing
      */
-    public function setContactId(?string $contactId): void
+    public function setRouting(?string $routing): void
     {
-        $this->contactId['value'] = $contactId;
+        $this->routing['value'] = $routing;
     }
 
     /**
-     * Unsets Contact Id.
-     * Contact ID
+     * Unsets Routing.
+     * Routing
      */
-    public function unsetContactId(): void
+    public function unsetRouting(): void
     {
-        $this->contactId = [];
+        $this->routing = [];
     }
 
     /**
-     * Returns Save Account.
-     * Specifies to tokenize card/bank information within the transaction. Allowed on the actions: `sale`,
-     * `auth-only`, `avs-only`, `refund`
+     * Returns Status Id.
+     * Status Id
      */
-    public function getSaveAccount(): ?bool
+    public function getStatusId(): ?float
     {
-        return $this->saveAccount;
+        return $this->statusId;
     }
 
     /**
-     * Sets Save Account.
-     * Specifies to tokenize card/bank information within the transaction. Allowed on the actions: `sale`,
-     * `auth-only`, `avs-only`, `refund`
+     * Sets Status Id.
+     * Status Id
      *
-     * @maps save_account
+     * @maps status_id
      */
-    public function setSaveAccount(?bool $saveAccount): void
+    public function setStatusId(?float $statusId): void
     {
-        $this->saveAccount = $saveAccount;
+        $this->statusId = $statusId;
     }
 
     /**
-     * Returns Ach Sec Code.
-     * SEC code for the transaction if it's an ACH transaction
+     * Returns Reason Code Id.
+     * Reason Code Id
      */
-    public function getAchSecCode(): ?string
+    public function getReasonCodeId(): ?int
     {
-        if (count($this->achSecCode) == 0) {
+        if (count($this->reasonCodeId) == 0) {
             return null;
         }
-        return $this->achSecCode['value'];
+        return $this->reasonCodeId['value'];
     }
 
     /**
-     * Sets Ach Sec Code.
-     * SEC code for the transaction if it's an ACH transaction
+     * Sets Reason Code Id.
+     * Reason Code Id
      *
-     * @maps ach_sec_code
-     * @factory \FortisAPILib\Models\AchSecCodeEnum::checkValue
+     * @maps reason_code_id
+     * @factory \FortisAPILib\Models\ReasonCodeIdEnum::checkValue
      */
-    public function setAchSecCode(?string $achSecCode): void
+    public function setReasonCodeId(?int $reasonCodeId): void
     {
-        $this->achSecCode['value'] = $achSecCode;
+        $this->reasonCodeId['value'] = $reasonCodeId;
     }
 
     /**
-     * Unsets Ach Sec Code.
-     * SEC code for the transaction if it's an ACH transaction
+     * Unsets Reason Code Id.
+     * Reason Code Id
      */
-    public function unsetAchSecCode(): void
+    public function unsetReasonCodeId(): void
     {
-        $this->achSecCode = [];
+        $this->reasonCodeId = [];
     }
 
     /**
-     * Returns Client Token.
-     * A JWT to be used to create the elements.
-     * > This is a one-time only use token.
-     * > Do not store for long term use, it expires after 48 hours.
+     * Returns Type Id.
+     * Type Id
      */
-    public function getClientToken(): string
+    public function getTypeId(): ?float
     {
-        return $this->clientToken;
+        return $this->typeId;
     }
 
     /**
-     * Sets Client Token.
-     * A JWT to be used to create the elements.
-     * > This is a one-time only use token.
-     * > Do not store for long term use, it expires after 48 hours.
+     * Sets Type Id.
+     * Type Id
      *
-     * @required
-     * @maps client_token
+     * @maps type_id
      */
-    public function setClientToken(string $clientToken): void
+    public function setTypeId(?float $typeId): void
     {
-        $this->clientToken = $clientToken;
+        $this->typeId = $typeId;
+    }
+
+    /**
+     * Returns Created Ts.
+     * Created Time Stamp
+     */
+    public function getCreatedTs(): ?int
+    {
+        return $this->createdTs;
+    }
+
+    /**
+     * Sets Created Ts.
+     * Created Time Stamp
+     *
+     * @maps created_ts
+     */
+    public function setCreatedTs(?int $createdTs): void
+    {
+        $this->createdTs = $createdTs;
+    }
+
+    /**
+     * Returns Created User Id.
+     * User ID Created the register
+     */
+    public function getCreatedUserId(): ?string
+    {
+        return $this->createdUserId;
+    }
+
+    /**
+     * Sets Created User Id.
+     * User ID Created the register
+     *
+     * @maps created_user_id
+     */
+    public function setCreatedUserId(?string $createdUserId): void
+    {
+        $this->createdUserId = $createdUserId;
+    }
+
+    /**
+     * Converts the Data4 object to a human-readable string representation.
+     *
+     * @return string The string representation of the Data4 object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Data4',
+            [
+                'declinedRecurringTransactionId' => $this->declinedRecurringTransactionId,
+                'accountNumber' => $this->accountNumber,
+                'accountHolderName' => $this->getAccountHolderName(),
+                'expDate' => $this->expDate,
+                'transactionAmount' => $this->transactionAmount,
+                'description' => $this->description,
+                'billingAddress' => $this->billingAddress,
+                'tags' => $this->getTags(),
+                'id' => $this->id,
+                'firstSix' => $this->firstSix,
+                'lastFour' => $this->lastFour,
+                'routing' => $this->getRouting(),
+                'statusId' => $this->statusId,
+                'reasonCodeId' => $this->getReasonCodeId(),
+                'typeId' => $this->typeId,
+                'createdTs' => $this->createdTs,
+                'createdUserId' => $this->createdUserId,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -324,31 +565,58 @@ class Data4 implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        if (!empty($this->action)) {
-            $json['action']       = ActionEnum::checkValue($this->action['value']);
+        if (isset($this->declinedRecurringTransactionId)) {
+            $json['declined_recurring_transaction_id'] = $this->declinedRecurringTransactionId;
         }
-        if (isset($this->methods)) {
-            $json['methods']      = $this->methods;
+        if (isset($this->accountNumber)) {
+            $json['account_number']                    = $this->accountNumber;
         }
-        if (isset($this->amount)) {
-            $json['amount']       = $this->amount;
+        if (!empty($this->accountHolderName)) {
+            $json['account_holder_name']               = $this->accountHolderName['value'];
         }
-        if (isset($this->taxAmount)) {
-            $json['tax_amount']   = $this->taxAmount;
+        if (isset($this->expDate)) {
+            $json['exp_date']                          = $this->expDate;
         }
-        if (!empty($this->locationId)) {
-            $json['location_id']  = $this->locationId['value'];
+        if (isset($this->transactionAmount)) {
+            $json['transaction_amount']                = $this->transactionAmount;
         }
-        if (!empty($this->contactId)) {
-            $json['contact_id']   = $this->contactId['value'];
+        if (isset($this->description)) {
+            $json['description']                       = $this->description;
         }
-        if (isset($this->saveAccount)) {
-            $json['save_account'] = $this->saveAccount;
+        if (isset($this->billingAddress)) {
+            $json['billing_address']                   = $this->billingAddress;
         }
-        if (!empty($this->achSecCode)) {
-            $json['ach_sec_code'] = AchSecCodeEnum::checkValue($this->achSecCode['value']);
+        if (!empty($this->tags)) {
+            $json['tags']                              = $this->tags['value'];
         }
-        $json['client_token']     = $this->clientToken;
+        if (isset($this->id)) {
+            $json['id']                                = $this->id;
+        }
+        if (isset($this->firstSix)) {
+            $json['first_six']                         = $this->firstSix;
+        }
+        if (isset($this->lastFour)) {
+            $json['last_four']                         = $this->lastFour;
+        }
+        if (!empty($this->routing)) {
+            $json['routing']                           = $this->routing['value'];
+        }
+        if (isset($this->statusId)) {
+            $json['status_id']                         = $this->statusId;
+        }
+        if (!empty($this->reasonCodeId)) {
+            $json['reason_code_id']                    = ReasonCodeIdEnum::checkValue($this->reasonCodeId['value']);
+        }
+        if (isset($this->typeId)) {
+            $json['type_id']                           = $this->typeId;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']                        = $this->createdTs;
+        }
+        if (isset($this->createdUserId)) {
+            $json['created_user_id']                   = $this->createdUserId;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

@@ -9,79 +9,117 @@
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `locationId` | `string` | Required | Location ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getLocationId(): string | setLocationId(string locationId): void |
-| `defaultProductTransactionId` | `?string` | Optional | Product Transaction ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getDefaultProductTransactionId(): ?string | setDefaultProductTransactionId(?string defaultProductTransactionId): void |
-| `terminalApplicationId` | `string` | Required | Terminal Application ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getTerminalApplicationId(): string | setTerminalApplicationId(string terminalApplicationId): void |
-| `terminalCvmId` | `?string` | Optional | Terminal CVM ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getTerminalCvmId(): ?string | setTerminalCvmId(?string terminalCvmId): void |
-| `terminalManufacturerCode` | [`int (TerminalManufacturerCodeEnum)`](../../doc/models/terminal-manufacturer-code-enum.md) | Required | Terminal Manufacturer Code | getTerminalManufacturerCode(): int | setTerminalManufacturerCode(int terminalManufacturerCode): void |
-| `title` | `string` | Required | Terminal Name<br>**Constraints**: *Maximum Length*: `64` | getTitle(): string | setTitle(string title): void |
-| `macAddress` | `?string` | Optional | Terminal MAC Address<br>**Constraints**: *Pattern*: `^([0-9a-fA-F]{2}[:-]?){5}([0-9a-fA-F]{2})$` | getMacAddress(): ?string | setMacAddress(?string macAddress): void |
-| `localIpAddress` | `?string` | Optional | Terminal Local IP Address | getLocalIpAddress(): ?string | setLocalIpAddress(?string localIpAddress): void |
-| `port` | `?int` | Optional | Terminal Port<br>**Default**: `10009`<br>**Constraints**: `>= 0`, `<= 65535` | getPort(): ?int | setPort(?int port): void |
-| `serialNumber` | `string` | Required | Terminal Serial Number<br>**Constraints**: *Maximum Length*: `24`, *Pattern*: `^[a-zA-Z0-9]*$` | getSerialNumber(): string | setSerialNumber(string serialNumber): void |
-| `terminalNumber` | `?string` | Optional | Terminal Number<br>**Constraints**: *Minimum Length*: `15`, *Maximum Length*: `15` | getTerminalNumber(): ?string | setTerminalNumber(?string terminalNumber): void |
-| `terminalTimeouts` | [`?TerminalTimeouts`](../../doc/models/terminal-timeouts.md) | Optional | The following options outlines some configurable timeout values that can be used to customize the experience at the terminal for the cardholder. | getTerminalTimeouts(): ?TerminalTimeouts | setTerminalTimeouts(?TerminalTimeouts terminalTimeouts): void |
-| `tipPercents` | [`?TipPercents`](../../doc/models/tip-percents.md) | Optional | A JSON of tip percents the JSON MUST contain only these three fields: percent_1, percent_2, percent_3 | getTipPercents(): ?TipPercents | setTipPercents(?TipPercents tipPercents): void |
-| `locationApiId` | `?string` | Optional | Location Api ID<br>**Constraints**: *Maximum Length*: `64` | getLocationApiId(): ?string | setLocationApiId(?string locationApiId): void |
-| `terminalApiId` | `?string` | Optional | Terminal Api ID<br>**Constraints**: *Maximum Length*: `64` | getTerminalApiId(): ?string | setTerminalApiId(?string terminalApiId): void |
-| `headerLine1` | `?string` | Optional | Header Line 1<br>**Constraints**: *Maximum Length*: `32` | getHeaderLine1(): ?string | setHeaderLine1(?string headerLine1): void |
-| `headerLine2` | `?string` | Optional | Header Line 2<br>**Constraints**: *Maximum Length*: `32` | getHeaderLine2(): ?string | setHeaderLine2(?string headerLine2): void |
-| `headerLine3` | `?string` | Optional | Header Line 3<br>**Constraints**: *Maximum Length*: `32` | getHeaderLine3(): ?string | setHeaderLine3(?string headerLine3): void |
-| `headerLine4` | `?string` | Optional | Header Line 4<br>**Constraints**: *Maximum Length*: `32` | getHeaderLine4(): ?string | setHeaderLine4(?string headerLine4): void |
-| `headerLine5` | `?string` | Optional | Header Line 5<br>**Constraints**: *Maximum Length*: `32` | getHeaderLine5(): ?string | setHeaderLine5(?string headerLine5): void |
-| `trailerLine1` | `?string` | Optional | Trailer Line 1<br>**Constraints**: *Maximum Length*: `32` | getTrailerLine1(): ?string | setTrailerLine1(?string trailerLine1): void |
-| `trailerLine2` | `?string` | Optional | Trailer Line 2<br>**Constraints**: *Maximum Length*: `32` | getTrailerLine2(): ?string | setTrailerLine2(?string trailerLine2): void |
-| `trailerLine3` | `?string` | Optional | Trailer Line 3<br>**Constraints**: *Maximum Length*: `32` | getTrailerLine3(): ?string | setTrailerLine3(?string trailerLine3): void |
-| `trailerLine4` | `?string` | Optional | Trailer Line 4<br>**Constraints**: *Maximum Length*: `32` | getTrailerLine4(): ?string | setTrailerLine4(?string trailerLine4): void |
-| `trailerLine5` | `?string` | Optional | Trailer Line 5<br>**Constraints**: *Maximum Length*: `32` | getTrailerLine5(): ?string | setTrailerLine5(?string trailerLine5): void |
-| `defaultCheckin` | `?string` | Optional | Default Checkin<br>**Constraints**: *Maximum Length*: `10`, *Pattern*: `^[\d]{4}-[\d]{2}-[\d]{2}$` | getDefaultCheckin(): ?string | setDefaultCheckin(?string defaultCheckin): void |
-| `defaultCheckout` | `?string` | Optional | Default Checkout<br>**Constraints**: *Maximum Length*: `10`, *Pattern*: `^[\d]{4}-[\d]{2}-[\d]{2}$` | getDefaultCheckout(): ?string | setDefaultCheckout(?string defaultCheckout): void |
-| `defaultRoomRate` | `?float` | Optional | Default Room Rate<br>**Constraints**: `>= 0`, `<= 100` | getDefaultRoomRate(): ?float | setDefaultRoomRate(?float defaultRoomRate): void |
-| `defaultRoomNumber` | `?string` | Optional | Default Room Number<br>**Constraints**: *Maximum Length*: `12` | getDefaultRoomNumber(): ?string | setDefaultRoomNumber(?string defaultRoomNumber): void |
-| `debit` | `bool` | Required | Debit | getDebit(): bool | setDebit(bool debit): void |
-| `emv` | `bool` | Required | EMV | getEmv(): bool | setEmv(bool emv): void |
-| `cashbackEnable` | `bool` | Required | Cashback Enable | getCashbackEnable(): bool | setCashbackEnable(bool cashbackEnable): void |
-| `printEnable` | `bool` | Required | Print Enable | getPrintEnable(): bool | setPrintEnable(bool printEnable): void |
-| `sigCaptureEnable` | `bool` | Required | Sig Capture Enable | getSigCaptureEnable(): bool | setSigCaptureEnable(bool sigCaptureEnable): void |
-| `isProvisioned` | `?bool` | Optional | Is Provisioned | getIsProvisioned(): ?bool | setIsProvisioned(?bool isProvisioned): void |
-| `tipEnable` | `?bool` | Optional | Tip Enable | getTipEnable(): ?bool | setTipEnable(?bool tipEnable): void |
-| `validatedDecryption` | `?bool` | Optional | Validated Decryption | getValidatedDecryption(): ?bool | setValidatedDecryption(?bool validatedDecryption): void |
-| `communicationType` | [`?string (CommunicationTypeEnum)`](../../doc/models/communication-type-enum.md) | Optional | Communication Type | getCommunicationType(): ?string | setCommunicationType(?string communicationType): void |
-| `id` | `string` | Required | Terminal ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getId(): string | setId(string id): void |
-| `createdTs` | `int` | Required | Created Time Stamp | getCreatedTs(): int | setCreatedTs(int createdTs): void |
-| `modifiedTs` | `int` | Required | Modified Time Stamp | getModifiedTs(): int | setModifiedTs(int modifiedTs): void |
-| `lastRegistrationTs` | `int` | Required | Modified Time Stamp | getLastRegistrationTs(): int | setLastRegistrationTs(int lastRegistrationTs): void |
-| `createdUserId` | `string` | Required | User ID Created the register<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getCreatedUserId(): string | setCreatedUserId(string createdUserId): void |
-| `modifiedUserId` | `string` | Required | Last User ID that updated the register<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getModifiedUserId(): string | setModifiedUserId(string modifiedUserId): void |
+| `locationId` | `?string` | Optional | Location ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getLocationId(): ?string | setLocationId(?string locationId): void |
+| `title` | `?string` | Optional | Title<br><br>**Constraints**: *Maximum Length*: `64` | getTitle(): ?string | setTitle(?string title): void |
+| `ccProductTransactionId` | `?string` | Optional | Transaction ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getCcProductTransactionId(): ?string | setCcProductTransactionId(?string ccProductTransactionId): void |
+| `achProductTransactionId` | `?string` | Optional | ACH Product Transaction Id<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getAchProductTransactionId(): ?string | setAchProductTransactionId(?string achProductTransactionId): void |
+| `dueDate` | `?string` | Optional | Due Date, Format: Y-m-d<br><br>**Constraints**: *Maximum Length*: `10`, *Pattern*: `^[\d]{4}-[\d]{2}-[\d]{2}$` | getDueDate(): ?string | setDueDate(?string dueDate): void |
+| `itemList` | [`?(ItemList[])`](../../doc/models/item-list.md) | Optional | Item List<br><br>**Constraints**: *Minimum Items*: `1`, *Maximum Items*: `300`, *Unique Items Required* | getItemList(): ?array | setItemList(?array itemList): void |
+| `allowOverpayment` | `?bool` | Optional | Allow Overpayment. | getAllowOverpayment(): ?bool | setAllowOverpayment(?bool allowOverpayment): void |
+| `bankFundedOnlyOverride` | `?bool` | Optional | Bank Funded Only override | getBankFundedOnlyOverride(): ?bool | setBankFundedOnlyOverride(?bool bankFundedOnlyOverride): void |
+| `email` | `?string` | Optional | Email<br><br>**Constraints**: *Maximum Length*: `128` | getEmail(): ?string | setEmail(?string email): void |
+| `contactId` | `?string` | Optional | Contact ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getContactId(): ?string | setContactId(?string contactId): void |
+| `contactApiId` | `?string` | Optional | Contact API Id<br><br>**Constraints**: *Maximum Length*: `64` | getContactApiId(): ?string | setContactApiId(?string contactApiId): void |
+| `quickInvoiceApiId` | `?string` | Optional | Quick Invoice API Id<br><br>**Constraints**: *Maximum Length*: `64` | getQuickInvoiceApiId(): ?string | setQuickInvoiceApiId(?string quickInvoiceApiId): void |
+| `customerId` | `?string` | Optional | Customer Id<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getCustomerId(): ?string | setCustomerId(?string customerId): void |
+| `expireDate` | `?string` | Optional | Expire Date.<br><br>**Constraints**: *Maximum Length*: `10`, *Pattern*: `^[\d]{4}-[\d]{2}-[\d]{2}$` | getExpireDate(): ?string | setExpireDate(?string expireDate): void |
+| `allowPartialPay` | `?bool` | Optional | Allow partial pay | getAllowPartialPay(): ?bool | setAllowPartialPay(?bool allowPartialPay): void |
+| `attachFilesToEmail` | `?bool` | Optional | Attach Files to Email | getAttachFilesToEmail(): ?bool | setAttachFilesToEmail(?bool attachFilesToEmail): void |
+| `sendEmail` | `?bool` | Optional | Send Email | getSendEmail(): ?bool | setSendEmail(?bool sendEmail): void |
+| `invoiceNumber` | `?string` | Optional | Invoice number<br><br>**Constraints**: *Maximum Length*: `64` | getInvoiceNumber(): ?string | setInvoiceNumber(?string invoiceNumber): void |
+| `itemHeader` | `?string` | Optional | Item Header<br><br>**Constraints**: *Maximum Length*: `250` | getItemHeader(): ?string | setItemHeader(?string itemHeader): void |
+| `itemFooter` | `?string` | Optional | Item footer<br><br>**Constraints**: *Maximum Length*: `250` | getItemFooter(): ?string | setItemFooter(?string itemFooter): void |
+| `amountDue` | `?float` | Optional | Amount Due | getAmountDue(): ?float | setAmountDue(?float amountDue): void |
+| `notificationEmail` | `?string` | Optional | Notification email<br><br>**Constraints**: *Maximum Length*: `640` | getNotificationEmail(): ?string | setNotificationEmail(?string notificationEmail): void |
+| `statusId` | [`?int(StatusIdEnum)`](../../doc/models/status-id-enum.md) | Optional | (DEPRECATED) Status Id | getStatusId(): ?int | setStatusId(?int statusId): void |
+| `statusCode` | [`?int(StatusCode12Enum)`](../../doc/models/status-code-12-enum.md) | Optional | Status Code | getStatusCode(): ?int | setStatusCode(?int statusCode): void |
+| `note` | `?string` | Optional | Note<br><br>**Constraints**: *Maximum Length*: `200` | getNote(): ?string | setNote(?string note): void |
+| `notificationDaysBeforeDueDate` | `?int` | Optional | Notification days before due date<br><br>**Constraints**: `>= 0`, `<= 99` | getNotificationDaysBeforeDueDate(): ?int | setNotificationDaysBeforeDueDate(?int notificationDaysBeforeDueDate): void |
+| `notificationDaysAfterDueDate` | `?int` | Optional | Notification days after due date<br><br>**Constraints**: `>= 0`, `<= 99` | getNotificationDaysAfterDueDate(): ?int | setNotificationDaysAfterDueDate(?int notificationDaysAfterDueDate): void |
+| `notificationOnDueDate` | `?bool` | Optional | Notification on due date | getNotificationOnDueDate(): ?bool | setNotificationOnDueDate(?bool notificationOnDueDate): void |
+| `sendTextToPay` | `?bool` | Optional | Send Text To Pay | getSendTextToPay(): ?bool | setSendTextToPay(?bool sendTextToPay): void |
+| `files` | [`?(File[])`](../../doc/models/file.md) | Optional | File Information on `expand` | getFiles(): ?array | setFiles(?array files): void |
+| `remainingBalance` | `?float` | Optional | Remaining Balance | getRemainingBalance(): ?float | setRemainingBalance(?float remainingBalance): void |
+| `singlePaymentMinAmount` | `?int` | Optional | Single Payment Min Amount | getSinglePaymentMinAmount(): ?int | setSinglePaymentMinAmount(?int singlePaymentMinAmount): void |
+| `singlePaymentMaxAmount` | `?int` | Optional | Single Payment Max Amount<br><br>**Default**: `999999999` | getSinglePaymentMaxAmount(): ?int | setSinglePaymentMaxAmount(?int singlePaymentMaxAmount): void |
+| `cellPhone` | `?string` | Optional | Cell Phone<br><br>**Constraints**: *Minimum Length*: `10`, *Maximum Length*: `10`, *Pattern*: `^\d{10}$` | getCellPhone(): ?string | setCellPhone(?string cellPhone): void |
+| `tags` | [`?(Tag[])`](../../doc/models/tag.md) | Optional | Tag Information on `expand` | getTags(): ?array | setTags(?array tags): void |
+| `quickInvoiceC1` | `?string` | Optional | Custom field 1 for api users to store custom data<br><br>**Constraints**: *Maximum Length*: `128` | getQuickInvoiceC1(): ?string | setQuickInvoiceC1(?string quickInvoiceC1): void |
+| `quickInvoiceC2` | `?string` | Optional | Custom field 2 for api users to store custom data<br><br>**Constraints**: *Maximum Length*: `128` | getQuickInvoiceC2(): ?string | setQuickInvoiceC2(?string quickInvoiceC2): void |
+| `quickInvoiceC3` | `?string` | Optional | Custom field 1 for api users to store custom data<br><br>**Constraints**: *Maximum Length*: `128` | getQuickInvoiceC3(): ?string | setQuickInvoiceC3(?string quickInvoiceC3): void |
+| `autoReopen` | `?bool` | Optional | Auto Reopen. If set to true, a void, refund or detachment of a Transaction Payment will cause the QuickInvoice to be opened again | getAutoReopen(): ?bool | setAutoReopen(?bool autoReopen): void |
+| `id` | `?string` | Optional | Quick Invoice ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getId(): ?string | setId(?string id): void |
+| `createdTs` | `?int` | Optional | Created Time Stamp | getCreatedTs(): ?int | setCreatedTs(?int createdTs): void |
+| `modifiedTs` | `?int` | Optional | Modified Time Stamp | getModifiedTs(): ?int | setModifiedTs(?int modifiedTs): void |
+| `createdUserId` | `?string` | Optional | Created User Id<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getCreatedUserId(): ?string | setCreatedUserId(?string createdUserId): void |
+| `modifiedUserId` | `?string` | Optional | Modified User Id<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getModifiedUserId(): ?string | setModifiedUserId(?string modifiedUserId): void |
+| `active` | `?bool` | Optional | Active status | getActive(): ?bool | setActive(?bool active): void |
+| `paymentStatusId` | `?int` | Optional | Payment Status Id<br><br>**Constraints**: `>= 1`, `<= 3` | getPaymentStatusId(): ?int | setPaymentStatusId(?int paymentStatusId): void |
+| `isActive` | `?bool` | Optional | Register is active | getIsActive(): ?bool | setIsActive(?bool isActive): void |
+| `quickInvoiceSetting` | [`?QuickInvoiceSetting`](../../doc/models/quick-invoice-setting.md) | Optional | Quick Invoice Setting Information on `expand` | getQuickInvoiceSetting(): ?QuickInvoiceSetting | setQuickInvoiceSetting(?QuickInvoiceSetting quickInvoiceSetting): void |
+| `quickInvoiceViews` | [`?(QuickInvoiceView[])`](../../doc/models/quick-invoice-view.md) | Optional | Quick Invoice View Information on `expand` | getQuickInvoiceViews(): ?array | setQuickInvoiceViews(?array quickInvoiceViews): void |
 | `location` | [`?Location`](../../doc/models/location.md) | Optional | Location Information on `expand` | getLocation(): ?Location | setLocation(?Location location): void |
 | `createdUser` | [`?CreatedUser`](../../doc/models/created-user.md) | Optional | User Information on `expand` | getCreatedUser(): ?CreatedUser | setCreatedUser(?CreatedUser createdUser): void |
-| `terminalApplication` | [`?TerminalApplication`](../../doc/models/terminal-application.md) | Optional | Terminal Application Information on `expand` | getTerminalApplication(): ?TerminalApplication | setTerminalApplication(?TerminalApplication terminalApplication): void |
+| `modifiedUser` | [`?ModifiedUser`](../../doc/models/modified-user.md) | Optional | Modified User Information on `expand` | getModifiedUser(): ?ModifiedUser | setModifiedUser(?ModifiedUser modifiedUser): void |
 | `changelogs` | [`?(Changelog[])`](../../doc/models/changelog.md) | Optional | Changelog Information on `expand` | getChangelogs(): ?array | setChangelogs(?array changelogs): void |
-| `terminalRouters` | [`?(TerminalRouter[])`](../../doc/models/terminal-router.md) | Optional | Terminal Router Information on `expand` | getTerminalRouters(): ?array | setTerminalRouters(?array terminalRouters): void |
-| `hasTerminalRouters` | `?bool` | Optional | Has Terminal Router Information on `expand` | getHasTerminalRouters(): ?bool | setHasTerminalRouters(?bool hasTerminalRouters): void |
-| `terminalCvm` | [`?TerminalCvm`](../../doc/models/terminal-cvm.md) | Optional | Terminal Cvm Information on `expand` | getTerminalCvm(): ?TerminalCvm | setTerminalCvm(?TerminalCvm terminalCvm): void |
-| `terminalManufacturer` | [`?TerminalManufacturer`](../../doc/models/terminal-manufacturer.md) | Optional | Terminal Manufacturer Information on `expand` | getTerminalManufacturer(): ?TerminalManufacturer | setTerminalManufacturer(?TerminalManufacturer terminalManufacturer): void |
+| `contact` | [`?Contact1`](../../doc/models/contact-1.md) | Optional | Contact Information on `expand` | getContact(): ?Contact1 | setContact(?Contact1 contact): void |
+| `logEmails` | [`?(LogEmail[])`](../../doc/models/log-email.md) | Optional | Log Email Information on `expand` | getLogEmails(): ?array | setLogEmails(?array logEmails): void |
+| `logSms` | [`?LogSms`](../../doc/models/log-sms.md) | Optional | Log Sms Information on `expand` | getLogSms(): ?LogSms | setLogSms(?LogSms logSms): void |
+| `transactions` | [`?(Transaction[])`](../../doc/models/transaction.md) | Optional | Transaction Information on `expand` | getTransactions(): ?array | setTransactions(?array transactions): void |
+| `ccProductTransaction` | [`?CcProductTransaction`](../../doc/models/cc-product-transaction.md) | Optional | Cc Product Transaction Information on `expand` | getCcProductTransaction(): ?CcProductTransaction | setCcProductTransaction(?CcProductTransaction ccProductTransaction): void |
+| `achProductTransaction` | [`?AchProductTransaction`](../../doc/models/ach-product-transaction.md) | Optional | Ach Product Transaction Information on `expand` | getAchProductTransaction(): ?AchProductTransaction | setAchProductTransaction(?AchProductTransaction achProductTransaction): void |
+| `emailBlacklist` | [`?EmailBlacklist`](../../doc/models/email-blacklist.md) | Optional | Email Blacklist Information on `expand` | getEmailBlacklist(): ?EmailBlacklist | setEmailBlacklist(?EmailBlacklist emailBlacklist): void |
+| `smsBlacklist` | [`?SmsBlacklist`](../../doc/models/sms-blacklist.md) | Optional | Sms Blacklist Information on `expand` | getSmsBlacklist(): ?SmsBlacklist | setSmsBlacklist(?SmsBlacklist smsBlacklist): void |
+| `paymentUrl` | `?string` | Optional | Payment Url Information on `expand` | getPaymentUrl(): ?string | setPaymentUrl(?string paymentUrl): void |
 
 ## Example (as JSON)
 
 ```json
 {
   "location_id": "11e95f8ec39de8fbdb0a4f1a",
-  "terminal_application_id": "11e95f8ec39de8fbdb0a4f1a",
-  "terminal_manufacturer_code": 1,
   "title": "My terminal",
-  "serial_number": "1234567890",
-  "debit": false,
-  "emv": false,
-  "cashback_enable": false,
-  "print_enable": false,
-  "sig_capture_enable": false,
+  "cc_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+  "ach_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+  "due_date": "2021-12-01",
+  "allow_overpayment": true,
+  "bank_funded_only_override": true,
+  "email": "email@domain.com",
+  "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+  "contact_api_id": "contact12345",
+  "quick_invoice_api_id": "quickinvoice12345",
+  "customer_id": "11e95f8ec39de8fbdb0a4f1a",
+  "expire_date": "2021-12-01",
+  "allow_partial_pay": true,
+  "attach_files_to_email": true,
+  "send_email": true,
+  "invoice_number": "invoice12345",
+  "item_header": "Quick invoice header sample",
+  "item_footer": "Thank you",
+  "amount_due": 245.36,
+  "notification_email": "email@domain.com",
+  "status_id": 1,
+  "status_code": 1,
+  "note": "some note",
+  "notification_days_before_due_date": 3,
+  "notification_days_after_due_date": 7,
+  "notification_on_due_date": true,
+  "send_text_to_pay": true,
+  "remaining_balance": 245.36,
+  "single_payment_min_amount": 500,
+  "single_payment_max_amount": 500000,
+  "cell_phone": "3339998822",
+  "quick_invoice_c1": "custom-data-1",
+  "quick_invoice_c2": "custom-data-2",
+  "quick_invoice_c3": "custom-data-3",
+  "auto_reopen": true,
   "id": "11e95f8ec39de8fbdb0a4f1a",
   "created_ts": 1422040992,
   "modified_ts": 1422040992,
-  "last_registration_ts": 1422040992,
   "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
-  "modified_user_id": "11e95f8ec39de8fbdb0a4f1a"
+  "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+  "active": true,
+  "payment_status_id": 1,
+  "is_active": true
 }
 ```
 

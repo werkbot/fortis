@@ -10,159 +10,185 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class Data10 implements \JsonSerializable
 {
     /**
-     * @var string
-     */
-    private $accountVaultId;
-
-    /**
-     * @var bool
-     */
-    private $active;
-
-    /**
-     * @var array
-     */
-    private $description = [];
-
-    /**
-     * @var array
-     */
-    private $endDate = [];
-
-    /**
-     * @var array
-     */
-    private $installmentTotalCount = [];
-
-    /**
-     * @var int
-     */
-    private $interval;
-
-    /**
-     * @var string
-     */
-    private $intervalType;
-
-    /**
-     * @var string
-     */
-    private $locationId;
-
-    /**
-     * @var array
-     */
-    private $notificationDays = [];
-
-    /**
-     * @var string
-     */
-    private $paymentMethod;
-
-    /**
-     * @var array
-     */
-    private $productTransactionId = [];
-
-    /**
-     * @var array
-     */
-    private $recurringId = [];
-
-    /**
-     * @var array
-     */
-    private $recurringApiId = [];
-
-    /**
-     * @var string
-     */
-    private $startDate;
-
-    /**
-     * @var string
-     */
-    private $status;
-
-    /**
-     * @var float
-     */
-    private $transactionAmount;
-
-    /**
-     * @var bool|null
-     */
-    private $termsAgree;
-
-    /**
-     * @var array
-     */
-    private $termsAgreeIp = [];
-
-    /**
-     * @var array
-     */
-    private $recurringC1 = [];
-
-    /**
-     * @var array
-     */
-    private $recurringC2 = [];
-
-    /**
-     * @var array
-     */
-    private $recurringC3 = [];
-
-    /**
-     * @var bool|null
-     */
-    private $sendToProcAsRecur;
-
-    /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var string
-     */
-    private $nextRunDate;
-
-    /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $modifiedTs;
 
     /**
-     * @var string
+     * @var array
      */
-    private $recurringTypeId;
+    private $accountNumber = [];
 
     /**
-     * @var LogEmail[]|null
+     * @var Address1|null
      */
-    private $logEmails;
+    private $address;
 
     /**
-     * @var Contact1|null
+     * @var array
      */
-    private $contact;
+    private $brandingDomainId = [];
 
     /**
-     * @var AccountVault|null
+     * @var bool|null
      */
-    private $accountVault;
+    private $contactEmailTrxReceiptDefault;
+
+    /**
+     * @var array
+     */
+    private $defaultAch = [];
+
+    /**
+     * @var array
+     */
+    private $defaultCc = [];
+
+    /**
+     * @var array
+     */
+    private $emailReplyTo = [];
+
+    /**
+     * @var array
+     */
+    private $fax = [];
+
+    /**
+     * @var array
+     */
+    private $locationApiId = [];
+
+    /**
+     * @var array
+     */
+    private $locationApiKey = [];
+
+    /**
+     * @var array
+     */
+    private $locationC1 = [];
+
+    /**
+     * @var array
+     */
+    private $locationC2 = [];
+
+    /**
+     * @var array
+     */
+    private $locationC3 = [];
+
+    /**
+     * @var string|null
+     */
+    private $name;
+
+    /**
+     * @var array
+     */
+    private $officePhone = [];
+
+    /**
+     * @var array
+     */
+    private $officeExtPhone = [];
+
+    /**
+     * @var array
+     */
+    private $tz = [];
+
+    /**
+     * @var string|null
+     */
+    private $parentId;
+
+    /**
+     * @var bool|null
+     */
+    private $showContactNotes;
+
+    /**
+     * @var bool|null
+     */
+    private $showContactFiles;
+
+    /**
+     * @var array
+     */
+    private $createdUserId = [];
+
+    /**
+     * @var array
+     */
+    private $locationType = [];
+
+    /**
+     * @var array
+     */
+    private $parentName = [];
+
+    /**
+     * @var array
+     */
+    private $ticketHashKey = [];
+
+    /**
+     * @var AdditionalAccess|null
+     */
+    private $additionalAccess;
+
+    /**
+     * @var Parent3|null
+     */
+    private $parent;
+
+    /**
+     * @var User9[]|null
+     */
+    private $users;
+
+    /**
+     * @var bool|null
+     */
+    private $isDeletable;
+
+    /**
+     * @var Terminal2[]|null
+     */
+    private $terminals;
+
+    /**
+     * @var BrandingDomain1|null
+     */
+    private $brandingDomain;
+
+    /**
+     * @var ProductInvoice|null
+     */
+    private $productInvoice;
+
+    /**
+     * @var ProductFile1[]|null
+     */
+    private $productFiles;
 
     /**
      * @var CreatedUser|null
@@ -170,739 +196,85 @@ class Data10 implements \JsonSerializable
     private $createdUser;
 
     /**
-     * @var Signature|null
-     */
-    private $signature;
-
-    /**
-     * @var string[]|null
-     */
-    private $paymentSchedule;
-
-    /**
-     * @var Location|null
-     */
-    private $location;
-
-    /**
-     * @var ProductTransaction|null
-     */
-    private $productTransaction;
-
-    /**
-     * @var string|null
-     */
-    private $nextRunDateMin;
-
-    /**
-     * @var string|null
-     */
-    private $nextRunDateMax;
-
-    /**
-     * @var Tag[]|null
-     */
-    private $tags;
-
-    /**
-     * @var AllTag[]|null
-     */
-    private $allTags;
-
-    /**
      * @var Changelog[]|null
      */
     private $changelogs;
 
     /**
-     * @var Forecast|null
+     * @var ProductTransaction1[]|null
      */
-    private $forecast;
+    private $productTransactions;
 
     /**
-     * @var RecurringSplit[]|null
+     * @var TerminalRouter[]|null
      */
-    private $recurringSplits;
+    private $terminalRouters;
 
     /**
-     * @param string $accountVaultId
-     * @param bool $active
-     * @param int $interval
-     * @param string $intervalType
-     * @param string $locationId
-     * @param string $paymentMethod
-     * @param string $startDate
-     * @param string $status
-     * @param float $transactionAmount
-     * @param string $id
-     * @param string $nextRunDate
-     * @param int $createdTs
-     * @param int $modifiedTs
-     * @param string $recurringTypeId
+     * @var DeveloperCompany|null
      */
-    public function __construct(
-        string $accountVaultId,
-        bool $active,
-        int $interval,
-        string $intervalType,
-        string $locationId,
-        string $paymentMethod,
-        string $startDate,
-        string $status,
-        float $transactionAmount,
-        string $id,
-        string $nextRunDate,
-        int $createdTs,
-        int $modifiedTs,
-        string $recurringTypeId
-    ) {
-        $this->accountVaultId = $accountVaultId;
-        $this->active = $active;
-        $this->interval = $interval;
-        $this->intervalType = $intervalType;
-        $this->locationId = $locationId;
-        $this->paymentMethod = $paymentMethod;
-        $this->startDate = $startDate;
-        $this->status = $status;
-        $this->transactionAmount = $transactionAmount;
-        $this->id = $id;
-        $this->nextRunDate = $nextRunDate;
-        $this->createdTs = $createdTs;
-        $this->modifiedTs = $modifiedTs;
-        $this->recurringTypeId = $recurringTypeId;
-    }
+    private $developerCompany;
 
     /**
-     * Returns Account Vault Id.
-     * Token ID
+     * @var array
      */
-    public function getAccountVaultId(): string
-    {
-        return $this->accountVaultId;
-    }
+    private $developerCompanyId = [];
 
     /**
-     * Sets Account Vault Id.
-     * Token ID
-     *
-     * @required
-     * @maps account_vault_id
+     * @var Helppage[]|null
      */
-    public function setAccountVaultId(string $accountVaultId): void
-    {
-        $this->accountVaultId = $accountVaultId;
-    }
+    private $helppages;
 
     /**
-     * Returns Active.
-     * Active
+     * @var QuickInvoiceSetting|null
      */
-    public function getActive(): bool
-    {
-        return $this->active;
-    }
+    private $quickInvoiceSetting;
 
     /**
-     * Sets Active.
-     * Active
-     *
-     * @required
-     * @maps active
+     * @var LocationBillingAccount[]|null
      */
-    public function setActive(bool $active): void
-    {
-        $this->active = $active;
-    }
+    private $locationBillingAccounts;
 
     /**
-     * Returns Description.
-     * Description
+     * @var Marketplace[]|null
      */
-    public function getDescription(): ?string
-    {
-        if (count($this->description) == 0) {
-            return null;
-        }
-        return $this->description['value'];
-    }
+    private $marketplaces;
 
     /**
-     * Sets Description.
-     * Description
-     *
-     * @maps description
+     * @var Locationmarketplace[]|null
      */
-    public function setDescription(?string $description): void
-    {
-        $this->description['value'] = $description;
-    }
+    private $locationmarketplaces;
 
     /**
-     * Unsets Description.
-     * Description
+     * @var Addon[]|null
      */
-    public function unsetDescription(): void
-    {
-        $this->description = [];
-    }
-
-    /**
-     * Returns End Date.
-     * End date
-     */
-    public function getEndDate(): ?string
-    {
-        if (count($this->endDate) == 0) {
-            return null;
-        }
-        return $this->endDate['value'];
-    }
-
-    /**
-     * Sets End Date.
-     * End date
-     *
-     * @maps end_date
-     */
-    public function setEndDate(?string $endDate): void
-    {
-        $this->endDate['value'] = $endDate;
-    }
-
-    /**
-     * Unsets End Date.
-     * End date
-     */
-    public function unsetEndDate(): void
-    {
-        $this->endDate = [];
-    }
-
-    /**
-     * Returns Installment Total Count.
-     * Installment Total Count
-     */
-    public function getInstallmentTotalCount(): ?int
-    {
-        if (count($this->installmentTotalCount) == 0) {
-            return null;
-        }
-        return $this->installmentTotalCount['value'];
-    }
-
-    /**
-     * Sets Installment Total Count.
-     * Installment Total Count
-     *
-     * @maps installment_total_count
-     */
-    public function setInstallmentTotalCount(?int $installmentTotalCount): void
-    {
-        $this->installmentTotalCount['value'] = $installmentTotalCount;
-    }
-
-    /**
-     * Unsets Installment Total Count.
-     * Installment Total Count
-     */
-    public function unsetInstallmentTotalCount(): void
-    {
-        $this->installmentTotalCount = [];
-    }
-
-    /**
-     * Returns Interval.
-     * Interval
-     */
-    public function getInterval(): int
-    {
-        return $this->interval;
-    }
-
-    /**
-     * Sets Interval.
-     * Interval
-     *
-     * @required
-     * @maps interval
-     */
-    public function setInterval(int $interval): void
-    {
-        $this->interval = $interval;
-    }
-
-    /**
-     * Returns Interval Type.
-     * Interval Type
-     */
-    public function getIntervalType(): string
-    {
-        return $this->intervalType;
-    }
-
-    /**
-     * Sets Interval Type.
-     * Interval Type
-     *
-     * @required
-     * @maps interval_type
-     * @factory \FortisAPILib\Models\IntervalTypeEnum::checkValue
-     */
-    public function setIntervalType(string $intervalType): void
-    {
-        $this->intervalType = $intervalType;
-    }
-
-    /**
-     * Returns Location Id.
-     * Location ID
-     */
-    public function getLocationId(): string
-    {
-        return $this->locationId;
-    }
-
-    /**
-     * Sets Location Id.
-     * Location ID
-     *
-     * @required
-     * @maps location_id
-     */
-    public function setLocationId(string $locationId): void
-    {
-        $this->locationId = $locationId;
-    }
-
-    /**
-     * Returns Notification Days.
-     * Notification Days
-     */
-    public function getNotificationDays(): ?int
-    {
-        if (count($this->notificationDays) == 0) {
-            return null;
-        }
-        return $this->notificationDays['value'];
-    }
-
-    /**
-     * Sets Notification Days.
-     * Notification Days
-     *
-     * @maps notification_days
-     */
-    public function setNotificationDays(?int $notificationDays): void
-    {
-        $this->notificationDays['value'] = $notificationDays;
-    }
-
-    /**
-     * Unsets Notification Days.
-     * Notification Days
-     */
-    public function unsetNotificationDays(): void
-    {
-        $this->notificationDays = [];
-    }
-
-    /**
-     * Returns Payment Method.
-     * Payment Method
-     */
-    public function getPaymentMethod(): string
-    {
-        return $this->paymentMethod;
-    }
-
-    /**
-     * Sets Payment Method.
-     * Payment Method
-     *
-     * @required
-     * @maps payment_method
-     * @factory \FortisAPILib\Models\PaymentMethod1Enum::checkValue
-     */
-    public function setPaymentMethod(string $paymentMethod): void
-    {
-        $this->paymentMethod = $paymentMethod;
-    }
-
-    /**
-     * Returns Product Transaction Id.
-     * Product Transaction ID
-     */
-    public function getProductTransactionId(): ?string
-    {
-        if (count($this->productTransactionId) == 0) {
-            return null;
-        }
-        return $this->productTransactionId['value'];
-    }
-
-    /**
-     * Sets Product Transaction Id.
-     * Product Transaction ID
-     *
-     * @maps product_transaction_id
-     */
-    public function setProductTransactionId(?string $productTransactionId): void
-    {
-        $this->productTransactionId['value'] = $productTransactionId;
-    }
-
-    /**
-     * Unsets Product Transaction Id.
-     * Product Transaction ID
-     */
-    public function unsetProductTransactionId(): void
-    {
-        $this->productTransactionId = [];
-    }
-
-    /**
-     * Returns Recurring Id.
-     * Recurring ID
-     */
-    public function getRecurringId(): ?string
-    {
-        if (count($this->recurringId) == 0) {
-            return null;
-        }
-        return $this->recurringId['value'];
-    }
-
-    /**
-     * Sets Recurring Id.
-     * Recurring ID
-     *
-     * @maps recurring_id
-     */
-    public function setRecurringId(?string $recurringId): void
-    {
-        $this->recurringId['value'] = $recurringId;
-    }
-
-    /**
-     * Unsets Recurring Id.
-     * Recurring ID
-     */
-    public function unsetRecurringId(): void
-    {
-        $this->recurringId = [];
-    }
-
-    /**
-     * Returns Recurring Api Id.
-     * Recurring Api ID
-     */
-    public function getRecurringApiId(): ?string
-    {
-        if (count($this->recurringApiId) == 0) {
-            return null;
-        }
-        return $this->recurringApiId['value'];
-    }
-
-    /**
-     * Sets Recurring Api Id.
-     * Recurring Api ID
-     *
-     * @maps recurring_api_id
-     */
-    public function setRecurringApiId(?string $recurringApiId): void
-    {
-        $this->recurringApiId['value'] = $recurringApiId;
-    }
-
-    /**
-     * Unsets Recurring Api Id.
-     * Recurring Api ID
-     */
-    public function unsetRecurringApiId(): void
-    {
-        $this->recurringApiId = [];
-    }
-
-    /**
-     * Returns Start Date.
-     * Start date
-     */
-    public function getStartDate(): string
-    {
-        return $this->startDate;
-    }
-
-    /**
-     * Sets Start Date.
-     * Start date
-     *
-     * @required
-     * @maps start_date
-     */
-    public function setStartDate(string $startDate): void
-    {
-        $this->startDate = $startDate;
-    }
-
-    /**
-     * Returns Status.
-     * Status
-     */
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
-
-    /**
-     * Sets Status.
-     * Status
-     *
-     * @required
-     * @maps status
-     * @factory \FortisAPILib\Models\StatusEnum::checkValue
-     */
-    public function setStatus(string $status): void
-    {
-        $this->status = $status;
-    }
-
-    /**
-     * Returns Transaction Amount.
-     * Transaction amount
-     */
-    public function getTransactionAmount(): float
-    {
-        return $this->transactionAmount;
-    }
-
-    /**
-     * Sets Transaction Amount.
-     * Transaction amount
-     *
-     * @required
-     * @maps transaction_amount
-     */
-    public function setTransactionAmount(float $transactionAmount): void
-    {
-        $this->transactionAmount = $transactionAmount;
-    }
-
-    /**
-     * Returns Terms Agree.
-     * Terms Agree
-     */
-    public function getTermsAgree(): ?bool
-    {
-        return $this->termsAgree;
-    }
-
-    /**
-     * Sets Terms Agree.
-     * Terms Agree
-     *
-     * @maps terms_agree
-     */
-    public function setTermsAgree(?bool $termsAgree): void
-    {
-        $this->termsAgree = $termsAgree;
-    }
-
-    /**
-     * Returns Terms Agree Ip.
-     * Terms Agree Ip
-     */
-    public function getTermsAgreeIp(): ?string
-    {
-        if (count($this->termsAgreeIp) == 0) {
-            return null;
-        }
-        return $this->termsAgreeIp['value'];
-    }
-
-    /**
-     * Sets Terms Agree Ip.
-     * Terms Agree Ip
-     *
-     * @maps terms_agree_ip
-     */
-    public function setTermsAgreeIp(?string $termsAgreeIp): void
-    {
-        $this->termsAgreeIp['value'] = $termsAgreeIp;
-    }
-
-    /**
-     * Unsets Terms Agree Ip.
-     * Terms Agree Ip
-     */
-    public function unsetTermsAgreeIp(): void
-    {
-        $this->termsAgreeIp = [];
-    }
-
-    /**
-     * Returns Recurring C1.
-     * Custom field used for integrations
-     */
-    public function getRecurringC1(): ?string
-    {
-        if (count($this->recurringC1) == 0) {
-            return null;
-        }
-        return $this->recurringC1['value'];
-    }
-
-    /**
-     * Sets Recurring C1.
-     * Custom field used for integrations
-     *
-     * @maps recurring_c1
-     */
-    public function setRecurringC1(?string $recurringC1): void
-    {
-        $this->recurringC1['value'] = $recurringC1;
-    }
-
-    /**
-     * Unsets Recurring C1.
-     * Custom field used for integrations
-     */
-    public function unsetRecurringC1(): void
-    {
-        $this->recurringC1 = [];
-    }
-
-    /**
-     * Returns Recurring C2.
-     * Custom field used for integrations
-     */
-    public function getRecurringC2(): ?string
-    {
-        if (count($this->recurringC2) == 0) {
-            return null;
-        }
-        return $this->recurringC2['value'];
-    }
-
-    /**
-     * Sets Recurring C2.
-     * Custom field used for integrations
-     *
-     * @maps recurring_c2
-     */
-    public function setRecurringC2(?string $recurringC2): void
-    {
-        $this->recurringC2['value'] = $recurringC2;
-    }
-
-    /**
-     * Unsets Recurring C2.
-     * Custom field used for integrations
-     */
-    public function unsetRecurringC2(): void
-    {
-        $this->recurringC2 = [];
-    }
-
-    /**
-     * Returns Recurring C3.
-     * Custom field used for integrations
-     */
-    public function getRecurringC3(): ?string
-    {
-        if (count($this->recurringC3) == 0) {
-            return null;
-        }
-        return $this->recurringC3['value'];
-    }
-
-    /**
-     * Sets Recurring C3.
-     * Custom field used for integrations
-     *
-     * @maps recurring_c3
-     */
-    public function setRecurringC3(?string $recurringC3): void
-    {
-        $this->recurringC3['value'] = $recurringC3;
-    }
-
-    /**
-     * Unsets Recurring C3.
-     * Custom field used for integrations
-     */
-    public function unsetRecurringC3(): void
-    {
-        $this->recurringC3 = [];
-    }
-
-    /**
-     * Returns Send to Proc as Recur.
-     * Send To Proc As Recur
-     */
-    public function getSendToProcAsRecur(): ?bool
-    {
-        return $this->sendToProcAsRecur;
-    }
-
-    /**
-     * Sets Send to Proc as Recur.
-     * Send To Proc As Recur
-     *
-     * @maps send_to_proc_as_recur
-     */
-    public function setSendToProcAsRecur(?bool $sendToProcAsRecur): void
-    {
-        $this->sendToProcAsRecur = $sendToProcAsRecur;
-    }
+    private $addons;
 
     /**
      * Returns Id.
-     * Recurring ID
+     * Location ID
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
 
     /**
      * Sets Id.
-     * Recurring ID
+     * Location ID
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
-    }
-
-    /**
-     * Returns Next Run Date.
-     * Next Run Date
-     */
-    public function getNextRunDate(): string
-    {
-        return $this->nextRunDate;
-    }
-
-    /**
-     * Sets Next Run Date.
-     * Next Run Date
-     *
-     * @required
-     * @maps next_run_date
-     */
-    public function setNextRunDate(string $nextRunDate): void
-    {
-        $this->nextRunDate = $nextRunDate;
     }
 
     /**
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -911,10 +283,9 @@ class Data10 implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -923,7 +294,7 @@ class Data10 implements \JsonSerializable
      * Returns Modified Ts.
      * Modified Time Stamp
      */
-    public function getModifiedTs(): int
+    public function getModifiedTs(): ?int
     {
         return $this->modifiedTs;
     }
@@ -932,98 +303,878 @@ class Data10 implements \JsonSerializable
      * Sets Modified Ts.
      * Modified Time Stamp
      *
-     * @required
      * @maps modified_ts
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setModifiedTs(?int $modifiedTs): void
     {
         $this->modifiedTs = $modifiedTs;
     }
 
     /**
-     * Returns Recurring Type Id.
-     * Recurring Type
+     * Returns Account Number.
+     * Account number
      */
-    public function getRecurringTypeId(): string
+    public function getAccountNumber(): ?string
     {
-        return $this->recurringTypeId;
+        if (count($this->accountNumber) == 0) {
+            return null;
+        }
+        return $this->accountNumber['value'];
     }
 
     /**
-     * Sets Recurring Type Id.
-     * Recurring Type
+     * Sets Account Number.
+     * Account number
      *
-     * @required
-     * @maps recurring_type_id
-     * @factory \FortisAPILib\Models\RecurringTypeIdEnum::checkValue
+     * @maps account_number
      */
-    public function setRecurringTypeId(string $recurringTypeId): void
+    public function setAccountNumber(?string $accountNumber): void
     {
-        $this->recurringTypeId = $recurringTypeId;
+        $this->accountNumber['value'] = $accountNumber;
     }
 
     /**
-     * Returns Log Emails.
-     * Log Email Information on `expand`
+     * Unsets Account Number.
+     * Account number
+     */
+    public function unsetAccountNumber(): void
+    {
+        $this->accountNumber = [];
+    }
+
+    /**
+     * Returns Address.
+     * Address
+     */
+    public function getAddress(): ?Address1
+    {
+        return $this->address;
+    }
+
+    /**
+     * Sets Address.
+     * Address
      *
-     * @return LogEmail[]|null
+     * @maps address
      */
-    public function getLogEmails(): ?array
+    public function setAddress(?Address1 $address): void
     {
-        return $this->logEmails;
+        $this->address = $address;
     }
 
     /**
-     * Sets Log Emails.
-     * Log Email Information on `expand`
+     * Returns Branding Domain Id.
+     * GUID for Branding Domain
+     */
+    public function getBrandingDomainId(): ?string
+    {
+        if (count($this->brandingDomainId) == 0) {
+            return null;
+        }
+        return $this->brandingDomainId['value'];
+    }
+
+    /**
+     * Sets Branding Domain Id.
+     * GUID for Branding Domain
      *
-     * @maps log_emails
+     * @maps branding_domain_id
+     */
+    public function setBrandingDomainId(?string $brandingDomainId): void
+    {
+        $this->brandingDomainId['value'] = $brandingDomainId;
+    }
+
+    /**
+     * Unsets Branding Domain Id.
+     * GUID for Branding Domain
+     */
+    public function unsetBrandingDomainId(): void
+    {
+        $this->brandingDomainId = [];
+    }
+
+    /**
+     * Returns Contact Email Trx Receipt Default.
+     * If true, will email contact receipt for any transaction
+     */
+    public function getContactEmailTrxReceiptDefault(): ?bool
+    {
+        return $this->contactEmailTrxReceiptDefault;
+    }
+
+    /**
+     * Sets Contact Email Trx Receipt Default.
+     * If true, will email contact receipt for any transaction
      *
-     * @param LogEmail[]|null $logEmails
+     * @maps contact_email_trx_receipt_default
      */
-    public function setLogEmails(?array $logEmails): void
+    public function setContactEmailTrxReceiptDefault(?bool $contactEmailTrxReceiptDefault): void
     {
-        $this->logEmails = $logEmails;
+        $this->contactEmailTrxReceiptDefault = $contactEmailTrxReceiptDefault;
     }
 
     /**
-     * Returns Contact.
-     * Contact Information on `expand`
+     * Returns Default Ach.
+     * GUID for Location's default ACH Product Transaction
      */
-    public function getContact(): ?Contact1
+    public function getDefaultAch(): ?string
     {
-        return $this->contact;
+        if (count($this->defaultAch) == 0) {
+            return null;
+        }
+        return $this->defaultAch['value'];
     }
 
     /**
-     * Sets Contact.
-     * Contact Information on `expand`
+     * Sets Default Ach.
+     * GUID for Location's default ACH Product Transaction
      *
-     * @maps contact
+     * @maps default_ach
      */
-    public function setContact(?Contact1 $contact): void
+    public function setDefaultAch(?string $defaultAch): void
     {
-        $this->contact = $contact;
+        $this->defaultAch['value'] = $defaultAch;
     }
 
     /**
-     * Returns Account Vault.
-     * Token Information on `expand`
+     * Unsets Default Ach.
+     * GUID for Location's default ACH Product Transaction
      */
-    public function getAccountVault(): ?AccountVault
+    public function unsetDefaultAch(): void
     {
-        return $this->accountVault;
+        $this->defaultAch = [];
     }
 
     /**
-     * Sets Account Vault.
-     * Token Information on `expand`
+     * Returns Default Cc.
+     * GUID for Location's default CC Product Transaction
+     */
+    public function getDefaultCc(): ?string
+    {
+        if (count($this->defaultCc) == 0) {
+            return null;
+        }
+        return $this->defaultCc['value'];
+    }
+
+    /**
+     * Sets Default Cc.
+     * GUID for Location's default CC Product Transaction
      *
-     * @maps account_vault
+     * @maps default_cc
      */
-    public function setAccountVault(?AccountVault $accountVault): void
+    public function setDefaultCc(?string $defaultCc): void
     {
-        $this->accountVault = $accountVault;
+        $this->defaultCc['value'] = $defaultCc;
+    }
+
+    /**
+     * Unsets Default Cc.
+     * GUID for Location's default CC Product Transaction
+     */
+    public function unsetDefaultCc(): void
+    {
+        $this->defaultCc = [];
+    }
+
+    /**
+     * Returns Email Reply To.
+     * Used as from email address when sending various notifications
+     */
+    public function getEmailReplyTo(): ?string
+    {
+        if (count($this->emailReplyTo) == 0) {
+            return null;
+        }
+        return $this->emailReplyTo['value'];
+    }
+
+    /**
+     * Sets Email Reply To.
+     * Used as from email address when sending various notifications
+     *
+     * @maps email_reply_to
+     */
+    public function setEmailReplyTo(?string $emailReplyTo): void
+    {
+        $this->emailReplyTo['value'] = $emailReplyTo;
+    }
+
+    /**
+     * Unsets Email Reply To.
+     * Used as from email address when sending various notifications
+     */
+    public function unsetEmailReplyTo(): void
+    {
+        $this->emailReplyTo = [];
+    }
+
+    /**
+     * Returns Fax.
+     * Fax number
+     */
+    public function getFax(): ?string
+    {
+        if (count($this->fax) == 0) {
+            return null;
+        }
+        return $this->fax['value'];
+    }
+
+    /**
+     * Sets Fax.
+     * Fax number
+     *
+     * @maps fax
+     */
+    public function setFax(?string $fax): void
+    {
+        $this->fax['value'] = $fax;
+    }
+
+    /**
+     * Unsets Fax.
+     * Fax number
+     */
+    public function unsetFax(): void
+    {
+        $this->fax = [];
+    }
+
+    /**
+     * Returns Location Api Id.
+     * Location api ID
+     */
+    public function getLocationApiId(): ?string
+    {
+        if (count($this->locationApiId) == 0) {
+            return null;
+        }
+        return $this->locationApiId['value'];
+    }
+
+    /**
+     * Sets Location Api Id.
+     * Location api ID
+     *
+     * @maps location_api_id
+     */
+    public function setLocationApiId(?string $locationApiId): void
+    {
+        $this->locationApiId['value'] = $locationApiId;
+    }
+
+    /**
+     * Unsets Location Api Id.
+     * Location api ID
+     */
+    public function unsetLocationApiId(): void
+    {
+        $this->locationApiId = [];
+    }
+
+    /**
+     * Returns Location Api Key.
+     * Location api key
+     */
+    public function getLocationApiKey(): ?string
+    {
+        if (count($this->locationApiKey) == 0) {
+            return null;
+        }
+        return $this->locationApiKey['value'];
+    }
+
+    /**
+     * Sets Location Api Key.
+     * Location api key
+     *
+     * @maps location_api_key
+     */
+    public function setLocationApiKey(?string $locationApiKey): void
+    {
+        $this->locationApiKey['value'] = $locationApiKey;
+    }
+
+    /**
+     * Unsets Location Api Key.
+     * Location api key
+     */
+    public function unsetLocationApiKey(): void
+    {
+        $this->locationApiKey = [];
+    }
+
+    /**
+     * Returns Location C1.
+     * Can be used to store custom information for location.
+     */
+    public function getLocationC1(): ?string
+    {
+        if (count($this->locationC1) == 0) {
+            return null;
+        }
+        return $this->locationC1['value'];
+    }
+
+    /**
+     * Sets Location C1.
+     * Can be used to store custom information for location.
+     *
+     * @maps location_c1
+     */
+    public function setLocationC1(?string $locationC1): void
+    {
+        $this->locationC1['value'] = $locationC1;
+    }
+
+    /**
+     * Unsets Location C1.
+     * Can be used to store custom information for location.
+     */
+    public function unsetLocationC1(): void
+    {
+        $this->locationC1 = [];
+    }
+
+    /**
+     * Returns Location C2.
+     * Can be used to store custom information for location.
+     */
+    public function getLocationC2(): ?string
+    {
+        if (count($this->locationC2) == 0) {
+            return null;
+        }
+        return $this->locationC2['value'];
+    }
+
+    /**
+     * Sets Location C2.
+     * Can be used to store custom information for location.
+     *
+     * @maps location_c2
+     */
+    public function setLocationC2(?string $locationC2): void
+    {
+        $this->locationC2['value'] = $locationC2;
+    }
+
+    /**
+     * Unsets Location C2.
+     * Can be used to store custom information for location.
+     */
+    public function unsetLocationC2(): void
+    {
+        $this->locationC2 = [];
+    }
+
+    /**
+     * Returns Location C3.
+     * Can be used to store custom information for location.
+     */
+    public function getLocationC3(): ?string
+    {
+        if (count($this->locationC3) == 0) {
+            return null;
+        }
+        return $this->locationC3['value'];
+    }
+
+    /**
+     * Sets Location C3.
+     * Can be used to store custom information for location.
+     *
+     * @maps location_c3
+     */
+    public function setLocationC3(?string $locationC3): void
+    {
+        $this->locationC3['value'] = $locationC3;
+    }
+
+    /**
+     * Unsets Location C3.
+     * Can be used to store custom information for location.
+     */
+    public function unsetLocationC3(): void
+    {
+        $this->locationC3 = [];
+    }
+
+    /**
+     * Returns Name.
+     * Name of the company
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    /**
+     * Sets Name.
+     * Name of the company
+     *
+     * @maps name
+     */
+    public function setName(?string $name): void
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * Returns Office Phone.
+     * Office phone number
+     */
+    public function getOfficePhone(): ?string
+    {
+        if (count($this->officePhone) == 0) {
+            return null;
+        }
+        return $this->officePhone['value'];
+    }
+
+    /**
+     * Sets Office Phone.
+     * Office phone number
+     *
+     * @maps office_phone
+     */
+    public function setOfficePhone(?string $officePhone): void
+    {
+        $this->officePhone['value'] = $officePhone;
+    }
+
+    /**
+     * Unsets Office Phone.
+     * Office phone number
+     */
+    public function unsetOfficePhone(): void
+    {
+        $this->officePhone = [];
+    }
+
+    /**
+     * Returns Office Ext Phone.
+     * Office phone extension number
+     */
+    public function getOfficeExtPhone(): ?string
+    {
+        if (count($this->officeExtPhone) == 0) {
+            return null;
+        }
+        return $this->officeExtPhone['value'];
+    }
+
+    /**
+     * Sets Office Ext Phone.
+     * Office phone extension number
+     *
+     * @maps office_ext_phone
+     */
+    public function setOfficeExtPhone(?string $officeExtPhone): void
+    {
+        $this->officeExtPhone['value'] = $officeExtPhone;
+    }
+
+    /**
+     * Unsets Office Ext Phone.
+     * Office phone extension number
+     */
+    public function unsetOfficeExtPhone(): void
+    {
+        $this->officeExtPhone = [];
+    }
+
+    /**
+     * Returns Tz.
+     * Time zone
+     */
+    public function getTz(): ?string
+    {
+        if (count($this->tz) == 0) {
+            return null;
+        }
+        return $this->tz['value'];
+    }
+
+    /**
+     * Sets Tz.
+     * Time zone
+     *
+     * @maps tz
+     */
+    public function setTz(?string $tz): void
+    {
+        $this->tz['value'] = $tz;
+    }
+
+    /**
+     * Unsets Tz.
+     * Time zone
+     */
+    public function unsetTz(): void
+    {
+        $this->tz = [];
+    }
+
+    /**
+     * Returns Parent Id.
+     * Location GUID of the parent location
+     */
+    public function getParentId(): ?string
+    {
+        return $this->parentId;
+    }
+
+    /**
+     * Sets Parent Id.
+     * Location GUID of the parent location
+     *
+     * @maps parent_id
+     */
+    public function setParentId(?string $parentId): void
+    {
+        $this->parentId = $parentId;
+    }
+
+    /**
+     * Returns Show Contact Notes.
+     * If set to true will show 'Notes' tab on Contact
+     */
+    public function getShowContactNotes(): ?bool
+    {
+        return $this->showContactNotes;
+    }
+
+    /**
+     * Sets Show Contact Notes.
+     * If set to true will show 'Notes' tab on Contact
+     *
+     * @maps show_contact_notes
+     */
+    public function setShowContactNotes(?bool $showContactNotes): void
+    {
+        $this->showContactNotes = $showContactNotes;
+    }
+
+    /**
+     * Returns Show Contact Files.
+     * If set to true will show 'Files' tab on Contact
+     */
+    public function getShowContactFiles(): ?bool
+    {
+        return $this->showContactFiles;
+    }
+
+    /**
+     * Sets Show Contact Files.
+     * If set to true will show 'Files' tab on Contact
+     *
+     * @maps show_contact_files
+     */
+    public function setShowContactFiles(?bool $showContactFiles): void
+    {
+        $this->showContactFiles = $showContactFiles;
+    }
+
+    /**
+     * Returns Created User Id.
+     * User ID Created the register
+     */
+    public function getCreatedUserId(): ?string
+    {
+        if (count($this->createdUserId) == 0) {
+            return null;
+        }
+        return $this->createdUserId['value'];
+    }
+
+    /**
+     * Sets Created User Id.
+     * User ID Created the register
+     *
+     * @maps created_user_id
+     */
+    public function setCreatedUserId(?string $createdUserId): void
+    {
+        $this->createdUserId['value'] = $createdUserId;
+    }
+
+    /**
+     * Unsets Created User Id.
+     * User ID Created the register
+     */
+    public function unsetCreatedUserId(): void
+    {
+        $this->createdUserId = [];
+    }
+
+    /**
+     * Returns Location Type.
+     * Location Type
+     */
+    public function getLocationType(): ?string
+    {
+        if (count($this->locationType) == 0) {
+            return null;
+        }
+        return $this->locationType['value'];
+    }
+
+    /**
+     * Sets Location Type.
+     * Location Type
+     *
+     * @maps location_type
+     * @factory \FortisAPILib\Models\LocationTypeEnum::checkValue
+     */
+    public function setLocationType(?string $locationType): void
+    {
+        $this->locationType['value'] = $locationType;
+    }
+
+    /**
+     * Unsets Location Type.
+     * Location Type
+     */
+    public function unsetLocationType(): void
+    {
+        $this->locationType = [];
+    }
+
+    /**
+     * Returns Parent Name.
+     * Name of the parent location
+     */
+    public function getParentName(): ?string
+    {
+        if (count($this->parentName) == 0) {
+            return null;
+        }
+        return $this->parentName['value'];
+    }
+
+    /**
+     * Sets Parent Name.
+     * Name of the parent location
+     *
+     * @maps parent_name
+     */
+    public function setParentName(?string $parentName): void
+    {
+        $this->parentName['value'] = $parentName;
+    }
+
+    /**
+     * Unsets Parent Name.
+     * Name of the parent location
+     */
+    public function unsetParentName(): void
+    {
+        $this->parentName = [];
+    }
+
+    /**
+     * Returns Ticket Hash Key.
+     * Ticket Hash Key
+     */
+    public function getTicketHashKey(): ?string
+    {
+        if (count($this->ticketHashKey) == 0) {
+            return null;
+        }
+        return $this->ticketHashKey['value'];
+    }
+
+    /**
+     * Sets Ticket Hash Key.
+     * Ticket Hash Key
+     *
+     * @maps ticket_hash_key
+     */
+    public function setTicketHashKey(?string $ticketHashKey): void
+    {
+        $this->ticketHashKey['value'] = $ticketHashKey;
+    }
+
+    /**
+     * Unsets Ticket Hash Key.
+     * Ticket Hash Key
+     */
+    public function unsetTicketHashKey(): void
+    {
+        $this->ticketHashKey = [];
+    }
+
+    /**
+     * Returns Additional Access.
+     */
+    public function getAdditionalAccess(): ?AdditionalAccess
+    {
+        return $this->additionalAccess;
+    }
+
+    /**
+     * Sets Additional Access.
+     *
+     * @maps additional_access
+     */
+    public function setAdditionalAccess(?AdditionalAccess $additionalAccess): void
+    {
+        $this->additionalAccess = $additionalAccess;
+    }
+
+    /**
+     * Returns Parent.
+     * Parent Information on `expand`
+     */
+    public function getParent(): ?Parent3
+    {
+        return $this->parent;
+    }
+
+    /**
+     * Sets Parent.
+     * Parent Information on `expand`
+     *
+     * @maps parent
+     */
+    public function setParent(?Parent3 $parent): void
+    {
+        $this->parent = $parent;
+    }
+
+    /**
+     * Returns Users.
+     * User Information on `expand`
+     *
+     * @return User9[]|null
+     */
+    public function getUsers(): ?array
+    {
+        return $this->users;
+    }
+
+    /**
+     * Sets Users.
+     * User Information on `expand`
+     *
+     * @maps users
+     *
+     * @param User9[]|null $users
+     */
+    public function setUsers(?array $users): void
+    {
+        $this->users = $users;
+    }
+
+    /**
+     * Returns Is Deletable.
+     * Is Deletable Information on `expand`
+     */
+    public function getIsDeletable(): ?bool
+    {
+        return $this->isDeletable;
+    }
+
+    /**
+     * Sets Is Deletable.
+     * Is Deletable Information on `expand`
+     *
+     * @maps is_deletable
+     */
+    public function setIsDeletable(?bool $isDeletable): void
+    {
+        $this->isDeletable = $isDeletable;
+    }
+
+    /**
+     * Returns Terminals.
+     * Terminal Information on `expand`
+     *
+     * @return Terminal2[]|null
+     */
+    public function getTerminals(): ?array
+    {
+        return $this->terminals;
+    }
+
+    /**
+     * Sets Terminals.
+     * Terminal Information on `expand`
+     *
+     * @maps terminals
+     *
+     * @param Terminal2[]|null $terminals
+     */
+    public function setTerminals(?array $terminals): void
+    {
+        $this->terminals = $terminals;
+    }
+
+    /**
+     * Returns Branding Domain.
+     * Branding Domain Information on `expand`
+     */
+    public function getBrandingDomain(): ?BrandingDomain1
+    {
+        return $this->brandingDomain;
+    }
+
+    /**
+     * Sets Branding Domain.
+     * Branding Domain Information on `expand`
+     *
+     * @maps branding_domain
+     */
+    public function setBrandingDomain(?BrandingDomain1 $brandingDomain): void
+    {
+        $this->brandingDomain = $brandingDomain;
+    }
+
+    /**
+     * Returns Product Invoice.
+     * Product Invoice Information on `expand`
+     */
+    public function getProductInvoice(): ?ProductInvoice
+    {
+        return $this->productInvoice;
+    }
+
+    /**
+     * Sets Product Invoice.
+     * Product Invoice Information on `expand`
+     *
+     * @maps product_invoice
+     */
+    public function setProductInvoice(?ProductInvoice $productInvoice): void
+    {
+        $this->productInvoice = $productInvoice;
+    }
+
+    /**
+     * Returns Product Files.
+     * Product File Information on `expand`
+     *
+     * @return ProductFile1[]|null
+     */
+    public function getProductFiles(): ?array
+    {
+        return $this->productFiles;
+    }
+
+    /**
+     * Sets Product Files.
+     * Product File Information on `expand`
+     *
+     * @maps product_files
+     *
+     * @param ProductFile1[]|null $productFiles
+     */
+    public function setProductFiles(?array $productFiles): void
+    {
+        $this->productFiles = $productFiles;
     }
 
     /**
@@ -1044,178 +1195,6 @@ class Data10 implements \JsonSerializable
     public function setCreatedUser(?CreatedUser $createdUser): void
     {
         $this->createdUser = $createdUser;
-    }
-
-    /**
-     * Returns Signature.
-     * Signature Information on `expand`
-     */
-    public function getSignature(): ?Signature
-    {
-        return $this->signature;
-    }
-
-    /**
-     * Sets Signature.
-     * Signature Information on `expand`
-     *
-     * @maps signature
-     */
-    public function setSignature(?Signature $signature): void
-    {
-        $this->signature = $signature;
-    }
-
-    /**
-     * Returns Payment Schedule.
-     * Payment Schedule Information on `expand`
-     *
-     * @return string[]|null
-     */
-    public function getPaymentSchedule(): ?array
-    {
-        return $this->paymentSchedule;
-    }
-
-    /**
-     * Sets Payment Schedule.
-     * Payment Schedule Information on `expand`
-     *
-     * @maps payment_schedule
-     *
-     * @param string[]|null $paymentSchedule
-     */
-    public function setPaymentSchedule(?array $paymentSchedule): void
-    {
-        $this->paymentSchedule = $paymentSchedule;
-    }
-
-    /**
-     * Returns Location.
-     * Location Information on `expand`
-     */
-    public function getLocation(): ?Location
-    {
-        return $this->location;
-    }
-
-    /**
-     * Sets Location.
-     * Location Information on `expand`
-     *
-     * @maps location
-     */
-    public function setLocation(?Location $location): void
-    {
-        $this->location = $location;
-    }
-
-    /**
-     * Returns Product Transaction.
-     * Product Transaction Information on `expand`
-     */
-    public function getProductTransaction(): ?ProductTransaction
-    {
-        return $this->productTransaction;
-    }
-
-    /**
-     * Sets Product Transaction.
-     * Product Transaction Information on `expand`
-     *
-     * @maps product_transaction
-     */
-    public function setProductTransaction(?ProductTransaction $productTransaction): void
-    {
-        $this->productTransaction = $productTransaction;
-    }
-
-    /**
-     * Returns Next Run Date Min.
-     * Next Run Date Min Information on `expand`
-     */
-    public function getNextRunDateMin(): ?string
-    {
-        return $this->nextRunDateMin;
-    }
-
-    /**
-     * Sets Next Run Date Min.
-     * Next Run Date Min Information on `expand`
-     *
-     * @maps next_run_date_min
-     */
-    public function setNextRunDateMin(?string $nextRunDateMin): void
-    {
-        $this->nextRunDateMin = $nextRunDateMin;
-    }
-
-    /**
-     * Returns Next Run Date Max.
-     * Next Run Date Max Information on `expand`
-     */
-    public function getNextRunDateMax(): ?string
-    {
-        return $this->nextRunDateMax;
-    }
-
-    /**
-     * Sets Next Run Date Max.
-     * Next Run Date Max Information on `expand`
-     *
-     * @maps next_run_date_max
-     */
-    public function setNextRunDateMax(?string $nextRunDateMax): void
-    {
-        $this->nextRunDateMax = $nextRunDateMax;
-    }
-
-    /**
-     * Returns Tags.
-     * Tag Information on `expand`
-     *
-     * @return Tag[]|null
-     */
-    public function getTags(): ?array
-    {
-        return $this->tags;
-    }
-
-    /**
-     * Sets Tags.
-     * Tag Information on `expand`
-     *
-     * @maps tags
-     *
-     * @param Tag[]|null $tags
-     */
-    public function setTags(?array $tags): void
-    {
-        $this->tags = $tags;
-    }
-
-    /**
-     * Returns All Tags.
-     * All Tag Information on `expand`
-     *
-     * @return AllTag[]|null
-     */
-    public function getAllTags(): ?array
-    {
-        return $this->allTags;
-    }
-
-    /**
-     * Sets All Tags.
-     * All Tag Information on `expand`
-     *
-     * @maps all_tags
-     *
-     * @param AllTag[]|null $allTags
-     */
-    public function setAllTags(?array $allTags): void
-    {
-        $this->allTags = $allTags;
     }
 
     /**
@@ -1243,47 +1222,333 @@ class Data10 implements \JsonSerializable
     }
 
     /**
-     * Returns Forecast.
-     * Forecast Information on `expand`
+     * Returns Product Transactions.
+     * Product Transaction Information on `expand`
+     *
+     * @return ProductTransaction1[]|null
      */
-    public function getForecast(): ?Forecast
+    public function getProductTransactions(): ?array
     {
-        return $this->forecast;
+        return $this->productTransactions;
     }
 
     /**
-     * Sets Forecast.
-     * Forecast Information on `expand`
+     * Sets Product Transactions.
+     * Product Transaction Information on `expand`
      *
-     * @maps forecast
+     * @maps product_transactions
+     *
+     * @param ProductTransaction1[]|null $productTransactions
      */
-    public function setForecast(?Forecast $forecast): void
+    public function setProductTransactions(?array $productTransactions): void
     {
-        $this->forecast = $forecast;
+        $this->productTransactions = $productTransactions;
     }
 
     /**
-     * Returns Recurring Splits.
-     * Recurring Split Information on `expand`
+     * Returns Terminal Routers.
+     * Terminal Router Information on `expand`
      *
-     * @return RecurringSplit[]|null
+     * @return TerminalRouter[]|null
      */
-    public function getRecurringSplits(): ?array
+    public function getTerminalRouters(): ?array
     {
-        return $this->recurringSplits;
+        return $this->terminalRouters;
     }
 
     /**
-     * Sets Recurring Splits.
-     * Recurring Split Information on `expand`
+     * Sets Terminal Routers.
+     * Terminal Router Information on `expand`
      *
-     * @maps recurring_splits
+     * @maps terminal_routers
      *
-     * @param RecurringSplit[]|null $recurringSplits
+     * @param TerminalRouter[]|null $terminalRouters
      */
-    public function setRecurringSplits(?array $recurringSplits): void
+    public function setTerminalRouters(?array $terminalRouters): void
     {
-        $this->recurringSplits = $recurringSplits;
+        $this->terminalRouters = $terminalRouters;
+    }
+
+    /**
+     * Returns Developer Company.
+     * Developer Company Information on `expand`
+     */
+    public function getDeveloperCompany(): ?DeveloperCompany
+    {
+        return $this->developerCompany;
+    }
+
+    /**
+     * Sets Developer Company.
+     * Developer Company Information on `expand`
+     *
+     * @maps developer_company
+     */
+    public function setDeveloperCompany(?DeveloperCompany $developerCompany): void
+    {
+        $this->developerCompany = $developerCompany;
+    }
+
+    /**
+     * Returns Developer Company Id.
+     * Developer Company Id Information on `expand`
+     */
+    public function getDeveloperCompanyId(): ?string
+    {
+        if (count($this->developerCompanyId) == 0) {
+            return null;
+        }
+        return $this->developerCompanyId['value'];
+    }
+
+    /**
+     * Sets Developer Company Id.
+     * Developer Company Id Information on `expand`
+     *
+     * @maps developer_company_id
+     */
+    public function setDeveloperCompanyId(?string $developerCompanyId): void
+    {
+        $this->developerCompanyId['value'] = $developerCompanyId;
+    }
+
+    /**
+     * Unsets Developer Company Id.
+     * Developer Company Id Information on `expand`
+     */
+    public function unsetDeveloperCompanyId(): void
+    {
+        $this->developerCompanyId = [];
+    }
+
+    /**
+     * Returns Helppages.
+     * Helppage Information on `expand`
+     *
+     * @return Helppage[]|null
+     */
+    public function getHelppages(): ?array
+    {
+        return $this->helppages;
+    }
+
+    /**
+     * Sets Helppages.
+     * Helppage Information on `expand`
+     *
+     * @maps helppages
+     *
+     * @param Helppage[]|null $helppages
+     */
+    public function setHelppages(?array $helppages): void
+    {
+        $this->helppages = $helppages;
+    }
+
+    /**
+     * Returns Quick Invoice Setting.
+     * Quick Invoice Setting Information on `expand`
+     */
+    public function getQuickInvoiceSetting(): ?QuickInvoiceSetting
+    {
+        return $this->quickInvoiceSetting;
+    }
+
+    /**
+     * Sets Quick Invoice Setting.
+     * Quick Invoice Setting Information on `expand`
+     *
+     * @maps quick_invoice_setting
+     */
+    public function setQuickInvoiceSetting(?QuickInvoiceSetting $quickInvoiceSetting): void
+    {
+        $this->quickInvoiceSetting = $quickInvoiceSetting;
+    }
+
+    /**
+     * Returns Location Billing Accounts.
+     * Location Billing Account Information on `expand`
+     *
+     * @return LocationBillingAccount[]|null
+     */
+    public function getLocationBillingAccounts(): ?array
+    {
+        return $this->locationBillingAccounts;
+    }
+
+    /**
+     * Sets Location Billing Accounts.
+     * Location Billing Account Information on `expand`
+     *
+     * @maps location_billing_accounts
+     *
+     * @param LocationBillingAccount[]|null $locationBillingAccounts
+     */
+    public function setLocationBillingAccounts(?array $locationBillingAccounts): void
+    {
+        $this->locationBillingAccounts = $locationBillingAccounts;
+    }
+
+    /**
+     * Returns Marketplaces.
+     * Marketplace Information on `expand`
+     *
+     * @return Marketplace[]|null
+     */
+    public function getMarketplaces(): ?array
+    {
+        return $this->marketplaces;
+    }
+
+    /**
+     * Sets Marketplaces.
+     * Marketplace Information on `expand`
+     *
+     * @maps marketplaces
+     *
+     * @param Marketplace[]|null $marketplaces
+     */
+    public function setMarketplaces(?array $marketplaces): void
+    {
+        $this->marketplaces = $marketplaces;
+    }
+
+    /**
+     * Returns Locationmarketplaces.
+     * Locationmarketplaces Information on `expand`
+     *
+     * @return Locationmarketplace[]|null
+     */
+    public function getLocationmarketplaces(): ?array
+    {
+        return $this->locationmarketplaces;
+    }
+
+    /**
+     * Sets Locationmarketplaces.
+     * Locationmarketplaces Information on `expand`
+     *
+     * @maps locationmarketplaces
+     *
+     * @param Locationmarketplace[]|null $locationmarketplaces
+     */
+    public function setLocationmarketplaces(?array $locationmarketplaces): void
+    {
+        $this->locationmarketplaces = $locationmarketplaces;
+    }
+
+    /**
+     * Returns Addons.
+     * Addons Information on `expand`
+     *
+     * @return Addon[]|null
+     */
+    public function getAddons(): ?array
+    {
+        return $this->addons;
+    }
+
+    /**
+     * Sets Addons.
+     * Addons Information on `expand`
+     *
+     * @maps addons
+     *
+     * @param Addon[]|null $addons
+     */
+    public function setAddons(?array $addons): void
+    {
+        $this->addons = $addons;
+    }
+
+    /**
+     * Converts the Data10 object to a human-readable string representation.
+     *
+     * @return string The string representation of the Data10 object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Data10',
+            [
+                'id' => $this->id,
+                'createdTs' => $this->createdTs,
+                'modifiedTs' => $this->modifiedTs,
+                'accountNumber' => $this->getAccountNumber(),
+                'address' => $this->address,
+                'brandingDomainId' => $this->getBrandingDomainId(),
+                'contactEmailTrxReceiptDefault' => $this->contactEmailTrxReceiptDefault,
+                'defaultAch' => $this->getDefaultAch(),
+                'defaultCc' => $this->getDefaultCc(),
+                'emailReplyTo' => $this->getEmailReplyTo(),
+                'fax' => $this->getFax(),
+                'locationApiId' => $this->getLocationApiId(),
+                'locationApiKey' => $this->getLocationApiKey(),
+                'locationC1' => $this->getLocationC1(),
+                'locationC2' => $this->getLocationC2(),
+                'locationC3' => $this->getLocationC3(),
+                'name' => $this->name,
+                'officePhone' => $this->getOfficePhone(),
+                'officeExtPhone' => $this->getOfficeExtPhone(),
+                'tz' => $this->getTz(),
+                'parentId' => $this->parentId,
+                'showContactNotes' => $this->showContactNotes,
+                'showContactFiles' => $this->showContactFiles,
+                'createdUserId' => $this->getCreatedUserId(),
+                'locationType' => $this->getLocationType(),
+                'parentName' => $this->getParentName(),
+                'ticketHashKey' => $this->getTicketHashKey(),
+                'additionalAccess' => $this->additionalAccess,
+                'parent' => $this->parent,
+                'users' => $this->users,
+                'isDeletable' => $this->isDeletable,
+                'terminals' => $this->terminals,
+                'brandingDomain' => $this->brandingDomain,
+                'productInvoice' => $this->productInvoice,
+                'productFiles' => $this->productFiles,
+                'createdUser' => $this->createdUser,
+                'changelogs' => $this->changelogs,
+                'productTransactions' => $this->productTransactions,
+                'terminalRouters' => $this->terminalRouters,
+                'developerCompany' => $this->developerCompany,
+                'developerCompanyId' => $this->getDeveloperCompanyId(),
+                'helppages' => $this->helppages,
+                'quickInvoiceSetting' => $this->quickInvoiceSetting,
+                'locationBillingAccounts' => $this->locationBillingAccounts,
+                'marketplaces' => $this->marketplaces,
+                'locationmarketplaces' => $this->locationmarketplaces,
+                'addons' => $this->addons,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -1298,104 +1563,148 @@ class Data10 implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['account_vault_id']            = $this->accountVaultId;
-        $json['active']                      = $this->active;
-        if (!empty($this->description)) {
-            $json['description']             = $this->description['value'];
+        if (isset($this->id)) {
+            $json['id']                                = $this->id;
         }
-        if (!empty($this->endDate)) {
-            $json['end_date']                = $this->endDate['value'];
+        if (isset($this->createdTs)) {
+            $json['created_ts']                        = $this->createdTs;
         }
-        if (!empty($this->installmentTotalCount)) {
-            $json['installment_total_count'] = $this->installmentTotalCount['value'];
+        if (isset($this->modifiedTs)) {
+            $json['modified_ts']                       = $this->modifiedTs;
         }
-        $json['interval']                    = $this->interval;
-        $json['interval_type']               = IntervalTypeEnum::checkValue($this->intervalType);
-        $json['location_id']                 = $this->locationId;
-        if (!empty($this->notificationDays)) {
-            $json['notification_days']       = $this->notificationDays['value'];
+        if (!empty($this->accountNumber)) {
+            $json['account_number']                    = $this->accountNumber['value'];
         }
-        $json['payment_method']              = PaymentMethod1Enum::checkValue($this->paymentMethod);
-        if (!empty($this->productTransactionId)) {
-            $json['product_transaction_id']  = $this->productTransactionId['value'];
+        if (isset($this->address)) {
+            $json['address']                           = $this->address;
         }
-        if (!empty($this->recurringId)) {
-            $json['recurring_id']            = $this->recurringId['value'];
+        if (!empty($this->brandingDomainId)) {
+            $json['branding_domain_id']                = $this->brandingDomainId['value'];
         }
-        if (!empty($this->recurringApiId)) {
-            $json['recurring_api_id']        = $this->recurringApiId['value'];
+        if (isset($this->contactEmailTrxReceiptDefault)) {
+            $json['contact_email_trx_receipt_default'] = $this->contactEmailTrxReceiptDefault;
         }
-        $json['start_date']                  = $this->startDate;
-        $json['status']                      = StatusEnum::checkValue($this->status);
-        $json['transaction_amount']          = $this->transactionAmount;
-        if (isset($this->termsAgree)) {
-            $json['terms_agree']             = $this->termsAgree;
+        if (!empty($this->defaultAch)) {
+            $json['default_ach']                       = $this->defaultAch['value'];
         }
-        if (!empty($this->termsAgreeIp)) {
-            $json['terms_agree_ip']          = $this->termsAgreeIp['value'];
+        if (!empty($this->defaultCc)) {
+            $json['default_cc']                        = $this->defaultCc['value'];
         }
-        if (!empty($this->recurringC1)) {
-            $json['recurring_c1']            = $this->recurringC1['value'];
+        if (!empty($this->emailReplyTo)) {
+            $json['email_reply_to']                    = $this->emailReplyTo['value'];
         }
-        if (!empty($this->recurringC2)) {
-            $json['recurring_c2']            = $this->recurringC2['value'];
+        if (!empty($this->fax)) {
+            $json['fax']                               = $this->fax['value'];
         }
-        if (!empty($this->recurringC3)) {
-            $json['recurring_c3']            = $this->recurringC3['value'];
+        if (!empty($this->locationApiId)) {
+            $json['location_api_id']                   = $this->locationApiId['value'];
         }
-        if (isset($this->sendToProcAsRecur)) {
-            $json['send_to_proc_as_recur']   = $this->sendToProcAsRecur;
+        if (!empty($this->locationApiKey)) {
+            $json['location_api_key']                  = $this->locationApiKey['value'];
         }
-        $json['id']                          = $this->id;
-        $json['next_run_date']               = $this->nextRunDate;
-        $json['created_ts']                  = $this->createdTs;
-        $json['modified_ts']                 = $this->modifiedTs;
-        $json['recurring_type_id']           = RecurringTypeIdEnum::checkValue($this->recurringTypeId);
-        if (isset($this->logEmails)) {
-            $json['log_emails']              = $this->logEmails;
+        if (!empty($this->locationC1)) {
+            $json['location_c1']                       = $this->locationC1['value'];
         }
-        if (isset($this->contact)) {
-            $json['contact']                 = $this->contact;
+        if (!empty($this->locationC2)) {
+            $json['location_c2']                       = $this->locationC2['value'];
         }
-        if (isset($this->accountVault)) {
-            $json['account_vault']           = $this->accountVault;
+        if (!empty($this->locationC3)) {
+            $json['location_c3']                       = $this->locationC3['value'];
+        }
+        if (isset($this->name)) {
+            $json['name']                              = $this->name;
+        }
+        if (!empty($this->officePhone)) {
+            $json['office_phone']                      = $this->officePhone['value'];
+        }
+        if (!empty($this->officeExtPhone)) {
+            $json['office_ext_phone']                  = $this->officeExtPhone['value'];
+        }
+        if (!empty($this->tz)) {
+            $json['tz']                                = $this->tz['value'];
+        }
+        if (isset($this->parentId)) {
+            $json['parent_id']                         = $this->parentId;
+        }
+        if (isset($this->showContactNotes)) {
+            $json['show_contact_notes']                = $this->showContactNotes;
+        }
+        if (isset($this->showContactFiles)) {
+            $json['show_contact_files']                = $this->showContactFiles;
+        }
+        if (!empty($this->createdUserId)) {
+            $json['created_user_id']                   = $this->createdUserId['value'];
+        }
+        if (!empty($this->locationType)) {
+            $json['location_type']                     = LocationTypeEnum::checkValue($this->locationType['value']);
+        }
+        if (!empty($this->parentName)) {
+            $json['parent_name']                       = $this->parentName['value'];
+        }
+        if (!empty($this->ticketHashKey)) {
+            $json['ticket_hash_key']                   = $this->ticketHashKey['value'];
+        }
+        if (isset($this->additionalAccess)) {
+            $json['additional_access']                 = $this->additionalAccess;
+        }
+        if (isset($this->parent)) {
+            $json['parent']                            = $this->parent;
+        }
+        if (isset($this->users)) {
+            $json['users']                             = $this->users;
+        }
+        if (isset($this->isDeletable)) {
+            $json['is_deletable']                      = $this->isDeletable;
+        }
+        if (isset($this->terminals)) {
+            $json['terminals']                         = $this->terminals;
+        }
+        if (isset($this->brandingDomain)) {
+            $json['branding_domain']                   = $this->brandingDomain;
+        }
+        if (isset($this->productInvoice)) {
+            $json['product_invoice']                   = $this->productInvoice;
+        }
+        if (isset($this->productFiles)) {
+            $json['product_files']                     = $this->productFiles;
         }
         if (isset($this->createdUser)) {
-            $json['created_user']            = $this->createdUser;
-        }
-        if (isset($this->signature)) {
-            $json['signature']               = $this->signature;
-        }
-        if (isset($this->paymentSchedule)) {
-            $json['payment_schedule']        = $this->paymentSchedule;
-        }
-        if (isset($this->location)) {
-            $json['location']                = $this->location;
-        }
-        if (isset($this->productTransaction)) {
-            $json['product_transaction']     = $this->productTransaction;
-        }
-        if (isset($this->nextRunDateMin)) {
-            $json['next_run_date_min']       = $this->nextRunDateMin;
-        }
-        if (isset($this->nextRunDateMax)) {
-            $json['next_run_date_max']       = $this->nextRunDateMax;
-        }
-        if (isset($this->tags)) {
-            $json['tags']                    = $this->tags;
-        }
-        if (isset($this->allTags)) {
-            $json['all_tags']                = $this->allTags;
+            $json['created_user']                      = $this->createdUser;
         }
         if (isset($this->changelogs)) {
-            $json['changelogs']              = $this->changelogs;
+            $json['changelogs']                        = $this->changelogs;
         }
-        if (isset($this->forecast)) {
-            $json['forecast']                = $this->forecast;
+        if (isset($this->productTransactions)) {
+            $json['product_transactions']              = $this->productTransactions;
         }
-        if (isset($this->recurringSplits)) {
-            $json['recurring_splits']        = $this->recurringSplits;
+        if (isset($this->terminalRouters)) {
+            $json['terminal_routers']                  = $this->terminalRouters;
         }
+        if (isset($this->developerCompany)) {
+            $json['developer_company']                 = $this->developerCompany;
+        }
+        if (!empty($this->developerCompanyId)) {
+            $json['developer_company_id']              = $this->developerCompanyId['value'];
+        }
+        if (isset($this->helppages)) {
+            $json['helppages']                         = $this->helppages;
+        }
+        if (isset($this->quickInvoiceSetting)) {
+            $json['quick_invoice_setting']             = $this->quickInvoiceSetting;
+        }
+        if (isset($this->locationBillingAccounts)) {
+            $json['location_billing_accounts']         = $this->locationBillingAccounts;
+        }
+        if (isset($this->marketplaces)) {
+            $json['marketplaces']                      = $this->marketplaces;
+        }
+        if (isset($this->locationmarketplaces)) {
+            $json['locationmarketplaces']              = $this->locationmarketplaces;
+        }
+        if (isset($this->addons)) {
+            $json['addons']                            = $this->addons;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

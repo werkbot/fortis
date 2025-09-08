@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class ItemList5 implements \JsonSerializable
@@ -60,7 +61,7 @@ class ItemList5 implements \JsonSerializable
      * Returns Amount.
      * Item's Amount
      */
-    public function getAmount(): ?float
+    public function getAmount(): ?int
     {
         if (count($this->amount) == 0) {
             return null;
@@ -74,7 +75,7 @@ class ItemList5 implements \JsonSerializable
      *
      * @maps amount
      */
-    public function setAmount(?float $amount): void
+    public function setAmount(?int $amount): void
     {
         $this->amount['value'] = $amount;
     }
@@ -86,6 +87,51 @@ class ItemList5 implements \JsonSerializable
     public function unsetAmount(): void
     {
         $this->amount = [];
+    }
+
+    /**
+     * Converts the ItemList5 object to a human-readable string representation.
+     *
+     * @return string The string representation of the ItemList5 object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'ItemList5',
+            [
+                'name' => $this->getName(),
+                'amount' => $this->getAmount(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -106,6 +152,7 @@ class ItemList5 implements \JsonSerializable
         if (!empty($this->amount)) {
             $json['amount'] = $this->amount['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

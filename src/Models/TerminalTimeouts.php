@@ -10,11 +10,16 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
  * The following options outlines some configurable timeout values that can be used to customize the
  * experience at the terminal for the cardholder.
+ * >These timeouts are specific to Ingenico devices only.
+ * >
+ * >These timeouts are specific to Ingenico devices only.
+ * >
  */
 class TerminalTimeouts implements \JsonSerializable
 {
@@ -66,6 +71,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Returns Card Entry Timeout.
      * How long to wait for input from cardholder.
+     * >Message on timeout:
+     * Card Entry Timeout
+     * >
      */
     public function getCardEntryTimeout(): ?int
     {
@@ -78,6 +86,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Sets Card Entry Timeout.
      * How long to wait for input from cardholder.
+     * >Message on timeout:
+     * Card Entry Timeout
+     * >
      *
      * @maps card_entry_timeout
      */
@@ -89,6 +100,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Unsets Card Entry Timeout.
      * How long to wait for input from cardholder.
+     * >Message on timeout:
+     * Card Entry Timeout
+     * >
      */
     public function unsetCardEntryTimeout(): void
     {
@@ -98,6 +112,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Returns Device Terms Prompt Timeout.
      * How long the terms will be displayed on the device.
+     * >Message on timeout:
+     * Timeout waiting for Customer
+     * >
      */
     public function getDeviceTermsPromptTimeout(): ?int
     {
@@ -110,6 +127,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Sets Device Terms Prompt Timeout.
      * How long the terms will be displayed on the device.
+     * >Message on timeout:
+     * Timeout waiting for Customer
+     * >
      *
      * @maps device_terms_prompt_timeout
      */
@@ -121,6 +141,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Unsets Device Terms Prompt Timeout.
      * How long the terms will be displayed on the device.
+     * >Message on timeout:
+     * Timeout waiting for Customer
+     * >
      */
     public function unsetDeviceTermsPromptTimeout(): void
     {
@@ -130,6 +153,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Returns Overall Timeout.
      * How long to wait for response from /v2/routertransactions endpoint.
+     * >Message on timeout:
+     * Overall Request Timeout
+     * >
      */
     public function getOverallTimeout(): ?int
     {
@@ -142,6 +168,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Sets Overall Timeout.
      * How long to wait for response from /v2/routertransactions endpoint.
+     * >Message on timeout:
+     * Overall Request Timeout
+     * >
      *
      * @maps overall_timeout
      */
@@ -153,6 +182,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Unsets Overall Timeout.
      * How long to wait for response from /v2/routertransactions endpoint.
+     * >Message on timeout:
+     * Overall Request Timeout
+     * >
      */
     public function unsetOverallTimeout(): void
     {
@@ -162,6 +194,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Returns Pin Entry Timeout.
      * How long to wait for pin entry by cardholder.
+     * >Message on timeout:
+     * Pin Entry Timeout
+     * >
      */
     public function getPinEntryTimeout(): ?int
     {
@@ -174,6 +209,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Sets Pin Entry Timeout.
      * How long to wait for pin entry by cardholder.
+     * >Message on timeout:
+     * Pin Entry Timeout
+     * >
      *
      * @maps pin_entry_timeout
      */
@@ -185,6 +223,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Unsets Pin Entry Timeout.
      * How long to wait for pin entry by cardholder.
+     * >Message on timeout:
+     * Pin Entry Timeout
+     * >
      */
     public function unsetPinEntryTimeout(): void
     {
@@ -194,6 +235,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Returns Signature Input Timeout.
      * How long to wait for first "touch" to signature.
+     * >Message on timeout:
+     * Signature Input Timeout
+     * >
      */
     public function getSignatureInputTimeout(): ?int
     {
@@ -206,6 +250,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Sets Signature Input Timeout.
      * How long to wait for first "touch" to signature.
+     * >Message on timeout:
+     * Signature Input Timeout
+     * >
      *
      * @maps signature_input_timeout
      */
@@ -217,6 +264,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Unsets Signature Input Timeout.
      * How long to wait for first "touch" to signature.
+     * >Message on timeout:
+     * Signature Input Timeout
+     * >
      */
     public function unsetSignatureInputTimeout(): void
     {
@@ -226,6 +276,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Returns Signature Submit Timeout.
      * How long to wait for signature to be submitted.
+     * >Message on timeout:
+     * Signature Storage Timeout
+     * >
      */
     public function getSignatureSubmitTimeout(): ?int
     {
@@ -238,6 +291,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Sets Signature Submit Timeout.
      * How long to wait for signature to be submitted.
+     * >Message on timeout:
+     * Signature Storage Timeout
+     * >
      *
      * @maps signature_submit_timeout
      */
@@ -249,6 +305,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Unsets Signature Submit Timeout.
      * How long to wait for signature to be submitted.
+     * >Message on timeout:
+     * Signature Storage Timeout
+     * >
      */
     public function unsetSignatureSubmitTimeout(): void
     {
@@ -258,6 +317,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Returns Status Display Time.
      * How long the approve/decline status message stays on screen.
+     * >Message on timeout:
+     * N/A - Not actually a "timeout".  This is a time to display the status on the screen.
+     * >
      */
     public function getStatusDisplayTime(): ?int
     {
@@ -270,6 +332,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Sets Status Display Time.
      * How long the approve/decline status message stays on screen.
+     * >Message on timeout:
+     * N/A - Not actually a "timeout".  This is a time to display the status on the screen.
+     * >
      *
      * @maps status_display_time
      */
@@ -281,6 +346,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Unsets Status Display Time.
      * How long the approve/decline status message stays on screen.
+     * >Message on timeout:
+     * N/A - Not actually a "timeout".  This is a time to display the status on the screen.
+     * >
      */
     public function unsetStatusDisplayTime(): void
     {
@@ -290,6 +358,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Returns Tip Cashback Timeout.
      * How long to wait for input on a tip or cashback screen.
+     * >Message on timeout:
+     * Tip/Cashback Timeout
+     * >
      */
     public function getTipCashbackTimeout(): ?int
     {
@@ -302,6 +373,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Sets Tip Cashback Timeout.
      * How long to wait for input on a tip or cashback screen.
+     * >Message on timeout:
+     * Tip/Cashback Timeout
+     * >
      *
      * @maps tip_cashback_timeout
      */
@@ -313,6 +387,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Unsets Tip Cashback Timeout.
      * How long to wait for input on a tip or cashback screen.
+     * >Message on timeout:
+     * Tip/Cashback Timeout
+     * >
      */
     public function unsetTipCashbackTimeout(): void
     {
@@ -322,6 +399,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Returns Transaction Timeout.
      * How long to wait for response from the processor.
+     * >Message on timeout:
+     * Transaction Timeout
+     * >
      */
     public function getTransactionTimeout(): ?int
     {
@@ -334,6 +414,9 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Sets Transaction Timeout.
      * How long to wait for response from the processor.
+     * >Message on timeout:
+     * Transaction Timeout
+     * >
      *
      * @maps transaction_timeout
      */
@@ -345,10 +428,65 @@ class TerminalTimeouts implements \JsonSerializable
     /**
      * Unsets Transaction Timeout.
      * How long to wait for response from the processor.
+     * >Message on timeout:
+     * Transaction Timeout
+     * >
      */
     public function unsetTransactionTimeout(): void
     {
         $this->transactionTimeout = [];
+    }
+
+    /**
+     * Converts the TerminalTimeouts object to a human-readable string representation.
+     *
+     * @return string The string representation of the TerminalTimeouts object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'TerminalTimeouts',
+            [
+                'cardEntryTimeout' => $this->getCardEntryTimeout(),
+                'deviceTermsPromptTimeout' => $this->getDeviceTermsPromptTimeout(),
+                'overallTimeout' => $this->getOverallTimeout(),
+                'pinEntryTimeout' => $this->getPinEntryTimeout(),
+                'signatureInputTimeout' => $this->getSignatureInputTimeout(),
+                'signatureSubmitTimeout' => $this->getSignatureSubmitTimeout(),
+                'statusDisplayTime' => $this->getStatusDisplayTime(),
+                'tipCashbackTimeout' => $this->getTipCashbackTimeout(),
+                'transactionTimeout' => $this->getTransactionTimeout(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -390,6 +528,7 @@ class TerminalTimeouts implements \JsonSerializable
         if (!empty($this->transactionTimeout)) {
             $json['transaction_timeout']         = $this->transactionTimeout['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

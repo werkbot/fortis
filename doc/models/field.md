@@ -9,8 +9,8 @@
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `field` | `string` | Required | Field name used on the sort | getField(): string | setField(string field): void |
-| `order` | [`string (OrderEnum)`](../../doc/models/order-enum.md) | Required | Sort direction ASC/DESC | getOrder(): string | setOrder(string order): void |
+| `field` | `?string` | Optional | Field name used on the sort | getField(): ?string | setField(?string field): void |
+| `order` | [`?string(OrderEnum)`](../../doc/models/order-enum.md) | Optional | Sort direction ASC/DESC | getOrder(): ?string | setOrder(?string order): void |
 
 ## Example (as JSON)
 

@@ -10,30 +10,28 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
-/**
- * Helppage Information on `expand`
- */
 class Helppage implements \JsonSerializable
 {
     /**
-     * @var int
+     * @var int|null
      */
     private $userTypeCode;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $body;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $title;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
@@ -58,24 +56,10 @@ class Helppage implements \JsonSerializable
     private $modifiedUserId = [];
 
     /**
-     * @param int $userTypeCode
-     * @param string $body
-     * @param string $title
-     * @param string $id
-     */
-    public function __construct(int $userTypeCode, string $body, string $title, string $id)
-    {
-        $this->userTypeCode = $userTypeCode;
-        $this->body = $body;
-        $this->title = $title;
-        $this->id = $id;
-    }
-
-    /**
      * Returns User Type Code.
      * User Type
      */
-    public function getUserTypeCode(): int
+    public function getUserTypeCode(): ?int
     {
         return $this->userTypeCode;
     }
@@ -84,11 +68,10 @@ class Helppage implements \JsonSerializable
      * Sets User Type Code.
      * User Type
      *
-     * @required
      * @maps user_type_code
      * @factory \FortisAPILib\Models\UserTypeCodeEnum::checkValue
      */
-    public function setUserTypeCode(int $userTypeCode): void
+    public function setUserTypeCode(?int $userTypeCode): void
     {
         $this->userTypeCode = $userTypeCode;
     }
@@ -97,7 +80,7 @@ class Helppage implements \JsonSerializable
      * Returns Body.
      * Body
      */
-    public function getBody(): string
+    public function getBody(): ?string
     {
         return $this->body;
     }
@@ -106,10 +89,9 @@ class Helppage implements \JsonSerializable
      * Sets Body.
      * Body
      *
-     * @required
      * @maps body
      */
-    public function setBody(string $body): void
+    public function setBody(?string $body): void
     {
         $this->body = $body;
     }
@@ -118,7 +100,7 @@ class Helppage implements \JsonSerializable
      * Returns Title.
      * Title
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -127,10 +109,9 @@ class Helppage implements \JsonSerializable
      * Sets Title.
      * Title
      *
-     * @required
      * @maps title
      */
-    public function setTitle(string $title): void
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -139,7 +120,7 @@ class Helppage implements \JsonSerializable
      * Returns Id.
      * Help Page ID
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -148,10 +129,9 @@ class Helppage implements \JsonSerializable
      * Sets Id.
      * Help Page ID
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -285,6 +265,57 @@ class Helppage implements \JsonSerializable
     }
 
     /**
+     * Converts the Helppage object to a human-readable string representation.
+     *
+     * @return string The string representation of the Helppage object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Helppage',
+            [
+                'userTypeCode' => $this->userTypeCode,
+                'body' => $this->body,
+                'title' => $this->title,
+                'id' => $this->id,
+                'createdTs' => $this->getCreatedTs(),
+                'modifiedTs' => $this->getModifiedTs(),
+                'createdUserId' => $this->getCreatedUserId(),
+                'modifiedUserId' => $this->getModifiedUserId(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -296,10 +327,18 @@ class Helppage implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['user_type_code']       = UserTypeCodeEnum::checkValue($this->userTypeCode);
-        $json['body']                 = $this->body;
-        $json['title']                = $this->title;
-        $json['id']                   = $this->id;
+        if (isset($this->userTypeCode)) {
+            $json['user_type_code']   = UserTypeCodeEnum::checkValue($this->userTypeCode);
+        }
+        if (isset($this->body)) {
+            $json['body']             = $this->body;
+        }
+        if (isset($this->title)) {
+            $json['title']            = $this->title;
+        }
+        if (isset($this->id)) {
+            $json['id']               = $this->id;
+        }
         if (!empty($this->createdTs)) {
             $json['created_ts']       = $this->createdTs['value'];
         }
@@ -312,6 +351,7 @@ class Helppage implements \JsonSerializable
         if (!empty($this->modifiedUserId)) {
             $json['modified_user_id'] = $this->modifiedUserId['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

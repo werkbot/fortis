@@ -16,6 +16,9 @@ use stdClass;
 
 /**
  * The Category of the merchant's business
+ * >(Required if "business_type" is provided). Note: "business_type" must belong to the appropriate
+ * "business_category"
+ * >
  */
 class BusinessCategoryEnum
 {

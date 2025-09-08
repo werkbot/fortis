@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -145,7 +146,7 @@ class Address1 implements \JsonSerializable
 
     /**
      * Returns Country.
-     * Country
+     * An alpha 2 format country code of US or CA.
      */
     public function getCountry(): ?string
     {
@@ -157,10 +158,10 @@ class Address1 implements \JsonSerializable
 
     /**
      * Sets Country.
-     * Country
+     * An alpha 2 format country code of US or CA.
      *
      * @maps country
-     * @factory \FortisAPILib\Models\Country1Enum::checkValue
+     * @factory \FortisAPILib\Models\CountryEnum::checkValue
      */
     public function setCountry(?string $country): void
     {
@@ -169,7 +170,7 @@ class Address1 implements \JsonSerializable
 
     /**
      * Unsets Country.
-     * Country
+     * An alpha 2 format country code of US or CA.
      */
     public function unsetCountry(): void
     {
@@ -241,6 +242,55 @@ class Address1 implements \JsonSerializable
     }
 
     /**
+     * Converts the Address1 object to a human-readable string representation.
+     *
+     * @return string The string representation of the Address1 object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Address1',
+            [
+                'city' => $this->getCity(),
+                'state' => $this->getState(),
+                'postalCode' => $this->getPostalCode(),
+                'country' => $this->getCountry(),
+                'street' => $this->getStreet(),
+                'street2' => $this->getStreet2(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -262,7 +312,7 @@ class Address1 implements \JsonSerializable
             $json['postal_code'] = $this->postalCode['value'];
         }
         if (!empty($this->country)) {
-            $json['country']     = Country1Enum::checkValue($this->country['value']);
+            $json['country']     = CountryEnum::checkValue($this->country['value']);
         }
         if (!empty($this->street)) {
             $json['street']      = $this->street['value'];
@@ -270,6 +320,7 @@ class Address1 implements \JsonSerializable
         if (!empty($this->street2)) {
             $json['street2']     = $this->street2['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

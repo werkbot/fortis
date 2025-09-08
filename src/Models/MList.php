@@ -10,17 +10,18 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class MList implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
@@ -30,7 +31,7 @@ class MList implements \JsonSerializable
     private $productTransactionId = [];
 
     /**
-     * @var float
+     * @var int|null
      */
     private $processingStatusId;
 
@@ -90,6 +91,16 @@ class MList implements \JsonSerializable
     private $totalVoidCount = [];
 
     /**
+     * @var array
+     */
+    private $totalBlindRefundAmount = [];
+
+    /**
+     * @var array
+     */
+    private $totalBlindRefundCount = [];
+
+    /**
      * @var Changelog[]|null
      */
     private $changelogs;
@@ -105,22 +116,10 @@ class MList implements \JsonSerializable
     private $productTransaction;
 
     /**
-     * @param string $id
-     * @param int $createdTs
-     * @param float $processingStatusId
-     */
-    public function __construct(string $id, int $createdTs, float $processingStatusId)
-    {
-        $this->id = $id;
-        $this->createdTs = $createdTs;
-        $this->processingStatusId = $processingStatusId;
-    }
-
-    /**
      * Returns Id.
      * Batch ID
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -129,10 +128,9 @@ class MList implements \JsonSerializable
      * Sets Id.
      * Batch ID
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -141,7 +139,7 @@ class MList implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -150,10 +148,9 @@ class MList implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -194,7 +191,7 @@ class MList implements \JsonSerializable
      * Returns Processing Status Id.
      * Processing Status Id
      */
-    public function getProcessingStatusId(): float
+    public function getProcessingStatusId(): ?int
     {
         return $this->processingStatusId;
     }
@@ -203,10 +200,9 @@ class MList implements \JsonSerializable
      * Sets Processing Status Id.
      * Processing Status Id
      *
-     * @required
      * @maps processing_status_id
      */
-    public function setProcessingStatusId(float $processingStatusId): void
+    public function setProcessingStatusId(?int $processingStatusId): void
     {
         $this->processingStatusId = $processingStatusId;
     }
@@ -215,7 +211,7 @@ class MList implements \JsonSerializable
      * Returns Batch Num.
      * Batch Number
      */
-    public function getBatchNum(): ?float
+    public function getBatchNum(): ?int
     {
         if (count($this->batchNum) == 0) {
             return null;
@@ -229,7 +225,7 @@ class MList implements \JsonSerializable
      *
      * @maps batch_num
      */
-    public function setBatchNum(?float $batchNum): void
+    public function setBatchNum(?int $batchNum): void
     {
         $this->batchNum['value'] = $batchNum;
     }
@@ -375,7 +371,7 @@ class MList implements \JsonSerializable
      * Returns Total Sale Amount.
      * Total Sale Amount
      */
-    public function getTotalSaleAmount(): ?float
+    public function getTotalSaleAmount(): ?int
     {
         if (count($this->totalSaleAmount) == 0) {
             return null;
@@ -389,7 +385,7 @@ class MList implements \JsonSerializable
      *
      * @maps total_sale_amount
      */
-    public function setTotalSaleAmount(?float $totalSaleAmount): void
+    public function setTotalSaleAmount(?int $totalSaleAmount): void
     {
         $this->totalSaleAmount['value'] = $totalSaleAmount;
     }
@@ -407,7 +403,7 @@ class MList implements \JsonSerializable
      * Returns Total Sale Count.
      * Total Sale Count
      */
-    public function getTotalSaleCount(): ?float
+    public function getTotalSaleCount(): ?int
     {
         if (count($this->totalSaleCount) == 0) {
             return null;
@@ -421,7 +417,7 @@ class MList implements \JsonSerializable
      *
      * @maps total_sale_count
      */
-    public function setTotalSaleCount(?float $totalSaleCount): void
+    public function setTotalSaleCount(?int $totalSaleCount): void
     {
         $this->totalSaleCount['value'] = $totalSaleCount;
     }
@@ -439,7 +435,7 @@ class MList implements \JsonSerializable
      * Returns Total Refund Amount.
      * Total Refund Amount
      */
-    public function getTotalRefundAmount(): ?float
+    public function getTotalRefundAmount(): ?int
     {
         if (count($this->totalRefundAmount) == 0) {
             return null;
@@ -453,7 +449,7 @@ class MList implements \JsonSerializable
      *
      * @maps total_refund_amount
      */
-    public function setTotalRefundAmount(?float $totalRefundAmount): void
+    public function setTotalRefundAmount(?int $totalRefundAmount): void
     {
         $this->totalRefundAmount['value'] = $totalRefundAmount;
     }
@@ -471,7 +467,7 @@ class MList implements \JsonSerializable
      * Returns Total Refund Count.
      * Total Refund Count
      */
-    public function getTotalRefundCount(): ?float
+    public function getTotalRefundCount(): ?int
     {
         if (count($this->totalRefundCount) == 0) {
             return null;
@@ -485,7 +481,7 @@ class MList implements \JsonSerializable
      *
      * @maps total_refund_count
      */
-    public function setTotalRefundCount(?float $totalRefundCount): void
+    public function setTotalRefundCount(?int $totalRefundCount): void
     {
         $this->totalRefundCount['value'] = $totalRefundCount;
     }
@@ -503,7 +499,7 @@ class MList implements \JsonSerializable
      * Returns Total Void Amount.
      * Total Void Amount
      */
-    public function getTotalVoidAmount(): ?float
+    public function getTotalVoidAmount(): ?int
     {
         if (count($this->totalVoidAmount) == 0) {
             return null;
@@ -517,7 +513,7 @@ class MList implements \JsonSerializable
      *
      * @maps total_void_amount
      */
-    public function setTotalVoidAmount(?float $totalVoidAmount): void
+    public function setTotalVoidAmount(?int $totalVoidAmount): void
     {
         $this->totalVoidAmount['value'] = $totalVoidAmount;
     }
@@ -535,7 +531,7 @@ class MList implements \JsonSerializable
      * Returns Total Void Count.
      * Total Void Count
      */
-    public function getTotalVoidCount(): ?float
+    public function getTotalVoidCount(): ?int
     {
         if (count($this->totalVoidCount) == 0) {
             return null;
@@ -549,7 +545,7 @@ class MList implements \JsonSerializable
      *
      * @maps total_void_count
      */
-    public function setTotalVoidCount(?float $totalVoidCount): void
+    public function setTotalVoidCount(?int $totalVoidCount): void
     {
         $this->totalVoidCount['value'] = $totalVoidCount;
     }
@@ -561,6 +557,70 @@ class MList implements \JsonSerializable
     public function unsetTotalVoidCount(): void
     {
         $this->totalVoidCount = [];
+    }
+
+    /**
+     * Returns Total Blind Refund Amount.
+     * Total Blind Refund Amount
+     */
+    public function getTotalBlindRefundAmount(): ?int
+    {
+        if (count($this->totalBlindRefundAmount) == 0) {
+            return null;
+        }
+        return $this->totalBlindRefundAmount['value'];
+    }
+
+    /**
+     * Sets Total Blind Refund Amount.
+     * Total Blind Refund Amount
+     *
+     * @maps total_blind_refund_amount
+     */
+    public function setTotalBlindRefundAmount(?int $totalBlindRefundAmount): void
+    {
+        $this->totalBlindRefundAmount['value'] = $totalBlindRefundAmount;
+    }
+
+    /**
+     * Unsets Total Blind Refund Amount.
+     * Total Blind Refund Amount
+     */
+    public function unsetTotalBlindRefundAmount(): void
+    {
+        $this->totalBlindRefundAmount = [];
+    }
+
+    /**
+     * Returns Total Blind Refund Count.
+     * Total Blind Refund Count
+     */
+    public function getTotalBlindRefundCount(): ?int
+    {
+        if (count($this->totalBlindRefundCount) == 0) {
+            return null;
+        }
+        return $this->totalBlindRefundCount['value'];
+    }
+
+    /**
+     * Sets Total Blind Refund Count.
+     * Total Blind Refund Count
+     *
+     * @maps total_blind_refund_count
+     */
+    public function setTotalBlindRefundCount(?int $totalBlindRefundCount): void
+    {
+        $this->totalBlindRefundCount['value'] = $totalBlindRefundCount;
+    }
+
+    /**
+     * Unsets Total Blind Refund Count.
+     * Total Blind Refund Count
+     */
+    public function unsetTotalBlindRefundCount(): void
+    {
+        $this->totalBlindRefundCount = [];
     }
 
     /**
@@ -632,6 +692,69 @@ class MList implements \JsonSerializable
     }
 
     /**
+     * Converts the MList object to a human-readable string representation.
+     *
+     * @return string The string representation of the MList object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'MList',
+            [
+                'id' => $this->id,
+                'createdTs' => $this->createdTs,
+                'productTransactionId' => $this->getProductTransactionId(),
+                'processingStatusId' => $this->processingStatusId,
+                'batchNum' => $this->getBatchNum(),
+                'isOpen' => $this->getIsOpen(),
+                'settlementFileName' => $this->getSettlementFileName(),
+                'batchCloseTs' => $this->getBatchCloseTs(),
+                'batchCloseDetail' => $this->getBatchCloseDetail(),
+                'totalSaleAmount' => $this->getTotalSaleAmount(),
+                'totalSaleCount' => $this->getTotalSaleCount(),
+                'totalRefundAmount' => $this->getTotalRefundAmount(),
+                'totalRefundCount' => $this->getTotalRefundCount(),
+                'totalVoidAmount' => $this->getTotalVoidAmount(),
+                'totalVoidCount' => $this->getTotalVoidCount(),
+                'totalBlindRefundAmount' => $this->getTotalBlindRefundAmount(),
+                'totalBlindRefundCount' => $this->getTotalBlindRefundCount(),
+                'changelogs' => $this->changelogs,
+                'postbackLogs' => $this->postbackLogs,
+                'productTransaction' => $this->productTransaction,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -643,54 +766,67 @@ class MList implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['id']                         = $this->id;
-        $json['created_ts']                 = $this->createdTs;
-        if (!empty($this->productTransactionId)) {
-            $json['product_transaction_id'] = $this->productTransactionId['value'];
+        if (isset($this->id)) {
+            $json['id']                        = $this->id;
         }
-        $json['processing_status_id']       = $this->processingStatusId;
+        if (isset($this->createdTs)) {
+            $json['created_ts']                = $this->createdTs;
+        }
+        if (!empty($this->productTransactionId)) {
+            $json['product_transaction_id']    = $this->productTransactionId['value'];
+        }
+        if (isset($this->processingStatusId)) {
+            $json['processing_status_id']      = $this->processingStatusId;
+        }
         if (!empty($this->batchNum)) {
-            $json['batch_num']              = $this->batchNum['value'];
+            $json['batch_num']                 = $this->batchNum['value'];
         }
         if (!empty($this->isOpen)) {
-            $json['is_open']                = $this->isOpen['value'];
+            $json['is_open']                   = $this->isOpen['value'];
         }
         if (!empty($this->settlementFileName)) {
-            $json['settlement_file_name']   = $this->settlementFileName['value'];
+            $json['settlement_file_name']      = $this->settlementFileName['value'];
         }
         if (!empty($this->batchCloseTs)) {
-            $json['batch_close_ts']         = $this->batchCloseTs['value'];
+            $json['batch_close_ts']            = $this->batchCloseTs['value'];
         }
         if (!empty($this->batchCloseDetail)) {
-            $json['batch_close_detail']     = $this->batchCloseDetail['value'];
+            $json['batch_close_detail']        = $this->batchCloseDetail['value'];
         }
         if (!empty($this->totalSaleAmount)) {
-            $json['total_sale_amount']      = $this->totalSaleAmount['value'];
+            $json['total_sale_amount']         = $this->totalSaleAmount['value'];
         }
         if (!empty($this->totalSaleCount)) {
-            $json['total_sale_count']       = $this->totalSaleCount['value'];
+            $json['total_sale_count']          = $this->totalSaleCount['value'];
         }
         if (!empty($this->totalRefundAmount)) {
-            $json['total_refund_amount']    = $this->totalRefundAmount['value'];
+            $json['total_refund_amount']       = $this->totalRefundAmount['value'];
         }
         if (!empty($this->totalRefundCount)) {
-            $json['total_refund_count']     = $this->totalRefundCount['value'];
+            $json['total_refund_count']        = $this->totalRefundCount['value'];
         }
         if (!empty($this->totalVoidAmount)) {
-            $json['total_void_amount']      = $this->totalVoidAmount['value'];
+            $json['total_void_amount']         = $this->totalVoidAmount['value'];
         }
         if (!empty($this->totalVoidCount)) {
-            $json['total_void_count']       = $this->totalVoidCount['value'];
+            $json['total_void_count']          = $this->totalVoidCount['value'];
+        }
+        if (!empty($this->totalBlindRefundAmount)) {
+            $json['total_blind_refund_amount'] = $this->totalBlindRefundAmount['value'];
+        }
+        if (!empty($this->totalBlindRefundCount)) {
+            $json['total_blind_refund_count']  = $this->totalBlindRefundCount['value'];
         }
         if (isset($this->changelogs)) {
-            $json['changelogs']             = $this->changelogs;
+            $json['changelogs']                = $this->changelogs;
         }
         if (isset($this->postbackLogs)) {
-            $json['postback_logs']          = $this->postbackLogs;
+            $json['postback_logs']             = $this->postbackLogs;
         }
         if (isset($this->productTransaction)) {
-            $json['product_transaction']    = $this->productTransaction;
+            $json['product_transaction']       = $this->productTransaction;
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

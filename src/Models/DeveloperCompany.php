@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -18,7 +19,7 @@ use stdClass;
 class DeveloperCompany implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $title;
 
@@ -28,22 +29,22 @@ class DeveloperCompany implements \JsonSerializable
     private $description;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $active;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $modifiedTs;
 
@@ -58,26 +59,10 @@ class DeveloperCompany implements \JsonSerializable
     private $modifiedUserId = [];
 
     /**
-     * @param string $title
-     * @param string $id
-     * @param bool $active
-     * @param int $createdTs
-     * @param int $modifiedTs
-     */
-    public function __construct(string $title, string $id, bool $active, int $createdTs, int $modifiedTs)
-    {
-        $this->title = $title;
-        $this->id = $id;
-        $this->active = $active;
-        $this->createdTs = $createdTs;
-        $this->modifiedTs = $modifiedTs;
-    }
-
-    /**
      * Returns Title.
      * Title
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -86,10 +71,9 @@ class DeveloperCompany implements \JsonSerializable
      * Sets Title.
      * Title
      *
-     * @required
      * @maps title
      */
-    public function setTitle(string $title): void
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -118,7 +102,7 @@ class DeveloperCompany implements \JsonSerializable
      * Returns Id.
      * Developer Company Id
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -127,10 +111,9 @@ class DeveloperCompany implements \JsonSerializable
      * Sets Id.
      * Developer Company Id
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -139,7 +122,7 @@ class DeveloperCompany implements \JsonSerializable
      * Returns Active.
      * Active
      */
-    public function getActive(): bool
+    public function getActive(): ?bool
     {
         return $this->active;
     }
@@ -148,10 +131,9 @@ class DeveloperCompany implements \JsonSerializable
      * Sets Active.
      * Active
      *
-     * @required
      * @maps active
      */
-    public function setActive(bool $active): void
+    public function setActive(?bool $active): void
     {
         $this->active = $active;
     }
@@ -160,7 +142,7 @@ class DeveloperCompany implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -169,10 +151,9 @@ class DeveloperCompany implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -181,7 +162,7 @@ class DeveloperCompany implements \JsonSerializable
      * Returns Modified Ts.
      * Modified Time Stamp
      */
-    public function getModifiedTs(): int
+    public function getModifiedTs(): ?int
     {
         return $this->modifiedTs;
     }
@@ -190,10 +171,9 @@ class DeveloperCompany implements \JsonSerializable
      * Sets Modified Ts.
      * Modified Time Stamp
      *
-     * @required
      * @maps modified_ts
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setModifiedTs(?int $modifiedTs): void
     {
         $this->modifiedTs = $modifiedTs;
     }
@@ -263,6 +243,57 @@ class DeveloperCompany implements \JsonSerializable
     }
 
     /**
+     * Converts the DeveloperCompany object to a human-readable string representation.
+     *
+     * @return string The string representation of the DeveloperCompany object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'DeveloperCompany',
+            [
+                'title' => $this->title,
+                'description' => $this->description,
+                'id' => $this->id,
+                'active' => $this->active,
+                'createdTs' => $this->createdTs,
+                'modifiedTs' => $this->modifiedTs,
+                'createdUserId' => $this->getCreatedUserId(),
+                'modifiedUserId' => $this->getModifiedUserId(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -274,20 +305,31 @@ class DeveloperCompany implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['title']                = $this->title;
+        if (isset($this->title)) {
+            $json['title']            = $this->title;
+        }
         if (isset($this->description)) {
             $json['description']      = $this->description;
         }
-        $json['id']                   = $this->id;
-        $json['active']               = $this->active;
-        $json['created_ts']           = $this->createdTs;
-        $json['modified_ts']          = $this->modifiedTs;
+        if (isset($this->id)) {
+            $json['id']               = $this->id;
+        }
+        if (isset($this->active)) {
+            $json['active']           = $this->active;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']       = $this->createdTs;
+        }
+        if (isset($this->modifiedTs)) {
+            $json['modified_ts']      = $this->modifiedTs;
+        }
         if (!empty($this->createdUserId)) {
             $json['created_user_id']  = $this->createdUserId['value'];
         }
         if (!empty($this->modifiedUserId)) {
             $json['modified_user_id'] = $this->modifiedUserId['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

@@ -17,8 +17,10 @@ $tokensController = $client->getTokensController();
 * [Create a New ACH Token](../../doc/controllers/tokens.md#create-a-new-ach-token)
 * [Create a New Credit Card Token](../../doc/controllers/tokens.md#create-a-new-credit-card-token)
 * [Create a New Previous Transaction Token](../../doc/controllers/tokens.md#create-a-new-previous-transaction-token)
+* [Create a New Terminal Token With Async Method](../../doc/controllers/tokens.md#create-a-new-terminal-token-with-async-method)
 * [Create a New Terminal Token](../../doc/controllers/tokens.md#create-a-new-terminal-token)
 * [Create a New Ticket Token](../../doc/controllers/tokens.md#create-a-new-ticket-token)
+* [Create a New Wallet Token](../../doc/controllers/tokens.md#create-a-new-wallet-token)
 * [Delete a Single Token Record](../../doc/controllers/tokens.md#delete-a-single-token-record)
 * [View Single Token Record](../../doc/controllers/tokens.md#view-single-token-record)
 * [List All Tokens Related](../../doc/controllers/tokens.md#list-all-tokens-related)
@@ -27,8 +29,6 @@ $tokensController = $client->getTokensController();
 
 
 # Create a New ACH Token
-
-Create a new ACH Token
 
 ```php
 function createANewACHToken(V1TokensAchRequest $body, ?array $expand = null): ResponseToken
@@ -39,7 +39,7 @@ function createANewACHToken(V1TokensAchRequest $body, ?array $expand = null): Re
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `body` | [`V1TokensAchRequest`](../../doc/models/v1-tokens-ach-request.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand38Enum)`](../../doc/models/expand-38-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand47Enum)[])`](../../doc/models/expand-47-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -48,18 +48,40 @@ function createANewACHToken(V1TokensAchRequest $body, ?array $expand = null): Re
 ## Example Usage
 
 ```php
-$body_accountHolderName = 'John Smith';
-$body_accountNumber = '545454545454545';
-$body_locationId = '11e95f8ec39de8fbdb0a4f1a';
-$body_accountType = Models\AccountType6Enum::SAVINGS;
-$body_routingNumber = '100020200';
-$body = new Models\V1TokensAchRequest(
-    $body_accountHolderName,
-    $body_accountNumber,
-    $body_locationId,
-    $body_accountType,
-    $body_routingNumber
-);
+$body = V1TokensAchRequestBuilder::init(
+    '11e95f8ec39de8fbdb0a4f1a'
+)
+    ->accountHolderName('John Smith')
+    ->accountNumber('545454545454545')
+    ->accountVaultApiId('accountvaultabcd')
+    ->tokenApiId('tokenabcd')
+    ->accountvaultC1('accountvault custom 1')
+    ->accountvaultC2('accountvault custom 2')
+    ->accountvaultC3('accountvault custom 3')
+    ->tokenC1('token custom 1')
+    ->tokenC2('token custom 2')
+    ->tokenC3('token custom 3')
+    ->achSecCode(AchSecCode3Enum::WEB)
+    ->contactId('11e95f8ec39de8fbdb0a4f1a')
+    ->customerId('123456')
+    ->previousAccountVaultApiId('previousaccountvault123456')
+    ->previousTokenApiId('previousaccountvault123456')
+    ->previousAccountVaultId('11e95f8ec39de8fbdb0a4f1a')
+    ->previousTokenId('11e95f8ec39de8fbdb0a4f1a')
+    ->previousTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->termsAgree(true)
+    ->termsAgreeIp('192.168.0.10')
+    ->title('Test CC Account')
+    ->tokenImportId('11e95f8ec39de8fbdb0a4f1a')
+    ->secureDirectoryServerTransactionId('d65e93c3-35ab-41ba-b307-767bfc19eae')
+    ->secureProtocolVersion(2)
+    ->secureAuthData('vVwL7UNHCf8W8M2LAfvRChNHN7c%3D')
+    ->threeDsServerTransId('d65e93c3-35ab-41ba-b307-767bfc19eae')
+    ->acsTransactionId('13c701a3-5a88-4c45-89e9-ef65e50a8bf9')
+    ->accountType(AccountType13Enum::SAVINGS)
+    ->isCompany(false)
+    ->routingNumber('100020200')
+    ->build();
 
 $result = $tokensController->createANewACHToken($body);
 ```
@@ -71,18 +93,21 @@ $result = $tokensController->createANewACHToken($body);
   "type": "Token",
   "data": {
     "account_holder_name": "John Smith",
-    "account_number": "545454545454545",
     "account_vault_api_id": "accountvaultabcd",
+    "token_api_id": "tokenabcd",
     "accountvault_c1": "accountvault custom 1",
     "accountvault_c2": "accountvault custom 2",
     "accountvault_c3": "accountvault custom 3",
+    "token_c1": "token custom 1",
+    "token_c2": "token custom 2",
+    "token_c3": "token custom 3",
     "ach_sec_code": "WEB",
     "billing_address": {
       "city": "Novi",
       "state": "Michigan",
       "postal_code": "48375",
-      "street": "43155 Main Street STE 2310-C",
-      "phone": "3339998822"
+      "phone": "3339998822",
+      "country": "USA"
     },
     "contact_id": "11e95f8ec39de8fbdb0a4f1a",
     "customer_id": "123456",
@@ -94,11 +119,22 @@ $result = $tokensController->createANewACHToken($body);
     },
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
     "previous_account_vault_api_id": "previousaccountvault123456",
+    "previous_token_api_id": "previousaccountvault123456",
     "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+    "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
     "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+    "account_number": "545454545454545",
     "terms_agree": true,
     "terms_agree_ip": "192.168.0.10",
     "title": "Test CC Account",
+    "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+    "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+    "secure_protocol_version": 2,
+    "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+    "secure_collection_indicator": null,
+    "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+    "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+    "_joi": {},
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "account_type": "checking",
     "active": true,
@@ -109,6 +145,7 @@ $result = $tokensController->createANewACHToken($body);
     "e_format": null,
     "e_keyed_data": null,
     "expiring_in_months": null,
+    "exp_date": "0722",
     "first_six": "700953",
     "has_recurring": false,
     "last_four": "3657",
@@ -116,6 +153,9 @@ $result = $tokensController->createANewACHToken($body);
     "payment_method": "cc",
     "ticket": null,
     "track_data": null,
+    "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "cau_last_updated_ts": 1422040992,
+    "routing_number": "051904524",
     "location": {
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
@@ -125,15 +165,12 @@ $result = $tokensController->createANewACHToken($body);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -144,10 +181,14 @@ $result = $tokensController->createANewACHToken($body);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     },
     "contact": {
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -161,8 +202,7 @@ $result = $tokensController->createANewACHToken($body);
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C"
+        "country": "USA"
       },
       "company_name": "Fortis Payment Systems, LLC",
       "header_message": "This is a sample message for you",
@@ -171,6 +211,9 @@ $result = $tokensController->createANewACHToken($body);
       "home_phone": "3339998822",
       "office_phone": "3339998822",
       "office_phone_ext": "5",
+      "home_phone_country_code": "+1",
+      "office_phone_country_code": "+1",
+      "cell_phone_country_code": "+1",
       "header_message_type": 0,
       "update_if_exists": 1,
       "contact_c1": "any",
@@ -178,10 +221,12 @@ $result = $tokensController->createANewACHToken($body);
       "contact_c3": "something",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
       "email": "email@domain.com",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "active": true
+      "active": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "transactions": [
       {
@@ -197,8 +242,8 @@ $result = $tokensController->createANewACHToken($body);
           "city": "Novi",
           "state": "Michigan",
           "postal_code": "48375",
-          "street": "43155 Main Street STE 2310-C",
-          "phone": "3339998822"
+          "phone": "3339998822",
+          "country": "USA"
         },
         "checkin_date": "2021-12-01",
         "checkout_date": "2021-12-01",
@@ -218,6 +263,11 @@ $result = $tokensController->createANewACHToken($body);
         "installment": true,
         "installment_number": 1,
         "installment_count": 1,
+        "recurring_flag": "yes",
+        "installment_counter": 1,
+        "installment_total": 1,
+        "subscription": false,
+        "standing_order": false,
         "location_api_id": "location-api-id-florida-2",
         "location_id": "11e95f8ec39de8fbdb0a4f1a",
         "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -247,6 +297,11 @@ $result = $tokensController->createANewACHToken($body);
         "transaction_c2": "custom-data-2",
         "transaction_c3": "custom-data-3",
         "bank_funded_only_override": false,
+        "allow_partial_authorization_override": false,
+        "auto_decline_cvv_override": false,
+        "auto_decline_street_override": false,
+        "auto_decline_zip_override": false,
+        "ebt_type": "food_stamp",
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "created_ts": 1422040992,
         "modified_ts": 1422040992,
@@ -281,7 +336,7 @@ $result = $tokensController->createANewACHToken($body);
         "transaction_settlement_status": null,
         "charge_back_date": "2021-12-01",
         "is_recurring": true,
-        "notification_email_sent": "true",
+        "notification_email_sent": true,
         "par": "Q1J4Z28RKA1EBL470G9XYG90R5D3E",
         "reason_code_id": 1000,
         "recurring_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -289,17 +344,35 @@ $result = $tokensController->createANewACHToken($body);
         "status_code": 101,
         "transaction_batch_id": "11e95f8ec39de8fbdb0a4f1a",
         "verbiage": "APPROVED",
+        "voucher_number": "1234",
         "void_date": "2021-12-01",
         "batch": "2",
         "terms_agree": true,
         "response_message": null,
         "return_date": "2021-12-01",
-        "trx_source_id": 8
+        "trx_source_id": 8,
+        "routing_number": "051904524",
+        "trx_source_code": 8,
+        "paylink_id": "11e95f8ec39de8fbdb0a4f1a",
+        "is_accountvault": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "effective_date": "2021-12-01",
+        "is_token": true,
+        "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+        "hosted_payment_page_id": "11e95f8ec39de8fbdb0a4f1a"
       }
     ],
     "activeRecurrings": [
       {
         "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+        "token_id": "11e95f8ec39de8fbdb0a4f1a",
+        "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+        "account_vault_api_id": "token1234abcd",
+        "token_api_id": "token1234abcd",
+        "_joi": {
+          "conditions": {}
+        },
         "active": true,
         "description": "Description",
         "end_date": "2021-12-01",
@@ -314,18 +387,25 @@ $result = $tokensController->createANewACHToken($body);
         "recurring_api_id": "recurring1234abcd",
         "start_date": "2021-12-01",
         "status": "active",
-        "transaction_amount": 3,
+        "transaction_amount": 300,
         "terms_agree": true,
         "terms_agree_ip": "192.168.0.10",
         "recurring_c1": "recurring custom data 1",
         "recurring_c2": "recurring custom data 2",
         "recurring_c3": "recurring custom data 3",
         "send_to_proc_as_recur": true,
+        "tags": [
+          "Walk-in Customer"
+        ],
+        "secondary_amount": 100,
+        "currency": "USD",
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "next_run_date": "2021-12-01",
         "created_ts": 1422040992,
         "modified_ts": 1422040992,
-        "recurring_type_id": "i"
+        "recurring_type_id": "i",
+        "installment_amount_total": 99999999,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
       }
     ],
     "is_deletable": true,
@@ -339,10 +419,8 @@ $result = $tokensController->createANewACHToken($body);
     },
     "created_user": {
       "account_number": "5454545454545454",
-      "address": "43155 Main Street STE 2310-C",
       "branding_domain_url": "{branding_domain_url}",
       "cell_phone": "3339998822",
-      "city": "Novi",
       "company_name": "Fortis Payment Systems, LLC",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "date_of_birth": "2021-12-01",
@@ -357,7 +435,6 @@ $result = $tokensController->createANewACHToken($body);
       "office_ext_phone": "5",
       "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
       "requires_new_password": null,
-      "state": "Michigan",
       "terms_condition_code": "20220308",
       "tz": "America/New_York",
       "ui_prefs": {
@@ -374,7 +451,15 @@ $result = $tokensController->createANewACHToken($body);
       "password": null,
       "zip": "48375",
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
-      "status_id": true,
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "status": true,
       "login_attempts": 0,
@@ -384,7 +469,9 @@ $result = $tokensController->createANewACHToken($body);
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "terms_accepted_ts": 1422040992,
       "terms_agree_ip": "192.168.0.10",
-      "current_date_time": "2019-03-11T10:38:26-0700"
+      "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992
     },
     "changelogs": [
       {
@@ -429,15 +516,12 @@ $result = $tokensController->createANewACHToken($body);
           "city": "Novi",
           "state": "MI",
           "postal_code": "48375",
-          "country": "US",
-          "street": "43155 Main Street STE 2310-C",
-          "street2": "43155 Main Street STE 2310-C"
+          "country": "US"
         },
         "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
         "contact_email_trx_receipt_default": true,
         "default_ach": "11e608a7d515f1e093242bb2",
         "default_cc": "11e608a442a5f1e092242dda",
-        "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
         "email_reply_to": "email@domain.com",
         "fax": "3339998822",
         "location_api_id": "location-111111",
@@ -448,10 +532,14 @@ $result = $tokensController->createANewACHToken($body);
         "name": "Sample Company Headquarters",
         "office_phone": "2481234567",
         "office_ext_phone": "1021021209",
-        "recurring_notification_days_default": 0,
         "tz": "America/New_York",
         "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+        "show_contact_notes": true,
+        "show_contact_files": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "location_type": "merchant",
+        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+        "additional_access": {}
       }
     ]
   }
@@ -468,8 +556,6 @@ $result = $tokensController->createANewACHToken($body);
 
 # Create a New Credit Card Token
 
-Create a new Credit Card Token
-
 ```php
 function createANewCreditCardToken(V1TokensCcRequest $body, ?array $expand = null): ResponseToken
 ```
@@ -479,7 +565,7 @@ function createANewCreditCardToken(V1TokensCcRequest $body, ?array $expand = nul
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `body` | [`V1TokensCcRequest`](../../doc/models/v1-tokens-cc-request.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand38Enum)`](../../doc/models/expand-38-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand47Enum)[])`](../../doc/models/expand-47-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -488,14 +574,45 @@ function createANewCreditCardToken(V1TokensCcRequest $body, ?array $expand = nul
 ## Example Usage
 
 ```php
-$body_accountNumber = '5454545454545454';
-$body_locationId = '11e95f8ec39de8fbdb0a4f1a';
-$body_expDate = '0929';
-$body = new Models\V1TokensCcRequest(
-    $body_accountNumber,
-    $body_locationId,
-    $body_expDate
-);
+$body = V1TokensCcRequestBuilder::init(
+    '11e95f8ec39de8fbdb0a4f1a'
+)
+    ->accountHolderName('John Smith')
+    ->accountNumber('5454545454545454')
+    ->accountVaultApiId('accountvaultabcd')
+    ->tokenApiId('tokenabcd')
+    ->accountvaultC1('accountvault custom 1')
+    ->accountvaultC2('accountvault custom 2')
+    ->accountvaultC3('accountvault custom 3')
+    ->tokenC1('token custom 1')
+    ->tokenC2('token custom 2')
+    ->tokenC3('token custom 3')
+    ->achSecCode(AchSecCode3Enum::WEB)
+    ->contactId('11e95f8ec39de8fbdb0a4f1a')
+    ->customerId('123456')
+    ->previousAccountVaultApiId('previousaccountvault123456')
+    ->previousTokenApiId('previousaccountvault123456')
+    ->previousAccountVaultId('11e95f8ec39de8fbdb0a4f1a')
+    ->previousTokenId('11e95f8ec39de8fbdb0a4f1a')
+    ->previousTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->termsAgree(true)
+    ->termsAgreeIp('192.168.0.10')
+    ->title('Test CC Account')
+    ->tokenImportId('11e95f8ec39de8fbdb0a4f1a')
+    ->secureDirectoryServerTransactionId('d65e93c3-35ab-41ba-b307-767bfc19eae')
+    ->secureProtocolVersion(2)
+    ->secureAuthData('vVwL7UNHCf8W8M2LAfvRChNHN7c%3D')
+    ->threeDsServerTransId('d65e93c3-35ab-41ba-b307-767bfc19eae')
+    ->acsTransactionId('13c701a3-5a88-4c45-89e9-ef65e50a8bf9')
+    ->expDate('0929')
+    ->eSerialNumber('1234567890')
+    ->eTrackData('%B5454545454545454^account holder^17041010001111A123456789012?250112000000153000000?;5454545454545454=25011011000012345678?00|DC7AB845EFA793FB3C89C5D347D36ED11CAAED0C33E150437893996BA75EB8A0F334D0DAA1B874B6C677A4EF6984B089F891D8E434ACD867B616F4D815E63DA6A86B2AF927E9919B0CFC1DA3FD276D9382672EF8AA256329|32EA4D785CA3398882AABC405017EF9C2BDA666FA007A76538DE10878601EEC36EFE1F185BB8B1C8')
+    ->eFormat('ksn')
+    ->eKeyedData('236D530E098D48DB3F1AA367882CC1A7D475EFCACEFF1E965F17EC1E2D42CBF611C9EB0F80F4255784BA06951BD6092AB6CD3369D3D7E022E74DDCB16F9C40599FA03355E37E6ABB06B717B207709ED8C6BC5C7B6E32BB2B2F5046551A1C88D6')
+    ->runAvs(false)
+    ->trackData('%B5424181111112228^FDCS TEST CARD /MASTERCARD^18121010001111123456789012?;5424181111112228=1812101100000123456?')
+    ->ticket('12345678')
+    ->build();
 
 $result = $tokensController->createANewCreditCardToken($body);
 ```
@@ -507,18 +624,21 @@ $result = $tokensController->createANewCreditCardToken($body);
   "type": "Token",
   "data": {
     "account_holder_name": "John Smith",
-    "account_number": "545454545454545",
     "account_vault_api_id": "accountvaultabcd",
+    "token_api_id": "tokenabcd",
     "accountvault_c1": "accountvault custom 1",
     "accountvault_c2": "accountvault custom 2",
     "accountvault_c3": "accountvault custom 3",
+    "token_c1": "token custom 1",
+    "token_c2": "token custom 2",
+    "token_c3": "token custom 3",
     "ach_sec_code": "WEB",
     "billing_address": {
       "city": "Novi",
       "state": "Michigan",
       "postal_code": "48375",
-      "street": "43155 Main Street STE 2310-C",
-      "phone": "3339998822"
+      "phone": "3339998822",
+      "country": "USA"
     },
     "contact_id": "11e95f8ec39de8fbdb0a4f1a",
     "customer_id": "123456",
@@ -530,11 +650,22 @@ $result = $tokensController->createANewCreditCardToken($body);
     },
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
     "previous_account_vault_api_id": "previousaccountvault123456",
+    "previous_token_api_id": "previousaccountvault123456",
     "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+    "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
     "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+    "account_number": "545454545454545",
     "terms_agree": true,
     "terms_agree_ip": "192.168.0.10",
     "title": "Test CC Account",
+    "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+    "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+    "secure_protocol_version": 2,
+    "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+    "secure_collection_indicator": null,
+    "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+    "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+    "_joi": {},
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "account_type": "checking",
     "active": true,
@@ -545,6 +676,7 @@ $result = $tokensController->createANewCreditCardToken($body);
     "e_format": null,
     "e_keyed_data": null,
     "expiring_in_months": null,
+    "exp_date": "0722",
     "first_six": "700953",
     "has_recurring": false,
     "last_four": "3657",
@@ -552,6 +684,9 @@ $result = $tokensController->createANewCreditCardToken($body);
     "payment_method": "cc",
     "ticket": null,
     "track_data": null,
+    "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "cau_last_updated_ts": 1422040992,
+    "routing_number": "051904524",
     "location": {
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
@@ -561,15 +696,12 @@ $result = $tokensController->createANewCreditCardToken($body);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -580,10 +712,14 @@ $result = $tokensController->createANewCreditCardToken($body);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     },
     "contact": {
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -597,8 +733,7 @@ $result = $tokensController->createANewCreditCardToken($body);
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C"
+        "country": "USA"
       },
       "company_name": "Fortis Payment Systems, LLC",
       "header_message": "This is a sample message for you",
@@ -607,6 +742,9 @@ $result = $tokensController->createANewCreditCardToken($body);
       "home_phone": "3339998822",
       "office_phone": "3339998822",
       "office_phone_ext": "5",
+      "home_phone_country_code": "+1",
+      "office_phone_country_code": "+1",
+      "cell_phone_country_code": "+1",
       "header_message_type": 0,
       "update_if_exists": 1,
       "contact_c1": "any",
@@ -614,10 +752,12 @@ $result = $tokensController->createANewCreditCardToken($body);
       "contact_c3": "something",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
       "email": "email@domain.com",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "active": true
+      "active": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "transactions": [
       {
@@ -633,8 +773,8 @@ $result = $tokensController->createANewCreditCardToken($body);
           "city": "Novi",
           "state": "Michigan",
           "postal_code": "48375",
-          "street": "43155 Main Street STE 2310-C",
-          "phone": "3339998822"
+          "phone": "3339998822",
+          "country": "USA"
         },
         "checkin_date": "2021-12-01",
         "checkout_date": "2021-12-01",
@@ -654,6 +794,11 @@ $result = $tokensController->createANewCreditCardToken($body);
         "installment": true,
         "installment_number": 1,
         "installment_count": 1,
+        "recurring_flag": "yes",
+        "installment_counter": 1,
+        "installment_total": 1,
+        "subscription": false,
+        "standing_order": false,
         "location_api_id": "location-api-id-florida-2",
         "location_id": "11e95f8ec39de8fbdb0a4f1a",
         "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -683,6 +828,11 @@ $result = $tokensController->createANewCreditCardToken($body);
         "transaction_c2": "custom-data-2",
         "transaction_c3": "custom-data-3",
         "bank_funded_only_override": false,
+        "allow_partial_authorization_override": false,
+        "auto_decline_cvv_override": false,
+        "auto_decline_street_override": false,
+        "auto_decline_zip_override": false,
+        "ebt_type": "food_stamp",
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "created_ts": 1422040992,
         "modified_ts": 1422040992,
@@ -717,7 +867,7 @@ $result = $tokensController->createANewCreditCardToken($body);
         "transaction_settlement_status": null,
         "charge_back_date": "2021-12-01",
         "is_recurring": true,
-        "notification_email_sent": "true",
+        "notification_email_sent": true,
         "par": "Q1J4Z28RKA1EBL470G9XYG90R5D3E",
         "reason_code_id": 1000,
         "recurring_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -725,17 +875,35 @@ $result = $tokensController->createANewCreditCardToken($body);
         "status_code": 101,
         "transaction_batch_id": "11e95f8ec39de8fbdb0a4f1a",
         "verbiage": "APPROVED",
+        "voucher_number": "1234",
         "void_date": "2021-12-01",
         "batch": "2",
         "terms_agree": true,
         "response_message": null,
         "return_date": "2021-12-01",
-        "trx_source_id": 8
+        "trx_source_id": 8,
+        "routing_number": "051904524",
+        "trx_source_code": 8,
+        "paylink_id": "11e95f8ec39de8fbdb0a4f1a",
+        "is_accountvault": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "effective_date": "2021-12-01",
+        "is_token": true,
+        "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+        "hosted_payment_page_id": "11e95f8ec39de8fbdb0a4f1a"
       }
     ],
     "activeRecurrings": [
       {
         "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+        "token_id": "11e95f8ec39de8fbdb0a4f1a",
+        "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+        "account_vault_api_id": "token1234abcd",
+        "token_api_id": "token1234abcd",
+        "_joi": {
+          "conditions": {}
+        },
         "active": true,
         "description": "Description",
         "end_date": "2021-12-01",
@@ -750,18 +918,25 @@ $result = $tokensController->createANewCreditCardToken($body);
         "recurring_api_id": "recurring1234abcd",
         "start_date": "2021-12-01",
         "status": "active",
-        "transaction_amount": 3,
+        "transaction_amount": 300,
         "terms_agree": true,
         "terms_agree_ip": "192.168.0.10",
         "recurring_c1": "recurring custom data 1",
         "recurring_c2": "recurring custom data 2",
         "recurring_c3": "recurring custom data 3",
         "send_to_proc_as_recur": true,
+        "tags": [
+          "Walk-in Customer"
+        ],
+        "secondary_amount": 100,
+        "currency": "USD",
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "next_run_date": "2021-12-01",
         "created_ts": 1422040992,
         "modified_ts": 1422040992,
-        "recurring_type_id": "i"
+        "recurring_type_id": "i",
+        "installment_amount_total": 99999999,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
       }
     ],
     "is_deletable": true,
@@ -775,10 +950,8 @@ $result = $tokensController->createANewCreditCardToken($body);
     },
     "created_user": {
       "account_number": "5454545454545454",
-      "address": "43155 Main Street STE 2310-C",
       "branding_domain_url": "{branding_domain_url}",
       "cell_phone": "3339998822",
-      "city": "Novi",
       "company_name": "Fortis Payment Systems, LLC",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "date_of_birth": "2021-12-01",
@@ -793,7 +966,6 @@ $result = $tokensController->createANewCreditCardToken($body);
       "office_ext_phone": "5",
       "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
       "requires_new_password": null,
-      "state": "Michigan",
       "terms_condition_code": "20220308",
       "tz": "America/New_York",
       "ui_prefs": {
@@ -810,7 +982,15 @@ $result = $tokensController->createANewCreditCardToken($body);
       "password": null,
       "zip": "48375",
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
-      "status_id": true,
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "status": true,
       "login_attempts": 0,
@@ -820,7 +1000,9 @@ $result = $tokensController->createANewCreditCardToken($body);
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "terms_accepted_ts": 1422040992,
       "terms_agree_ip": "192.168.0.10",
-      "current_date_time": "2019-03-11T10:38:26-0700"
+      "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992
     },
     "changelogs": [
       {
@@ -865,15 +1047,12 @@ $result = $tokensController->createANewCreditCardToken($body);
           "city": "Novi",
           "state": "MI",
           "postal_code": "48375",
-          "country": "US",
-          "street": "43155 Main Street STE 2310-C",
-          "street2": "43155 Main Street STE 2310-C"
+          "country": "US"
         },
         "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
         "contact_email_trx_receipt_default": true,
         "default_ach": "11e608a7d515f1e093242bb2",
         "default_cc": "11e608a442a5f1e092242dda",
-        "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
         "email_reply_to": "email@domain.com",
         "fax": "3339998822",
         "location_api_id": "location-111111",
@@ -884,10 +1063,14 @@ $result = $tokensController->createANewCreditCardToken($body);
         "name": "Sample Company Headquarters",
         "office_phone": "2481234567",
         "office_ext_phone": "1021021209",
-        "recurring_notification_days_default": 0,
         "tz": "America/New_York",
         "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+        "show_contact_notes": true,
+        "show_contact_files": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "location_type": "merchant",
+        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+        "additional_access": {}
       }
     ]
   }
@@ -904,8 +1087,6 @@ $result = $tokensController->createANewCreditCardToken($body);
 
 # Create a New Previous Transaction Token
 
-Create a new Previous Transaction Token
-
 ```php
 function createANewPreviousTransactionToken(
     V1TokensPreviousTransactionRequest $body,
@@ -918,7 +1099,7 @@ function createANewPreviousTransactionToken(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `body` | [`V1TokensPreviousTransactionRequest`](../../doc/models/v1-tokens-previous-transaction-request.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand38Enum)`](../../doc/models/expand-38-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand47Enum)[])`](../../doc/models/expand-47-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -927,12 +1108,37 @@ function createANewPreviousTransactionToken(
 ## Example Usage
 
 ```php
-$body_locationId = '11e95f8ec39de8fbdb0a4f1a';
-$body_previousTransactionId = '11e95f8ec39de8fbdb0a4f1a';
-$body = new Models\V1TokensPreviousTransactionRequest(
-    $body_locationId,
-    $body_previousTransactionId
-);
+$body = V1TokensPreviousTransactionRequestBuilder::init(
+    '11e95f8ec39de8fbdb0a4f1a',
+    '11e95f8ec39de8fbdb0a4f1a'
+)
+    ->accountHolderName('John Smith')
+    ->accountVaultApiId('accountvaultabcd')
+    ->tokenApiId('tokenabcd')
+    ->accountvaultC1('accountvault custom 1')
+    ->accountvaultC2('accountvault custom 2')
+    ->accountvaultC3('accountvault custom 3')
+    ->tokenC1('token custom 1')
+    ->tokenC2('token custom 2')
+    ->tokenC3('token custom 3')
+    ->achSecCode(AchSecCode3Enum::WEB)
+    ->contactId('11e95f8ec39de8fbdb0a4f1a')
+    ->customerId('123456')
+    ->previousAccountVaultApiId('previousaccountvault123456')
+    ->previousTokenApiId('previousaccountvault123456')
+    ->previousAccountVaultId('11e95f8ec39de8fbdb0a4f1a')
+    ->previousTokenId('11e95f8ec39de8fbdb0a4f1a')
+    ->accountNumber('545454545454545')
+    ->termsAgree(true)
+    ->termsAgreeIp('192.168.0.10')
+    ->title('Test CC Account')
+    ->tokenImportId('11e95f8ec39de8fbdb0a4f1a')
+    ->secureDirectoryServerTransactionId('d65e93c3-35ab-41ba-b307-767bfc19eae')
+    ->secureProtocolVersion(2)
+    ->secureAuthData('vVwL7UNHCf8W8M2LAfvRChNHN7c%3D')
+    ->threeDsServerTransId('d65e93c3-35ab-41ba-b307-767bfc19eae')
+    ->acsTransactionId('13c701a3-5a88-4c45-89e9-ef65e50a8bf9')
+    ->build();
 
 $result = $tokensController->createANewPreviousTransactionToken($body);
 ```
@@ -944,18 +1150,21 @@ $result = $tokensController->createANewPreviousTransactionToken($body);
   "type": "Token",
   "data": {
     "account_holder_name": "John Smith",
-    "account_number": "545454545454545",
     "account_vault_api_id": "accountvaultabcd",
+    "token_api_id": "tokenabcd",
     "accountvault_c1": "accountvault custom 1",
     "accountvault_c2": "accountvault custom 2",
     "accountvault_c3": "accountvault custom 3",
+    "token_c1": "token custom 1",
+    "token_c2": "token custom 2",
+    "token_c3": "token custom 3",
     "ach_sec_code": "WEB",
     "billing_address": {
       "city": "Novi",
       "state": "Michigan",
       "postal_code": "48375",
-      "street": "43155 Main Street STE 2310-C",
-      "phone": "3339998822"
+      "phone": "3339998822",
+      "country": "USA"
     },
     "contact_id": "11e95f8ec39de8fbdb0a4f1a",
     "customer_id": "123456",
@@ -967,11 +1176,22 @@ $result = $tokensController->createANewPreviousTransactionToken($body);
     },
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
     "previous_account_vault_api_id": "previousaccountvault123456",
+    "previous_token_api_id": "previousaccountvault123456",
     "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+    "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
     "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+    "account_number": "545454545454545",
     "terms_agree": true,
     "terms_agree_ip": "192.168.0.10",
     "title": "Test CC Account",
+    "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+    "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+    "secure_protocol_version": 2,
+    "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+    "secure_collection_indicator": null,
+    "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+    "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+    "_joi": {},
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "account_type": "checking",
     "active": true,
@@ -982,6 +1202,7 @@ $result = $tokensController->createANewPreviousTransactionToken($body);
     "e_format": null,
     "e_keyed_data": null,
     "expiring_in_months": null,
+    "exp_date": "0722",
     "first_six": "700953",
     "has_recurring": false,
     "last_four": "3657",
@@ -989,6 +1210,9 @@ $result = $tokensController->createANewPreviousTransactionToken($body);
     "payment_method": "cc",
     "ticket": null,
     "track_data": null,
+    "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "cau_last_updated_ts": 1422040992,
+    "routing_number": "051904524",
     "location": {
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
@@ -998,15 +1222,12 @@ $result = $tokensController->createANewPreviousTransactionToken($body);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -1017,10 +1238,14 @@ $result = $tokensController->createANewPreviousTransactionToken($body);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     },
     "contact": {
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -1034,8 +1259,7 @@ $result = $tokensController->createANewPreviousTransactionToken($body);
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C"
+        "country": "USA"
       },
       "company_name": "Fortis Payment Systems, LLC",
       "header_message": "This is a sample message for you",
@@ -1044,6 +1268,9 @@ $result = $tokensController->createANewPreviousTransactionToken($body);
       "home_phone": "3339998822",
       "office_phone": "3339998822",
       "office_phone_ext": "5",
+      "home_phone_country_code": "+1",
+      "office_phone_country_code": "+1",
+      "cell_phone_country_code": "+1",
       "header_message_type": 0,
       "update_if_exists": 1,
       "contact_c1": "any",
@@ -1051,10 +1278,12 @@ $result = $tokensController->createANewPreviousTransactionToken($body);
       "contact_c3": "something",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
       "email": "email@domain.com",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "active": true
+      "active": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "transactions": [
       {
@@ -1070,8 +1299,8 @@ $result = $tokensController->createANewPreviousTransactionToken($body);
           "city": "Novi",
           "state": "Michigan",
           "postal_code": "48375",
-          "street": "43155 Main Street STE 2310-C",
-          "phone": "3339998822"
+          "phone": "3339998822",
+          "country": "USA"
         },
         "checkin_date": "2021-12-01",
         "checkout_date": "2021-12-01",
@@ -1091,6 +1320,11 @@ $result = $tokensController->createANewPreviousTransactionToken($body);
         "installment": true,
         "installment_number": 1,
         "installment_count": 1,
+        "recurring_flag": "yes",
+        "installment_counter": 1,
+        "installment_total": 1,
+        "subscription": false,
+        "standing_order": false,
         "location_api_id": "location-api-id-florida-2",
         "location_id": "11e95f8ec39de8fbdb0a4f1a",
         "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -1120,6 +1354,11 @@ $result = $tokensController->createANewPreviousTransactionToken($body);
         "transaction_c2": "custom-data-2",
         "transaction_c3": "custom-data-3",
         "bank_funded_only_override": false,
+        "allow_partial_authorization_override": false,
+        "auto_decline_cvv_override": false,
+        "auto_decline_street_override": false,
+        "auto_decline_zip_override": false,
+        "ebt_type": "food_stamp",
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "created_ts": 1422040992,
         "modified_ts": 1422040992,
@@ -1154,7 +1393,7 @@ $result = $tokensController->createANewPreviousTransactionToken($body);
         "transaction_settlement_status": null,
         "charge_back_date": "2021-12-01",
         "is_recurring": true,
-        "notification_email_sent": "true",
+        "notification_email_sent": true,
         "par": "Q1J4Z28RKA1EBL470G9XYG90R5D3E",
         "reason_code_id": 1000,
         "recurring_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -1162,17 +1401,35 @@ $result = $tokensController->createANewPreviousTransactionToken($body);
         "status_code": 101,
         "transaction_batch_id": "11e95f8ec39de8fbdb0a4f1a",
         "verbiage": "APPROVED",
+        "voucher_number": "1234",
         "void_date": "2021-12-01",
         "batch": "2",
         "terms_agree": true,
         "response_message": null,
         "return_date": "2021-12-01",
-        "trx_source_id": 8
+        "trx_source_id": 8,
+        "routing_number": "051904524",
+        "trx_source_code": 8,
+        "paylink_id": "11e95f8ec39de8fbdb0a4f1a",
+        "is_accountvault": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "effective_date": "2021-12-01",
+        "is_token": true,
+        "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+        "hosted_payment_page_id": "11e95f8ec39de8fbdb0a4f1a"
       }
     ],
     "activeRecurrings": [
       {
         "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+        "token_id": "11e95f8ec39de8fbdb0a4f1a",
+        "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+        "account_vault_api_id": "token1234abcd",
+        "token_api_id": "token1234abcd",
+        "_joi": {
+          "conditions": {}
+        },
         "active": true,
         "description": "Description",
         "end_date": "2021-12-01",
@@ -1187,18 +1444,25 @@ $result = $tokensController->createANewPreviousTransactionToken($body);
         "recurring_api_id": "recurring1234abcd",
         "start_date": "2021-12-01",
         "status": "active",
-        "transaction_amount": 3,
+        "transaction_amount": 300,
         "terms_agree": true,
         "terms_agree_ip": "192.168.0.10",
         "recurring_c1": "recurring custom data 1",
         "recurring_c2": "recurring custom data 2",
         "recurring_c3": "recurring custom data 3",
         "send_to_proc_as_recur": true,
+        "tags": [
+          "Walk-in Customer"
+        ],
+        "secondary_amount": 100,
+        "currency": "USD",
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "next_run_date": "2021-12-01",
         "created_ts": 1422040992,
         "modified_ts": 1422040992,
-        "recurring_type_id": "i"
+        "recurring_type_id": "i",
+        "installment_amount_total": 99999999,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
       }
     ],
     "is_deletable": true,
@@ -1212,10 +1476,8 @@ $result = $tokensController->createANewPreviousTransactionToken($body);
     },
     "created_user": {
       "account_number": "5454545454545454",
-      "address": "43155 Main Street STE 2310-C",
       "branding_domain_url": "{branding_domain_url}",
       "cell_phone": "3339998822",
-      "city": "Novi",
       "company_name": "Fortis Payment Systems, LLC",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "date_of_birth": "2021-12-01",
@@ -1230,7 +1492,6 @@ $result = $tokensController->createANewPreviousTransactionToken($body);
       "office_ext_phone": "5",
       "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
       "requires_new_password": null,
-      "state": "Michigan",
       "terms_condition_code": "20220308",
       "tz": "America/New_York",
       "ui_prefs": {
@@ -1247,7 +1508,15 @@ $result = $tokensController->createANewPreviousTransactionToken($body);
       "password": null,
       "zip": "48375",
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
-      "status_id": true,
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "status": true,
       "login_attempts": 0,
@@ -1257,7 +1526,9 @@ $result = $tokensController->createANewPreviousTransactionToken($body);
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "terms_accepted_ts": 1422040992,
       "terms_agree_ip": "192.168.0.10",
-      "current_date_time": "2019-03-11T10:38:26-0700"
+      "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992
     },
     "changelogs": [
       {
@@ -1302,15 +1573,12 @@ $result = $tokensController->createANewPreviousTransactionToken($body);
           "city": "Novi",
           "state": "MI",
           "postal_code": "48375",
-          "country": "US",
-          "street": "43155 Main Street STE 2310-C",
-          "street2": "43155 Main Street STE 2310-C"
+          "country": "US"
         },
         "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
         "contact_email_trx_receipt_default": true,
         "default_ach": "11e608a7d515f1e093242bb2",
         "default_cc": "11e608a442a5f1e092242dda",
-        "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
         "email_reply_to": "email@domain.com",
         "fax": "3339998822",
         "location_api_id": "location-111111",
@@ -1321,10 +1589,14 @@ $result = $tokensController->createANewPreviousTransactionToken($body);
         "name": "Sample Company Headquarters",
         "office_phone": "2481234567",
         "office_ext_phone": "1021021209",
-        "recurring_notification_days_default": 0,
         "tz": "America/New_York",
         "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+        "show_contact_notes": true,
+        "show_contact_files": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "location_type": "merchant",
+        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+        "additional_access": {}
       }
     ]
   }
@@ -1339,9 +1611,84 @@ $result = $tokensController->createANewPreviousTransactionToken($body);
 | 412 | Precondition Failed | [`Response412Exception`](../../doc/models/response-412-exception.md) |
 
 
-# Create a New Terminal Token
+# Create a New Terminal Token With Async Method
 
-Create a new Terminal Token
+```php
+function createANewTerminalTokenWithAsyncMethod(V1TokensTerminalAsyncRequest $body): ResponseToken
+```
+
+## Parameters
+
+| Parameter | Type | Tags | Description |
+|  --- | --- | --- | --- |
+| `body` | [`V1TokensTerminalAsyncRequest`](../../doc/models/v1-tokens-terminal-async-request.md) | Body, Required | - |
+
+## Response Type
+
+[`ResponseToken`](../../doc/models/response-token.md)
+
+## Example Usage
+
+```php
+$body = V1TokensTerminalAsyncRequestBuilder::init(
+    '11e95f8ec39de8fbdb0a4f1a',
+    '11e95f8ec39de8fbdb0a4f1a'
+)
+    ->accountHolderName('John Smith')
+    ->accountVaultApiId('accountvaultabcd')
+    ->tokenApiId('tokenabcd')
+    ->accountvaultC1('accountvault custom 1')
+    ->accountvaultC2('accountvault custom 2')
+    ->accountvaultC3('accountvault custom 3')
+    ->tokenC1('token custom 1')
+    ->tokenC2('token custom 2')
+    ->tokenC3('token custom 3')
+    ->achSecCode(AchSecCode3Enum::WEB)
+    ->contactId('11e95f8ec39de8fbdb0a4f1a')
+    ->customerId('123456')
+    ->previousAccountVaultApiId('previousaccountvault123456')
+    ->previousTokenApiId('previousaccountvault123456')
+    ->previousAccountVaultId('11e95f8ec39de8fbdb0a4f1a')
+    ->previousTokenId('11e95f8ec39de8fbdb0a4f1a')
+    ->previousTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->accountNumber('545454545454545')
+    ->termsAgree(true)
+    ->termsAgreeIp('192.168.0.10')
+    ->title('Test CC Account')
+    ->tokenImportId('11e95f8ec39de8fbdb0a4f1a')
+    ->secureDirectoryServerTransactionId('d65e93c3-35ab-41ba-b307-767bfc19eae')
+    ->secureProtocolVersion(2)
+    ->secureAuthData('vVwL7UNHCf8W8M2LAfvRChNHN7c%3D')
+    ->threeDsServerTransId('d65e93c3-35ab-41ba-b307-767bfc19eae')
+    ->acsTransactionId('13c701a3-5a88-4c45-89e9-ef65e50a8bf9')
+    ->build();
+
+$result = $tokensController->createANewTerminalTokenWithAsyncMethod($body);
+```
+
+## Example Response *(as JSON)*
+
+```json
+{
+  "type": "Token",
+  "data": {
+    "async": {
+      "code": "406c66c3-21cb-47fb-80fc-843bc42507fb",
+      "link": "/v1/async/status/406c66c3-21cb-47fb-80fc-843bc42507fb"
+    }
+  }
+}
+```
+
+## Errors
+
+| HTTP Status Code | Error Description | Exception Class |
+|  --- | --- | --- |
+| 401 | Unauthorized | [`Response401tokenException`](../../doc/models/response-401-token-exception.md) |
+| 412 | Precondition Failed | [`Response412Exception`](../../doc/models/response-412-exception.md) |
+
+
+# Create a New Terminal Token
 
 ```php
 function createANewTerminalToken(V1TokensTerminalRequest $body, ?array $expand = null): ResponseToken
@@ -1352,7 +1699,7 @@ function createANewTerminalToken(V1TokensTerminalRequest $body, ?array $expand =
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `body` | [`V1TokensTerminalRequest`](../../doc/models/v1-tokens-terminal-request.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand38Enum)`](../../doc/models/expand-38-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand47Enum)[])`](../../doc/models/expand-47-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -1361,14 +1708,38 @@ function createANewTerminalToken(V1TokensTerminalRequest $body, ?array $expand =
 ## Example Usage
 
 ```php
-$body_contactId = '11e95f8ec39de8fbdb0a4f1a';
-$body_locationId = '11e95f8ec39de8fbdb0a4f1a';
-$body_terminalId = '11e95f8ec39de8fbdb0a4f1a';
-$body = new Models\V1TokensTerminalRequest(
-    $body_contactId,
-    $body_locationId,
-    $body_terminalId
-);
+$body = V1TokensTerminalRequestBuilder::init(
+    '11e95f8ec39de8fbdb0a4f1a',
+    '11e95f8ec39de8fbdb0a4f1a'
+)
+    ->accountHolderName('John Smith')
+    ->accountVaultApiId('accountvaultabcd')
+    ->tokenApiId('tokenabcd')
+    ->accountvaultC1('accountvault custom 1')
+    ->accountvaultC2('accountvault custom 2')
+    ->accountvaultC3('accountvault custom 3')
+    ->tokenC1('token custom 1')
+    ->tokenC2('token custom 2')
+    ->tokenC3('token custom 3')
+    ->achSecCode(AchSecCode3Enum::WEB)
+    ->contactId('11e95f8ec39de8fbdb0a4f1a')
+    ->customerId('123456')
+    ->previousAccountVaultApiId('previousaccountvault123456')
+    ->previousTokenApiId('previousaccountvault123456')
+    ->previousAccountVaultId('11e95f8ec39de8fbdb0a4f1a')
+    ->previousTokenId('11e95f8ec39de8fbdb0a4f1a')
+    ->previousTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->accountNumber('545454545454545')
+    ->termsAgree(true)
+    ->termsAgreeIp('192.168.0.10')
+    ->title('Test CC Account')
+    ->tokenImportId('11e95f8ec39de8fbdb0a4f1a')
+    ->secureDirectoryServerTransactionId('d65e93c3-35ab-41ba-b307-767bfc19eae')
+    ->secureProtocolVersion(2)
+    ->secureAuthData('vVwL7UNHCf8W8M2LAfvRChNHN7c%3D')
+    ->threeDsServerTransId('d65e93c3-35ab-41ba-b307-767bfc19eae')
+    ->acsTransactionId('13c701a3-5a88-4c45-89e9-ef65e50a8bf9')
+    ->build();
 
 $result = $tokensController->createANewTerminalToken($body);
 ```
@@ -1380,18 +1751,21 @@ $result = $tokensController->createANewTerminalToken($body);
   "type": "Token",
   "data": {
     "account_holder_name": "John Smith",
-    "account_number": "545454545454545",
     "account_vault_api_id": "accountvaultabcd",
+    "token_api_id": "tokenabcd",
     "accountvault_c1": "accountvault custom 1",
     "accountvault_c2": "accountvault custom 2",
     "accountvault_c3": "accountvault custom 3",
+    "token_c1": "token custom 1",
+    "token_c2": "token custom 2",
+    "token_c3": "token custom 3",
     "ach_sec_code": "WEB",
     "billing_address": {
       "city": "Novi",
       "state": "Michigan",
       "postal_code": "48375",
-      "street": "43155 Main Street STE 2310-C",
-      "phone": "3339998822"
+      "phone": "3339998822",
+      "country": "USA"
     },
     "contact_id": "11e95f8ec39de8fbdb0a4f1a",
     "customer_id": "123456",
@@ -1403,11 +1777,22 @@ $result = $tokensController->createANewTerminalToken($body);
     },
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
     "previous_account_vault_api_id": "previousaccountvault123456",
+    "previous_token_api_id": "previousaccountvault123456",
     "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+    "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
     "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+    "account_number": "545454545454545",
     "terms_agree": true,
     "terms_agree_ip": "192.168.0.10",
     "title": "Test CC Account",
+    "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+    "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+    "secure_protocol_version": 2,
+    "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+    "secure_collection_indicator": null,
+    "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+    "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+    "_joi": {},
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "account_type": "checking",
     "active": true,
@@ -1418,6 +1803,7 @@ $result = $tokensController->createANewTerminalToken($body);
     "e_format": null,
     "e_keyed_data": null,
     "expiring_in_months": null,
+    "exp_date": "0722",
     "first_six": "700953",
     "has_recurring": false,
     "last_four": "3657",
@@ -1425,6 +1811,9 @@ $result = $tokensController->createANewTerminalToken($body);
     "payment_method": "cc",
     "ticket": null,
     "track_data": null,
+    "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "cau_last_updated_ts": 1422040992,
+    "routing_number": "051904524",
     "location": {
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
@@ -1434,15 +1823,12 @@ $result = $tokensController->createANewTerminalToken($body);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -1453,10 +1839,14 @@ $result = $tokensController->createANewTerminalToken($body);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     },
     "contact": {
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -1470,8 +1860,7 @@ $result = $tokensController->createANewTerminalToken($body);
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C"
+        "country": "USA"
       },
       "company_name": "Fortis Payment Systems, LLC",
       "header_message": "This is a sample message for you",
@@ -1480,6 +1869,9 @@ $result = $tokensController->createANewTerminalToken($body);
       "home_phone": "3339998822",
       "office_phone": "3339998822",
       "office_phone_ext": "5",
+      "home_phone_country_code": "+1",
+      "office_phone_country_code": "+1",
+      "cell_phone_country_code": "+1",
       "header_message_type": 0,
       "update_if_exists": 1,
       "contact_c1": "any",
@@ -1487,10 +1879,12 @@ $result = $tokensController->createANewTerminalToken($body);
       "contact_c3": "something",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
       "email": "email@domain.com",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "active": true
+      "active": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "transactions": [
       {
@@ -1506,8 +1900,8 @@ $result = $tokensController->createANewTerminalToken($body);
           "city": "Novi",
           "state": "Michigan",
           "postal_code": "48375",
-          "street": "43155 Main Street STE 2310-C",
-          "phone": "3339998822"
+          "phone": "3339998822",
+          "country": "USA"
         },
         "checkin_date": "2021-12-01",
         "checkout_date": "2021-12-01",
@@ -1527,6 +1921,11 @@ $result = $tokensController->createANewTerminalToken($body);
         "installment": true,
         "installment_number": 1,
         "installment_count": 1,
+        "recurring_flag": "yes",
+        "installment_counter": 1,
+        "installment_total": 1,
+        "subscription": false,
+        "standing_order": false,
         "location_api_id": "location-api-id-florida-2",
         "location_id": "11e95f8ec39de8fbdb0a4f1a",
         "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -1556,6 +1955,11 @@ $result = $tokensController->createANewTerminalToken($body);
         "transaction_c2": "custom-data-2",
         "transaction_c3": "custom-data-3",
         "bank_funded_only_override": false,
+        "allow_partial_authorization_override": false,
+        "auto_decline_cvv_override": false,
+        "auto_decline_street_override": false,
+        "auto_decline_zip_override": false,
+        "ebt_type": "food_stamp",
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "created_ts": 1422040992,
         "modified_ts": 1422040992,
@@ -1590,7 +1994,7 @@ $result = $tokensController->createANewTerminalToken($body);
         "transaction_settlement_status": null,
         "charge_back_date": "2021-12-01",
         "is_recurring": true,
-        "notification_email_sent": "true",
+        "notification_email_sent": true,
         "par": "Q1J4Z28RKA1EBL470G9XYG90R5D3E",
         "reason_code_id": 1000,
         "recurring_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -1598,17 +2002,35 @@ $result = $tokensController->createANewTerminalToken($body);
         "status_code": 101,
         "transaction_batch_id": "11e95f8ec39de8fbdb0a4f1a",
         "verbiage": "APPROVED",
+        "voucher_number": "1234",
         "void_date": "2021-12-01",
         "batch": "2",
         "terms_agree": true,
         "response_message": null,
         "return_date": "2021-12-01",
-        "trx_source_id": 8
+        "trx_source_id": 8,
+        "routing_number": "051904524",
+        "trx_source_code": 8,
+        "paylink_id": "11e95f8ec39de8fbdb0a4f1a",
+        "is_accountvault": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "effective_date": "2021-12-01",
+        "is_token": true,
+        "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+        "hosted_payment_page_id": "11e95f8ec39de8fbdb0a4f1a"
       }
     ],
     "activeRecurrings": [
       {
         "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+        "token_id": "11e95f8ec39de8fbdb0a4f1a",
+        "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+        "account_vault_api_id": "token1234abcd",
+        "token_api_id": "token1234abcd",
+        "_joi": {
+          "conditions": {}
+        },
         "active": true,
         "description": "Description",
         "end_date": "2021-12-01",
@@ -1623,18 +2045,25 @@ $result = $tokensController->createANewTerminalToken($body);
         "recurring_api_id": "recurring1234abcd",
         "start_date": "2021-12-01",
         "status": "active",
-        "transaction_amount": 3,
+        "transaction_amount": 300,
         "terms_agree": true,
         "terms_agree_ip": "192.168.0.10",
         "recurring_c1": "recurring custom data 1",
         "recurring_c2": "recurring custom data 2",
         "recurring_c3": "recurring custom data 3",
         "send_to_proc_as_recur": true,
+        "tags": [
+          "Walk-in Customer"
+        ],
+        "secondary_amount": 100,
+        "currency": "USD",
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "next_run_date": "2021-12-01",
         "created_ts": 1422040992,
         "modified_ts": 1422040992,
-        "recurring_type_id": "i"
+        "recurring_type_id": "i",
+        "installment_amount_total": 99999999,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
       }
     ],
     "is_deletable": true,
@@ -1648,10 +2077,8 @@ $result = $tokensController->createANewTerminalToken($body);
     },
     "created_user": {
       "account_number": "5454545454545454",
-      "address": "43155 Main Street STE 2310-C",
       "branding_domain_url": "{branding_domain_url}",
       "cell_phone": "3339998822",
-      "city": "Novi",
       "company_name": "Fortis Payment Systems, LLC",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "date_of_birth": "2021-12-01",
@@ -1666,7 +2093,6 @@ $result = $tokensController->createANewTerminalToken($body);
       "office_ext_phone": "5",
       "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
       "requires_new_password": null,
-      "state": "Michigan",
       "terms_condition_code": "20220308",
       "tz": "America/New_York",
       "ui_prefs": {
@@ -1683,7 +2109,15 @@ $result = $tokensController->createANewTerminalToken($body);
       "password": null,
       "zip": "48375",
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
-      "status_id": true,
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "status": true,
       "login_attempts": 0,
@@ -1693,7 +2127,9 @@ $result = $tokensController->createANewTerminalToken($body);
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "terms_accepted_ts": 1422040992,
       "terms_agree_ip": "192.168.0.10",
-      "current_date_time": "2019-03-11T10:38:26-0700"
+      "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992
     },
     "changelogs": [
       {
@@ -1738,15 +2174,12 @@ $result = $tokensController->createANewTerminalToken($body);
           "city": "Novi",
           "state": "MI",
           "postal_code": "48375",
-          "country": "US",
-          "street": "43155 Main Street STE 2310-C",
-          "street2": "43155 Main Street STE 2310-C"
+          "country": "US"
         },
         "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
         "contact_email_trx_receipt_default": true,
         "default_ach": "11e608a7d515f1e093242bb2",
         "default_cc": "11e608a442a5f1e092242dda",
-        "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
         "email_reply_to": "email@domain.com",
         "fax": "3339998822",
         "location_api_id": "location-111111",
@@ -1757,10 +2190,14 @@ $result = $tokensController->createANewTerminalToken($body);
         "name": "Sample Company Headquarters",
         "office_phone": "2481234567",
         "office_ext_phone": "1021021209",
-        "recurring_notification_days_default": 0,
         "tz": "America/New_York",
         "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+        "show_contact_notes": true,
+        "show_contact_files": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "location_type": "merchant",
+        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+        "additional_access": {}
       }
     ]
   }
@@ -1777,8 +2214,6 @@ $result = $tokensController->createANewTerminalToken($body);
 
 # Create a New Ticket Token
 
-Create a new Ticket Token
-
 ```php
 function createANewTicketToken(V1TokensTicketRequest $body, ?array $expand = null): ResponseToken
 ```
@@ -1788,7 +2223,7 @@ function createANewTicketToken(V1TokensTicketRequest $body, ?array $expand = nul
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `body` | [`V1TokensTicketRequest`](../../doc/models/v1-tokens-ticket-request.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand38Enum)`](../../doc/models/expand-38-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand47Enum)[])`](../../doc/models/expand-47-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -1797,12 +2232,38 @@ function createANewTicketToken(V1TokensTicketRequest $body, ?array $expand = nul
 ## Example Usage
 
 ```php
-$body_locationId = '11e95f8ec39de8fbdb0a4f1a';
-$body_ticket = '12345678';
-$body = new Models\V1TokensTicketRequest(
-    $body_locationId,
-    $body_ticket
-);
+$body = V1TokensTicketRequestBuilder::init(
+    '11e95f8ec39de8fbdb0a4f1a',
+    '12345678'
+)
+    ->accountHolderName('John Smith')
+    ->accountVaultApiId('accountvaultabcd')
+    ->tokenApiId('tokenabcd')
+    ->accountvaultC1('accountvault custom 1')
+    ->accountvaultC2('accountvault custom 2')
+    ->accountvaultC3('accountvault custom 3')
+    ->tokenC1('token custom 1')
+    ->tokenC2('token custom 2')
+    ->tokenC3('token custom 3')
+    ->achSecCode(AchSecCode3Enum::WEB)
+    ->contactId('11e95f8ec39de8fbdb0a4f1a')
+    ->customerId('123456')
+    ->previousAccountVaultApiId('previousaccountvault123456')
+    ->previousTokenApiId('previousaccountvault123456')
+    ->previousAccountVaultId('11e95f8ec39de8fbdb0a4f1a')
+    ->previousTokenId('11e95f8ec39de8fbdb0a4f1a')
+    ->previousTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->accountNumber('545454545454545')
+    ->termsAgree(true)
+    ->termsAgreeIp('192.168.0.10')
+    ->title('Test CC Account')
+    ->tokenImportId('11e95f8ec39de8fbdb0a4f1a')
+    ->secureDirectoryServerTransactionId('d65e93c3-35ab-41ba-b307-767bfc19eae')
+    ->secureProtocolVersion(2)
+    ->secureAuthData('vVwL7UNHCf8W8M2LAfvRChNHN7c%3D')
+    ->threeDsServerTransId('d65e93c3-35ab-41ba-b307-767bfc19eae')
+    ->acsTransactionId('13c701a3-5a88-4c45-89e9-ef65e50a8bf9')
+    ->build();
 
 $result = $tokensController->createANewTicketToken($body);
 ```
@@ -1814,18 +2275,21 @@ $result = $tokensController->createANewTicketToken($body);
   "type": "Token",
   "data": {
     "account_holder_name": "John Smith",
-    "account_number": "545454545454545",
     "account_vault_api_id": "accountvaultabcd",
+    "token_api_id": "tokenabcd",
     "accountvault_c1": "accountvault custom 1",
     "accountvault_c2": "accountvault custom 2",
     "accountvault_c3": "accountvault custom 3",
+    "token_c1": "token custom 1",
+    "token_c2": "token custom 2",
+    "token_c3": "token custom 3",
     "ach_sec_code": "WEB",
     "billing_address": {
       "city": "Novi",
       "state": "Michigan",
       "postal_code": "48375",
-      "street": "43155 Main Street STE 2310-C",
-      "phone": "3339998822"
+      "phone": "3339998822",
+      "country": "USA"
     },
     "contact_id": "11e95f8ec39de8fbdb0a4f1a",
     "customer_id": "123456",
@@ -1837,11 +2301,22 @@ $result = $tokensController->createANewTicketToken($body);
     },
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
     "previous_account_vault_api_id": "previousaccountvault123456",
+    "previous_token_api_id": "previousaccountvault123456",
     "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+    "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
     "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+    "account_number": "545454545454545",
     "terms_agree": true,
     "terms_agree_ip": "192.168.0.10",
     "title": "Test CC Account",
+    "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+    "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+    "secure_protocol_version": 2,
+    "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+    "secure_collection_indicator": null,
+    "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+    "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+    "_joi": {},
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "account_type": "checking",
     "active": true,
@@ -1852,6 +2327,7 @@ $result = $tokensController->createANewTicketToken($body);
     "e_format": null,
     "e_keyed_data": null,
     "expiring_in_months": null,
+    "exp_date": "0722",
     "first_six": "700953",
     "has_recurring": false,
     "last_four": "3657",
@@ -1859,6 +2335,9 @@ $result = $tokensController->createANewTicketToken($body);
     "payment_method": "cc",
     "ticket": null,
     "track_data": null,
+    "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "cau_last_updated_ts": 1422040992,
+    "routing_number": "051904524",
     "location": {
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
@@ -1868,15 +2347,12 @@ $result = $tokensController->createANewTicketToken($body);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -1887,10 +2363,14 @@ $result = $tokensController->createANewTicketToken($body);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     },
     "contact": {
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -1904,8 +2384,7 @@ $result = $tokensController->createANewTicketToken($body);
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C"
+        "country": "USA"
       },
       "company_name": "Fortis Payment Systems, LLC",
       "header_message": "This is a sample message for you",
@@ -1914,6 +2393,9 @@ $result = $tokensController->createANewTicketToken($body);
       "home_phone": "3339998822",
       "office_phone": "3339998822",
       "office_phone_ext": "5",
+      "home_phone_country_code": "+1",
+      "office_phone_country_code": "+1",
+      "cell_phone_country_code": "+1",
       "header_message_type": 0,
       "update_if_exists": 1,
       "contact_c1": "any",
@@ -1921,10 +2403,12 @@ $result = $tokensController->createANewTicketToken($body);
       "contact_c3": "something",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
       "email": "email@domain.com",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "active": true
+      "active": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "transactions": [
       {
@@ -1940,8 +2424,8 @@ $result = $tokensController->createANewTicketToken($body);
           "city": "Novi",
           "state": "Michigan",
           "postal_code": "48375",
-          "street": "43155 Main Street STE 2310-C",
-          "phone": "3339998822"
+          "phone": "3339998822",
+          "country": "USA"
         },
         "checkin_date": "2021-12-01",
         "checkout_date": "2021-12-01",
@@ -1961,6 +2445,11 @@ $result = $tokensController->createANewTicketToken($body);
         "installment": true,
         "installment_number": 1,
         "installment_count": 1,
+        "recurring_flag": "yes",
+        "installment_counter": 1,
+        "installment_total": 1,
+        "subscription": false,
+        "standing_order": false,
         "location_api_id": "location-api-id-florida-2",
         "location_id": "11e95f8ec39de8fbdb0a4f1a",
         "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -1990,6 +2479,11 @@ $result = $tokensController->createANewTicketToken($body);
         "transaction_c2": "custom-data-2",
         "transaction_c3": "custom-data-3",
         "bank_funded_only_override": false,
+        "allow_partial_authorization_override": false,
+        "auto_decline_cvv_override": false,
+        "auto_decline_street_override": false,
+        "auto_decline_zip_override": false,
+        "ebt_type": "food_stamp",
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "created_ts": 1422040992,
         "modified_ts": 1422040992,
@@ -2024,7 +2518,7 @@ $result = $tokensController->createANewTicketToken($body);
         "transaction_settlement_status": null,
         "charge_back_date": "2021-12-01",
         "is_recurring": true,
-        "notification_email_sent": "true",
+        "notification_email_sent": true,
         "par": "Q1J4Z28RKA1EBL470G9XYG90R5D3E",
         "reason_code_id": 1000,
         "recurring_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -2032,17 +2526,35 @@ $result = $tokensController->createANewTicketToken($body);
         "status_code": 101,
         "transaction_batch_id": "11e95f8ec39de8fbdb0a4f1a",
         "verbiage": "APPROVED",
+        "voucher_number": "1234",
         "void_date": "2021-12-01",
         "batch": "2",
         "terms_agree": true,
         "response_message": null,
         "return_date": "2021-12-01",
-        "trx_source_id": 8
+        "trx_source_id": 8,
+        "routing_number": "051904524",
+        "trx_source_code": 8,
+        "paylink_id": "11e95f8ec39de8fbdb0a4f1a",
+        "is_accountvault": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "effective_date": "2021-12-01",
+        "is_token": true,
+        "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+        "hosted_payment_page_id": "11e95f8ec39de8fbdb0a4f1a"
       }
     ],
     "activeRecurrings": [
       {
         "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+        "token_id": "11e95f8ec39de8fbdb0a4f1a",
+        "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+        "account_vault_api_id": "token1234abcd",
+        "token_api_id": "token1234abcd",
+        "_joi": {
+          "conditions": {}
+        },
         "active": true,
         "description": "Description",
         "end_date": "2021-12-01",
@@ -2057,18 +2569,25 @@ $result = $tokensController->createANewTicketToken($body);
         "recurring_api_id": "recurring1234abcd",
         "start_date": "2021-12-01",
         "status": "active",
-        "transaction_amount": 3,
+        "transaction_amount": 300,
         "terms_agree": true,
         "terms_agree_ip": "192.168.0.10",
         "recurring_c1": "recurring custom data 1",
         "recurring_c2": "recurring custom data 2",
         "recurring_c3": "recurring custom data 3",
         "send_to_proc_as_recur": true,
+        "tags": [
+          "Walk-in Customer"
+        ],
+        "secondary_amount": 100,
+        "currency": "USD",
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "next_run_date": "2021-12-01",
         "created_ts": 1422040992,
         "modified_ts": 1422040992,
-        "recurring_type_id": "i"
+        "recurring_type_id": "i",
+        "installment_amount_total": 99999999,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
       }
     ],
     "is_deletable": true,
@@ -2082,10 +2601,8 @@ $result = $tokensController->createANewTicketToken($body);
     },
     "created_user": {
       "account_number": "5454545454545454",
-      "address": "43155 Main Street STE 2310-C",
       "branding_domain_url": "{branding_domain_url}",
       "cell_phone": "3339998822",
-      "city": "Novi",
       "company_name": "Fortis Payment Systems, LLC",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "date_of_birth": "2021-12-01",
@@ -2100,7 +2617,6 @@ $result = $tokensController->createANewTicketToken($body);
       "office_ext_phone": "5",
       "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
       "requires_new_password": null,
-      "state": "Michigan",
       "terms_condition_code": "20220308",
       "tz": "America/New_York",
       "ui_prefs": {
@@ -2117,7 +2633,15 @@ $result = $tokensController->createANewTicketToken($body);
       "password": null,
       "zip": "48375",
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
-      "status_id": true,
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "status": true,
       "login_attempts": 0,
@@ -2127,7 +2651,9 @@ $result = $tokensController->createANewTicketToken($body);
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "terms_accepted_ts": 1422040992,
       "terms_agree_ip": "192.168.0.10",
-      "current_date_time": "2019-03-11T10:38:26-0700"
+      "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992
     },
     "changelogs": [
       {
@@ -2172,15 +2698,12 @@ $result = $tokensController->createANewTicketToken($body);
           "city": "Novi",
           "state": "MI",
           "postal_code": "48375",
-          "country": "US",
-          "street": "43155 Main Street STE 2310-C",
-          "street2": "43155 Main Street STE 2310-C"
+          "country": "US"
         },
         "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
         "contact_email_trx_receipt_default": true,
         "default_ach": "11e608a7d515f1e093242bb2",
         "default_cc": "11e608a442a5f1e092242dda",
-        "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
         "email_reply_to": "email@domain.com",
         "fax": "3339998822",
         "location_api_id": "location-111111",
@@ -2191,10 +2714,540 @@ $result = $tokensController->createANewTicketToken($body);
         "name": "Sample Company Headquarters",
         "office_phone": "2481234567",
         "office_ext_phone": "1021021209",
-        "recurring_notification_days_default": 0,
         "tz": "America/New_York",
         "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+        "show_contact_notes": true,
+        "show_contact_files": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "location_type": "merchant",
+        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+        "additional_access": {}
+      }
+    ]
+  }
+}
+```
+
+## Errors
+
+| HTTP Status Code | Error Description | Exception Class |
+|  --- | --- | --- |
+| 401 | Unauthorized | [`Response401tokenException`](../../doc/models/response-401-token-exception.md) |
+| 412 | Precondition Failed | [`Response412Exception`](../../doc/models/response-412-exception.md) |
+
+
+# Create a New Wallet Token
+
+```php
+function createANewWalletToken(V1TokensWalletRequest $body, ?array $expand = null): ResponseToken
+```
+
+## Parameters
+
+| Parameter | Type | Tags | Description |
+|  --- | --- | --- | --- |
+| `body` | [`V1TokensWalletRequest`](../../doc/models/v1-tokens-wallet-request.md) | Body, Required | - |
+| `expand` | [`?(string(Expand47Enum)[])`](../../doc/models/expand-47-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+
+## Response Type
+
+[`ResponseToken`](../../doc/models/response-token.md)
+
+## Example Usage
+
+```php
+$body = V1TokensWalletRequestBuilder::init(
+    '11e95f8ec39de8fbdb0a4f1a',
+    'wallet_data2',
+    WalletProviderEnum::GOOGLEPAY
+)
+    ->accountHolderName('John Smith')
+    ->accountVaultApiId('accountvaultabcd')
+    ->tokenApiId('tokenabcd')
+    ->accountvaultC1('accountvault custom 1')
+    ->accountvaultC2('accountvault custom 2')
+    ->accountvaultC3('accountvault custom 3')
+    ->tokenC1('token custom 1')
+    ->tokenC2('token custom 2')
+    ->tokenC3('token custom 3')
+    ->achSecCode(AchSecCode3Enum::WEB)
+    ->contactId('11e95f8ec39de8fbdb0a4f1a')
+    ->customerId('123456')
+    ->previousAccountVaultApiId('previousaccountvault123456')
+    ->previousTokenApiId('previousaccountvault123456')
+    ->previousAccountVaultId('11e95f8ec39de8fbdb0a4f1a')
+    ->previousTokenId('11e95f8ec39de8fbdb0a4f1a')
+    ->previousTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->accountNumber('545454545454545')
+    ->termsAgree(true)
+    ->termsAgreeIp('192.168.0.10')
+    ->title('Test CC Account')
+    ->tokenImportId('11e95f8ec39de8fbdb0a4f1a')
+    ->secureDirectoryServerTransactionId('d65e93c3-35ab-41ba-b307-767bfc19eae')
+    ->secureProtocolVersion(2)
+    ->secureAuthData('vVwL7UNHCf8W8M2LAfvRChNHN7c%3D')
+    ->threeDsServerTransId('d65e93c3-35ab-41ba-b307-767bfc19eae')
+    ->acsTransactionId('13c701a3-5a88-4c45-89e9-ef65e50a8bf9')
+    ->walletKeyId('11ee2bd392f32cb8aefd5bb5')
+    ->build();
+
+$result = $tokensController->createANewWalletToken($body);
+```
+
+## Example Response *(as JSON)*
+
+```json
+{
+  "type": "Token",
+  "data": {
+    "account_holder_name": "John Smith",
+    "account_vault_api_id": "accountvaultabcd",
+    "token_api_id": "tokenabcd",
+    "accountvault_c1": "accountvault custom 1",
+    "accountvault_c2": "accountvault custom 2",
+    "accountvault_c3": "accountvault custom 3",
+    "token_c1": "token custom 1",
+    "token_c2": "token custom 2",
+    "token_c3": "token custom 3",
+    "ach_sec_code": "WEB",
+    "billing_address": {
+      "city": "Novi",
+      "state": "Michigan",
+      "postal_code": "48375",
+      "phone": "3339998822",
+      "country": "USA"
+    },
+    "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+    "customer_id": "123456",
+    "identity_verification": {
+      "dl_state": "MI",
+      "dl_number": "1235567",
+      "ssn4": "8527",
+      "dob_year": "1980"
+    },
+    "location_id": "11e95f8ec39de8fbdb0a4f1a",
+    "previous_account_vault_api_id": "previousaccountvault123456",
+    "previous_token_api_id": "previousaccountvault123456",
+    "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+    "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
+    "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+    "account_number": "545454545454545",
+    "terms_agree": true,
+    "terms_agree_ip": "192.168.0.10",
+    "title": "Test CC Account",
+    "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+    "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+    "secure_protocol_version": 2,
+    "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+    "secure_collection_indicator": null,
+    "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+    "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+    "_joi": {},
+    "id": "11e95f8ec39de8fbdb0a4f1a",
+    "account_type": "checking",
+    "active": true,
+    "cau_summary_status_id": 1,
+    "created_ts": 1422040992,
+    "e_serial_number": "1234567890",
+    "e_track_data": null,
+    "e_format": null,
+    "e_keyed_data": null,
+    "expiring_in_months": null,
+    "exp_date": "0722",
+    "first_six": "700953",
+    "has_recurring": false,
+    "last_four": "3657",
+    "modified_ts": 1422040992,
+    "payment_method": "cc",
+    "ticket": null,
+    "track_data": null,
+    "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "cau_last_updated_ts": 1422040992,
+    "routing_number": "051904524",
+    "location": {
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "modified_ts": 1422040992,
+      "account_number": "5454545454545454",
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
+      "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
+      "contact_email_trx_receipt_default": true,
+      "default_ach": "11e608a7d515f1e093242bb2",
+      "default_cc": "11e608a442a5f1e092242dda",
+      "email_reply_to": "email@domain.com",
+      "fax": "3339998822",
+      "location_api_id": "location-111111",
+      "location_api_key": "AE34BBCAADF4AE34BBCAADF4",
+      "location_c1": "custom 1",
+      "location_c2": "custom 2",
+      "location_c3": "custom data 3",
+      "name": "Sample Company Headquarters",
+      "office_phone": "2481234567",
+      "office_ext_phone": "1021021209",
+      "tz": "America/New_York",
+      "parent_id": "11e95f8ec39de8fbdb0a4f1a",
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
+    },
+    "contact": {
+      "location_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_number": "54545433332",
+      "contact_api_id": "137",
+      "first_name": "John",
+      "last_name": "Smith",
+      "cell_phone": "3339998822",
+      "balance": 245.36,
+      "address": {
+        "city": "Novi",
+        "state": "Michigan",
+        "postal_code": "48375",
+        "country": "USA"
+      },
+      "company_name": "Fortis Payment Systems, LLC",
+      "header_message": "This is a sample message for you",
+      "date_of_birth": "2021-12-01",
+      "email_trx_receipt": true,
+      "home_phone": "3339998822",
+      "office_phone": "3339998822",
+      "office_phone_ext": "5",
+      "home_phone_country_code": "+1",
+      "office_phone_country_code": "+1",
+      "cell_phone_country_code": "+1",
+      "header_message_type": 0,
+      "update_if_exists": 1,
+      "contact_c1": "any",
+      "contact_c2": "anything",
+      "contact_c3": "something",
+      "parent_id": "11e95f8ec39de8fbdb0a4f1a",
+      "email": "email@domain.com",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "modified_ts": 1422040992,
+      "active": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+    },
+    "transactions": [
+      {
+        "additional_amounts": [
+          {
+            "type": "cashback",
+            "amount": 10,
+            "account_type": "credit",
+            "currency": 840
+          }
+        ],
+        "billing_address": {
+          "city": "Novi",
+          "state": "Michigan",
+          "postal_code": "48375",
+          "phone": "3339998822",
+          "country": "USA"
+        },
+        "checkin_date": "2021-12-01",
+        "checkout_date": "2021-12-01",
+        "clerk_number": "AE1234",
+        "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+        "custom_data": {},
+        "customer_id": "customerid",
+        "description": "some description",
+        "identity_verification": {
+          "dl_state": "MI",
+          "dl_number": "1235567",
+          "dob_year": "1980"
+        },
+        "iias_ind": 1,
+        "image_front": "U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=",
+        "image_back": "U29tZVN0cmluZ09idmlvdXNseU5vdEJhc2U2NEVuY29kZWQ=",
+        "installment": true,
+        "installment_number": 1,
+        "installment_count": 1,
+        "recurring_flag": "yes",
+        "installment_counter": 1,
+        "installment_total": 1,
+        "subscription": false,
+        "standing_order": false,
+        "location_api_id": "location-api-id-florida-2",
+        "location_id": "11e95f8ec39de8fbdb0a4f1a",
+        "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "advance_deposit": false,
+        "no_show": false,
+        "notification_email_address": "johnsmith@smiths.com",
+        "order_number": "433659378839",
+        "po_number": "555555553123",
+        "quick_invoice_id": "11e95f8ec39de8fbdb0a4f1a",
+        "recurring": false,
+        "recurring_number": 1,
+        "room_num": "303",
+        "room_rate": 95,
+        "save_account": false,
+        "save_account_title": "John Account",
+        "subtotal_amount": 599,
+        "surcharge_amount": 100,
+        "tags": [
+          "Walk-in Customer"
+        ],
+        "tax": 0,
+        "tip_amount": 0,
+        "transaction_amount": 0,
+        "secondary_amount": 0,
+        "transaction_api_id": "transaction-payment-abcd123",
+        "transaction_c1": "custom-data-1",
+        "transaction_c2": "custom-data-2",
+        "transaction_c3": "custom-data-3",
+        "bank_funded_only_override": false,
+        "allow_partial_authorization_override": false,
+        "auto_decline_cvv_override": false,
+        "auto_decline_street_override": false,
+        "auto_decline_zip_override": false,
+        "ebt_type": "food_stamp",
+        "id": "11e95f8ec39de8fbdb0a4f1a",
+        "created_ts": 1422040992,
+        "modified_ts": 1422040992,
+        "terminal_id": "11e95f8ec39de8fbdb0a4f1a",
+        "account_holder_name": "smith",
+        "account_type": "checking",
+        "token_id": "11e95f8ec39de8fbdb0a4f1a",
+        "ach_identifier": "P",
+        "ach_sec_code": "C21",
+        "auth_amount": 1,
+        "auth_code": "BR349K",
+        "avs": "BAD",
+        "avs_enhanced": "N",
+        "cardholder_present": true,
+        "card_present": true,
+        "check_number": "8520748520963",
+        "customer_ip": "192.168.0.10",
+        "cvv_response": "N",
+        "entry_mode_id": "C",
+        "emv_receipt_data": {
+          "AID": "a0000000042203",
+          "APPLAB": "US Maestro",
+          "APPN": "US Maestro",
+          "CVM": "Pin Verified",
+          "TSI": "e800",
+          "TVR": "0800008000"
+        },
+        "first_six": "545454",
+        "last_four": "5454",
+        "payment_method": "cc",
+        "terminal_serial_number": "1234567890",
+        "transaction_settlement_status": null,
+        "charge_back_date": "2021-12-01",
+        "is_recurring": true,
+        "notification_email_sent": true,
+        "par": "Q1J4Z28RKA1EBL470G9XYG90R5D3E",
+        "reason_code_id": 1000,
+        "recurring_id": "11e95f8ec39de8fbdb0a4f1a",
+        "settle_date": "2021-12-01",
+        "status_code": 101,
+        "transaction_batch_id": "11e95f8ec39de8fbdb0a4f1a",
+        "verbiage": "APPROVED",
+        "voucher_number": "1234",
+        "void_date": "2021-12-01",
+        "batch": "2",
+        "terms_agree": true,
+        "response_message": null,
+        "return_date": "2021-12-01",
+        "trx_source_id": 8,
+        "routing_number": "051904524",
+        "trx_source_code": 8,
+        "paylink_id": "11e95f8ec39de8fbdb0a4f1a",
+        "is_accountvault": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "effective_date": "2021-12-01",
+        "is_token": true,
+        "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+        "hosted_payment_page_id": "11e95f8ec39de8fbdb0a4f1a"
+      }
+    ],
+    "activeRecurrings": [
+      {
+        "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+        "token_id": "11e95f8ec39de8fbdb0a4f1a",
+        "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+        "account_vault_api_id": "token1234abcd",
+        "token_api_id": "token1234abcd",
+        "_joi": {
+          "conditions": {}
+        },
+        "active": true,
+        "description": "Description",
+        "end_date": "2021-12-01",
+        "installment_total_count": 20,
+        "interval": 1,
+        "interval_type": "d",
+        "location_id": "11e95f8ec39de8fbdb0a4f1a",
+        "notification_days": 2,
+        "payment_method": "cc",
+        "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "recurring_id": "11e95f8ec39de8fbdb0a4f1a",
+        "recurring_api_id": "recurring1234abcd",
+        "start_date": "2021-12-01",
+        "status": "active",
+        "transaction_amount": 300,
+        "terms_agree": true,
+        "terms_agree_ip": "192.168.0.10",
+        "recurring_c1": "recurring custom data 1",
+        "recurring_c2": "recurring custom data 2",
+        "recurring_c3": "recurring custom data 3",
+        "send_to_proc_as_recur": true,
+        "tags": [
+          "Walk-in Customer"
+        ],
+        "secondary_amount": 100,
+        "currency": "USD",
+        "id": "11e95f8ec39de8fbdb0a4f1a",
+        "next_run_date": "2021-12-01",
+        "created_ts": 1422040992,
+        "modified_ts": 1422040992,
+        "recurring_type_id": "i",
+        "installment_amount_total": 99999999,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      }
+    ],
+    "is_deletable": true,
+    "signature": {
+      "signature": "iVBORw0KGgoAAAANSUhEUgAAANwAAAAsCAYAAAAOyNaYAAACvklEQVR4nO3bLZOqUBjA8ScaNxqNRiKRaCQaiXwEG7cRiUajH8FINBqJRCKR+NxyD4OIXtaXw2H3/5s5MwZ39rgz/zkvuKKqgar+YTAYnx/y7wUACwgOsIjgAIsIznFlWerlcpl6GngTgnNYVVW6WCxURDTLsqmngzcgOMdtNhsVERURDYJA8zyfekp4AcE5oCgKzfN8cOvYNM1VdCKiURRNMEu8A8FNrCzLm5j68Q1Fx2o3TwTngCzLNAiCq6D6UTVNo0mS6NfXF+HNGME5or+KeZ7XxrVcLjWOY83zXOu6vnqfeQ/bzHkgOIf0VzHP83Sz2eh6vW4D831fy7JsowvDsH1NdO4jOAfVdX0VXhRFWhSFRlHUrmr7/b4NLU3T9jVbTLcRnMO620ezep1Op3bF832/3XIORQr3EJzjumc7E9HQBUoYhjdnPKJzD8E5xjyT647T6aSr1UpFRPf7ffveuq41TdOHZzyicwvBTeBeVGEY3jwaGBrmWV3/Z82K1z/jca5zB8F9wFBQY6JaLBYax7EmSXJ3DD2v624rzUpoVrsgCDjXOWRWwVVVNfUUrvTDGrNK3YsqTdNRn69pGs2y7NshssV0w2yCK4pCRUSPx+Okc/hfWI9WqbFRPaMbYjc+s7ptt1uic8BsgsvzXEVED4fDR3/P2PPVUFifDOo7THxmPiY03/fZXk7s1wR371z1zPnKlbDGuvc9TKKz78cE9yio3W436vbv1fOV6/oPx010/Ee5PbMLbrfbPRWU53kPb/9+SlRj9L8ALcJ/lNsym+DO5/PTQaVpqnVdT/0RnGLOed0LlikvpH6L2QSnqoPX4QT1mu4FC3/Dz5tVcMDcERxgEcEBFhEcYBHBARYRHGARwQEWERxgEcEBFhEcYBHBARYRHGARwQEWERxgEcEBFhEcYBHBARYRHGDRX+EC0ah++pNrAAAAAElFTkSuQmCC",
+      "resource": "Transaction",
+      "resource_id": "11e95f8ec39de8fbdb0a4f1a",
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "created_ts": 1422040992,
+      "modified_ts": 1422040992
+    },
+    "created_user": {
+      "account_number": "5454545454545454",
+      "branding_domain_url": "{branding_domain_url}",
+      "cell_phone": "3339998822",
+      "company_name": "Fortis Payment Systems, LLC",
+      "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+      "date_of_birth": "2021-12-01",
+      "domain_id": "11e95f8ec39de8fbdb0a4f1a",
+      "email": "email@domain.com",
+      "email_trx_receipt": true,
+      "home_phone": "3339998822",
+      "first_name": "John",
+      "last_name": "Smith",
+      "locale": "en-US",
+      "office_phone": "3339998822",
+      "office_ext_phone": "5",
+      "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
+      "requires_new_password": null,
+      "terms_condition_code": "20220308",
+      "tz": "America/New_York",
+      "ui_prefs": {
+        "entry_page": "dashboard",
+        "page_size": 2,
+        "report_export_type": "csv",
+        "process_method": "virtual_terminal",
+        "default_terminal": "11e95f8ec39de8fbdb0a4f1a"
+      },
+      "username": "{user_name}",
+      "user_api_key": "234bas8dfn8238f923w2",
+      "user_hash_key": null,
+      "user_type_code": 100,
+      "password": null,
+      "zip": "48375",
+      "location_id": "11e95f8ec39de8fbdb0a4f1a",
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
+      "id": "11e95f8ec39de8fbdb0a4f1a",
+      "status": true,
+      "login_attempts": 0,
+      "last_login_ts": 1422040992,
+      "created_ts": 1422040992,
+      "modified_ts": 1422040992,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "terms_accepted_ts": 1422040992,
+      "terms_agree_ip": "192.168.0.10",
+      "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992
+    },
+    "changelogs": [
+      {
+        "id": "11e95f8ec39de8fbdb0a4f1a",
+        "created_ts": 1422040992,
+        "action": "CREATE",
+        "model": "TransactionRequest",
+        "model_id": "11ec829598f0d4008be9aba4",
+        "user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "changelog_details": [
+          {
+            "id": "11e95f8ec39de8fbdb0a4f1a",
+            "changelog_id": "11e95f8ec39de8fbdb0a4f1a",
+            "field": "next_run_ts",
+            "old_value": "1643616000"
+          }
+        ],
+        "user": {
+          "id": "11e95f8ec39de8fbdb0a4f1a",
+          "username": "email@domain.com",
+          "first_name": "Bob",
+          "last_name": "Fairview"
+        }
+      }
+    ],
+    "account_vault_cau_logs": [
+      {
+        "id": "11e95f8ec39de8fbdb0a4f1a",
+        "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+        "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+        "created_ts": 1422040992,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
+      }
+    ],
+    "account_vault_cau_product_transactions": [
+      {
+        "id": "11e95f8ec39de8fbdb0a4f1a",
+        "created_ts": 1422040992,
+        "modified_ts": 1422040992,
+        "account_number": "5454545454545454",
+        "address": {
+          "city": "Novi",
+          "state": "MI",
+          "postal_code": "48375",
+          "country": "US"
+        },
+        "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
+        "contact_email_trx_receipt_default": true,
+        "default_ach": "11e608a7d515f1e093242bb2",
+        "default_cc": "11e608a442a5f1e092242dda",
+        "email_reply_to": "email@domain.com",
+        "fax": "3339998822",
+        "location_api_id": "location-111111",
+        "location_api_key": "AE34BBCAADF4AE34BBCAADF4",
+        "location_c1": "custom 1",
+        "location_c2": "custom 2",
+        "location_c3": "custom data 3",
+        "name": "Sample Company Headquarters",
+        "office_phone": "2481234567",
+        "office_ext_phone": "1021021209",
+        "tz": "America/New_York",
+        "parent_id": "11e95f8ec39de8fbdb0a4f1a",
+        "show_contact_notes": true,
+        "show_contact_files": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "location_type": "merchant",
+        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+        "additional_access": {}
       }
     ]
   }
@@ -2211,8 +3264,6 @@ $result = $tokensController->createANewTicketToken($body);
 
 # Delete a Single Token Record
 
-Delete a single token record
-
 ```php
 function deleteASingleTokenRecord(string $tokenId): ResponseToken
 ```
@@ -2221,7 +3272,7 @@ function deleteASingleTokenRecord(string $tokenId): ResponseToken
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `tokenId` | `string` | Template, Required | A unique, system-generated identifier for the Token.<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `tokenId` | `string` | Template, Required | A unique, system-generated identifier for the Token.<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
 
 ## Response Type
 
@@ -2242,18 +3293,21 @@ $result = $tokensController->deleteASingleTokenRecord($tokenId);
   "type": "Token",
   "data": {
     "account_holder_name": "John Smith",
-    "account_number": "545454545454545",
     "account_vault_api_id": "accountvaultabcd",
+    "token_api_id": "tokenabcd",
     "accountvault_c1": "accountvault custom 1",
     "accountvault_c2": "accountvault custom 2",
     "accountvault_c3": "accountvault custom 3",
+    "token_c1": "token custom 1",
+    "token_c2": "token custom 2",
+    "token_c3": "token custom 3",
     "ach_sec_code": "WEB",
     "billing_address": {
       "city": "Novi",
       "state": "Michigan",
       "postal_code": "48375",
-      "street": "43155 Main Street STE 2310-C",
-      "phone": "3339998822"
+      "phone": "3339998822",
+      "country": "USA"
     },
     "contact_id": "11e95f8ec39de8fbdb0a4f1a",
     "customer_id": "123456",
@@ -2265,11 +3319,22 @@ $result = $tokensController->deleteASingleTokenRecord($tokenId);
     },
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
     "previous_account_vault_api_id": "previousaccountvault123456",
+    "previous_token_api_id": "previousaccountvault123456",
     "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+    "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
     "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+    "account_number": "545454545454545",
     "terms_agree": true,
     "terms_agree_ip": "192.168.0.10",
     "title": "Test CC Account",
+    "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+    "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+    "secure_protocol_version": 2,
+    "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+    "secure_collection_indicator": null,
+    "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+    "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+    "_joi": {},
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "account_type": "checking",
     "active": true,
@@ -2280,6 +3345,7 @@ $result = $tokensController->deleteASingleTokenRecord($tokenId);
     "e_format": null,
     "e_keyed_data": null,
     "expiring_in_months": null,
+    "exp_date": "0722",
     "first_six": "700953",
     "has_recurring": false,
     "last_four": "3657",
@@ -2287,6 +3353,9 @@ $result = $tokensController->deleteASingleTokenRecord($tokenId);
     "payment_method": "cc",
     "ticket": null,
     "track_data": null,
+    "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "cau_last_updated_ts": 1422040992,
+    "routing_number": "051904524",
     "location": {
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
@@ -2296,15 +3365,12 @@ $result = $tokensController->deleteASingleTokenRecord($tokenId);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -2315,10 +3381,14 @@ $result = $tokensController->deleteASingleTokenRecord($tokenId);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     },
     "contact": {
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -2332,8 +3402,7 @@ $result = $tokensController->deleteASingleTokenRecord($tokenId);
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C"
+        "country": "USA"
       },
       "company_name": "Fortis Payment Systems, LLC",
       "header_message": "This is a sample message for you",
@@ -2342,6 +3411,9 @@ $result = $tokensController->deleteASingleTokenRecord($tokenId);
       "home_phone": "3339998822",
       "office_phone": "3339998822",
       "office_phone_ext": "5",
+      "home_phone_country_code": "+1",
+      "office_phone_country_code": "+1",
+      "cell_phone_country_code": "+1",
       "header_message_type": 0,
       "update_if_exists": 1,
       "contact_c1": "any",
@@ -2349,10 +3421,12 @@ $result = $tokensController->deleteASingleTokenRecord($tokenId);
       "contact_c3": "something",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
       "email": "email@domain.com",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "active": true
+      "active": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "transactions": [
       {
@@ -2368,8 +3442,8 @@ $result = $tokensController->deleteASingleTokenRecord($tokenId);
           "city": "Novi",
           "state": "Michigan",
           "postal_code": "48375",
-          "street": "43155 Main Street STE 2310-C",
-          "phone": "3339998822"
+          "phone": "3339998822",
+          "country": "USA"
         },
         "checkin_date": "2021-12-01",
         "checkout_date": "2021-12-01",
@@ -2389,6 +3463,11 @@ $result = $tokensController->deleteASingleTokenRecord($tokenId);
         "installment": true,
         "installment_number": 1,
         "installment_count": 1,
+        "recurring_flag": "yes",
+        "installment_counter": 1,
+        "installment_total": 1,
+        "subscription": false,
+        "standing_order": false,
         "location_api_id": "location-api-id-florida-2",
         "location_id": "11e95f8ec39de8fbdb0a4f1a",
         "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -2418,6 +3497,11 @@ $result = $tokensController->deleteASingleTokenRecord($tokenId);
         "transaction_c2": "custom-data-2",
         "transaction_c3": "custom-data-3",
         "bank_funded_only_override": false,
+        "allow_partial_authorization_override": false,
+        "auto_decline_cvv_override": false,
+        "auto_decline_street_override": false,
+        "auto_decline_zip_override": false,
+        "ebt_type": "food_stamp",
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "created_ts": 1422040992,
         "modified_ts": 1422040992,
@@ -2452,7 +3536,7 @@ $result = $tokensController->deleteASingleTokenRecord($tokenId);
         "transaction_settlement_status": null,
         "charge_back_date": "2021-12-01",
         "is_recurring": true,
-        "notification_email_sent": "true",
+        "notification_email_sent": true,
         "par": "Q1J4Z28RKA1EBL470G9XYG90R5D3E",
         "reason_code_id": 1000,
         "recurring_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -2460,17 +3544,35 @@ $result = $tokensController->deleteASingleTokenRecord($tokenId);
         "status_code": 101,
         "transaction_batch_id": "11e95f8ec39de8fbdb0a4f1a",
         "verbiage": "APPROVED",
+        "voucher_number": "1234",
         "void_date": "2021-12-01",
         "batch": "2",
         "terms_agree": true,
         "response_message": null,
         "return_date": "2021-12-01",
-        "trx_source_id": 8
+        "trx_source_id": 8,
+        "routing_number": "051904524",
+        "trx_source_code": 8,
+        "paylink_id": "11e95f8ec39de8fbdb0a4f1a",
+        "is_accountvault": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "effective_date": "2021-12-01",
+        "is_token": true,
+        "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+        "hosted_payment_page_id": "11e95f8ec39de8fbdb0a4f1a"
       }
     ],
     "activeRecurrings": [
       {
         "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+        "token_id": "11e95f8ec39de8fbdb0a4f1a",
+        "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+        "account_vault_api_id": "token1234abcd",
+        "token_api_id": "token1234abcd",
+        "_joi": {
+          "conditions": {}
+        },
         "active": true,
         "description": "Description",
         "end_date": "2021-12-01",
@@ -2485,18 +3587,25 @@ $result = $tokensController->deleteASingleTokenRecord($tokenId);
         "recurring_api_id": "recurring1234abcd",
         "start_date": "2021-12-01",
         "status": "active",
-        "transaction_amount": 3,
+        "transaction_amount": 300,
         "terms_agree": true,
         "terms_agree_ip": "192.168.0.10",
         "recurring_c1": "recurring custom data 1",
         "recurring_c2": "recurring custom data 2",
         "recurring_c3": "recurring custom data 3",
         "send_to_proc_as_recur": true,
+        "tags": [
+          "Walk-in Customer"
+        ],
+        "secondary_amount": 100,
+        "currency": "USD",
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "next_run_date": "2021-12-01",
         "created_ts": 1422040992,
         "modified_ts": 1422040992,
-        "recurring_type_id": "i"
+        "recurring_type_id": "i",
+        "installment_amount_total": 99999999,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
       }
     ],
     "is_deletable": true,
@@ -2510,10 +3619,8 @@ $result = $tokensController->deleteASingleTokenRecord($tokenId);
     },
     "created_user": {
       "account_number": "5454545454545454",
-      "address": "43155 Main Street STE 2310-C",
       "branding_domain_url": "{branding_domain_url}",
       "cell_phone": "3339998822",
-      "city": "Novi",
       "company_name": "Fortis Payment Systems, LLC",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "date_of_birth": "2021-12-01",
@@ -2528,7 +3635,6 @@ $result = $tokensController->deleteASingleTokenRecord($tokenId);
       "office_ext_phone": "5",
       "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
       "requires_new_password": null,
-      "state": "Michigan",
       "terms_condition_code": "20220308",
       "tz": "America/New_York",
       "ui_prefs": {
@@ -2545,7 +3651,15 @@ $result = $tokensController->deleteASingleTokenRecord($tokenId);
       "password": null,
       "zip": "48375",
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
-      "status_id": true,
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "status": true,
       "login_attempts": 0,
@@ -2555,7 +3669,9 @@ $result = $tokensController->deleteASingleTokenRecord($tokenId);
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "terms_accepted_ts": 1422040992,
       "terms_agree_ip": "192.168.0.10",
-      "current_date_time": "2019-03-11T10:38:26-0700"
+      "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992
     },
     "changelogs": [
       {
@@ -2600,15 +3716,12 @@ $result = $tokensController->deleteASingleTokenRecord($tokenId);
           "city": "Novi",
           "state": "MI",
           "postal_code": "48375",
-          "country": "US",
-          "street": "43155 Main Street STE 2310-C",
-          "street2": "43155 Main Street STE 2310-C"
+          "country": "US"
         },
         "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
         "contact_email_trx_receipt_default": true,
         "default_ach": "11e608a7d515f1e093242bb2",
         "default_cc": "11e608a442a5f1e092242dda",
-        "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
         "email_reply_to": "email@domain.com",
         "fax": "3339998822",
         "location_api_id": "location-111111",
@@ -2619,10 +3732,14 @@ $result = $tokensController->deleteASingleTokenRecord($tokenId);
         "name": "Sample Company Headquarters",
         "office_phone": "2481234567",
         "office_ext_phone": "1021021209",
-        "recurring_notification_days_default": 0,
         "tz": "America/New_York",
         "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+        "show_contact_notes": true,
+        "show_contact_files": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "location_type": "merchant",
+        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+        "additional_access": {}
       }
     ]
   }
@@ -2638,18 +3755,17 @@ $result = $tokensController->deleteASingleTokenRecord($tokenId);
 
 # View Single Token Record
 
-View single token record
-
 ```php
-function viewSingleTokenRecord(string $tokenId, ?array $expand = null): ResponseToken
+function viewSingleTokenRecord(string $tokenId, ?array $expand = null, ?array $fields = null): ResponseToken
 ```
 
 ## Parameters
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `tokenId` | `string` | Template, Required | A unique, system-generated identifier for the Token.<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
-| `expand` | [`?(string[]) (Expand38Enum)`](../../doc/models/expand-38-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `tokenId` | `string` | Template, Required | A unique, system-generated identifier for the Token.<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `expand` | [`?(string(Expand47Enum)[])`](../../doc/models/expand-47-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `fields` | [`?(string(Field53Enum)[])`](../../doc/models/field-53-enum.md) | Query, Optional | You can use any `field_name` from this endpoint results to filter the list of fields returned on the response. |
 
 ## Response Type
 
@@ -2670,18 +3786,21 @@ $result = $tokensController->viewSingleTokenRecord($tokenId);
   "type": "Token",
   "data": {
     "account_holder_name": "John Smith",
-    "account_number": "545454545454545",
     "account_vault_api_id": "accountvaultabcd",
+    "token_api_id": "tokenabcd",
     "accountvault_c1": "accountvault custom 1",
     "accountvault_c2": "accountvault custom 2",
     "accountvault_c3": "accountvault custom 3",
+    "token_c1": "token custom 1",
+    "token_c2": "token custom 2",
+    "token_c3": "token custom 3",
     "ach_sec_code": "WEB",
     "billing_address": {
       "city": "Novi",
       "state": "Michigan",
       "postal_code": "48375",
-      "street": "43155 Main Street STE 2310-C",
-      "phone": "3339998822"
+      "phone": "3339998822",
+      "country": "USA"
     },
     "contact_id": "11e95f8ec39de8fbdb0a4f1a",
     "customer_id": "123456",
@@ -2693,11 +3812,22 @@ $result = $tokensController->viewSingleTokenRecord($tokenId);
     },
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
     "previous_account_vault_api_id": "previousaccountvault123456",
+    "previous_token_api_id": "previousaccountvault123456",
     "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+    "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
     "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+    "account_number": "545454545454545",
     "terms_agree": true,
     "terms_agree_ip": "192.168.0.10",
     "title": "Test CC Account",
+    "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+    "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+    "secure_protocol_version": 2,
+    "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+    "secure_collection_indicator": null,
+    "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+    "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+    "_joi": {},
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "account_type": "checking",
     "active": true,
@@ -2708,6 +3838,7 @@ $result = $tokensController->viewSingleTokenRecord($tokenId);
     "e_format": null,
     "e_keyed_data": null,
     "expiring_in_months": null,
+    "exp_date": "0722",
     "first_six": "700953",
     "has_recurring": false,
     "last_four": "3657",
@@ -2715,6 +3846,9 @@ $result = $tokensController->viewSingleTokenRecord($tokenId);
     "payment_method": "cc",
     "ticket": null,
     "track_data": null,
+    "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "cau_last_updated_ts": 1422040992,
+    "routing_number": "051904524",
     "location": {
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
@@ -2724,15 +3858,12 @@ $result = $tokensController->viewSingleTokenRecord($tokenId);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -2743,10 +3874,14 @@ $result = $tokensController->viewSingleTokenRecord($tokenId);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     },
     "contact": {
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -2760,8 +3895,7 @@ $result = $tokensController->viewSingleTokenRecord($tokenId);
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C"
+        "country": "USA"
       },
       "company_name": "Fortis Payment Systems, LLC",
       "header_message": "This is a sample message for you",
@@ -2770,6 +3904,9 @@ $result = $tokensController->viewSingleTokenRecord($tokenId);
       "home_phone": "3339998822",
       "office_phone": "3339998822",
       "office_phone_ext": "5",
+      "home_phone_country_code": "+1",
+      "office_phone_country_code": "+1",
+      "cell_phone_country_code": "+1",
       "header_message_type": 0,
       "update_if_exists": 1,
       "contact_c1": "any",
@@ -2777,10 +3914,12 @@ $result = $tokensController->viewSingleTokenRecord($tokenId);
       "contact_c3": "something",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
       "email": "email@domain.com",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "active": true
+      "active": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "transactions": [
       {
@@ -2796,8 +3935,8 @@ $result = $tokensController->viewSingleTokenRecord($tokenId);
           "city": "Novi",
           "state": "Michigan",
           "postal_code": "48375",
-          "street": "43155 Main Street STE 2310-C",
-          "phone": "3339998822"
+          "phone": "3339998822",
+          "country": "USA"
         },
         "checkin_date": "2021-12-01",
         "checkout_date": "2021-12-01",
@@ -2817,6 +3956,11 @@ $result = $tokensController->viewSingleTokenRecord($tokenId);
         "installment": true,
         "installment_number": 1,
         "installment_count": 1,
+        "recurring_flag": "yes",
+        "installment_counter": 1,
+        "installment_total": 1,
+        "subscription": false,
+        "standing_order": false,
         "location_api_id": "location-api-id-florida-2",
         "location_id": "11e95f8ec39de8fbdb0a4f1a",
         "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -2846,6 +3990,11 @@ $result = $tokensController->viewSingleTokenRecord($tokenId);
         "transaction_c2": "custom-data-2",
         "transaction_c3": "custom-data-3",
         "bank_funded_only_override": false,
+        "allow_partial_authorization_override": false,
+        "auto_decline_cvv_override": false,
+        "auto_decline_street_override": false,
+        "auto_decline_zip_override": false,
+        "ebt_type": "food_stamp",
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "created_ts": 1422040992,
         "modified_ts": 1422040992,
@@ -2880,7 +4029,7 @@ $result = $tokensController->viewSingleTokenRecord($tokenId);
         "transaction_settlement_status": null,
         "charge_back_date": "2021-12-01",
         "is_recurring": true,
-        "notification_email_sent": "true",
+        "notification_email_sent": true,
         "par": "Q1J4Z28RKA1EBL470G9XYG90R5D3E",
         "reason_code_id": 1000,
         "recurring_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -2888,17 +4037,35 @@ $result = $tokensController->viewSingleTokenRecord($tokenId);
         "status_code": 101,
         "transaction_batch_id": "11e95f8ec39de8fbdb0a4f1a",
         "verbiage": "APPROVED",
+        "voucher_number": "1234",
         "void_date": "2021-12-01",
         "batch": "2",
         "terms_agree": true,
         "response_message": null,
         "return_date": "2021-12-01",
-        "trx_source_id": 8
+        "trx_source_id": 8,
+        "routing_number": "051904524",
+        "trx_source_code": 8,
+        "paylink_id": "11e95f8ec39de8fbdb0a4f1a",
+        "is_accountvault": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "effective_date": "2021-12-01",
+        "is_token": true,
+        "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+        "hosted_payment_page_id": "11e95f8ec39de8fbdb0a4f1a"
       }
     ],
     "activeRecurrings": [
       {
         "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+        "token_id": "11e95f8ec39de8fbdb0a4f1a",
+        "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+        "account_vault_api_id": "token1234abcd",
+        "token_api_id": "token1234abcd",
+        "_joi": {
+          "conditions": {}
+        },
         "active": true,
         "description": "Description",
         "end_date": "2021-12-01",
@@ -2913,18 +4080,25 @@ $result = $tokensController->viewSingleTokenRecord($tokenId);
         "recurring_api_id": "recurring1234abcd",
         "start_date": "2021-12-01",
         "status": "active",
-        "transaction_amount": 3,
+        "transaction_amount": 300,
         "terms_agree": true,
         "terms_agree_ip": "192.168.0.10",
         "recurring_c1": "recurring custom data 1",
         "recurring_c2": "recurring custom data 2",
         "recurring_c3": "recurring custom data 3",
         "send_to_proc_as_recur": true,
+        "tags": [
+          "Walk-in Customer"
+        ],
+        "secondary_amount": 100,
+        "currency": "USD",
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "next_run_date": "2021-12-01",
         "created_ts": 1422040992,
         "modified_ts": 1422040992,
-        "recurring_type_id": "i"
+        "recurring_type_id": "i",
+        "installment_amount_total": 99999999,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
       }
     ],
     "is_deletable": true,
@@ -2938,10 +4112,8 @@ $result = $tokensController->viewSingleTokenRecord($tokenId);
     },
     "created_user": {
       "account_number": "5454545454545454",
-      "address": "43155 Main Street STE 2310-C",
       "branding_domain_url": "{branding_domain_url}",
       "cell_phone": "3339998822",
-      "city": "Novi",
       "company_name": "Fortis Payment Systems, LLC",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "date_of_birth": "2021-12-01",
@@ -2956,7 +4128,6 @@ $result = $tokensController->viewSingleTokenRecord($tokenId);
       "office_ext_phone": "5",
       "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
       "requires_new_password": null,
-      "state": "Michigan",
       "terms_condition_code": "20220308",
       "tz": "America/New_York",
       "ui_prefs": {
@@ -2973,7 +4144,15 @@ $result = $tokensController->viewSingleTokenRecord($tokenId);
       "password": null,
       "zip": "48375",
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
-      "status_id": true,
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "status": true,
       "login_attempts": 0,
@@ -2983,7 +4162,9 @@ $result = $tokensController->viewSingleTokenRecord($tokenId);
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "terms_accepted_ts": 1422040992,
       "terms_agree_ip": "192.168.0.10",
-      "current_date_time": "2019-03-11T10:38:26-0700"
+      "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992
     },
     "changelogs": [
       {
@@ -3028,15 +4209,12 @@ $result = $tokensController->viewSingleTokenRecord($tokenId);
           "city": "Novi",
           "state": "MI",
           "postal_code": "48375",
-          "country": "US",
-          "street": "43155 Main Street STE 2310-C",
-          "street2": "43155 Main Street STE 2310-C"
+          "country": "US"
         },
         "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
         "contact_email_trx_receipt_default": true,
         "default_ach": "11e608a7d515f1e093242bb2",
         "default_cc": "11e608a442a5f1e092242dda",
-        "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
         "email_reply_to": "email@domain.com",
         "fax": "3339998822",
         "location_api_id": "location-111111",
@@ -3047,10 +4225,14 @@ $result = $tokensController->viewSingleTokenRecord($tokenId);
         "name": "Sample Company Headquarters",
         "office_phone": "2481234567",
         "office_ext_phone": "1021021209",
-        "recurring_notification_days_default": 0,
         "tz": "America/New_York",
         "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+        "show_contact_notes": true,
+        "show_contact_files": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "location_type": "merchant",
+        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+        "additional_access": {}
       }
     ]
   }
@@ -3066,14 +4248,15 @@ $result = $tokensController->viewSingleTokenRecord($tokenId);
 
 # List All Tokens Related
 
-List all tokens related
-
 ```php
 function listAllTokensRelated(
     ?Page $page = null,
-    ?Sort25 $sort = null,
-    ?Filter11 $filter = null,
-    ?array $expand = null
+    ?array $order = null,
+    ?array $filterBy = null,
+    ?array $expand = null,
+    ?string $format = null,
+    ?string $typeahead = null,
+    ?array $fields = null
 ): ResponseTokensCollection
 ```
 
@@ -3082,9 +4265,12 @@ function listAllTokensRelated(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `page` | [`?Page`](../../doc/models/page.md) | Query, Optional | Use this field to specify paginate your results, by using page size and number. You can use one of the following methods:<br><br>> /endpoint?page={ "number": 1, "size": 50 }<br>> <br>> /endpoint?page[number]=1&page[size]=50 |
-| `sort` | [`?Sort25`](../../doc/models/sort-25.md) | Query, Optional | You can use any `field_name` from this endpoint results, and you can combine more than one field for more complex sorting. You can use one of the following methods:<br><br>> /endpoint?sort={ "field_name": "asc", "field_name2": "desc" }<br>> <br>> /endpoint?sort[field_name]=asc&sort[field_name2]=desc |
-| `filter` | [`?Filter11`](../../doc/models/filter-11.md) | Query, Optional | You can use any `field_name` from this endpoint results as a filter, and you can also use more than one field to create AND conditions. For date fields (ended with `_ts`), you can also search for ranges using the `$gte` (Greater than or equal to) and/or  `$lte` (Lower than or equal to). You can use one of the following methods:<br><br>> /endpoint?filter={ "field_name": "Value" }<br>> <br>> /endpoint?filter[field_name]=Value<br>> <br>> /endpoint?filter={ "created_ts": "today" }<br>> <br>> /endpoint?filter[created_ts]=today<br>> <br>> /endpoint?filter={ "created_ts": { "$gte": "yesterday", "$lte": "today" } }<br>> <br>> /endpoint?filter[created_ts][$gte]=yesterday&filter[created_ts][$lte]=today |
-| `expand` | [`?(string[]) (Expand38Enum)`](../../doc/models/expand-38-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `order` | [`?(Order21[])`](../../doc/models/order-21.md) | Query, Optional | Criteria used in query string parameters to order results.  Most fields from the endpoint results can be used as a `key`.  Unsupported fields or operators will return a `412`.  Must be encoded, or use syntax that does not require encoding.<br><br>> /endpoint?order[0][key]=created_ts&order[0][operator]=asc<br>> <br>> /endpoint?order=[{ "key": "created_ts", "operator": "asc"}]<br>> <br>> /endpoint?order=[{ "key": "balance", "operator": "desc"},{ "key": "created_ts", "operator": "asc"}]<br><br>**Constraints**: *Minimum Items*: `1` |
+| `filterBy` | [`?(FilterBy[])`](../../doc/models/filter-by.md) | Query, Optional | Filter criteria that can be used in query string parameters.  Most fields from the endpoint results can be used as a `key`.  Unsupported fields or operators will return a `412`. Must be encoded, or use syntax that does not require encoding.<br><br>> ?filter_by[0][key]=first_name&filter_by[0][operator]==&filter_by[0][value]=Steve<br>> <br>> /endpoint?filter_by=[{ "key": "first_name", "operator": "=", "value": "Fred" }]<br>> <br>> /endpoint?filter_by=[{ "key": "account_type", "operator": "=", "value": "VISA" }]<br>> <br>> /endpoint?filter_by=[{ "key": "created_ts", "operator": ">=", "value": "946702799" }, { "key": "created_ts", "operator": "<=", value: "1695061891" }]<br>> <br>> /endpoint?filter_by=[{ "key": "last_name", "operator": "IN", "value": "Williams,Brown,Allman" }]<br><br>**Constraints**: *Minimum Items*: `1` |
+| `expand` | [`?(string(Expand47Enum)[])`](../../doc/models/expand-47-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `format` | [`?string(Format1Enum)`](../../doc/models/format-1-enum.md) | Query, Optional | Reporting format, valid values: csv, tsv |
+| `typeahead` | `?string` | Query, Optional | You can use any `field_name` from this endpoint results to order the list using the value provided as filter for the same `field_name`. It will be ordered using the following rules: 1) Exact match, 2) Starts with, 3) Contains.<br><br>> /endpoint?filter={ "field_name": "Value" }&_typeahead=field_name |
+| `fields` | [`?(string(Field53Enum)[])`](../../doc/models/field-53-enum.md) | Query, Optional | You can use any `field_name` from this endpoint results to filter the list of fields returned on the response. |
 
 ## Response Type
 
@@ -3093,7 +4279,31 @@ function listAllTokensRelated(
 ## Example Usage
 
 ```php
-$result = $tokensController->listAllTokensRelated();
+$page = PageBuilder::init()
+    ->number(1)
+    ->size(50)
+    ->build();
+
+$order = [
+    Order21Builder::init(
+        'first_name',
+        OperatorEnum::ASC
+    )->build()
+];
+
+$filterBy = [
+    FilterByBuilder::init(
+        'first_name',
+        Operator1Enum::ENUM_1,
+        'Fred'
+    )->build()
+];
+
+$result = $tokensController->listAllTokensRelated(
+    $page,
+    $order,
+    $filterBy
+);
 ```
 
 ## Example Response *(as JSON)*
@@ -3104,18 +4314,21 @@ $result = $tokensController->listAllTokensRelated();
   "list": [
     {
       "account_holder_name": "John Smith",
-      "account_number": "545454545454545",
       "account_vault_api_id": "accountvaultabcd",
+      "token_api_id": "tokenabcd",
       "accountvault_c1": "accountvault custom 1",
       "accountvault_c2": "accountvault custom 2",
       "accountvault_c3": "accountvault custom 3",
+      "token_c1": "token custom 1",
+      "token_c2": "token custom 2",
+      "token_c3": "token custom 3",
       "ach_sec_code": "WEB",
       "billing_address": {
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "street": "43155 Main Street STE 2310-C",
-        "phone": "3339998822"
+        "phone": "3339998822",
+        "country": "USA"
       },
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "customer_id": "123456",
@@ -3127,11 +4340,22 @@ $result = $tokensController->listAllTokensRelated();
       },
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
       "previous_account_vault_api_id": "previousaccountvault123456",
+      "previous_token_api_id": "previousaccountvault123456",
       "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+      "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
       "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+      "account_number": "545454545454545",
       "terms_agree": true,
       "terms_agree_ip": "192.168.0.10",
       "title": "Test CC Account",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+      "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "secure_protocol_version": 2,
+      "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+      "secure_collection_indicator": null,
+      "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+      "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+      "_joi": {},
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "account_type": "checking",
       "active": true,
@@ -3142,6 +4366,7 @@ $result = $tokensController->listAllTokensRelated();
       "e_format": null,
       "e_keyed_data": null,
       "expiring_in_months": null,
+      "exp_date": "0722",
       "first_six": "700953",
       "has_recurring": false,
       "last_four": "3657",
@@ -3149,6 +4374,9 @@ $result = $tokensController->listAllTokensRelated();
       "payment_method": "cc",
       "ticket": null,
       "track_data": null,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "cau_last_updated_ts": 1422040992,
+      "routing_number": "051904524",
       "location": {
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "created_ts": 1422040992,
@@ -3158,15 +4386,12 @@ $result = $tokensController->listAllTokensRelated();
           "city": "Novi",
           "state": "MI",
           "postal_code": "48375",
-          "country": "US",
-          "street": "43155 Main Street STE 2310-C",
-          "street2": "43155 Main Street STE 2310-C"
+          "country": "US"
         },
         "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
         "contact_email_trx_receipt_default": true,
         "default_ach": "11e608a7d515f1e093242bb2",
         "default_cc": "11e608a442a5f1e092242dda",
-        "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
         "email_reply_to": "email@domain.com",
         "fax": "3339998822",
         "location_api_id": "location-111111",
@@ -3177,10 +4402,14 @@ $result = $tokensController->listAllTokensRelated();
         "name": "Sample Company Headquarters",
         "office_phone": "2481234567",
         "office_ext_phone": "1021021209",
-        "recurring_notification_days_default": 0,
         "tz": "America/New_York",
         "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+        "show_contact_notes": true,
+        "show_contact_files": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "location_type": "merchant",
+        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+        "additional_access": {}
       },
       "contact": {
         "location_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -3194,8 +4423,7 @@ $result = $tokensController->listAllTokensRelated();
           "city": "Novi",
           "state": "Michigan",
           "postal_code": "48375",
-          "country": "US",
-          "street": "43155 Main Street STE 2310-C"
+          "country": "USA"
         },
         "company_name": "Fortis Payment Systems, LLC",
         "header_message": "This is a sample message for you",
@@ -3204,6 +4432,9 @@ $result = $tokensController->listAllTokensRelated();
         "home_phone": "3339998822",
         "office_phone": "3339998822",
         "office_phone_ext": "5",
+        "home_phone_country_code": "+1",
+        "office_phone_country_code": "+1",
+        "cell_phone_country_code": "+1",
         "header_message_type": 0,
         "update_if_exists": 1,
         "contact_c1": "any",
@@ -3211,10 +4442,12 @@ $result = $tokensController->listAllTokensRelated();
         "contact_c3": "something",
         "parent_id": "11e95f8ec39de8fbdb0a4f1a",
         "email": "email@domain.com",
+        "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "created_ts": 1422040992,
         "modified_ts": 1422040992,
-        "active": true
+        "active": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
       },
       "transactions": [
         {
@@ -3230,8 +4463,8 @@ $result = $tokensController->listAllTokensRelated();
             "city": "Novi",
             "state": "Michigan",
             "postal_code": "48375",
-            "street": "43155 Main Street STE 2310-C",
-            "phone": "3339998822"
+            "phone": "3339998822",
+            "country": "USA"
           },
           "checkin_date": "2021-12-01",
           "checkout_date": "2021-12-01",
@@ -3251,6 +4484,11 @@ $result = $tokensController->listAllTokensRelated();
           "installment": true,
           "installment_number": 1,
           "installment_count": 1,
+          "recurring_flag": "yes",
+          "installment_counter": 1,
+          "installment_total": 1,
+          "subscription": false,
+          "standing_order": false,
           "location_api_id": "location-api-id-florida-2",
           "location_id": "11e95f8ec39de8fbdb0a4f1a",
           "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -3280,6 +4518,11 @@ $result = $tokensController->listAllTokensRelated();
           "transaction_c2": "custom-data-2",
           "transaction_c3": "custom-data-3",
           "bank_funded_only_override": false,
+          "allow_partial_authorization_override": false,
+          "auto_decline_cvv_override": false,
+          "auto_decline_street_override": false,
+          "auto_decline_zip_override": false,
+          "ebt_type": "food_stamp",
           "id": "11e95f8ec39de8fbdb0a4f1a",
           "created_ts": 1422040992,
           "modified_ts": 1422040992,
@@ -3314,7 +4557,7 @@ $result = $tokensController->listAllTokensRelated();
           "transaction_settlement_status": null,
           "charge_back_date": "2021-12-01",
           "is_recurring": true,
-          "notification_email_sent": "true",
+          "notification_email_sent": true,
           "par": "Q1J4Z28RKA1EBL470G9XYG90R5D3E",
           "reason_code_id": 1000,
           "recurring_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -3322,17 +4565,35 @@ $result = $tokensController->listAllTokensRelated();
           "status_code": 101,
           "transaction_batch_id": "11e95f8ec39de8fbdb0a4f1a",
           "verbiage": "APPROVED",
+          "voucher_number": "1234",
           "void_date": "2021-12-01",
           "batch": "2",
           "terms_agree": true,
           "response_message": null,
           "return_date": "2021-12-01",
-          "trx_source_id": 8
+          "trx_source_id": 8,
+          "routing_number": "051904524",
+          "trx_source_code": 8,
+          "paylink_id": "11e95f8ec39de8fbdb0a4f1a",
+          "is_accountvault": true,
+          "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+          "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+          "effective_date": "2021-12-01",
+          "is_token": true,
+          "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+          "hosted_payment_page_id": "11e95f8ec39de8fbdb0a4f1a"
         }
       ],
       "activeRecurrings": [
         {
           "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+          "token_id": "11e95f8ec39de8fbdb0a4f1a",
+          "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+          "account_vault_api_id": "token1234abcd",
+          "token_api_id": "token1234abcd",
+          "_joi": {
+            "conditions": {}
+          },
           "active": true,
           "description": "Description",
           "end_date": "2021-12-01",
@@ -3347,18 +4608,25 @@ $result = $tokensController->listAllTokensRelated();
           "recurring_api_id": "recurring1234abcd",
           "start_date": "2021-12-01",
           "status": "active",
-          "transaction_amount": 3,
+          "transaction_amount": 300,
           "terms_agree": true,
           "terms_agree_ip": "192.168.0.10",
           "recurring_c1": "recurring custom data 1",
           "recurring_c2": "recurring custom data 2",
           "recurring_c3": "recurring custom data 3",
           "send_to_proc_as_recur": true,
+          "tags": [
+            "Walk-in Customer"
+          ],
+          "secondary_amount": 100,
+          "currency": "USD",
           "id": "11e95f8ec39de8fbdb0a4f1a",
           "next_run_date": "2021-12-01",
           "created_ts": 1422040992,
           "modified_ts": 1422040992,
-          "recurring_type_id": "i"
+          "recurring_type_id": "i",
+          "installment_amount_total": 99999999,
+          "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
         }
       ],
       "is_deletable": true,
@@ -3372,10 +4640,8 @@ $result = $tokensController->listAllTokensRelated();
       },
       "created_user": {
         "account_number": "5454545454545454",
-        "address": "43155 Main Street STE 2310-C",
         "branding_domain_url": "{branding_domain_url}",
         "cell_phone": "3339998822",
-        "city": "Novi",
         "company_name": "Fortis Payment Systems, LLC",
         "contact_id": "11e95f8ec39de8fbdb0a4f1a",
         "date_of_birth": "2021-12-01",
@@ -3390,7 +4656,6 @@ $result = $tokensController->listAllTokensRelated();
         "office_ext_phone": "5",
         "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
         "requires_new_password": null,
-        "state": "Michigan",
         "terms_condition_code": "20220308",
         "tz": "America/New_York",
         "ui_prefs": {
@@ -3407,7 +4672,15 @@ $result = $tokensController->listAllTokensRelated();
         "password": null,
         "zip": "48375",
         "location_id": "11e95f8ec39de8fbdb0a4f1a",
-        "status_id": true,
+        "status_code": 1,
+        "api_only": false,
+        "is_invitation": false,
+        "address": {
+          "city": "Novi",
+          "state": "MI",
+          "postal_code": "48375",
+          "country": "US"
+        },
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "status": true,
         "login_attempts": 0,
@@ -3417,7 +4690,9 @@ $result = $tokensController->listAllTokensRelated();
         "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
         "terms_accepted_ts": 1422040992,
         "terms_agree_ip": "192.168.0.10",
-        "current_date_time": "2019-03-11T10:38:26-0700"
+        "current_date_time": "2019-03-11T10:38:26-0700",
+        "current_login": 1422040992,
+        "log_api_response_body_ts": 1422040992
       },
       "changelogs": [
         {
@@ -3462,15 +4737,12 @@ $result = $tokensController->listAllTokensRelated();
             "city": "Novi",
             "state": "MI",
             "postal_code": "48375",
-            "country": "US",
-            "street": "43155 Main Street STE 2310-C",
-            "street2": "43155 Main Street STE 2310-C"
+            "country": "US"
           },
           "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
           "contact_email_trx_receipt_default": true,
           "default_ach": "11e608a7d515f1e093242bb2",
           "default_cc": "11e608a442a5f1e092242dda",
-          "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
           "email_reply_to": "email@domain.com",
           "fax": "3339998822",
           "location_api_id": "location-111111",
@@ -3481,10 +4753,14 @@ $result = $tokensController->listAllTokensRelated();
           "name": "Sample Company Headquarters",
           "office_phone": "2481234567",
           "office_ext_phone": "1021021209",
-          "recurring_notification_days_default": 0,
           "tz": "America/New_York",
           "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-          "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+          "show_contact_notes": true,
+          "show_contact_files": true,
+          "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+          "location_type": "merchant",
+          "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+          "additional_access": {}
         }
       ]
     }
@@ -3493,6 +4769,7 @@ $result = $tokensController->listAllTokensRelated();
     "type": "Links",
     "first": "/v1/endpoint?page[size]=10&page[number]=1",
     "previous": "/v1/endpoint?page[size]=10&page[number]=5",
+    "next": "/v1/endpoint?page[size]=10&page[number]=7",
     "last": "/v1/endpoint?page[size]=10&page[number]=42"
   },
   "pagination": {
@@ -3523,8 +4800,6 @@ $result = $tokensController->listAllTokensRelated();
 
 # Update ACH Token
 
-Update ACH Token
-
 ```php
 function updateACHToken(string $tokenId, V1TokensAchRequest1 $body, ?array $expand = null): ResponseToken
 ```
@@ -3533,9 +4808,9 @@ function updateACHToken(string $tokenId, V1TokensAchRequest1 $body, ?array $expa
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `tokenId` | `string` | Template, Required | A unique, system-generated identifier for the Token.<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `tokenId` | `string` | Template, Required | A unique, system-generated identifier for the Token.<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
 | `body` | [`V1TokensAchRequest1`](../../doc/models/v1-tokens-ach-request-1.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand38Enum)`](../../doc/models/expand-38-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand47Enum)[])`](../../doc/models/expand-47-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -3545,9 +4820,43 @@ function updateACHToken(string $tokenId, V1TokensAchRequest1 $body, ?array $expa
 
 ```php
 $tokenId = '11e95f8ec39de8fbdb0a4f1a';
-$body = new Models\V1TokensAchRequest1();
 
-$result = $tokensController->updateACHToken($tokenId, $body);
+$body = V1TokensAchRequest1Builder::init()
+    ->accountHolderName('John Smith')
+    ->accountVaultApiId('accountvaultabcd')
+    ->tokenApiId('tokenabcd')
+    ->accountvaultC1('accountvault custom 1')
+    ->accountvaultC2('accountvault custom 2')
+    ->accountvaultC3('accountvault custom 3')
+    ->tokenC1('token custom 1')
+    ->tokenC2('token custom 2')
+    ->tokenC3('token custom 3')
+    ->achSecCode(AchSecCode3Enum::WEB)
+    ->contactId('11e95f8ec39de8fbdb0a4f1a')
+    ->customerId('123456')
+    ->locationId('11e95f8ec39de8fbdb0a4f1a')
+    ->previousAccountVaultApiId('previousaccountvault123456')
+    ->previousTokenApiId('previousaccountvault123456')
+    ->previousAccountVaultId('11e95f8ec39de8fbdb0a4f1a')
+    ->previousTokenId('11e95f8ec39de8fbdb0a4f1a')
+    ->previousTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->accountNumber('545454545454545')
+    ->termsAgree(true)
+    ->termsAgreeIp('192.168.0.10')
+    ->title('Test CC Account')
+    ->tokenImportId('11e95f8ec39de8fbdb0a4f1a')
+    ->secureDirectoryServerTransactionId('d65e93c3-35ab-41ba-b307-767bfc19eae')
+    ->secureProtocolVersion(2)
+    ->secureAuthData('vVwL7UNHCf8W8M2LAfvRChNHN7c%3D')
+    ->threeDsServerTransId('d65e93c3-35ab-41ba-b307-767bfc19eae')
+    ->acsTransactionId('13c701a3-5a88-4c45-89e9-ef65e50a8bf9')
+    ->accountType(AccountType13Enum::SAVINGS)
+    ->build();
+
+$result = $tokensController->updateACHToken(
+    $tokenId,
+    $body
+);
 ```
 
 ## Example Response *(as JSON)*
@@ -3557,18 +4866,21 @@ $result = $tokensController->updateACHToken($tokenId, $body);
   "type": "Token",
   "data": {
     "account_holder_name": "John Smith",
-    "account_number": "545454545454545",
     "account_vault_api_id": "accountvaultabcd",
+    "token_api_id": "tokenabcd",
     "accountvault_c1": "accountvault custom 1",
     "accountvault_c2": "accountvault custom 2",
     "accountvault_c3": "accountvault custom 3",
+    "token_c1": "token custom 1",
+    "token_c2": "token custom 2",
+    "token_c3": "token custom 3",
     "ach_sec_code": "WEB",
     "billing_address": {
       "city": "Novi",
       "state": "Michigan",
       "postal_code": "48375",
-      "street": "43155 Main Street STE 2310-C",
-      "phone": "3339998822"
+      "phone": "3339998822",
+      "country": "USA"
     },
     "contact_id": "11e95f8ec39de8fbdb0a4f1a",
     "customer_id": "123456",
@@ -3580,11 +4892,22 @@ $result = $tokensController->updateACHToken($tokenId, $body);
     },
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
     "previous_account_vault_api_id": "previousaccountvault123456",
+    "previous_token_api_id": "previousaccountvault123456",
     "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+    "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
     "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+    "account_number": "545454545454545",
     "terms_agree": true,
     "terms_agree_ip": "192.168.0.10",
     "title": "Test CC Account",
+    "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+    "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+    "secure_protocol_version": 2,
+    "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+    "secure_collection_indicator": null,
+    "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+    "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+    "_joi": {},
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "account_type": "checking",
     "active": true,
@@ -3595,6 +4918,7 @@ $result = $tokensController->updateACHToken($tokenId, $body);
     "e_format": null,
     "e_keyed_data": null,
     "expiring_in_months": null,
+    "exp_date": "0722",
     "first_six": "700953",
     "has_recurring": false,
     "last_four": "3657",
@@ -3602,6 +4926,9 @@ $result = $tokensController->updateACHToken($tokenId, $body);
     "payment_method": "cc",
     "ticket": null,
     "track_data": null,
+    "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "cau_last_updated_ts": 1422040992,
+    "routing_number": "051904524",
     "location": {
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
@@ -3611,15 +4938,12 @@ $result = $tokensController->updateACHToken($tokenId, $body);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -3630,10 +4954,14 @@ $result = $tokensController->updateACHToken($tokenId, $body);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     },
     "contact": {
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -3647,8 +4975,7 @@ $result = $tokensController->updateACHToken($tokenId, $body);
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C"
+        "country": "USA"
       },
       "company_name": "Fortis Payment Systems, LLC",
       "header_message": "This is a sample message for you",
@@ -3657,6 +4984,9 @@ $result = $tokensController->updateACHToken($tokenId, $body);
       "home_phone": "3339998822",
       "office_phone": "3339998822",
       "office_phone_ext": "5",
+      "home_phone_country_code": "+1",
+      "office_phone_country_code": "+1",
+      "cell_phone_country_code": "+1",
       "header_message_type": 0,
       "update_if_exists": 1,
       "contact_c1": "any",
@@ -3664,10 +4994,12 @@ $result = $tokensController->updateACHToken($tokenId, $body);
       "contact_c3": "something",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
       "email": "email@domain.com",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "active": true
+      "active": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "transactions": [
       {
@@ -3683,8 +5015,8 @@ $result = $tokensController->updateACHToken($tokenId, $body);
           "city": "Novi",
           "state": "Michigan",
           "postal_code": "48375",
-          "street": "43155 Main Street STE 2310-C",
-          "phone": "3339998822"
+          "phone": "3339998822",
+          "country": "USA"
         },
         "checkin_date": "2021-12-01",
         "checkout_date": "2021-12-01",
@@ -3704,6 +5036,11 @@ $result = $tokensController->updateACHToken($tokenId, $body);
         "installment": true,
         "installment_number": 1,
         "installment_count": 1,
+        "recurring_flag": "yes",
+        "installment_counter": 1,
+        "installment_total": 1,
+        "subscription": false,
+        "standing_order": false,
         "location_api_id": "location-api-id-florida-2",
         "location_id": "11e95f8ec39de8fbdb0a4f1a",
         "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -3733,6 +5070,11 @@ $result = $tokensController->updateACHToken($tokenId, $body);
         "transaction_c2": "custom-data-2",
         "transaction_c3": "custom-data-3",
         "bank_funded_only_override": false,
+        "allow_partial_authorization_override": false,
+        "auto_decline_cvv_override": false,
+        "auto_decline_street_override": false,
+        "auto_decline_zip_override": false,
+        "ebt_type": "food_stamp",
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "created_ts": 1422040992,
         "modified_ts": 1422040992,
@@ -3767,7 +5109,7 @@ $result = $tokensController->updateACHToken($tokenId, $body);
         "transaction_settlement_status": null,
         "charge_back_date": "2021-12-01",
         "is_recurring": true,
-        "notification_email_sent": "true",
+        "notification_email_sent": true,
         "par": "Q1J4Z28RKA1EBL470G9XYG90R5D3E",
         "reason_code_id": 1000,
         "recurring_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -3775,17 +5117,35 @@ $result = $tokensController->updateACHToken($tokenId, $body);
         "status_code": 101,
         "transaction_batch_id": "11e95f8ec39de8fbdb0a4f1a",
         "verbiage": "APPROVED",
+        "voucher_number": "1234",
         "void_date": "2021-12-01",
         "batch": "2",
         "terms_agree": true,
         "response_message": null,
         "return_date": "2021-12-01",
-        "trx_source_id": 8
+        "trx_source_id": 8,
+        "routing_number": "051904524",
+        "trx_source_code": 8,
+        "paylink_id": "11e95f8ec39de8fbdb0a4f1a",
+        "is_accountvault": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "effective_date": "2021-12-01",
+        "is_token": true,
+        "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+        "hosted_payment_page_id": "11e95f8ec39de8fbdb0a4f1a"
       }
     ],
     "activeRecurrings": [
       {
         "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+        "token_id": "11e95f8ec39de8fbdb0a4f1a",
+        "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+        "account_vault_api_id": "token1234abcd",
+        "token_api_id": "token1234abcd",
+        "_joi": {
+          "conditions": {}
+        },
         "active": true,
         "description": "Description",
         "end_date": "2021-12-01",
@@ -3800,18 +5160,25 @@ $result = $tokensController->updateACHToken($tokenId, $body);
         "recurring_api_id": "recurring1234abcd",
         "start_date": "2021-12-01",
         "status": "active",
-        "transaction_amount": 3,
+        "transaction_amount": 300,
         "terms_agree": true,
         "terms_agree_ip": "192.168.0.10",
         "recurring_c1": "recurring custom data 1",
         "recurring_c2": "recurring custom data 2",
         "recurring_c3": "recurring custom data 3",
         "send_to_proc_as_recur": true,
+        "tags": [
+          "Walk-in Customer"
+        ],
+        "secondary_amount": 100,
+        "currency": "USD",
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "next_run_date": "2021-12-01",
         "created_ts": 1422040992,
         "modified_ts": 1422040992,
-        "recurring_type_id": "i"
+        "recurring_type_id": "i",
+        "installment_amount_total": 99999999,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
       }
     ],
     "is_deletable": true,
@@ -3825,10 +5192,8 @@ $result = $tokensController->updateACHToken($tokenId, $body);
     },
     "created_user": {
       "account_number": "5454545454545454",
-      "address": "43155 Main Street STE 2310-C",
       "branding_domain_url": "{branding_domain_url}",
       "cell_phone": "3339998822",
-      "city": "Novi",
       "company_name": "Fortis Payment Systems, LLC",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "date_of_birth": "2021-12-01",
@@ -3843,7 +5208,6 @@ $result = $tokensController->updateACHToken($tokenId, $body);
       "office_ext_phone": "5",
       "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
       "requires_new_password": null,
-      "state": "Michigan",
       "terms_condition_code": "20220308",
       "tz": "America/New_York",
       "ui_prefs": {
@@ -3860,7 +5224,15 @@ $result = $tokensController->updateACHToken($tokenId, $body);
       "password": null,
       "zip": "48375",
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
-      "status_id": true,
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "status": true,
       "login_attempts": 0,
@@ -3870,7 +5242,9 @@ $result = $tokensController->updateACHToken($tokenId, $body);
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "terms_accepted_ts": 1422040992,
       "terms_agree_ip": "192.168.0.10",
-      "current_date_time": "2019-03-11T10:38:26-0700"
+      "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992
     },
     "changelogs": [
       {
@@ -3915,15 +5289,12 @@ $result = $tokensController->updateACHToken($tokenId, $body);
           "city": "Novi",
           "state": "MI",
           "postal_code": "48375",
-          "country": "US",
-          "street": "43155 Main Street STE 2310-C",
-          "street2": "43155 Main Street STE 2310-C"
+          "country": "US"
         },
         "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
         "contact_email_trx_receipt_default": true,
         "default_ach": "11e608a7d515f1e093242bb2",
         "default_cc": "11e608a442a5f1e092242dda",
-        "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
         "email_reply_to": "email@domain.com",
         "fax": "3339998822",
         "location_api_id": "location-111111",
@@ -3934,10 +5305,14 @@ $result = $tokensController->updateACHToken($tokenId, $body);
         "name": "Sample Company Headquarters",
         "office_phone": "2481234567",
         "office_ext_phone": "1021021209",
-        "recurring_notification_days_default": 0,
         "tz": "America/New_York",
         "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+        "show_contact_notes": true,
+        "show_contact_files": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "location_type": "merchant",
+        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+        "additional_access": {}
       }
     ]
   }
@@ -3954,8 +5329,6 @@ $result = $tokensController->updateACHToken($tokenId, $body);
 
 # Update CC Token
 
-Update CC Token
-
 ```php
 function updateCCToken(string $tokenId, V1TokensCcRequest1 $body, ?array $expand = null): ResponseToken
 ```
@@ -3964,9 +5337,9 @@ function updateCCToken(string $tokenId, V1TokensCcRequest1 $body, ?array $expand
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `tokenId` | `string` | Template, Required | A unique, system-generated identifier for the Token.<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `tokenId` | `string` | Template, Required | A unique, system-generated identifier for the Token.<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
 | `body` | [`V1TokensCcRequest1`](../../doc/models/v1-tokens-cc-request-1.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand38Enum)`](../../doc/models/expand-38-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand47Enum)[])`](../../doc/models/expand-47-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -3976,9 +5349,43 @@ function updateCCToken(string $tokenId, V1TokensCcRequest1 $body, ?array $expand
 
 ```php
 $tokenId = '11e95f8ec39de8fbdb0a4f1a';
-$body = new Models\V1TokensCcRequest1();
 
-$result = $tokensController->updateCCToken($tokenId, $body);
+$body = V1TokensCcRequest1Builder::init()
+    ->accountHolderName('John Smith')
+    ->accountVaultApiId('accountvaultabcd')
+    ->tokenApiId('tokenabcd')
+    ->accountvaultC1('accountvault custom 1')
+    ->accountvaultC2('accountvault custom 2')
+    ->accountvaultC3('accountvault custom 3')
+    ->tokenC1('token custom 1')
+    ->tokenC2('token custom 2')
+    ->tokenC3('token custom 3')
+    ->achSecCode(AchSecCode3Enum::WEB)
+    ->contactId('11e95f8ec39de8fbdb0a4f1a')
+    ->customerId('123456')
+    ->locationId('11e95f8ec39de8fbdb0a4f1a')
+    ->previousAccountVaultApiId('previousaccountvault123456')
+    ->previousTokenApiId('previousaccountvault123456')
+    ->previousAccountVaultId('11e95f8ec39de8fbdb0a4f1a')
+    ->previousTokenId('11e95f8ec39de8fbdb0a4f1a')
+    ->previousTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->accountNumber('545454545454545')
+    ->termsAgree(true)
+    ->termsAgreeIp('192.168.0.10')
+    ->title('Test CC Account')
+    ->tokenImportId('11e95f8ec39de8fbdb0a4f1a')
+    ->secureDirectoryServerTransactionId('d65e93c3-35ab-41ba-b307-767bfc19eae')
+    ->secureProtocolVersion(2)
+    ->secureAuthData('vVwL7UNHCf8W8M2LAfvRChNHN7c%3D')
+    ->threeDsServerTransId('d65e93c3-35ab-41ba-b307-767bfc19eae')
+    ->acsTransactionId('13c701a3-5a88-4c45-89e9-ef65e50a8bf9')
+    ->expDate('0929')
+    ->build();
+
+$result = $tokensController->updateCCToken(
+    $tokenId,
+    $body
+);
 ```
 
 ## Example Response *(as JSON)*
@@ -3988,18 +5395,21 @@ $result = $tokensController->updateCCToken($tokenId, $body);
   "type": "Token",
   "data": {
     "account_holder_name": "John Smith",
-    "account_number": "545454545454545",
     "account_vault_api_id": "accountvaultabcd",
+    "token_api_id": "tokenabcd",
     "accountvault_c1": "accountvault custom 1",
     "accountvault_c2": "accountvault custom 2",
     "accountvault_c3": "accountvault custom 3",
+    "token_c1": "token custom 1",
+    "token_c2": "token custom 2",
+    "token_c3": "token custom 3",
     "ach_sec_code": "WEB",
     "billing_address": {
       "city": "Novi",
       "state": "Michigan",
       "postal_code": "48375",
-      "street": "43155 Main Street STE 2310-C",
-      "phone": "3339998822"
+      "phone": "3339998822",
+      "country": "USA"
     },
     "contact_id": "11e95f8ec39de8fbdb0a4f1a",
     "customer_id": "123456",
@@ -4011,11 +5421,22 @@ $result = $tokensController->updateCCToken($tokenId, $body);
     },
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
     "previous_account_vault_api_id": "previousaccountvault123456",
+    "previous_token_api_id": "previousaccountvault123456",
     "previous_account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+    "previous_token_id": "11e95f8ec39de8fbdb0a4f1a",
     "previous_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+    "account_number": "545454545454545",
     "terms_agree": true,
     "terms_agree_ip": "192.168.0.10",
     "title": "Test CC Account",
+    "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
+    "secure_directory_server_transaction_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+    "secure_protocol_version": 2,
+    "secure_auth_data": "vVwL7UNHCf8W8M2LAfvRChNHN7c%3D",
+    "secure_collection_indicator": null,
+    "three_ds_server_trans_id": "d65e93c3-35ab-41ba-b307-767bfc19eae",
+    "acs_transaction_id": "13c701a3-5a88-4c45-89e9-ef65e50a8bf9",
+    "_joi": {},
     "id": "11e95f8ec39de8fbdb0a4f1a",
     "account_type": "checking",
     "active": true,
@@ -4026,6 +5447,7 @@ $result = $tokensController->updateCCToken($tokenId, $body);
     "e_format": null,
     "e_keyed_data": null,
     "expiring_in_months": null,
+    "exp_date": "0722",
     "first_six": "700953",
     "has_recurring": false,
     "last_four": "3657",
@@ -4033,6 +5455,9 @@ $result = $tokensController->updateCCToken($tokenId, $body);
     "payment_method": "cc",
     "ticket": null,
     "track_data": null,
+    "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+    "cau_last_updated_ts": 1422040992,
+    "routing_number": "051904524",
     "location": {
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
@@ -4042,15 +5467,12 @@ $result = $tokensController->updateCCToken($tokenId, $body);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -4061,10 +5483,14 @@ $result = $tokensController->updateCCToken($tokenId, $body);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     },
     "contact": {
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -4078,8 +5504,7 @@ $result = $tokensController->updateCCToken($tokenId, $body);
         "city": "Novi",
         "state": "Michigan",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C"
+        "country": "USA"
       },
       "company_name": "Fortis Payment Systems, LLC",
       "header_message": "This is a sample message for you",
@@ -4088,6 +5513,9 @@ $result = $tokensController->updateCCToken($tokenId, $body);
       "home_phone": "3339998822",
       "office_phone": "3339998822",
       "office_phone_ext": "5",
+      "home_phone_country_code": "+1",
+      "office_phone_country_code": "+1",
+      "cell_phone_country_code": "+1",
       "header_message_type": 0,
       "update_if_exists": 1,
       "contact_c1": "any",
@@ -4095,10 +5523,12 @@ $result = $tokensController->updateCCToken($tokenId, $body);
       "contact_c3": "something",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
       "email": "email@domain.com",
+      "token_import_id": "11e95f8ec39de8fbdb0a4f1a",
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,
-      "active": true
+      "active": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
     },
     "transactions": [
       {
@@ -4114,8 +5544,8 @@ $result = $tokensController->updateCCToken($tokenId, $body);
           "city": "Novi",
           "state": "Michigan",
           "postal_code": "48375",
-          "street": "43155 Main Street STE 2310-C",
-          "phone": "3339998822"
+          "phone": "3339998822",
+          "country": "USA"
         },
         "checkin_date": "2021-12-01",
         "checkout_date": "2021-12-01",
@@ -4135,6 +5565,11 @@ $result = $tokensController->updateCCToken($tokenId, $body);
         "installment": true,
         "installment_number": 1,
         "installment_count": 1,
+        "recurring_flag": "yes",
+        "installment_counter": 1,
+        "installment_total": 1,
+        "subscription": false,
+        "standing_order": false,
         "location_api_id": "location-api-id-florida-2",
         "location_id": "11e95f8ec39de8fbdb0a4f1a",
         "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -4164,6 +5599,11 @@ $result = $tokensController->updateCCToken($tokenId, $body);
         "transaction_c2": "custom-data-2",
         "transaction_c3": "custom-data-3",
         "bank_funded_only_override": false,
+        "allow_partial_authorization_override": false,
+        "auto_decline_cvv_override": false,
+        "auto_decline_street_override": false,
+        "auto_decline_zip_override": false,
+        "ebt_type": "food_stamp",
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "created_ts": 1422040992,
         "modified_ts": 1422040992,
@@ -4198,7 +5638,7 @@ $result = $tokensController->updateCCToken($tokenId, $body);
         "transaction_settlement_status": null,
         "charge_back_date": "2021-12-01",
         "is_recurring": true,
-        "notification_email_sent": "true",
+        "notification_email_sent": true,
         "par": "Q1J4Z28RKA1EBL470G9XYG90R5D3E",
         "reason_code_id": 1000,
         "recurring_id": "11e95f8ec39de8fbdb0a4f1a",
@@ -4206,17 +5646,35 @@ $result = $tokensController->updateCCToken($tokenId, $body);
         "status_code": 101,
         "transaction_batch_id": "11e95f8ec39de8fbdb0a4f1a",
         "verbiage": "APPROVED",
+        "voucher_number": "1234",
         "void_date": "2021-12-01",
         "batch": "2",
         "terms_agree": true,
         "response_message": null,
         "return_date": "2021-12-01",
-        "trx_source_id": 8
+        "trx_source_id": 8,
+        "routing_number": "051904524",
+        "trx_source_code": 8,
+        "paylink_id": "11e95f8ec39de8fbdb0a4f1a",
+        "is_accountvault": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "modified_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "effective_date": "2021-12-01",
+        "is_token": true,
+        "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+        "hosted_payment_page_id": "11e95f8ec39de8fbdb0a4f1a"
       }
     ],
     "activeRecurrings": [
       {
         "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
+        "token_id": "11e95f8ec39de8fbdb0a4f1a",
+        "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+        "account_vault_api_id": "token1234abcd",
+        "token_api_id": "token1234abcd",
+        "_joi": {
+          "conditions": {}
+        },
         "active": true,
         "description": "Description",
         "end_date": "2021-12-01",
@@ -4231,18 +5689,25 @@ $result = $tokensController->updateCCToken($tokenId, $body);
         "recurring_api_id": "recurring1234abcd",
         "start_date": "2021-12-01",
         "status": "active",
-        "transaction_amount": 3,
+        "transaction_amount": 300,
         "terms_agree": true,
         "terms_agree_ip": "192.168.0.10",
         "recurring_c1": "recurring custom data 1",
         "recurring_c2": "recurring custom data 2",
         "recurring_c3": "recurring custom data 3",
         "send_to_proc_as_recur": true,
+        "tags": [
+          "Walk-in Customer"
+        ],
+        "secondary_amount": 100,
+        "currency": "USD",
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "next_run_date": "2021-12-01",
         "created_ts": 1422040992,
         "modified_ts": 1422040992,
-        "recurring_type_id": "i"
+        "recurring_type_id": "i",
+        "installment_amount_total": 99999999,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a"
       }
     ],
     "is_deletable": true,
@@ -4256,10 +5721,8 @@ $result = $tokensController->updateCCToken($tokenId, $body);
     },
     "created_user": {
       "account_number": "5454545454545454",
-      "address": "43155 Main Street STE 2310-C",
       "branding_domain_url": "{branding_domain_url}",
       "cell_phone": "3339998822",
-      "city": "Novi",
       "company_name": "Fortis Payment Systems, LLC",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "date_of_birth": "2021-12-01",
@@ -4274,7 +5737,6 @@ $result = $tokensController->updateCCToken($tokenId, $body);
       "office_ext_phone": "5",
       "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
       "requires_new_password": null,
-      "state": "Michigan",
       "terms_condition_code": "20220308",
       "tz": "America/New_York",
       "ui_prefs": {
@@ -4291,7 +5753,15 @@ $result = $tokensController->updateCCToken($tokenId, $body);
       "password": null,
       "zip": "48375",
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
-      "status_id": true,
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "status": true,
       "login_attempts": 0,
@@ -4301,7 +5771,9 @@ $result = $tokensController->updateCCToken($tokenId, $body);
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "terms_accepted_ts": 1422040992,
       "terms_agree_ip": "192.168.0.10",
-      "current_date_time": "2019-03-11T10:38:26-0700"
+      "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992
     },
     "changelogs": [
       {
@@ -4346,15 +5818,12 @@ $result = $tokensController->updateCCToken($tokenId, $body);
           "city": "Novi",
           "state": "MI",
           "postal_code": "48375",
-          "country": "US",
-          "street": "43155 Main Street STE 2310-C",
-          "street2": "43155 Main Street STE 2310-C"
+          "country": "US"
         },
         "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
         "contact_email_trx_receipt_default": true,
         "default_ach": "11e608a7d515f1e093242bb2",
         "default_cc": "11e608a442a5f1e092242dda",
-        "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
         "email_reply_to": "email@domain.com",
         "fax": "3339998822",
         "location_api_id": "location-111111",
@@ -4365,10 +5834,14 @@ $result = $tokensController->updateCCToken($tokenId, $body);
         "name": "Sample Company Headquarters",
         "office_phone": "2481234567",
         "office_ext_phone": "1021021209",
-        "recurring_notification_days_default": 0,
         "tz": "America/New_York",
         "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+        "show_contact_notes": true,
+        "show_contact_files": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "location_type": "merchant",
+        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+        "additional_access": {}
       }
     ]
   }

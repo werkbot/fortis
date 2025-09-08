@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -18,12 +19,12 @@ use stdClass;
 class TerminalCvm implements \JsonSerializable
 {
     /**
-     * @var float
+     * @var float|null
      */
     private $terminalManufacturerCode;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $title;
 
@@ -38,62 +39,35 @@ class TerminalCvm implements \JsonSerializable
     private $contactlessData = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $modifiedTs;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $createdUserId;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $modifiedUserId;
-
-    /**
-     * @param float $terminalManufacturerCode
-     * @param string $title
-     * @param string $id
-     * @param int $createdTs
-     * @param int $modifiedTs
-     * @param string $createdUserId
-     * @param string $modifiedUserId
-     */
-    public function __construct(
-        float $terminalManufacturerCode,
-        string $title,
-        string $id,
-        int $createdTs,
-        int $modifiedTs,
-        string $createdUserId,
-        string $modifiedUserId
-    ) {
-        $this->terminalManufacturerCode = $terminalManufacturerCode;
-        $this->title = $title;
-        $this->id = $id;
-        $this->createdTs = $createdTs;
-        $this->modifiedTs = $modifiedTs;
-        $this->createdUserId = $createdUserId;
-        $this->modifiedUserId = $modifiedUserId;
-    }
 
     /**
      * Returns Terminal Manufacturer Code.
      * Terminal Manufacturer Code
      */
-    public function getTerminalManufacturerCode(): float
+    public function getTerminalManufacturerCode(): ?float
     {
         return $this->terminalManufacturerCode;
     }
@@ -102,10 +76,9 @@ class TerminalCvm implements \JsonSerializable
      * Sets Terminal Manufacturer Code.
      * Terminal Manufacturer Code
      *
-     * @required
      * @maps terminal_manufacturer_code
      */
-    public function setTerminalManufacturerCode(float $terminalManufacturerCode): void
+    public function setTerminalManufacturerCode(?float $terminalManufacturerCode): void
     {
         $this->terminalManufacturerCode = $terminalManufacturerCode;
     }
@@ -114,7 +87,7 @@ class TerminalCvm implements \JsonSerializable
      * Returns Title.
      * Title
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -123,10 +96,9 @@ class TerminalCvm implements \JsonSerializable
      * Sets Title.
      * Title
      *
-     * @required
      * @maps title
      */
-    public function setTitle(string $title): void
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -199,7 +171,7 @@ class TerminalCvm implements \JsonSerializable
      * Returns Id.
      * Terminal Manufacturer Cvms Id
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -208,10 +180,9 @@ class TerminalCvm implements \JsonSerializable
      * Sets Id.
      * Terminal Manufacturer Cvms Id
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -220,7 +191,7 @@ class TerminalCvm implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -229,10 +200,9 @@ class TerminalCvm implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -241,7 +211,7 @@ class TerminalCvm implements \JsonSerializable
      * Returns Modified Ts.
      * Modified Time Stamp
      */
-    public function getModifiedTs(): int
+    public function getModifiedTs(): ?int
     {
         return $this->modifiedTs;
     }
@@ -250,10 +220,9 @@ class TerminalCvm implements \JsonSerializable
      * Sets Modified Ts.
      * Modified Time Stamp
      *
-     * @required
      * @maps modified_ts
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setModifiedTs(?int $modifiedTs): void
     {
         $this->modifiedTs = $modifiedTs;
     }
@@ -262,7 +231,7 @@ class TerminalCvm implements \JsonSerializable
      * Returns Created User Id.
      * User ID Created the register
      */
-    public function getCreatedUserId(): string
+    public function getCreatedUserId(): ?string
     {
         return $this->createdUserId;
     }
@@ -271,10 +240,9 @@ class TerminalCvm implements \JsonSerializable
      * Sets Created User Id.
      * User ID Created the register
      *
-     * @required
      * @maps created_user_id
      */
-    public function setCreatedUserId(string $createdUserId): void
+    public function setCreatedUserId(?string $createdUserId): void
     {
         $this->createdUserId = $createdUserId;
     }
@@ -283,7 +251,7 @@ class TerminalCvm implements \JsonSerializable
      * Returns Modified User Id.
      * Last User ID that updated the register
      */
-    public function getModifiedUserId(): string
+    public function getModifiedUserId(): ?string
     {
         return $this->modifiedUserId;
     }
@@ -292,12 +260,63 @@ class TerminalCvm implements \JsonSerializable
      * Sets Modified User Id.
      * Last User ID that updated the register
      *
-     * @required
      * @maps modified_user_id
      */
-    public function setModifiedUserId(string $modifiedUserId): void
+    public function setModifiedUserId(?string $modifiedUserId): void
     {
         $this->modifiedUserId = $modifiedUserId;
+    }
+
+    /**
+     * Converts the TerminalCvm object to a human-readable string representation.
+     *
+     * @return string The string representation of the TerminalCvm object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'TerminalCvm',
+            [
+                'terminalManufacturerCode' => $this->terminalManufacturerCode,
+                'title' => $this->title,
+                'contactData' => $this->getContactData(),
+                'contactlessData' => $this->getContactlessData(),
+                'id' => $this->id,
+                'createdTs' => $this->createdTs,
+                'modifiedTs' => $this->modifiedTs,
+                'createdUserId' => $this->createdUserId,
+                'modifiedUserId' => $this->modifiedUserId,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -312,19 +331,34 @@ class TerminalCvm implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['terminal_manufacturer_code'] = $this->terminalManufacturerCode;
-        $json['title']                      = $this->title;
+        if (isset($this->terminalManufacturerCode)) {
+            $json['terminal_manufacturer_code'] = $this->terminalManufacturerCode;
+        }
+        if (isset($this->title)) {
+            $json['title']                      = $this->title;
+        }
         if (!empty($this->contactData)) {
-            $json['contact_data']           = $this->contactData['value'];
+            $json['contact_data']               = $this->contactData['value'];
         }
         if (!empty($this->contactlessData)) {
-            $json['contactless_data']       = $this->contactlessData['value'];
+            $json['contactless_data']           = $this->contactlessData['value'];
         }
-        $json['id']                         = $this->id;
-        $json['created_ts']                 = $this->createdTs;
-        $json['modified_ts']                = $this->modifiedTs;
-        $json['created_user_id']            = $this->createdUserId;
-        $json['modified_user_id']           = $this->modifiedUserId;
+        if (isset($this->id)) {
+            $json['id']                         = $this->id;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']                 = $this->createdTs;
+        }
+        if (isset($this->modifiedTs)) {
+            $json['modified_ts']                = $this->modifiedTs;
+        }
+        if (isset($this->createdUserId)) {
+            $json['created_user_id']            = $this->createdUserId;
+        }
+        if (isset($this->modifiedUserId)) {
+            $json['modified_user_id']           = $this->modifiedUserId;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

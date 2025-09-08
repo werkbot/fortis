@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -18,28 +19,20 @@ use stdClass;
 class Sort implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $type;
 
     /**
-     * @var Field[]
+     * @var Field[]|null
      */
     private $fields;
-
-    /**
-     * @param Field[] $fields
-     */
-    public function __construct(array $fields)
-    {
-        $this->fields = $fields;
-    }
 
     /**
      * Returns Type.
      * Object type
      */
-    public function getType(): string
+    public function getType(): ?string
     {
         return $this->type;
     }
@@ -49,8 +42,9 @@ class Sort implements \JsonSerializable
      * Object type
      *
      * @maps type
+     * @factory \FortisAPILib\Models\Type4Enum::checkValue
      */
-    public function setType(string $type): void
+    public function setType(?string $type): void
     {
         $this->type = $type;
     }
@@ -59,9 +53,9 @@ class Sort implements \JsonSerializable
      * Returns Fields.
      * [object Object]
      *
-     * @return Field[]
+     * @return Field[]|null
      */
-    public function getFields(): array
+    public function getFields(): ?array
     {
         return $this->fields;
     }
@@ -70,14 +64,58 @@ class Sort implements \JsonSerializable
      * Sets Fields.
      * [object Object]
      *
-     * @required
      * @maps fields
      *
-     * @param Field[] $fields
+     * @param Field[]|null $fields
      */
-    public function setFields(array $fields): void
+    public function setFields(?array $fields): void
     {
         $this->fields = $fields;
+    }
+
+    /**
+     * Converts the Sort object to a human-readable string representation.
+     *
+     * @return string The string representation of the Sort object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Sort',
+            [
+                'type' => $this->type,
+                'fields' => $this->fields,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -92,8 +130,13 @@ class Sort implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['type']   = $this->type;
-        $json['fields'] = $this->fields;
+        if (isset($this->type)) {
+            $json['type']   = Type4Enum::checkValue($this->type);
+        }
+        if (isset($this->fields)) {
+            $json['fields'] = $this->fields;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

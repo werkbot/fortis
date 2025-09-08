@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -18,37 +19,25 @@ use stdClass;
 class TransactionLevel3 implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $transactionId;
 
     /**
-     * @var Level3Data
+     * @var Level3Data|null
      */
     private $level3Data;
-
-    /**
-     * @param string $id
-     * @param string $transactionId
-     * @param Level3Data $level3Data
-     */
-    public function __construct(string $id, string $transactionId, Level3Data $level3Data)
-    {
-        $this->id = $id;
-        $this->transactionId = $transactionId;
-        $this->level3Data = $level3Data;
-    }
 
     /**
      * Returns Id.
      * Level 3 ID
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -57,10 +46,9 @@ class TransactionLevel3 implements \JsonSerializable
      * Sets Id.
      * Level 3 ID
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -69,7 +57,7 @@ class TransactionLevel3 implements \JsonSerializable
      * Returns Transaction Id.
      * Transaction ID
      */
-    public function getTransactionId(): string
+    public function getTransactionId(): ?string
     {
         return $this->transactionId;
     }
@@ -78,10 +66,9 @@ class TransactionLevel3 implements \JsonSerializable
      * Sets Transaction Id.
      * Transaction ID
      *
-     * @required
      * @maps transaction_id
      */
-    public function setTransactionId(string $transactionId): void
+    public function setTransactionId(?string $transactionId): void
     {
         $this->transactionId = $transactionId;
     }
@@ -90,7 +77,7 @@ class TransactionLevel3 implements \JsonSerializable
      * Returns Level 3 Data.
      * Level 3 data object
      */
-    public function getLevel3Data(): Level3Data
+    public function getLevel3Data(): ?Level3Data
     {
         return $this->level3Data;
     }
@@ -99,12 +86,57 @@ class TransactionLevel3 implements \JsonSerializable
      * Sets Level 3 Data.
      * Level 3 data object
      *
-     * @required
      * @maps level3_data
      */
-    public function setLevel3Data(Level3Data $level3Data): void
+    public function setLevel3Data(?Level3Data $level3Data): void
     {
         $this->level3Data = $level3Data;
+    }
+
+    /**
+     * Converts the TransactionLevel3 object to a human-readable string representation.
+     *
+     * @return string The string representation of the TransactionLevel3 object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'TransactionLevel3',
+            [
+                'id' => $this->id,
+                'transactionId' => $this->transactionId,
+                'level3Data' => $this->level3Data,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -119,9 +151,16 @@ class TransactionLevel3 implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['id']             = $this->id;
-        $json['transaction_id'] = $this->transactionId;
-        $json['level3_data']    = $this->level3Data;
+        if (isset($this->id)) {
+            $json['id']             = $this->id;
+        }
+        if (isset($this->transactionId)) {
+            $json['transaction_id'] = $this->transactionId;
+        }
+        if (isset($this->level3Data)) {
+            $json['level3_data']    = $this->level3Data;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

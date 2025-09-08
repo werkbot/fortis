@@ -23,7 +23,9 @@ class DefaultTransactionTypeEnum
 
     public const SALE = 'sale';
 
-    private const _ALL_VALUES = [self::DEBIT, self::SALE];
+    public const AUTHONLY = 'authonly';
+
+    private const _ALL_VALUES = [self::DEBIT, self::SALE, self::AUTHONLY];
 
     /**
      * Ensures that all the given values are present in this Enum.

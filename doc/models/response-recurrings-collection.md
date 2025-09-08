@@ -9,8 +9,8 @@
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `type` | `string` | Required, Constant | Resource Type<br>**Default**: `'RecurringsCollection'` | getType(): string | setType(string type): void |
-| `mList` | [`List7[]`](../../doc/models/list-7.md) | Required | Resource Members | getMList(): array | setMList(array mList): void |
+| `type` | [`?string(Type68Enum)`](../../doc/models/type-68-enum.md) | Optional | Resource Type<br><br>**Default**: `Type68Enum::RECURRINGSCOLLECTION` | getType(): ?string | setType(?string type): void |
+| `list` | [`?(List11[])`](../../doc/models/list-11.md) | Optional | Resource Members | getList(): ?array | setList(?array list): void |
 | `links` | [`?Links`](../../doc/models/links.md) | Optional | Pagination page links | getLinks(): ?Links | setLinks(?Links links): void |
 | `pagination` | [`?Pagination`](../../doc/models/pagination.md) | Optional | Pagination info | getPagination(): ?Pagination | setPagination(?Pagination pagination): void |
 | `sort` | [`?Sort`](../../doc/models/sort.md) | Optional | Sort information used on the results | getSort(): ?Sort | setSort(?Sort sort): void |
@@ -20,21 +20,59 @@
 ```json
 {
   "type": "RecurringsCollection",
-  "list": {
-    "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
-    "active": true,
-    "interval": 1,
-    "interval_type": "d",
-    "location_id": "11e95f8ec39de8fbdb0a4f1a",
-    "payment_method": "cc",
-    "start_date": "2021-12-01",
-    "status": "active",
-    "transaction_amount": 3,
-    "id": "11e95f8ec39de8fbdb0a4f1a",
-    "next_run_date": "2021-12-01",
-    "created_ts": 1422040992,
-    "modified_ts": 1422040992,
-    "recurring_type_id": "i"
+  "list": [
+    {
+      "account_vault_id": "account_vault_id8",
+      "token_id": "token_id6",
+      "contact_id": "contact_id2",
+      "account_vault_api_id": "account_vault_api_id6",
+      "token_api_id": "token_api_id2"
+    },
+    {
+      "account_vault_id": "account_vault_id8",
+      "token_id": "token_id6",
+      "contact_id": "contact_id2",
+      "account_vault_api_id": "account_vault_api_id6",
+      "token_api_id": "token_api_id2"
+    },
+    {
+      "account_vault_id": "account_vault_id8",
+      "token_id": "token_id6",
+      "contact_id": "contact_id2",
+      "account_vault_api_id": "account_vault_api_id6",
+      "token_api_id": "token_api_id2"
+    }
+  ],
+  "links": {
+    "type": "Links",
+    "first": "first0",
+    "previous": "previous2",
+    "next": "next2",
+    "last": "last4"
+  },
+  "pagination": {
+    "type": "Pagination",
+    "total_count": 100,
+    "page_count": 212,
+    "page_number": 28,
+    "page_size": 6
+  },
+  "sort": {
+    "type": "Sorting",
+    "fields": [
+      {
+        "field": "field2",
+        "order": "asc"
+      },
+      {
+        "field": "field2",
+        "order": "asc"
+      },
+      {
+        "field": "field2",
+        "order": "asc"
+      }
+    ]
   }
 }
 ```

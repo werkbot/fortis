@@ -16,6 +16,8 @@ use stdClass;
 
 /**
  * The resource you want to subscribe the postbacks to.
+ * >Possible values include: 'contact', 'transaction', 'transactionbatch'
+ * >
  */
 class Resource12Enum
 {

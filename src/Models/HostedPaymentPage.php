@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -33,12 +34,12 @@ class HostedPaymentPage implements \JsonSerializable
     private $locationApiId = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $productTransactionId;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $title;
 
@@ -55,7 +56,7 @@ class HostedPaymentPage implements \JsonSerializable
     /**
      * @var array
      */
-    private $maxPaymentAmount = ['value' => 99999999.99];
+    private $maxPaymentAmount = ['value' => 9999999999];
 
     /**
      * @var array
@@ -68,7 +69,7 @@ class HostedPaymentPage implements \JsonSerializable
     private $redirectUrlOnDecline = [];
 
     /**
-     * @var FieldConfiguration
+     * @var FieldConfiguration|null
      */
     private $fieldConfiguration;
 
@@ -93,17 +94,17 @@ class HostedPaymentPage implements \JsonSerializable
     private $hideOptionalFields;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $modifiedTs;
 
@@ -116,30 +117,6 @@ class HostedPaymentPage implements \JsonSerializable
      * @var array
      */
     private $modifiedUserId = [];
-
-    /**
-     * @param string $productTransactionId
-     * @param string $title
-     * @param FieldConfiguration $fieldConfiguration
-     * @param string $id
-     * @param int $createdTs
-     * @param int $modifiedTs
-     */
-    public function __construct(
-        string $productTransactionId,
-        string $title,
-        FieldConfiguration $fieldConfiguration,
-        string $id,
-        int $createdTs,
-        int $modifiedTs
-    ) {
-        $this->productTransactionId = $productTransactionId;
-        $this->title = $title;
-        $this->fieldConfiguration = $fieldConfiguration;
-        $this->id = $id;
-        $this->createdTs = $createdTs;
-        $this->modifiedTs = $modifiedTs;
-    }
 
     /**
      * Returns User Id.
@@ -241,7 +218,7 @@ class HostedPaymentPage implements \JsonSerializable
      * Returns Product Transaction Id.
      * Product Transaction ID
      */
-    public function getProductTransactionId(): string
+    public function getProductTransactionId(): ?string
     {
         return $this->productTransactionId;
     }
@@ -250,10 +227,9 @@ class HostedPaymentPage implements \JsonSerializable
      * Sets Product Transaction Id.
      * Product Transaction ID
      *
-     * @required
      * @maps product_transaction_id
      */
-    public function setProductTransactionId(string $productTransactionId): void
+    public function setProductTransactionId(?string $productTransactionId): void
     {
         $this->productTransactionId = $productTransactionId;
     }
@@ -262,7 +238,7 @@ class HostedPaymentPage implements \JsonSerializable
      * Returns Title.
      * Title
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -271,10 +247,9 @@ class HostedPaymentPage implements \JsonSerializable
      * Sets Title.
      * Title
      *
-     * @required
      * @maps title
      */
-    public function setTitle(string $title): void
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -315,7 +290,7 @@ class HostedPaymentPage implements \JsonSerializable
      * Returns Min Payment Amount.
      * Min Payment Amount
      */
-    public function getMinPaymentAmount(): ?float
+    public function getMinPaymentAmount(): ?int
     {
         if (count($this->minPaymentAmount) == 0) {
             return null;
@@ -329,7 +304,7 @@ class HostedPaymentPage implements \JsonSerializable
      *
      * @maps min_payment_amount
      */
-    public function setMinPaymentAmount(?float $minPaymentAmount): void
+    public function setMinPaymentAmount(?int $minPaymentAmount): void
     {
         $this->minPaymentAmount['value'] = $minPaymentAmount;
     }
@@ -347,7 +322,7 @@ class HostedPaymentPage implements \JsonSerializable
      * Returns Max Payment Amount.
      * Max Payment Amount
      */
-    public function getMaxPaymentAmount(): ?float
+    public function getMaxPaymentAmount(): ?int
     {
         if (count($this->maxPaymentAmount) == 0) {
             return null;
@@ -361,7 +336,7 @@ class HostedPaymentPage implements \JsonSerializable
      *
      * @maps max_payment_amount
      */
-    public function setMaxPaymentAmount(?float $maxPaymentAmount): void
+    public function setMaxPaymentAmount(?int $maxPaymentAmount): void
     {
         $this->maxPaymentAmount['value'] = $maxPaymentAmount;
     }
@@ -443,7 +418,7 @@ class HostedPaymentPage implements \JsonSerializable
      * Returns Field Configuration.
      * field_configuration
      */
-    public function getFieldConfiguration(): FieldConfiguration
+    public function getFieldConfiguration(): ?FieldConfiguration
     {
         return $this->fieldConfiguration;
     }
@@ -452,10 +427,9 @@ class HostedPaymentPage implements \JsonSerializable
      * Sets Field Configuration.
      * field_configuration
      *
-     * @required
      * @maps field_configuration
      */
-    public function setFieldConfiguration(FieldConfiguration $fieldConfiguration): void
+    public function setFieldConfiguration(?FieldConfiguration $fieldConfiguration): void
     {
         $this->fieldConfiguration = $fieldConfiguration;
     }
@@ -568,7 +542,7 @@ class HostedPaymentPage implements \JsonSerializable
      * Returns Id.
      * Hosted Payment Page Id
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -577,10 +551,9 @@ class HostedPaymentPage implements \JsonSerializable
      * Sets Id.
      * Hosted Payment Page Id
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -589,7 +562,7 @@ class HostedPaymentPage implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -598,10 +571,9 @@ class HostedPaymentPage implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -610,7 +582,7 @@ class HostedPaymentPage implements \JsonSerializable
      * Returns Modified Ts.
      * Modified Time Stamp
      */
-    public function getModifiedTs(): int
+    public function getModifiedTs(): ?int
     {
         return $this->modifiedTs;
     }
@@ -619,10 +591,9 @@ class HostedPaymentPage implements \JsonSerializable
      * Sets Modified Ts.
      * Modified Time Stamp
      *
-     * @required
      * @maps modified_ts
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setModifiedTs(?int $modifiedTs): void
     {
         $this->modifiedTs = $modifiedTs;
     }
@@ -692,6 +663,69 @@ class HostedPaymentPage implements \JsonSerializable
     }
 
     /**
+     * Converts the HostedPaymentPage object to a human-readable string representation.
+     *
+     * @return string The string representation of the HostedPaymentPage object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'HostedPaymentPage',
+            [
+                'userId' => $this->getUserId(),
+                'locationId' => $this->getLocationId(),
+                'locationApiId' => $this->getLocationApiId(),
+                'productTransactionId' => $this->productTransactionId,
+                'title' => $this->title,
+                'redirectUrlDelay' => $this->getRedirectUrlDelay(),
+                'minPaymentAmount' => $this->getMinPaymentAmount(),
+                'maxPaymentAmount' => $this->getMaxPaymentAmount(),
+                'redirectUrlOnApprove' => $this->getRedirectUrlOnApprove(),
+                'redirectUrlOnDecline' => $this->getRedirectUrlOnDecline(),
+                'fieldConfiguration' => $this->fieldConfiguration,
+                'encryptionKey' => $this->getEncryptionKey(),
+                'stylesheetUrl' => $this->getStylesheetUrl(),
+                'parentSendMessage' => $this->parentSendMessage,
+                'hideOptionalFields' => $this->hideOptionalFields,
+                'id' => $this->id,
+                'createdTs' => $this->createdTs,
+                'modifiedTs' => $this->modifiedTs,
+                'createdUserId' => $this->getCreatedUserId(),
+                'modifiedUserId' => $this->getModifiedUserId(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -712,8 +746,12 @@ class HostedPaymentPage implements \JsonSerializable
         if (!empty($this->locationApiId)) {
             $json['location_api_id']         = $this->locationApiId['value'];
         }
-        $json['product_transaction_id']      = $this->productTransactionId;
-        $json['title']                       = $this->title;
+        if (isset($this->productTransactionId)) {
+            $json['product_transaction_id']  = $this->productTransactionId;
+        }
+        if (isset($this->title)) {
+            $json['title']                   = $this->title;
+        }
         if (!empty($this->redirectUrlDelay)) {
             $json['redirect_url_delay']      = $this->redirectUrlDelay['value'];
         }
@@ -729,7 +767,9 @@ class HostedPaymentPage implements \JsonSerializable
         if (!empty($this->redirectUrlOnDecline)) {
             $json['redirect_url_on_decline'] = $this->redirectUrlOnDecline['value'];
         }
-        $json['field_configuration']         = $this->fieldConfiguration;
+        if (isset($this->fieldConfiguration)) {
+            $json['field_configuration']     = $this->fieldConfiguration;
+        }
         if (!empty($this->encryptionKey)) {
             $json['encryption_key']          = $this->encryptionKey['value'];
         }
@@ -742,15 +782,22 @@ class HostedPaymentPage implements \JsonSerializable
         if (isset($this->hideOptionalFields)) {
             $json['hide_optional_fields']    = $this->hideOptionalFields;
         }
-        $json['id']                          = $this->id;
-        $json['created_ts']                  = $this->createdTs;
-        $json['modified_ts']                 = $this->modifiedTs;
+        if (isset($this->id)) {
+            $json['id']                      = $this->id;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']              = $this->createdTs;
+        }
+        if (isset($this->modifiedTs)) {
+            $json['modified_ts']             = $this->modifiedTs;
+        }
         if (!empty($this->createdUserId)) {
             $json['created_user_id']         = $this->createdUserId['value'];
         }
         if (!empty($this->modifiedUserId)) {
             $json['modified_user_id']        = $this->modifiedUserId['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

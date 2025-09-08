@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class PostbackLog implements \JsonSerializable
@@ -20,17 +21,17 @@ class PostbackLog implements \JsonSerializable
     private $postbackStatusId = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $postbackConfigId;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $changelogId;
 
@@ -58,18 +59,6 @@ class PostbackLog implements \JsonSerializable
      * @var array
      */
     private $modelId = [];
-
-    /**
-     * @param string $id
-     * @param string $postbackConfigId
-     * @param string $changelogId
-     */
-    public function __construct(string $id, string $postbackConfigId, string $changelogId)
-    {
-        $this->id = $id;
-        $this->postbackConfigId = $postbackConfigId;
-        $this->changelogId = $changelogId;
-    }
 
     /**
      * Returns Postback Status Id.
@@ -108,7 +97,7 @@ class PostbackLog implements \JsonSerializable
      * Returns Id.
      * Postback Log Id
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -117,10 +106,9 @@ class PostbackLog implements \JsonSerializable
      * Sets Id.
      * Postback Log Id
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -129,7 +117,7 @@ class PostbackLog implements \JsonSerializable
      * Returns Postback Config Id.
      * Postback Config Id
      */
-    public function getPostbackConfigId(): string
+    public function getPostbackConfigId(): ?string
     {
         return $this->postbackConfigId;
     }
@@ -138,10 +126,9 @@ class PostbackLog implements \JsonSerializable
      * Sets Postback Config Id.
      * Postback Config Id
      *
-     * @required
      * @maps postback_config_id
      */
-    public function setPostbackConfigId(string $postbackConfigId): void
+    public function setPostbackConfigId(?string $postbackConfigId): void
     {
         $this->postbackConfigId = $postbackConfigId;
     }
@@ -150,7 +137,7 @@ class PostbackLog implements \JsonSerializable
      * Returns Changelog Id.
      * Changelog Id
      */
-    public function getChangelogId(): string
+    public function getChangelogId(): ?string
     {
         return $this->changelogId;
     }
@@ -159,10 +146,9 @@ class PostbackLog implements \JsonSerializable
      * Sets Changelog Id.
      * Changelog Id
      *
-     * @required
      * @maps changelog_id
      */
-    public function setChangelogId(string $changelogId): void
+    public function setChangelogId(?string $changelogId): void
     {
         $this->changelogId = $changelogId;
     }
@@ -328,6 +314,58 @@ class PostbackLog implements \JsonSerializable
     }
 
     /**
+     * Converts the PostbackLog object to a human-readable string representation.
+     *
+     * @return string The string representation of the PostbackLog object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'PostbackLog',
+            [
+                'postbackStatusId' => $this->getPostbackStatusId(),
+                'id' => $this->id,
+                'postbackConfigId' => $this->postbackConfigId,
+                'changelogId' => $this->changelogId,
+                'httpVerb' => $this->getHttpVerb(),
+                'nextRunTs' => $this->getNextRunTs(),
+                'createdTs' => $this->getCreatedTs(),
+                'model' => $this->getModel(),
+                'modelId' => $this->getModelId(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -342,9 +380,15 @@ class PostbackLog implements \JsonSerializable
         if (!empty($this->postbackStatusId)) {
             $json['postback_status_id'] = PostbackStatusIdEnum::checkValue($this->postbackStatusId['value']);
         }
-        $json['id']                     = $this->id;
-        $json['postback_config_id']     = $this->postbackConfigId;
-        $json['changelog_id']           = $this->changelogId;
+        if (isset($this->id)) {
+            $json['id']                 = $this->id;
+        }
+        if (isset($this->postbackConfigId)) {
+            $json['postback_config_id'] = $this->postbackConfigId;
+        }
+        if (isset($this->changelogId)) {
+            $json['changelog_id']       = $this->changelogId;
+        }
         if (!empty($this->httpVerb)) {
             $json['http_verb']          = $this->httpVerb['value'];
         }
@@ -360,6 +404,7 @@ class PostbackLog implements \JsonSerializable
         if (!empty($this->modelId)) {
             $json['model_id']           = $this->modelId['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

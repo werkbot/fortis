@@ -15,7 +15,7 @@ use Exception;
 use stdClass;
 
 /**
- * Status Id
+ * (DEPRECATED) Status Id
  */
 class StatusIdEnum
 {

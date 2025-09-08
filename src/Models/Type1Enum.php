@@ -15,46 +15,13 @@ use Exception;
 use stdClass;
 
 /**
- * type of the amount [4S-Healthcare(Visa and MC Only), 4U-Prescription/Rx(Visa and MC Only), 4V-
- * Vision/Optical(Visa Only), 4W-clinic/other qualified medical(Visa Only) ,4X-Dental(Visa Only)].
+ * Resource Type
  */
 class Type1Enum
 {
-    public const CASHBACK = 'cashback';
+    public const BATCHSCOLLECTION = 'BatchsCollection';
 
-    public const SURCHARGE = 'surcharge';
-
-    public const HEALTHCARE = 'healthcare';
-
-    public const TRANSIT = 'transit';
-
-    public const RX = 'RX';
-
-    public const VISION = 'vision';
-
-    public const CLINICAL = 'clinical';
-
-    public const COPAY = 'copay';
-
-    public const DENTAL = 'dental';
-
-    public const TAX = 'tax';
-
-    public const FEE = 'fee';
-
-    private const _ALL_VALUES = [
-        self::CASHBACK,
-        self::SURCHARGE,
-        self::HEALTHCARE,
-        self::TRANSIT,
-        self::RX,
-        self::VISION,
-        self::CLINICAL,
-        self::COPAY,
-        self::DENTAL,
-        self::TAX,
-        self::FEE
-    ];
+    private const _ALL_VALUES = [self::BATCHSCOLLECTION];
 
     /**
      * Ensures that all the given values are present in this Enum.

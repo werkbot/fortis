@@ -14,7 +14,7 @@ use Core\Utils\CoreHelper;
 use Core\Utils\JsonHelper;
 
 /**
- * API utility class
+ * API utility class.
  */
 class ApiHelper
 {
@@ -26,7 +26,7 @@ class ApiHelper
     public static function getJsonHelper(): JsonHelper
     {
         if (self::$jsonHelper == null) {
-            self::$jsonHelper = new JsonHelper([], null, 'FortisAPILib\\Models');
+            self::$jsonHelper = new JsonHelper([], [], 'addAdditionalProperty', 'FortisAPILib\\Models');
         }
         return self::$jsonHelper;
     }
@@ -44,7 +44,7 @@ class ApiHelper
     }
 
     /**
-     * Deserialize a Json string
+     * Deserialize a Json string.
      *
      * @param string $json A valid Json string
      *
@@ -53,5 +53,20 @@ class ApiHelper
     public static function deserialize(string $json)
     {
         return CoreHelper::deserialize($json);
+    }
+
+    /**
+     * Converts the properties to a human-readable string representation.
+     *
+     * Sample output:
+     *
+     * $prefix [$properties:key: $properties:value, $processedProperties]
+     */
+    public static function stringify(
+        string $prefix,
+        array $properties,
+        string $processedProperties = ''
+    ): string {
+        return CoreHelper::stringify($prefix, $properties, $processedProperties);
     }
 }

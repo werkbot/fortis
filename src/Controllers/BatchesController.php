@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Controllers;
 
+use Core\Authentication\Auth;
 use Core\Request\Parameters\QueryParam;
 use Core\Request\Parameters\TemplateParam;
 use Core\Response\Types\ErrorType;
@@ -17,52 +18,63 @@ use CoreInterfaces\Core\Request\RequestMethod;
 use FortisAPILib\Exceptions\ApiException;
 use FortisAPILib\Exceptions\Response401tokenException;
 use FortisAPILib\Models\ExpandEnum;
-use FortisAPILib\Models\Filter;
+use FortisAPILib\Models\Field27Enum;
+use FortisAPILib\Models\FilterBy;
+use FortisAPILib\Models\Format1Enum;
+use FortisAPILib\Models\Order21;
 use FortisAPILib\Models\Page;
-use FortisAPILib\Models\ResponseAsyncProcessing;
 use FortisAPILib\Models\ResponseBatchsCollection;
-use FortisAPILib\Models\Sort14;
+use FortisAPILib\Models\ResponseTransactionProcessing;
 
 class BatchesController extends BaseController
 {
     /**
-     * List All Batches
-     *
      * @param Page|null $page Use this field to specify paginate your results, by using page size
      *        and number. You can use one of the following methods:
      *        >/endpoint?page={ "number": 1, "size": 50 }
      *        >
      *        >/endpoint?page[number]=1&page[size]=50
      *        >
-     * @param Sort14|null $sort You can use any `field_name` from this endpoint results, and you can
-     *        combine more than one field for more complex sorting. You can use one of the
-     *        following methods:
-     *        >/endpoint?sort={ "field_name": "asc", "field_name2": "desc" }
+     * @param Order21[]|null $order Criteria used in query string parameters to order results. Most
+     *        fields from the endpoint results can be used as a `key`.  Unsupported fields or
+     *        operators will return a `412`.  Must be encoded, or use syntax that does not require
+     *        encoding.
+     *        >/endpoint?order[0][key]=created_ts&order[0][operator]=asc
      *        >
-     *        >/endpoint?sort[field_name]=asc&sort[field_name2]=desc
+     *        >/endpoint?order=[{ "key": "created_ts", "operator": "asc"}]
      *        >
-     * @param Filter|null $filter You can use any `field_name` from this endpoint results as a
-     *        filter, and you can also use more than one field to create AND conditions. For date
-     *        fields (ended with `_ts`), you can also search for ranges using the `$gte` (Greater
-     *        than or equal to) and/or  `$lte` (Lower than or equal to). You can use one of the
-     *        following methods:
-     *        >/endpoint?filter={ "field_name": "Value" }
+     *        >/endpoint?order=[{ "key": "balance", "operator": "desc"},{ "key": "created_ts",
+     *        "operator": "asc"}]
      *        >
-     *        >/endpoint?filter[field_name]=Value
+     * @param FilterBy[]|null $filterBy Filter criteria that can be used in query string parameters.
+     *        Most fields from the endpoint results can be used as a `key`.  Unsupported fields or
+     *        operators will return a `412`. Must be encoded, or use syntax that does not require
+     *        encoding.
+     *        >?filter_by[0][key]=first_name&filter_by[0][operator]==&filter_by[0][value]=Steve
      *        >
-     *        >/endpoint?filter={ "created_ts": "today" }
+     *        >/endpoint?filter_by=[{ "key": "first_name", "operator": "=", "value": "Fred" }]
      *        >
-     *        >/endpoint?filter[created_ts]=today
+     *        >/endpoint?filter_by=[{ "key": "account_type", "operator": "=", "value": "VISA" }]
      *        >
-     *        >/endpoint?filter={ "created_ts": { "$gte": "yesterday", "$lte": "today" } }
+     *        >/endpoint?filter_by=[{ "key": "created_ts", "operator": ">=", "value": "946702799"
+     *        }, { "key": "created_ts", "operator": "<=", value: "1695061891" }]
      *        >
-     *        >/endpoint?filter[created_ts][$gte]=yesterday&filter[created_ts][$lte]=today
+     *        >/endpoint?filter_by=[{ "key": "last_name", "operator": "IN", "value": "Williams,
+     *        Brown,Allman" }]
      *        >
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
      *        related to the current record being retrieved. For example, if the API request is
      *        for the accountvaults endpoint, and the end user also needs to know which contact
      *        the token belongs to, this data can be returned in the accountvaults endpoint
      *        request.
+     * @param string|null $format Reporting format, valid values: csv, tsv
+     * @param string|null $typeahead You can use any `field_name` from this endpoint results to
+     *        order the list using the value provided as filter for the same `field_name`. It will
+     *        be ordered using the following rules: 1) Exact match, 2) Starts with, 3) Contains.
+     *        >/endpoint?filter={ "field_name": "Value" }&_typeahead=field_name
+     *        >
+     * @param string[]|null $fields You can use any `field_name` from this endpoint results to
+     *        filter the list of fields returned on the response.
      *
      * @return ResponseBatchsCollection Response from the API call
      *
@@ -70,44 +82,48 @@ class BatchesController extends BaseController
      */
     public function listAllBatches(
         ?Page $page = null,
-        ?Sort14 $sort = null,
-        ?Filter $filter = null,
-        ?array $expand = null
+        ?array $order = null,
+        ?array $filterBy = null,
+        ?array $expand = null,
+        ?string $format = null,
+        ?string $typeahead = null,
+        ?array $fields = null
     ): ResponseBatchsCollection {
         $_reqBuilder = $this->requestBuilder(RequestMethod::GET, '/v1/batches')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 QueryParam::init('page', $page),
-                QueryParam::init('sort', $sort),
-                QueryParam::init('filter', $filter),
-                QueryParam::init('expand', $expand)->serializeBy([ExpandEnum::class, 'checkValue'])
+                QueryParam::init('order', $order),
+                QueryParam::init('filter_by', $filterBy),
+                QueryParam::init('expand', $expand)->serializeBy([ExpandEnum::class, 'checkValue']),
+                QueryParam::init('_format', $format)->serializeBy([Format1Enum::class, 'checkValue']),
+                QueryParam::init('_typeahead', $typeahead),
+                QueryParam::init('fields', $fields)->serializeBy([Field27Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
             ->type(ResponseBatchsCollection::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * Settle a Batch
-     *
      * @param string $batchId Batch ID
      *
-     * @return ResponseAsyncProcessing Response from the API call
+     * @return ResponseTransactionProcessing Response from the API call
      *
      * @throws ApiException Thrown if API call fails
      */
-    public function settleABatch(string $batchId): ResponseAsyncProcessing
+    public function settleABatch(string $batchId): ResponseTransactionProcessing
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::PUT, '/v1/batches/{batch_id}/settle')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(TemplateParam::init('batch_id', $batchId));
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->type(ResponseAsyncProcessing::class);
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->type(ResponseTransactionProcessing::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }

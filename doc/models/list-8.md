@@ -9,24 +9,50 @@
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `signature` | `string` | Required | Signature | getSignature(): string | setSignature(string signature): void |
-| `resource` | [`string (ResourceEnum)`](../../doc/models/resource-enum.md) | Required | Resource | getResource(): string | setResource(string resource): void |
-| `resourceId` | `string` | Required | Resource ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getResourceId(): string | setResourceId(string resourceId): void |
-| `id` | `string` | Required | Signature ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getId(): string | setId(string id): void |
-| `createdTs` | `int` | Required | Created Time Stamp | getCreatedTs(): int | setCreatedTs(int createdTs): void |
-| `modifiedTs` | `int` | Required | Modified Time Stamp | getModifiedTs(): int | setModifiedTs(int modifiedTs): void |
-| `rawSignature` | `?string` | Optional | Raw Signature Information on `expand` | getRawSignature(): ?string | setRawSignature(?string rawSignature): void |
+| `id` | `?string` | Optional | Deposit Id | getId(): ?string | setId(?string id): void |
+| `companyId` | `?string` | Optional | Company Id | getCompanyId(): ?string | setCompanyId(?string companyId): void |
+| `merchantId` | `?string` | Optional | Merchant Id | getMerchantId(): ?string | setMerchantId(?string merchantId): void |
+| `service` | `?string` | Optional | Service | getService(): ?string | setService(?string service): void |
+| `depositTypes` | [`?(string(DepositTypeEnum)[])`](../../doc/models/deposit-type-enum.md) | Optional | - | getDepositTypes(): ?array | setDepositTypes(?array depositTypes): void |
+| `depositAmount` | `?float` | Optional | Deposit Amount | getDepositAmount(): ?float | setDepositAmount(?float depositAmount): void |
+| `batchAmount` | `?float` | Optional | Batch Amount | getBatchAmount(): ?float | setBatchAmount(?float batchAmount): void |
+| `adjustmentAmount` | `?float` | Optional | Adjustment Amount | getAdjustmentAmount(): ?float | setAdjustmentAmount(?float adjustmentAmount): void |
+| `retainedAmount` | `?float` | Optional | Retained Amount | getRetainedAmount(): ?float | setRetainedAmount(?float retainedAmount): void |
+| `conveyedAmount` | `?float` | Optional | Conveyed Amount | getConveyedAmount(): ?float | setConveyedAmount(?float conveyedAmount): void |
+| `feeAmount` | `?float` | Optional | Fee Amount | getFeeAmount(): ?float | setFeeAmount(?float feeAmount): void |
+| `referenceNumber` | `?string` | Optional | Reference Number | getReferenceNumber(): ?string | setReferenceNumber(?string referenceNumber): void |
+| `traceNumber` | `?string` | Optional | - | getTraceNumber(): ?string | setTraceNumber(?string traceNumber): void |
+| `currency` | `?string` | Optional | Currency | getCurrency(): ?string | setCurrency(?string currency): void |
+| `createdTs` | `?int` | Optional | Created Timestamp | getCreatedTs(): ?int | setCreatedTs(?int createdTs): void |
+| `reportedDate` | `?string` | Optional | Reported Date<br><br>**Constraints**: *Maximum Length*: `10`, *Pattern*: `^[\d]{4}-[\d]{2}-[\d]{2}$` | getReportedDate(): ?string | setReportedDate(?string reportedDate): void |
+| `transactionDate` | `?string` | Optional | Transaction Date<br><br>**Constraints**: *Maximum Length*: `10`, *Pattern*: `^[\d]{4}-[\d]{2}-[\d]{2}$` | getTransactionDate(): ?string | setTransactionDate(?string transactionDate): void |
+| `depositAccount` | `?string` | Optional | Deposit Account | getDepositAccount(): ?string | setDepositAccount(?string depositAccount): void |
+| `details` | [`?(Detail2[])`](../../doc/models/detail-2.md) | Optional | - | getDetails(): ?array | setDetails(?array details): void |
 
 ## Example (as JSON)
 
 ```json
 {
-  "signature": "iVBORw0KGgoAAAANSUhEUgAAANwAAAAsCAYAAAAOyNaYAAACvklEQVR4nO3bLZOqUBjA8ScaNxqNRiKRaCQaiXwEG7cRiUajH8FINBqJRCKR+NxyD4OIXtaXw2H3/5s5MwZ39rgz/zkvuKKqgar+YTAYnx/y7wUACwgOsIjgAIsIznFlWerlcpl6GngTgnNYVVW6WCxURDTLsqmngzcgOMdtNhsVERURDYJA8zyfekp4AcE5oCgKzfN8cOvYNM1VdCKiURRNMEu8A8FNrCzLm5j68Q1Fx2o3TwTngCzLNAiCq6D6UTVNo0mS6NfXF+HNGME5or+KeZ7XxrVcLjWOY83zXOu6vnqfeQ/bzHkgOIf0VzHP83Sz2eh6vW4D831fy7JsowvDsH1NdO4jOAfVdX0VXhRFWhSFRlHUrmr7/b4NLU3T9jVbTLcRnMO620ezep1Op3bF832/3XIORQr3EJzjumc7E9HQBUoYhjdnPKJzD8E5xjyT647T6aSr1UpFRPf7ffveuq41TdOHZzyicwvBTeBeVGEY3jwaGBrmWV3/Z82K1z/jca5zB8F9wFBQY6JaLBYax7EmSXJ3DD2v624rzUpoVrsgCDjXOWRWwVVVNfUUrvTDGrNK3YsqTdNRn69pGs2y7NshssV0w2yCK4pCRUSPx+Okc/hfWI9WqbFRPaMbYjc+s7ptt1uic8BsgsvzXEVED4fDR3/P2PPVUFifDOo7THxmPiY03/fZXk7s1wR371z1zPnKlbDGuvc9TKKz78cE9yio3W436vbv1fOV6/oPx010/Ee5PbMLbrfbPRWU53kPb/9+SlRj9L8ALcJ/lNsym+DO5/PTQaVpqnVdT/0RnGLOed0LlikvpH6L2QSnqoPX4QT1mu4FC3/Dz5tVcMDcERxgEcEBFhEcYBHBARYRHGARwQEWERxgEcEBFhEcYBHBARYRHGARwQEWERxgEcEBFhEcYBHBARYRHGDRX+EC0ah++pNrAAAAAElFTkSuQmCC",
-  "resource": "Transaction",
-  "resource_id": "11e95f8ec39de8fbdb0a4f1a",
-  "id": "11e95f8ec39de8fbdb0a4f1a",
+  "company_id": "8410111",
+  "merchant_id": "88441",
+  "deposit_amount": 2487.24,
+  "batch_amount": 2487.24,
+  "adjustment_amount": 2487.24,
+  "retained_amount": 2487.24,
+  "conveyed_amount": 2487.24,
+  "fee_amount": 2487.24,
+  "reference_number": "400000",
+  "trace_number": "400000",
+  "currency": "USD",
   "created_ts": 1422040992,
-  "modified_ts": 1422040992
+  "reported_date": "2021-12-01",
+  "transaction_date": "2021-12-01",
+  "id": "id0",
+  "service": "service0",
+  "deposit_types": [
+    "fee",
+    "deposit"
+  ]
 }
 ```
 

@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -18,29 +19,19 @@ use stdClass;
 class Header implements \JsonSerializable
 {
     /**
-     * @var Settings
+     * @var Settings|null
      */
     private $settings;
 
     /**
-     * @var Field12[]
+     * @var Field18[]|null
      */
     private $fields;
 
     /**
-     * @param Settings $settings
-     * @param Field12[] $fields
-     */
-    public function __construct(Settings $settings, array $fields)
-    {
-        $this->settings = $settings;
-        $this->fields = $fields;
-    }
-
-    /**
      * Returns Settings.
      */
-    public function getSettings(): Settings
+    public function getSettings(): ?Settings
     {
         return $this->settings;
     }
@@ -48,10 +39,9 @@ class Header implements \JsonSerializable
     /**
      * Sets Settings.
      *
-     * @required
      * @maps settings
      */
-    public function setSettings(Settings $settings): void
+    public function setSettings(?Settings $settings): void
     {
         $this->settings = $settings;
     }
@@ -59,9 +49,9 @@ class Header implements \JsonSerializable
     /**
      * Returns Fields.
      *
-     * @return Field12[]
+     * @return Field18[]|null
      */
-    public function getFields(): array
+    public function getFields(): ?array
     {
         return $this->fields;
     }
@@ -69,14 +59,58 @@ class Header implements \JsonSerializable
     /**
      * Sets Fields.
      *
-     * @required
      * @maps fields
      *
-     * @param Field12[] $fields
+     * @param Field18[]|null $fields
      */
-    public function setFields(array $fields): void
+    public function setFields(?array $fields): void
     {
         $this->fields = $fields;
+    }
+
+    /**
+     * Converts the Header object to a human-readable string representation.
+     *
+     * @return string The string representation of the Header object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Header',
+            [
+                'settings' => $this->settings,
+                'fields' => $this->fields,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -91,8 +125,13 @@ class Header implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['settings'] = $this->settings;
-        $json['fields']   = $this->fields;
+        if (isset($this->settings)) {
+            $json['settings'] = $this->settings;
+        }
+        if (isset($this->fields)) {
+            $json['fields']   = $this->fields;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

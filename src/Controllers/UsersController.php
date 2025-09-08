@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Controllers;
 
+use Core\Authentication\Auth;
 use Core\Request\Parameters\BodyParam;
 use Core\Request\Parameters\HeaderParam;
 use Core\Request\Parameters\QueryParam;
@@ -19,21 +20,23 @@ use CoreInterfaces\Core\Request\RequestMethod;
 use FortisAPILib\Exceptions\ApiException;
 use FortisAPILib\Exceptions\Response401tokenException;
 use FortisAPILib\Exceptions\Response412Exception;
-use FortisAPILib\Models\Expand77Enum;
-use FortisAPILib\Models\Filter13;
+use FortisAPILib\Models\Expand111Enum;
+use FortisAPILib\Models\Field60Enum;
+use FortisAPILib\Models\FilterBy;
+use FortisAPILib\Models\Format1Enum;
+use FortisAPILib\Models\Order21;
 use FortisAPILib\Models\Page;
+use FortisAPILib\Models\ResponseRemoveVerification;
+use FortisAPILib\Models\ResponseSendVerification;
 use FortisAPILib\Models\ResponseUser;
 use FortisAPILib\Models\ResponseUserApiKey;
 use FortisAPILib\Models\ResponseUsersCollection;
-use FortisAPILib\Models\Sort27;
 use FortisAPILib\Models\V1UsersRequest;
 use FortisAPILib\Models\V1UsersRequest1;
 
 class UsersController extends BaseController
 {
     /**
-     * Create a new API key
-     *
      * @param string $userId User ID
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
      *        related to the current record being retrieved. For example, if the API request is
@@ -48,22 +51,20 @@ class UsersController extends BaseController
     public function createANewAPIKey(string $userId, ?array $expand = null): ResponseUserApiKey
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/users/{user_id}/api-key')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 TemplateParam::init('user_id', $userId),
-                QueryParam::init('expand', $expand)->serializeBy([Expand77Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand111Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
             ->type(ResponseUserApiKey::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * Create a new user
-     *
      * @param V1UsersRequest $body
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
      *        related to the current record being retrieved. For example, if the API request is
@@ -78,59 +79,68 @@ class UsersController extends BaseController
     public function createANewUser(V1UsersRequest $body, ?array $expand = null): ResponseUser
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/users')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand77Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand111Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseUser::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * List all User
-     *
      * @param Page|null $page Use this field to specify paginate your results, by using page size
      *        and number. You can use one of the following methods:
      *        >/endpoint?page={ "number": 1, "size": 50 }
      *        >
      *        >/endpoint?page[number]=1&page[size]=50
      *        >
-     * @param Sort27|null $sort You can use any `field_name` from this endpoint results, and you can
-     *        combine more than one field for more complex sorting. You can use one of the
-     *        following methods:
-     *        >/endpoint?sort={ "field_name": "asc", "field_name2": "desc" }
+     * @param Order21[]|null $order Criteria used in query string parameters to order results. Most
+     *        fields from the endpoint results can be used as a `key`.  Unsupported fields or
+     *        operators will return a `412`.  Must be encoded, or use syntax that does not require
+     *        encoding.
+     *        >/endpoint?order[0][key]=created_ts&order[0][operator]=asc
      *        >
-     *        >/endpoint?sort[field_name]=asc&sort[field_name2]=desc
+     *        >/endpoint?order=[{ "key": "created_ts", "operator": "asc"}]
      *        >
-     * @param Filter13|null $filter You can use any `field_name` from this endpoint results as a
-     *        filter, and you can also use more than one field to create AND conditions. For date
-     *        fields (ended with `_ts`), you can also search for ranges using the `$gte` (Greater
-     *        than or equal to) and/or  `$lte` (Lower than or equal to). You can use one of the
-     *        following methods:
-     *        >/endpoint?filter={ "field_name": "Value" }
+     *        >/endpoint?order=[{ "key": "balance", "operator": "desc"},{ "key": "created_ts",
+     *        "operator": "asc"}]
      *        >
-     *        >/endpoint?filter[field_name]=Value
+     * @param FilterBy[]|null $filterBy Filter criteria that can be used in query string parameters.
+     *        Most fields from the endpoint results can be used as a `key`.  Unsupported fields or
+     *        operators will return a `412`. Must be encoded, or use syntax that does not require
+     *        encoding.
+     *        >?filter_by[0][key]=first_name&filter_by[0][operator]==&filter_by[0][value]=Steve
      *        >
-     *        >/endpoint?filter={ "created_ts": "today" }
+     *        >/endpoint?filter_by=[{ "key": "first_name", "operator": "=", "value": "Fred" }]
      *        >
-     *        >/endpoint?filter[created_ts]=today
+     *        >/endpoint?filter_by=[{ "key": "account_type", "operator": "=", "value": "VISA" }]
      *        >
-     *        >/endpoint?filter={ "created_ts": { "$gte": "yesterday", "$lte": "today" } }
+     *        >/endpoint?filter_by=[{ "key": "created_ts", "operator": ">=", "value": "946702799"
+     *        }, { "key": "created_ts", "operator": "<=", value: "1695061891" }]
      *        >
-     *        >/endpoint?filter[created_ts][$gte]=yesterday&filter[created_ts][$lte]=today
+     *        >/endpoint?filter_by=[{ "key": "last_name", "operator": "IN", "value": "Williams,
+     *        Brown,Allman" }]
      *        >
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
      *        related to the current record being retrieved. For example, if the API request is
      *        for the accountvaults endpoint, and the end user also needs to know which contact
      *        the token belongs to, this data can be returned in the accountvaults endpoint
      *        request.
+     * @param string|null $format Reporting format, valid values: csv, tsv
+     * @param string|null $typeahead You can use any `field_name` from this endpoint results to
+     *        order the list using the value provided as filter for the same `field_name`. It will
+     *        be ordered using the following rules: 1) Exact match, 2) Starts with, 3) Contains.
+     *        >/endpoint?filter={ "field_name": "Value" }&_typeahead=field_name
+     *        >
+     * @param string[]|null $fields You can use any `field_name` from this endpoint results to
+     *        filter the list of fields returned on the response.
      *
      * @return ResponseUsersCollection Response from the API call
      *
@@ -138,29 +148,33 @@ class UsersController extends BaseController
      */
     public function listAllUser(
         ?Page $page = null,
-        ?Sort27 $sort = null,
-        ?Filter13 $filter = null,
-        ?array $expand = null
+        ?array $order = null,
+        ?array $filterBy = null,
+        ?array $expand = null,
+        ?string $format = null,
+        ?string $typeahead = null,
+        ?array $fields = null
     ): ResponseUsersCollection {
         $_reqBuilder = $this->requestBuilder(RequestMethod::GET, '/v1/users')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 QueryParam::init('page', $page),
-                QueryParam::init('sort', $sort),
-                QueryParam::init('filter', $filter),
-                QueryParam::init('expand', $expand)->serializeBy([Expand77Enum::class, 'checkValue'])
+                QueryParam::init('order', $order),
+                QueryParam::init('filter_by', $filterBy),
+                QueryParam::init('expand', $expand)->serializeBy([Expand111Enum::class, 'checkValue']),
+                QueryParam::init('_format', $format)->serializeBy([Format1Enum::class, 'checkValue']),
+                QueryParam::init('_typeahead', $typeahead),
+                QueryParam::init('fields', $fields)->serializeBy([Field60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
             ->type(ResponseUsersCollection::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * Delete a user record
-     *
      * @param string $userId User ID
      *
      * @return ResponseUser Response from the API call
@@ -170,49 +184,48 @@ class UsersController extends BaseController
     public function deleteAUserRecord(string $userId): ResponseUser
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::DELETE, '/v1/users/{user_id}')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(TemplateParam::init('user_id', $userId));
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
             ->type(ResponseUser::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * View single user record
-     *
      * @param string $userId User ID
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
      *        related to the current record being retrieved. For example, if the API request is
      *        for the accountvaults endpoint, and the end user also needs to know which contact
      *        the token belongs to, this data can be returned in the accountvaults endpoint
      *        request.
+     * @param string[]|null $fields You can use any `field_name` from this endpoint results to
+     *        filter the list of fields returned on the response.
      *
      * @return ResponseUser Response from the API call
      *
      * @throws ApiException Thrown if API call fails
      */
-    public function viewSingleUserRecord(string $userId, ?array $expand = null): ResponseUser
+    public function viewSingleUserRecord(string $userId, ?array $expand = null, ?array $fields = null): ResponseUser
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::GET, '/v1/users/{user_id}')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 TemplateParam::init('user_id', $userId),
-                QueryParam::init('expand', $expand)->serializeBy([Expand77Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand111Enum::class, 'checkValue']),
+                QueryParam::init('fields', $fields)->serializeBy([Field60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
             ->type(ResponseUser::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * Update a user record
-     *
      * @param string $userId User ID
      * @param V1UsersRequest1 $body
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
@@ -228,44 +241,91 @@ class UsersController extends BaseController
     public function updateAUserRecord(string $userId, V1UsersRequest1 $body, ?array $expand = null): ResponseUser
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::PATCH, '/v1/users/{user_id}')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 TemplateParam::init('user_id', $userId),
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand77Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand111Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseUser::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * View self record
-     *
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
      *        related to the current record being retrieved. For example, if the API request is
      *        for the accountvaults endpoint, and the end user also needs to know which contact
      *        the token belongs to, this data can be returned in the accountvaults endpoint
      *        request.
+     * @param string[]|null $fields You can use any `field_name` from this endpoint results to
+     *        filter the list of fields returned on the response.
      *
      * @return ResponseUser Response from the API call
      *
      * @throws ApiException Thrown if API call fails
      */
-    public function viewSelfRecord(?array $expand = null): ResponseUser
+    public function viewSelfRecord(?array $expand = null, ?array $fields = null): ResponseUser
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::GET, '/v1/users/me')
-            ->auth('global')
-            ->parameters(QueryParam::init('expand', $expand)->serializeBy([Expand77Enum::class, 'checkValue']));
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(
+                QueryParam::init('expand', $expand)->serializeBy([Expand111Enum::class, 'checkValue']),
+                QueryParam::init('fields', $fields)->serializeBy([Field60Enum::class, 'checkValue'])
+            );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
             ->type(ResponseUser::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
+    /**
+     * Remove the pending user
+     *
+     * @param string $userId
+     *
+     * @return ResponseRemoveVerification Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function removeVerification(string $userId): ResponseRemoveVerification
+    {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::DELETE, '/v1/users/{user_id}/remove-verification')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(TemplateParam::init('user_id', $userId));
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->type(ResponseRemoveVerification::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
+    /**
+     * Send an verification email to the pending user
+     *
+     * @param string $userId
+     *
+     * @return ResponseSendVerification Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function sendVerification(string $userId): ResponseSendVerification
+    {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/users/{user_id}/send-verification')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(TemplateParam::init('user_id', $userId));
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->type(ResponseSendVerification::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }

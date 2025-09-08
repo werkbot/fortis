@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Controllers;
 
+use Core\Authentication\Auth;
 use Core\Request\Parameters\BodyParam;
 use Core\Request\Parameters\HeaderParam;
 use Core\Request\Parameters\QueryParam;
@@ -19,20 +20,20 @@ use CoreInterfaces\Core\Request\RequestMethod;
 use FortisAPILib\Exceptions\ApiException;
 use FortisAPILib\Exceptions\Response401tokenException;
 use FortisAPILib\Exceptions\Response412Exception;
-use FortisAPILib\Models\Expand31Enum;
-use FortisAPILib\Models\Filter9;
+use FortisAPILib\Models\Expand37Enum;
+use FortisAPILib\Models\Field47Enum;
+use FortisAPILib\Models\FilterBy;
+use FortisAPILib\Models\Format1Enum;
+use FortisAPILib\Models\Order21;
 use FortisAPILib\Models\Page;
 use FortisAPILib\Models\ResponseTag;
 use FortisAPILib\Models\ResponseTagsCollection;
-use FortisAPILib\Models\Sort23;
 use FortisAPILib\Models\V1TagsRequest;
 use FortisAPILib\Models\V1TagsRequest1;
 
 class TagsController extends BaseController
 {
     /**
-     * Create a new tag
-     *
      * @param V1TagsRequest $body
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
      *        related to the current record being retrieved. For example, if the API request is
@@ -47,59 +48,68 @@ class TagsController extends BaseController
     public function createANewTag(V1TagsRequest $body, ?array $expand = null): ResponseTag
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/tags')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand31Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand37Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTag::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * List all tags related
-     *
      * @param Page|null $page Use this field to specify paginate your results, by using page size
      *        and number. You can use one of the following methods:
      *        >/endpoint?page={ "number": 1, "size": 50 }
      *        >
      *        >/endpoint?page[number]=1&page[size]=50
      *        >
-     * @param Sort23|null $sort You can use any `field_name` from this endpoint results, and you can
-     *        combine more than one field for more complex sorting. You can use one of the
-     *        following methods:
-     *        >/endpoint?sort={ "field_name": "asc", "field_name2": "desc" }
+     * @param Order21[]|null $order Criteria used in query string parameters to order results. Most
+     *        fields from the endpoint results can be used as a `key`.  Unsupported fields or
+     *        operators will return a `412`.  Must be encoded, or use syntax that does not require
+     *        encoding.
+     *        >/endpoint?order[0][key]=created_ts&order[0][operator]=asc
      *        >
-     *        >/endpoint?sort[field_name]=asc&sort[field_name2]=desc
+     *        >/endpoint?order=[{ "key": "created_ts", "operator": "asc"}]
      *        >
-     * @param Filter9|null $filter You can use any `field_name` from this endpoint results as a
-     *        filter, and you can also use more than one field to create AND conditions. For date
-     *        fields (ended with `_ts`), you can also search for ranges using the `$gte` (Greater
-     *        than or equal to) and/or  `$lte` (Lower than or equal to). You can use one of the
-     *        following methods:
-     *        >/endpoint?filter={ "field_name": "Value" }
+     *        >/endpoint?order=[{ "key": "balance", "operator": "desc"},{ "key": "created_ts",
+     *        "operator": "asc"}]
      *        >
-     *        >/endpoint?filter[field_name]=Value
+     * @param FilterBy[]|null $filterBy Filter criteria that can be used in query string parameters.
+     *        Most fields from the endpoint results can be used as a `key`.  Unsupported fields or
+     *        operators will return a `412`. Must be encoded, or use syntax that does not require
+     *        encoding.
+     *        >?filter_by[0][key]=first_name&filter_by[0][operator]==&filter_by[0][value]=Steve
      *        >
-     *        >/endpoint?filter={ "created_ts": "today" }
+     *        >/endpoint?filter_by=[{ "key": "first_name", "operator": "=", "value": "Fred" }]
      *        >
-     *        >/endpoint?filter[created_ts]=today
+     *        >/endpoint?filter_by=[{ "key": "account_type", "operator": "=", "value": "VISA" }]
      *        >
-     *        >/endpoint?filter={ "created_ts": { "$gte": "yesterday", "$lte": "today" } }
+     *        >/endpoint?filter_by=[{ "key": "created_ts", "operator": ">=", "value": "946702799"
+     *        }, { "key": "created_ts", "operator": "<=", value: "1695061891" }]
      *        >
-     *        >/endpoint?filter[created_ts][$gte]=yesterday&filter[created_ts][$lte]=today
+     *        >/endpoint?filter_by=[{ "key": "last_name", "operator": "IN", "value": "Williams,
+     *        Brown,Allman" }]
      *        >
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
      *        related to the current record being retrieved. For example, if the API request is
      *        for the accountvaults endpoint, and the end user also needs to know which contact
      *        the token belongs to, this data can be returned in the accountvaults endpoint
      *        request.
+     * @param string|null $format Reporting format, valid values: csv, tsv
+     * @param string|null $typeahead You can use any `field_name` from this endpoint results to
+     *        order the list using the value provided as filter for the same `field_name`. It will
+     *        be ordered using the following rules: 1) Exact match, 2) Starts with, 3) Contains.
+     *        >/endpoint?filter={ "field_name": "Value" }&_typeahead=field_name
+     *        >
+     * @param string[]|null $fields You can use any `field_name` from this endpoint results to
+     *        filter the list of fields returned on the response.
      *
      * @return ResponseTagsCollection Response from the API call
      *
@@ -107,29 +117,33 @@ class TagsController extends BaseController
      */
     public function listAllTagsRelated(
         ?Page $page = null,
-        ?Sort23 $sort = null,
-        ?Filter9 $filter = null,
-        ?array $expand = null
+        ?array $order = null,
+        ?array $filterBy = null,
+        ?array $expand = null,
+        ?string $format = null,
+        ?string $typeahead = null,
+        ?array $fields = null
     ): ResponseTagsCollection {
         $_reqBuilder = $this->requestBuilder(RequestMethod::GET, '/v1/tags')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 QueryParam::init('page', $page),
-                QueryParam::init('sort', $sort),
-                QueryParam::init('filter', $filter),
-                QueryParam::init('expand', $expand)->serializeBy([Expand31Enum::class, 'checkValue'])
+                QueryParam::init('order', $order),
+                QueryParam::init('filter_by', $filterBy),
+                QueryParam::init('expand', $expand)->serializeBy([Expand37Enum::class, 'checkValue']),
+                QueryParam::init('_format', $format)->serializeBy([Format1Enum::class, 'checkValue']),
+                QueryParam::init('_typeahead', $typeahead),
+                QueryParam::init('fields', $fields)->serializeBy([Field47Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
             ->type(ResponseTagsCollection::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * Delete tag record
-     *
      * @param string $tagId Tag ID
      *
      * @return ResponseTag Response from the API call
@@ -139,49 +153,48 @@ class TagsController extends BaseController
     public function deleteTagRecord(string $tagId): ResponseTag
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::DELETE, '/v1/tags/{tag_id}')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(TemplateParam::init('tag_id', $tagId));
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
             ->type(ResponseTag::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * View single tags record
-     *
      * @param string $tagId Tag ID
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
      *        related to the current record being retrieved. For example, if the API request is
      *        for the accountvaults endpoint, and the end user also needs to know which contact
      *        the token belongs to, this data can be returned in the accountvaults endpoint
      *        request.
+     * @param string[]|null $fields You can use any `field_name` from this endpoint results to
+     *        filter the list of fields returned on the response.
      *
      * @return ResponseTag Response from the API call
      *
      * @throws ApiException Thrown if API call fails
      */
-    public function viewSingleTagsRecord(string $tagId, ?array $expand = null): ResponseTag
+    public function viewSingleTagsRecord(string $tagId, ?array $expand = null, ?array $fields = null): ResponseTag
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::GET, '/v1/tags/{tag_id}')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 TemplateParam::init('tag_id', $tagId),
-                QueryParam::init('expand', $expand)->serializeBy([Expand31Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand37Enum::class, 'checkValue']),
+                QueryParam::init('fields', $fields)->serializeBy([Field47Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
             ->type(ResponseTag::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * Update tag record
-     *
      * @param string $tagId Tag ID
      * @param V1TagsRequest1 $body
      *
@@ -192,7 +205,7 @@ class TagsController extends BaseController
     public function updateTagRecord(string $tagId, V1TagsRequest1 $body): ResponseTag
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::PATCH, '/v1/tags/{tag_id}')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 TemplateParam::init('tag_id', $tagId),
                 HeaderParam::init('Content-Type', 'application/json'),
@@ -200,8 +213,8 @@ class TagsController extends BaseController
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTag::class);
 
         return $this->execute($_reqBuilder, $_resHandler);

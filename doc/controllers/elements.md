@@ -10,6 +10,64 @@ $elementsController = $client->getElementsController();
 
 `ElementsController`
 
+## Methods
+
+* [Ticket Intention](../../doc/controllers/elements.md#ticket-intention)
+* [Transaction Intention](../../doc/controllers/elements.md#transaction-intention)
+
+
+# Ticket Intention
+
+Elements uses a `TicketIntention` object to represent your intent to tokenize credit card information from a customer.
+
+```php
+function ticketIntention(V1ElementsTicketIntentionRequest $body): ResponseTicketIntention
+```
+
+## Parameters
+
+| Parameter | Type | Tags | Description |
+|  --- | --- | --- | --- |
+| `body` | [`V1ElementsTicketIntentionRequest`](../../doc/models/v1-elements-ticket-intention-request.md) | Body, Required | - |
+
+## Response Type
+
+[`ResponseTicketIntention`](../../doc/models/response-ticket-intention.md)
+
+## Example Usage
+
+```php
+$body = V1ElementsTicketIntentionRequestBuilder::init(
+    '11e95f8ec39de8fbdb0a4f1a'
+)
+    ->contactId('11e95f8ec39de8fbdb0a4f1a')
+    ->productTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->build();
+
+$result = $elementsController->ticketIntention($body);
+```
+
+## Example Response *(as JSON)*
+
+```json
+{
+  "type": "TicketIntention",
+  "data": {
+    "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+    "location_id": "11e95f8ec39de8fbdb0a4f1a",
+    "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
+    "client_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+  }
+}
+```
+
+## Errors
+
+| HTTP Status Code | Error Description | Exception Class |
+|  --- | --- | --- |
+| 401 | Unauthorized | [`Response401tokenException`](../../doc/models/response-401-token-exception.md) |
+| 412 | Precondition Failed | [`Response412Exception`](../../doc/models/response-412-exception.md) |
+
 
 # Transaction Intention
 
@@ -32,7 +90,14 @@ function transactionIntention(V1ElementsTransactionIntentionRequest $body): Resp
 ## Example Usage
 
 ```php
-$body = new Models\V1ElementsTransactionIntentionRequest();
+$body = V1ElementsTransactionIntentionRequestBuilder::init()
+    ->action(ActionEnum::SALE)
+    ->digitalWalletsOnly(false)
+    ->amount(1099)
+    ->locationId('11e95f8ec39de8fbdb0a4f1a')
+    ->contactId('11e95f8ec39de8fbdb0a4f1a')
+    ->achSecCode(AchSecCodeEnum::WEB)
+    ->build();
 
 $result = $elementsController->transactionIntention($body);
 ```
@@ -50,6 +115,7 @@ $result = $elementsController->transactionIntention($body);
         "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a"
       }
     ],
+    "amount": 1099,
     "location_id": "11e95f8ec39de8fbdb0a4f1a",
     "contact_id": "11e95f8ec39de8fbdb0a4f1a",
     "ach_sec_code": "WEB",

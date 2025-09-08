@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Controllers;
 
+use Core\Authentication\Auth;
 use Core\Request\Parameters\TemplateParam;
 use Core\Response\Types\ErrorType;
 use CoreInterfaces\Core\Request\RequestMethod;
@@ -32,11 +33,11 @@ class AsyncProcessingController extends BaseController
     public function statusCheck(string $statusCode): ResponseAsyncStatus
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::GET, '/v1/async/status/{status_code}')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(TemplateParam::init('status_code', $statusCode));
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
             ->type(ResponseAsyncStatus::class);
 
         return $this->execute($_reqBuilder, $_resHandler);

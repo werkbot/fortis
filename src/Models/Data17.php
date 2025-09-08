@@ -10,98 +10,75 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class Data17 implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
-    private $id;
+    private $token;
 
     /**
-     * @var string
+     * Returns Token.
+     * JWT used to initialize the card reader
      */
-    private $transactionId;
-
-    /**
-     * @var Level3Data
-     */
-    private $level3Data;
-
-    /**
-     * @param string $id
-     * @param string $transactionId
-     * @param Level3Data $level3Data
-     */
-    public function __construct(string $id, string $transactionId, Level3Data $level3Data)
+    public function getToken(): ?string
     {
-        $this->id = $id;
-        $this->transactionId = $transactionId;
-        $this->level3Data = $level3Data;
+        return $this->token;
     }
 
     /**
-     * Returns Id.
-     * Level 3 ID
-     */
-    public function getId(): string
-    {
-        return $this->id;
-    }
-
-    /**
-     * Sets Id.
-     * Level 3 ID
+     * Sets Token.
+     * JWT used to initialize the card reader
      *
-     * @required
-     * @maps id
+     * @maps token
      */
-    public function setId(string $id): void
+    public function setToken(?string $token): void
     {
-        $this->id = $id;
+        $this->token = $token;
     }
 
     /**
-     * Returns Transaction Id.
-     * Transaction ID
-     */
-    public function getTransactionId(): string
-    {
-        return $this->transactionId;
-    }
-
-    /**
-     * Sets Transaction Id.
-     * Transaction ID
+     * Converts the Data17 object to a human-readable string representation.
      *
-     * @required
-     * @maps transaction_id
+     * @return string The string representation of the Data17 object.
      */
-    public function setTransactionId(string $transactionId): void
+    public function __toString(): string
     {
-        $this->transactionId = $transactionId;
+        return ApiHelper::stringify(
+            'Data17',
+            ['token' => $this->token, 'additionalProperties' => $this->additionalProperties]
+        );
     }
 
-    /**
-     * Returns Level 3 Data.
-     * Level 3 data object
-     */
-    public function getLevel3Data(): Level3Data
-    {
-        return $this->level3Data;
-    }
+    private $additionalProperties = [];
 
     /**
-     * Sets Level 3 Data.
-     * Level 3 data object
+     * Add an additional property to this model.
      *
-     * @required
-     * @maps level3_data
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
      */
-    public function setLevel3Data(Level3Data $level3Data): void
+    public function addAdditionalProperty(string $name, $value)
     {
-        $this->level3Data = $level3Data;
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -116,9 +93,10 @@ class Data17 implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['id']             = $this->id;
-        $json['transaction_id'] = $this->transactionId;
-        $json['level3_data']    = $this->level3Data;
+        if (isset($this->token)) {
+            $json['token'] = $this->token;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

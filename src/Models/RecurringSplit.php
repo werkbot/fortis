@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class RecurringSplit implements \JsonSerializable
@@ -25,12 +26,12 @@ class RecurringSplit implements \JsonSerializable
     private $amount = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
@@ -38,16 +39,6 @@ class RecurringSplit implements \JsonSerializable
      * @var array
      */
     private $createdUserId = [];
-
-    /**
-     * @param string $id
-     * @param int $createdTs
-     */
-    public function __construct(string $id, int $createdTs)
-    {
-        $this->id = $id;
-        $this->createdTs = $createdTs;
-    }
 
     /**
      * Returns Contact Id.
@@ -117,7 +108,7 @@ class RecurringSplit implements \JsonSerializable
      * Returns Id.
      * Recurring ID
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -126,10 +117,9 @@ class RecurringSplit implements \JsonSerializable
      * Sets Id.
      * Recurring ID
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -138,7 +128,7 @@ class RecurringSplit implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -147,10 +137,9 @@ class RecurringSplit implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -188,6 +177,54 @@ class RecurringSplit implements \JsonSerializable
     }
 
     /**
+     * Converts the RecurringSplit object to a human-readable string representation.
+     *
+     * @return string The string representation of the RecurringSplit object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'RecurringSplit',
+            [
+                'contactId' => $this->getContactId(),
+                'amount' => $this->getAmount(),
+                'id' => $this->id,
+                'createdTs' => $this->createdTs,
+                'createdUserId' => $this->getCreatedUserId(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -205,11 +242,16 @@ class RecurringSplit implements \JsonSerializable
         if (!empty($this->amount)) {
             $json['amount']          = $this->amount['value'];
         }
-        $json['id']                  = $this->id;
-        $json['created_ts']          = $this->createdTs;
+        if (isset($this->id)) {
+            $json['id']              = $this->id;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']      = $this->createdTs;
+        }
         if (!empty($this->createdUserId)) {
             $json['created_user_id'] = $this->createdUserId['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

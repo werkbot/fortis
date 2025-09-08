@@ -16,61 +16,67 @@ use stdClass;
 
 class Expand11Enum
 {
-    public const QUICK_INVOICE_SETTING = 'quick_invoice_setting';
+    public const USERS = 'users';
 
-    public const TAGS = 'tags';
+    public const IS_DELETABLE = 'is_deletable';
 
-    public const QUICK_INVOICE_VIEWS = 'quick_invoice_views';
+    public const BRANDING_DOMAIN = 'branding_domain';
 
-    public const ALL_TAGS = 'all_tags';
+    public const PRODUCT_INVOICE = 'product_invoice';
 
-    public const LOCATION = 'location';
+    public const PRODUCT_FILES = 'product_files';
+
+    public const PARENT_ = 'parent';
 
     public const CREATED_USER = 'created_user';
 
-    public const MODIFIED_USER = 'modified_user';
-
     public const CHANGELOGS = 'changelogs';
 
-    public const CONTACT = 'contact';
+    public const PRODUCT_TRANSACTIONS = 'product_transactions';
 
-    public const LOG_EMAILS = 'log_emails';
+    public const TERMINALS = 'terminals';
 
-    public const LOG_SMS = 'log_sms';
+    public const TERMINAL_ROUTERS = 'terminal_routers';
 
-    public const TRANSACTIONS = 'transactions';
+    public const DEVELOPER_COMPANY = 'developer_company';
 
-    public const CC_PRODUCT_TRANSACTION = 'cc_product_transaction';
+    public const DEVELOPER_COMPANY_ID = 'developer_company_id';
 
-    public const ACH_PRODUCT_TRANSACTION = 'ach_product_transaction';
+    public const HELPPAGES = 'helppages';
 
-    public const EMAIL_BLACKLIST = 'email_blacklist';
+    public const QUICK_INVOICE_SETTING = 'quick_invoice_setting';
 
-    public const SMS_BLACKLIST = 'sms_blacklist';
+    public const LOCATION_BILLING_ACCOUNTS = 'location_billing_accounts';
 
-    public const FILES = 'files';
+    public const MARKETPLACES = 'marketplaces';
 
-    public const PAYMENT_URL = 'payment_url';
+    public const LOCATIONMARKETPLACES = 'locationmarketplaces';
+
+    public const ADDONS = 'addons';
+
+    public const ADDITIONAL_ACCESS = 'additional_access';
 
     private const _ALL_VALUES = [
-        self::QUICK_INVOICE_SETTING,
-        self::TAGS,
-        self::QUICK_INVOICE_VIEWS,
-        self::ALL_TAGS,
-        self::LOCATION,
+        self::USERS,
+        self::IS_DELETABLE,
+        self::BRANDING_DOMAIN,
+        self::PRODUCT_INVOICE,
+        self::PRODUCT_FILES,
+        self::PARENT_,
         self::CREATED_USER,
-        self::MODIFIED_USER,
         self::CHANGELOGS,
-        self::CONTACT,
-        self::LOG_EMAILS,
-        self::LOG_SMS,
-        self::TRANSACTIONS,
-        self::CC_PRODUCT_TRANSACTION,
-        self::ACH_PRODUCT_TRANSACTION,
-        self::EMAIL_BLACKLIST,
-        self::SMS_BLACKLIST,
-        self::FILES,
-        self::PAYMENT_URL
+        self::PRODUCT_TRANSACTIONS,
+        self::TERMINALS,
+        self::TERMINAL_ROUTERS,
+        self::DEVELOPER_COMPANY,
+        self::DEVELOPER_COMPANY_ID,
+        self::HELPPAGES,
+        self::QUICK_INVOICE_SETTING,
+        self::LOCATION_BILLING_ACCOUNTS,
+        self::MARKETPLACES,
+        self::LOCATIONMARKETPLACES,
+        self::ADDONS,
+        self::ADDITIONAL_ACCESS
     ];
 
     /**

@@ -16,6 +16,7 @@ Processor
 | `ZACH` |
 | `ACH` |
 | `FORTISACH` |
+| `CASH` |
 
 ## Example
 

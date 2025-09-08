@@ -9,8 +9,8 @@
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `type` | `string` | Required, Constant | Resource Type<br>**Default**: `'TagsCollection'` | getType(): string | setType(string type): void |
-| `mList` | [`List9[]`](../../doc/models/list-9.md) | Required | Resource Members | getMList(): array | setMList(array mList): void |
+| `type` | [`?string(Type78Enum)`](../../doc/models/type-78-enum.md) | Optional | Resource Type<br><br>**Default**: `Type78Enum::TAGSCOLLECTION` | getType(): ?string | setType(?string type): void |
+| `list` | [`?(List13[])`](../../doc/models/list-13.md) | Optional | Resource Members | getList(): ?array | setList(?array list): void |
 | `links` | [`?Links`](../../doc/models/links.md) | Optional | Pagination page links | getLinks(): ?Links | setLinks(?Links links): void |
 | `pagination` | [`?Pagination`](../../doc/models/pagination.md) | Optional | Pagination info | getPagination(): ?Pagination | setPagination(?Pagination pagination): void |
 | `sort` | [`?Sort`](../../doc/models/sort.md) | Optional | Sort information used on the results | getSort(): ?Sort | setSort(?Sort sort): void |
@@ -20,12 +20,52 @@
 ```json
 {
   "type": "TagsCollection",
-  "list": {
-    "location_id": "11e95f8ec39de8fbdb0a4f1a",
-    "title": "My terminal",
-    "id": "11e95f8ec39de8fbdb0a4f1a",
-    "created_ts": 1422040992,
-    "modified_ts": 1422040992
+  "list": [
+    {
+      "location_id": "location_id6",
+      "title": "title8",
+      "id": "id2",
+      "created_ts": 56,
+      "modified_ts": 124
+    },
+    {
+      "location_id": "location_id6",
+      "title": "title8",
+      "id": "id2",
+      "created_ts": 56,
+      "modified_ts": 124
+    }
+  ],
+  "links": {
+    "type": "Links",
+    "first": "first0",
+    "previous": "previous2",
+    "next": "next2",
+    "last": "last4"
+  },
+  "pagination": {
+    "type": "Pagination",
+    "total_count": 100,
+    "page_count": 212,
+    "page_number": 28,
+    "page_size": 6
+  },
+  "sort": {
+    "type": "Sorting",
+    "fields": [
+      {
+        "field": "field2",
+        "order": "asc"
+      },
+      {
+        "field": "field2",
+        "order": "asc"
+      },
+      {
+        "field": "field2",
+        "order": "asc"
+      }
+    ]
   }
 }
 ```

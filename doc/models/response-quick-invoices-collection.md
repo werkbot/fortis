@@ -9,8 +9,8 @@
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `type` | `string` | Required, Constant | Resource Type<br>**Default**: `'QuickInvoicesCollection'` | getType(): string | setType(string type): void |
-| `mList` | [`List6[]`](../../doc/models/list-6.md) | Required | Resource Members | getMList(): array | setMList(array mList): void |
+| `type` | [`?string(Type62Enum)`](../../doc/models/type-62-enum.md) | Optional | Resource Type<br><br>**Default**: `Type62Enum::QUICKINVOICESCOLLECTION` | getType(): ?string | setType(?string type): void |
+| `list` | [`?(List10[])`](../../doc/models/list-10.md) | Optional | Resource Members | getList(): ?array | setList(?array list): void |
 | `links` | [`?Links`](../../doc/models/links.md) | Optional | Pagination page links | getLinks(): ?Links | setLinks(?Links links): void |
 | `pagination` | [`?Pagination`](../../doc/models/pagination.md) | Optional | Pagination info | getPagination(): ?Pagination | setPagination(?Pagination pagination): void |
 | `sort` | [`?Sort`](../../doc/models/sort.md) | Optional | Sort information used on the results | getSort(): ?Sort | setSort(?Sort sort): void |
@@ -20,18 +20,52 @@
 ```json
 {
   "type": "QuickInvoicesCollection",
-  "list": {
-    "location_id": "11e95f8ec39de8fbdb0a4f1a",
-    "title": "My terminal",
-    "cc_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
-    "due_date": "2021-12-01",
-    "item_list": {
-      "name": "Bread",
-      "amount": 20.15
+  "list": [
+    {
+      "location_id": "location_id6",
+      "title": "title8",
+      "cc_product_transaction_id": "cc_product_transaction_id6",
+      "ach_product_transaction_id": "ach_product_transaction_id4",
+      "due_date": "due_date0"
     },
-    "id": "11e95f8ec39de8fbdb0a4f1a",
-    "created_ts": 1422040992,
-    "modified_ts": 1422040992
+    {
+      "location_id": "location_id6",
+      "title": "title8",
+      "cc_product_transaction_id": "cc_product_transaction_id6",
+      "ach_product_transaction_id": "ach_product_transaction_id4",
+      "due_date": "due_date0"
+    }
+  ],
+  "links": {
+    "type": "Links",
+    "first": "first0",
+    "previous": "previous2",
+    "next": "next2",
+    "last": "last4"
+  },
+  "pagination": {
+    "type": "Pagination",
+    "total_count": 100,
+    "page_count": 212,
+    "page_number": 28,
+    "page_size": 6
+  },
+  "sort": {
+    "type": "Sorting",
+    "fields": [
+      {
+        "field": "field2",
+        "order": "asc"
+      },
+      {
+        "field": "field2",
+        "order": "asc"
+      },
+      {
+        "field": "field2",
+        "order": "asc"
+      }
+    ]
   }
 }
 ```

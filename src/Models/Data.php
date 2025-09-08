@@ -10,27 +10,28 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class Data implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $code;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $type;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $progress;
 
@@ -40,31 +41,15 @@ class Data implements \JsonSerializable
     private $error = [];
 
     /**
-     * @var int
+     * @var int|null
      */
     private $ttl;
-
-    /**
-     * @param string $code
-     * @param string $type
-     * @param string $id
-     * @param int $progress
-     * @param int $ttl
-     */
-    public function __construct(string $code, string $type, string $id, int $progress, int $ttl)
-    {
-        $this->code = $code;
-        $this->type = $type;
-        $this->id = $id;
-        $this->progress = $progress;
-        $this->ttl = $ttl;
-    }
 
     /**
      * Returns Code.
      * A [UUID v4](https://datatracker.ietf.org/doc/html/rfc4122) that's unique for the Async Request
      */
-    public function getCode(): string
+    public function getCode(): ?string
     {
         return $this->code;
     }
@@ -73,10 +58,9 @@ class Data implements \JsonSerializable
      * Sets Code.
      * A [UUID v4](https://datatracker.ietf.org/doc/html/rfc4122) that's unique for the Async Request
      *
-     * @required
      * @maps code
      */
-    public function setCode(string $code): void
+    public function setCode(?string $code): void
     {
         $this->code = $code;
     }
@@ -85,7 +69,7 @@ class Data implements \JsonSerializable
      * Returns Type.
      * The @type from the original request.
      */
-    public function getType(): string
+    public function getType(): ?string
     {
         return $this->type;
     }
@@ -94,10 +78,9 @@ class Data implements \JsonSerializable
      * Sets Type.
      * The @type from the original request.
      *
-     * @required
      * @maps type
      */
-    public function setType(string $type): void
+    public function setType(?string $type): void
     {
         $this->type = $type;
     }
@@ -106,7 +89,7 @@ class Data implements \JsonSerializable
      * Returns Id.
      * After a sucessfully processing, the system will fill with the final ID for the document
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -115,10 +98,9 @@ class Data implements \JsonSerializable
      * Sets Id.
      * After a sucessfully processing, the system will fill with the final ID for the document
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -127,7 +109,7 @@ class Data implements \JsonSerializable
      * Returns Progress.
      * The current percentage progress
      */
-    public function getProgress(): int
+    public function getProgress(): ?int
     {
         return $this->progress;
     }
@@ -136,10 +118,9 @@ class Data implements \JsonSerializable
      * Sets Progress.
      * The current percentage progress
      *
-     * @required
      * @maps progress
      */
-    public function setProgress(int $progress): void
+    public function setProgress(?int $progress): void
     {
         $this->progress = $progress;
     }
@@ -181,7 +162,7 @@ class Data implements \JsonSerializable
      * The date (in [Epoch Time](https://en.wikipedia.org/wiki/Unix_time)) this status register is set to
      * expire. Usually 30 days after the request.
      */
-    public function getTtl(): int
+    public function getTtl(): ?int
     {
         return $this->ttl;
     }
@@ -191,12 +172,60 @@ class Data implements \JsonSerializable
      * The date (in [Epoch Time](https://en.wikipedia.org/wiki/Unix_time)) this status register is set to
      * expire. Usually 30 days after the request.
      *
-     * @required
      * @maps ttl
      */
-    public function setTtl(int $ttl): void
+    public function setTtl(?int $ttl): void
     {
         $this->ttl = $ttl;
+    }
+
+    /**
+     * Converts the Data object to a human-readable string representation.
+     *
+     * @return string The string representation of the Data object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Data',
+            [
+                'code' => $this->code,
+                'type' => $this->type,
+                'id' => $this->id,
+                'progress' => $this->progress,
+                'error' => $this->getError(),
+                'ttl' => $this->ttl,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -211,14 +240,25 @@ class Data implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['code']      = $this->code;
-        $json['type']      = $this->type;
-        $json['id']        = $this->id;
-        $json['progress']  = $this->progress;
-        if (!empty($this->error)) {
-            $json['error'] = $this->error['value'];
+        if (isset($this->code)) {
+            $json['code']     = $this->code;
         }
-        $json['ttl']       = $this->ttl;
+        if (isset($this->type)) {
+            $json['type']     = $this->type;
+        }
+        if (isset($this->id)) {
+            $json['id']       = $this->id;
+        }
+        if (isset($this->progress)) {
+            $json['progress'] = $this->progress;
+        }
+        if (!empty($this->error)) {
+            $json['error']    = $this->error['value'];
+        }
+        if (isset($this->ttl)) {
+            $json['ttl']      = $this->ttl;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

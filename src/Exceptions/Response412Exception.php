@@ -10,8 +10,20 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Exceptions;
 
+use FortisAPILib\ApiHelper;
+
 class Response412Exception extends ApiException
 {
+    /**
+     * @var string|null
+     */
+    private $type;
+
+    /**
+     * @var string|null
+     */
+    private $id;
+
     /**
      * @var int|null
      */
@@ -20,17 +32,53 @@ class Response412Exception extends ApiException
     /**
      * @var string|null
      */
-    private $error;
+    private $title;
 
     /**
      * @var string|null
      */
-    private $messageProperty;
+    private $detail;
 
     /**
-     * @var \FortisAPILib\Models\Detail[]|null
+     * @var \FortisAPILib\Models\Meta|null
      */
-    private $details;
+    private $meta;
+
+    /**
+     * Returns Type.
+     */
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    /**
+     * Sets Type.
+     *
+     * @maps type
+     */
+    public function setType(?string $type): void
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * Returns Id.
+     */
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
+
+    /**
+     * Sets Id.
+     *
+     * @maps id
+     */
+    public function setId(?string $id): void
+    {
+        $this->id = $id;
+    }
 
     /**
      * Returns Status Code.
@@ -53,66 +101,110 @@ class Response412Exception extends ApiException
     }
 
     /**
-     * Returns Error.
+     * Returns Title.
      * Error description
      */
-    public function getError(): ?string
+    public function getTitle(): ?string
     {
-        return $this->error;
+        return $this->title;
     }
 
     /**
-     * Sets Error.
+     * Sets Title.
      * Error description
      *
-     * @maps error
+     * @maps title
      */
-    public function setError(?string $error): void
+    public function setTitle(?string $title): void
     {
-        $this->error = $error;
+        $this->title = $title;
     }
 
     /**
-     * Returns Message Property.
-     * Error message
+     * Returns Detail.
+     * Error details
      */
-    public function getMessageProperty(): ?string
+    public function getDetail(): ?string
     {
-        return $this->messageProperty;
+        return $this->detail;
     }
 
     /**
-     * Sets Message Property.
-     * Error message
+     * Sets Detail.
+     * Error details
      *
-     * @maps message
+     * @maps detail
      */
-    public function setMessageProperty(?string $messageProperty): void
+    public function setDetail(?string $detail): void
     {
-        $this->messageProperty = $messageProperty;
+        $this->detail = $detail;
     }
 
     /**
-     * Returns Details.
-     * Error detail
-     *
-     * @return \FortisAPILib\Models\Detail[]|null
+     * Returns Meta.
      */
-    public function getDetails(): ?array
+    public function getMeta(): ?\FortisAPILib\Models\Meta
     {
-        return $this->details;
+        return $this->meta;
     }
 
     /**
-     * Sets Details.
-     * Error detail
+     * Sets Meta.
      *
-     * @maps details
-     *
-     * @param \FortisAPILib\Models\Detail[]|null $details
+     * @maps meta
      */
-    public function setDetails(?array $details): void
+    public function setMeta(?\FortisAPILib\Models\Meta $meta): void
     {
-        $this->details = $details;
+        $this->meta = $meta;
+    }
+
+    /**
+     * Converts the Response412Exception object to a human-readable string representation.
+     *
+     * @return string The string representation of the Response412Exception object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Response412Exception',
+            [
+                'type' => $this->type,
+                'id' => $this->id,
+                'statusCode' => $this->statusCode,
+                'title' => $this->title,
+                'detail' => $this->detail,
+                'meta' => $this->meta,
+                'additionalProperties' => $this->additionalProperties
+            ],
+            parent::__toString()
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 }

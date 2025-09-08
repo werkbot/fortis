@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class TerminalRouter implements \JsonSerializable
@@ -20,7 +21,7 @@ class TerminalRouter implements \JsonSerializable
     private $macAddress;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $locationId;
 
@@ -30,17 +31,17 @@ class TerminalRouter implements \JsonSerializable
     private $locationApiId = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $modifiedTs;
 
@@ -48,20 +49,6 @@ class TerminalRouter implements \JsonSerializable
      * @var array
      */
     private $createdUserId = [];
-
-    /**
-     * @param string $locationId
-     * @param string $id
-     * @param int $createdTs
-     * @param int $modifiedTs
-     */
-    public function __construct(string $locationId, string $id, int $createdTs, int $modifiedTs)
-    {
-        $this->locationId = $locationId;
-        $this->id = $id;
-        $this->createdTs = $createdTs;
-        $this->modifiedTs = $modifiedTs;
-    }
 
     /**
      * Returns Mac Address.
@@ -87,7 +74,7 @@ class TerminalRouter implements \JsonSerializable
      * Returns Location Id.
      * Location ID
      */
-    public function getLocationId(): string
+    public function getLocationId(): ?string
     {
         return $this->locationId;
     }
@@ -96,10 +83,9 @@ class TerminalRouter implements \JsonSerializable
      * Sets Location Id.
      * Location ID
      *
-     * @required
      * @maps location_id
      */
-    public function setLocationId(string $locationId): void
+    public function setLocationId(?string $locationId): void
     {
         $this->locationId = $locationId;
     }
@@ -140,7 +126,7 @@ class TerminalRouter implements \JsonSerializable
      * Returns Id.
      * Terminal Router ID
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -149,10 +135,9 @@ class TerminalRouter implements \JsonSerializable
      * Sets Id.
      * Terminal Router ID
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -161,7 +146,7 @@ class TerminalRouter implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -170,10 +155,9 @@ class TerminalRouter implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -182,7 +166,7 @@ class TerminalRouter implements \JsonSerializable
      * Returns Modified Ts.
      * Modified Time Stamp
      */
-    public function getModifiedTs(): int
+    public function getModifiedTs(): ?int
     {
         return $this->modifiedTs;
     }
@@ -191,10 +175,9 @@ class TerminalRouter implements \JsonSerializable
      * Sets Modified Ts.
      * Modified Time Stamp
      *
-     * @required
      * @maps modified_ts
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setModifiedTs(?int $modifiedTs): void
     {
         $this->modifiedTs = $modifiedTs;
     }
@@ -232,6 +215,56 @@ class TerminalRouter implements \JsonSerializable
     }
 
     /**
+     * Converts the TerminalRouter object to a human-readable string representation.
+     *
+     * @return string The string representation of the TerminalRouter object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'TerminalRouter',
+            [
+                'macAddress' => $this->macAddress,
+                'locationId' => $this->locationId,
+                'locationApiId' => $this->getLocationApiId(),
+                'id' => $this->id,
+                'createdTs' => $this->createdTs,
+                'modifiedTs' => $this->modifiedTs,
+                'createdUserId' => $this->getCreatedUserId(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -246,16 +279,25 @@ class TerminalRouter implements \JsonSerializable
         if (isset($this->macAddress)) {
             $json['mac_address']     = $this->macAddress;
         }
-        $json['location_id']         = $this->locationId;
+        if (isset($this->locationId)) {
+            $json['location_id']     = $this->locationId;
+        }
         if (!empty($this->locationApiId)) {
             $json['location_api_id'] = $this->locationApiId['value'];
         }
-        $json['id']                  = $this->id;
-        $json['created_ts']          = $this->createdTs;
-        $json['modified_ts']         = $this->modifiedTs;
+        if (isset($this->id)) {
+            $json['id']              = $this->id;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']      = $this->createdTs;
+        }
+        if (isset($this->modifiedTs)) {
+            $json['modified_ts']     = $this->modifiedTs;
+        }
         if (!empty($this->createdUserId)) {
             $json['created_user_id'] = $this->createdUserId['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

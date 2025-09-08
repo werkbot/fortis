@@ -10,17 +10,18 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class ResponseDeviceTerm implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
-    private $type;
+    private $type = Type22Enum::DEVICETERM;
 
     /**
-     * @var Data3|null
+     * @var Data6|null
      */
     private $data;
 
@@ -28,7 +29,7 @@ class ResponseDeviceTerm implements \JsonSerializable
      * Returns Type.
      * Resource Type
      */
-    public function getType(): string
+    public function getType(): ?string
     {
         return $this->type;
     }
@@ -38,8 +39,9 @@ class ResponseDeviceTerm implements \JsonSerializable
      * Resource Type
      *
      * @maps type
+     * @factory \FortisAPILib\Models\Type22Enum::checkValue
      */
-    public function setType(string $type): void
+    public function setType(?string $type): void
     {
         $this->type = $type;
     }
@@ -47,7 +49,7 @@ class ResponseDeviceTerm implements \JsonSerializable
     /**
      * Returns Data.
      */
-    public function getData(): ?Data3
+    public function getData(): ?Data6
     {
         return $this->data;
     }
@@ -57,9 +59,50 @@ class ResponseDeviceTerm implements \JsonSerializable
      *
      * @maps data
      */
-    public function setData(?Data3 $data): void
+    public function setData(?Data6 $data): void
     {
         $this->data = $data;
+    }
+
+    /**
+     * Converts the ResponseDeviceTerm object to a human-readable string representation.
+     *
+     * @return string The string representation of the ResponseDeviceTerm object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'ResponseDeviceTerm',
+            ['type' => $this->type, 'data' => $this->data, 'additionalProperties' => $this->additionalProperties]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -74,10 +117,13 @@ class ResponseDeviceTerm implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['type']     = $this->type;
+        if (isset($this->type)) {
+            $json['type'] = Type22Enum::checkValue($this->type);
+        }
         if (isset($this->data)) {
             $json['data'] = $this->data;
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

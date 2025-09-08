@@ -10,61 +10,121 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Controllers;
 
+use Core\Authentication\Auth;
 use Core\Request\Parameters\QueryParam;
 use Core\Request\Parameters\TemplateParam;
 use Core\Response\Types\ErrorType;
 use CoreInterfaces\Core\Request\RequestMethod;
 use FortisAPILib\Exceptions\ApiException;
 use FortisAPILib\Exceptions\Response401tokenException;
-use FortisAPILib\Models\Expand7Enum;
-use FortisAPILib\Models\Filter3;
+use FortisAPILib\Models\Expand10Enum;
+use FortisAPILib\Models\Expand11Enum;
+use FortisAPILib\Models\Field33Enum;
+use FortisAPILib\Models\Field34Enum;
+use FortisAPILib\Models\Field35Enum;
+use FortisAPILib\Models\Field36Enum;
+use FortisAPILib\Models\FilterBy;
+use FortisAPILib\Models\Format1Enum;
+use FortisAPILib\Models\Order21;
 use FortisAPILib\Models\Page;
+use FortisAPILib\Models\RelationshipEnum;
 use FortisAPILib\Models\ResponseLocation;
 use FortisAPILib\Models\ResponseLocationInfo;
 use FortisAPILib\Models\ResponseLocationInfosCollection;
 use FortisAPILib\Models\ResponseLocationsCollection;
-use FortisAPILib\Models\Sort17;
+use FortisAPILib\Models\ResponseLocationSearchsCollection;
 
 class LocationsController extends BaseController
 {
     /**
-     * List all locations
-     *
      * @param Page|null $page Use this field to specify paginate your results, by using page size
      *        and number. You can use one of the following methods:
      *        >/endpoint?page={ "number": 1, "size": 50 }
      *        >
      *        >/endpoint?page[number]=1&page[size]=50
      *        >
-     * @param Sort17|null $sort You can use any `field_name` from this endpoint results, and you can
-     *        combine more than one field for more complex sorting. You can use one of the
-     *        following methods:
-     *        >/endpoint?sort={ "field_name": "asc", "field_name2": "desc" }
+     * @param string|null $keyword You can use any value to search on specific fields of this
+     *        endpoint results. You can not specify the fields that are used.
+     * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
+     *        related to the current record being retrieved. For example, if the API request is
+     *        for the accountvaults endpoint, and the end user also needs to know which contact
+     *        the token belongs to, this data can be returned in the accountvaults endpoint
+     *        request.
+     * @param string|null $relationship Used to filter the type of locations that will be returned
+     *
+     * @return ResponseLocationSearchsCollection Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function locationsSearch(
+        ?Page $page = null,
+        ?string $keyword = null,
+        ?array $expand = null,
+        ?string $relationship = null
+    ): ResponseLocationSearchsCollection {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::GET, '/v1/location-searches')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(
+                QueryParam::init('page', $page),
+                QueryParam::init('keyword', $keyword),
+                QueryParam::init('expand', $expand)->serializeBy([Expand10Enum::class, 'checkValue']),
+                QueryParam::init('relationship', $relationship)->serializeBy([RelationshipEnum::class, 'checkValue'])
+            );
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->type(ResponseLocationSearchsCollection::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
+    /**
+     * @param Page|null $page Use this field to specify paginate your results, by using page size
+     *        and number. You can use one of the following methods:
+     *        >/endpoint?page={ "number": 1, "size": 50 }
      *        >
-     *        >/endpoint?sort[field_name]=asc&sort[field_name2]=desc
+     *        >/endpoint?page[number]=1&page[size]=50
      *        >
-     * @param Filter3|null $filter You can use any `field_name` from this endpoint results as a
-     *        filter, and you can also use more than one field to create AND conditions. For date
-     *        fields (ended with `_ts`), you can also search for ranges using the `$gte` (Greater
-     *        than or equal to) and/or  `$lte` (Lower than or equal to). You can use one of the
-     *        following methods:
-     *        >/endpoint?filter={ "field_name": "Value" }
+     * @param Order21[]|null $order Criteria used in query string parameters to order results. Most
+     *        fields from the endpoint results can be used as a `key`.  Unsupported fields or
+     *        operators will return a `412`.  Must be encoded, or use syntax that does not require
+     *        encoding.
+     *        >/endpoint?order[0][key]=created_ts&order[0][operator]=asc
      *        >
-     *        >/endpoint?filter[field_name]=Value
+     *        >/endpoint?order=[{ "key": "created_ts", "operator": "asc"}]
      *        >
-     *        >/endpoint?filter={ "created_ts": "today" }
+     *        >/endpoint?order=[{ "key": "balance", "operator": "desc"},{ "key": "created_ts",
+     *        "operator": "asc"}]
      *        >
-     *        >/endpoint?filter[created_ts]=today
+     * @param FilterBy[]|null $filterBy Filter criteria that can be used in query string parameters.
+     *        Most fields from the endpoint results can be used as a `key`.  Unsupported fields or
+     *        operators will return a `412`. Must be encoded, or use syntax that does not require
+     *        encoding.
+     *        >?filter_by[0][key]=first_name&filter_by[0][operator]==&filter_by[0][value]=Steve
      *        >
-     *        >/endpoint?filter={ "created_ts": { "$gte": "yesterday", "$lte": "today" } }
+     *        >/endpoint?filter_by=[{ "key": "first_name", "operator": "=", "value": "Fred" }]
      *        >
-     *        >/endpoint?filter[created_ts][$gte]=yesterday&filter[created_ts][$lte]=today
+     *        >/endpoint?filter_by=[{ "key": "account_type", "operator": "=", "value": "VISA" }]
+     *        >
+     *        >/endpoint?filter_by=[{ "key": "created_ts", "operator": ">=", "value": "946702799"
+     *        }, { "key": "created_ts", "operator": "<=", value: "1695061891" }]
+     *        >
+     *        >/endpoint?filter_by=[{ "key": "last_name", "operator": "IN", "value": "Williams,
+     *        Brown,Allman" }]
      *        >
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
      *        related to the current record being retrieved. For example, if the API request is
      *        for the accountvaults endpoint, and the end user also needs to know which contact
      *        the token belongs to, this data can be returned in the accountvaults endpoint
      *        request.
+     * @param string|null $format Reporting format, valid values: csv, tsv
+     * @param string|null $typeahead You can use any `field_name` from this endpoint results to
+     *        order the list using the value provided as filter for the same `field_name`. It will
+     *        be ordered using the following rules: 1) Exact match, 2) Starts with, 3) Contains.
+     *        >/endpoint?filter={ "field_name": "Value" }&_typeahead=field_name
+     *        >
+     * @param string[]|null $fields You can use any `field_name` from this endpoint results to
+     *        filter the list of fields returned on the response.
      *
      * @return ResponseLocationsCollection Response from the API call
      *
@@ -72,64 +132,84 @@ class LocationsController extends BaseController
      */
     public function listAllLocations(
         ?Page $page = null,
-        ?Sort17 $sort = null,
-        ?Filter3 $filter = null,
-        ?array $expand = null
+        ?array $order = null,
+        ?array $filterBy = null,
+        ?array $expand = null,
+        ?string $format = null,
+        ?string $typeahead = null,
+        ?array $fields = null
     ): ResponseLocationsCollection {
         $_reqBuilder = $this->requestBuilder(RequestMethod::GET, '/v1/locations')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 QueryParam::init('page', $page),
-                QueryParam::init('sort', $sort),
-                QueryParam::init('filter', $filter),
-                QueryParam::init('expand', $expand)->serializeBy([Expand7Enum::class, 'checkValue'])
+                QueryParam::init('order', $order),
+                QueryParam::init('filter_by', $filterBy),
+                QueryParam::init('expand', $expand)->serializeBy([Expand11Enum::class, 'checkValue']),
+                QueryParam::init('_format', $format)->serializeBy([Format1Enum::class, 'checkValue']),
+                QueryParam::init('_typeahead', $typeahead),
+                QueryParam::init('fields', $fields)->serializeBy([Field33Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
             ->type(ResponseLocationsCollection::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * Locations Detail
-     *
      * @param Page|null $page Use this field to specify paginate your results, by using page size
      *        and number. You can use one of the following methods:
      *        >/endpoint?page={ "number": 1, "size": 50 }
      *        >
      *        >/endpoint?page[number]=1&page[size]=50
      *        >
-     * @param Sort17|null $sort You can use any `field_name` from this endpoint results, and you can
-     *        combine more than one field for more complex sorting. You can use one of the
-     *        following methods:
-     *        >/endpoint?sort={ "field_name": "asc", "field_name2": "desc" }
+     * @param Order21[]|null $order Criteria used in query string parameters to order results. Most
+     *        fields from the endpoint results can be used as a `key`.  Unsupported fields or
+     *        operators will return a `412`.  Must be encoded, or use syntax that does not require
+     *        encoding.
+     *        >/endpoint?order[0][key]=created_ts&order[0][operator]=asc
      *        >
-     *        >/endpoint?sort[field_name]=asc&sort[field_name2]=desc
+     *        >/endpoint?order=[{ "key": "created_ts", "operator": "asc"}]
      *        >
-     * @param Filter3|null $filter You can use any `field_name` from this endpoint results as a
-     *        filter, and you can also use more than one field to create AND conditions. For date
-     *        fields (ended with `_ts`), you can also search for ranges using the `$gte` (Greater
-     *        than or equal to) and/or  `$lte` (Lower than or equal to). You can use one of the
-     *        following methods:
-     *        >/endpoint?filter={ "field_name": "Value" }
+     *        >/endpoint?order=[{ "key": "balance", "operator": "desc"},{ "key": "created_ts",
+     *        "operator": "asc"}]
      *        >
-     *        >/endpoint?filter[field_name]=Value
+     * @param FilterBy[]|null $filterBy Filter criteria that can be used in query string parameters.
+     *        Most fields from the endpoint results can be used as a `key`.  Unsupported fields or
+     *        operators will return a `412`. Must be encoded, or use syntax that does not require
+     *        encoding.
+     *        >?filter_by[0][key]=first_name&filter_by[0][operator]==&filter_by[0][value]=Steve
      *        >
-     *        >/endpoint?filter={ "created_ts": "today" }
+     *        >/endpoint?filter_by=[{ "key": "first_name", "operator": "=", "value": "Fred" }]
      *        >
-     *        >/endpoint?filter[created_ts]=today
+     *        >/endpoint?filter_by=[{ "key": "account_type", "operator": "=", "value": "VISA" }]
      *        >
-     *        >/endpoint?filter={ "created_ts": { "$gte": "yesterday", "$lte": "today" } }
+     *        >/endpoint?filter_by=[{ "key": "created_ts", "operator": ">=", "value": "946702799"
+     *        }, { "key": "created_ts", "operator": "<=", value: "1695061891" }]
      *        >
-     *        >/endpoint?filter[created_ts][$gte]=yesterday&filter[created_ts][$lte]=today
+     *        >/endpoint?filter_by=[{ "key": "last_name", "operator": "IN", "value": "Williams,
+     *        Brown,Allman" }]
      *        >
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
      *        related to the current record being retrieved. For example, if the API request is
      *        for the accountvaults endpoint, and the end user also needs to know which contact
      *        the token belongs to, this data can be returned in the accountvaults endpoint
      *        request.
+     * @param string|null $format Reporting format, valid values: csv, tsv
+     * @param string|null $typeahead You can use any `field_name` from this endpoint results to
+     *        order the list using the value provided as filter for the same `field_name`. It will
+     *        be ordered using the following rules: 1) Exact match, 2) Starts with, 3) Contains.
+     *        >/endpoint?filter={ "field_name": "Value" }&_typeahead=field_name
+     *        >
+     * @param string[]|null $fields You can use any `field_name` from this endpoint results to
+     *        filter the list of fields returned on the response.
+     * @param array|null $productTransactionActive Product Transaction Active
+     * @param array|null $productFileActive Product File Active
+     * @param array|null $productInvoiceActive Product Invoice Active
+     * @param array|null $productRecurringActive Product Recurring Active
+     * @param array|null $productAccountvaultActive Product Accountvault Active
      *
      * @return ResponseLocationInfosCollection Response from the API call
      *
@@ -137,81 +217,120 @@ class LocationsController extends BaseController
      */
     public function locationsDetail(
         ?Page $page = null,
-        ?Sort17 $sort = null,
-        ?Filter3 $filter = null,
-        ?array $expand = null
+        ?array $order = null,
+        ?array $filterBy = null,
+        ?array $expand = null,
+        ?string $format = null,
+        ?string $typeahead = null,
+        ?array $fields = null,
+        ?array $productTransactionActive = null,
+        ?array $productFileActive = null,
+        ?array $productInvoiceActive = null,
+        ?array $productRecurringActive = null,
+        ?array $productAccountvaultActive = null
     ): ResponseLocationInfosCollection {
         $_reqBuilder = $this->requestBuilder(RequestMethod::GET, '/v1/locations/info')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 QueryParam::init('page', $page),
-                QueryParam::init('sort', $sort),
-                QueryParam::init('filter', $filter),
-                QueryParam::init('expand', $expand)->serializeBy([Expand7Enum::class, 'checkValue'])
+                QueryParam::init('order', $order),
+                QueryParam::init('filter_by', $filterBy),
+                QueryParam::init('expand', $expand)->serializeBy([Expand11Enum::class, 'checkValue']),
+                QueryParam::init('_format', $format)->serializeBy([Format1Enum::class, 'checkValue']),
+                QueryParam::init('_typeahead', $typeahead),
+                QueryParam::init('fields', $fields)->serializeBy([Field34Enum::class, 'checkValue']),
+                QueryParam::init('product_transaction_active', $productTransactionActive),
+                QueryParam::init('product_file_active', $productFileActive),
+                QueryParam::init('product_invoice_active', $productInvoiceActive),
+                QueryParam::init('product_recurring_active', $productRecurringActive),
+                QueryParam::init('product_accountvault_active', $productAccountvaultActive)
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
             ->type(ResponseLocationInfosCollection::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * View single location record
-     *
      * @param string $locationId Location ID
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
      *        related to the current record being retrieved. For example, if the API request is
      *        for the accountvaults endpoint, and the end user also needs to know which contact
      *        the token belongs to, this data can be returned in the accountvaults endpoint
      *        request.
+     * @param string[]|null $fields You can use any `field_name` from this endpoint results to
+     *        filter the list of fields returned on the response.
      *
      * @return ResponseLocation Response from the API call
      *
      * @throws ApiException Thrown if API call fails
      */
-    public function viewSingleLocationRecord(string $locationId, ?array $expand = null): ResponseLocation
-    {
+    public function viewSingleLocationRecord(
+        string $locationId,
+        ?array $expand = null,
+        ?array $fields = null
+    ): ResponseLocation {
         $_reqBuilder = $this->requestBuilder(RequestMethod::GET, '/v1/locations/{location_id}')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 TemplateParam::init('location_id', $locationId),
-                QueryParam::init('expand', $expand)->serializeBy([Expand7Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand11Enum::class, 'checkValue']),
+                QueryParam::init('fields', $fields)->serializeBy([Field35Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
             ->type(ResponseLocation::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * Location Detail
-     *
      * @param string $locationId Location ID
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
      *        related to the current record being retrieved. For example, if the API request is
      *        for the accountvaults endpoint, and the end user also needs to know which contact
      *        the token belongs to, this data can be returned in the accountvaults endpoint
      *        request.
+     * @param string[]|null $fields You can use any `field_name` from this endpoint results to
+     *        filter the list of fields returned on the response.
+     * @param array|null $productTransactionActive Product Transaction Active
+     * @param array|null $productFileActive Product File Active
+     * @param array|null $productInvoiceActive Product Invoice Active
+     * @param array|null $productRecurringActive Product Recurring Active
+     * @param array|null $productAccountvaultActive Product Accountvault Active
      *
      * @return ResponseLocationInfo Response from the API call
      *
      * @throws ApiException Thrown if API call fails
      */
-    public function locationDetail(string $locationId, ?array $expand = null): ResponseLocationInfo
-    {
+    public function locationDetail(
+        string $locationId,
+        ?array $expand = null,
+        ?array $fields = null,
+        ?array $productTransactionActive = null,
+        ?array $productFileActive = null,
+        ?array $productInvoiceActive = null,
+        ?array $productRecurringActive = null,
+        ?array $productAccountvaultActive = null
+    ): ResponseLocationInfo {
         $_reqBuilder = $this->requestBuilder(RequestMethod::GET, '/v1/locations/{location_id}/info')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 TemplateParam::init('location_id', $locationId),
-                QueryParam::init('expand', $expand)->serializeBy([Expand7Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand11Enum::class, 'checkValue']),
+                QueryParam::init('fields', $fields)->serializeBy([Field36Enum::class, 'checkValue']),
+                QueryParam::init('product_transaction_active', $productTransactionActive),
+                QueryParam::init('product_file_active', $productFileActive),
+                QueryParam::init('product_invoice_active', $productInvoiceActive),
+                QueryParam::init('product_recurring_active', $productRecurringActive),
+                QueryParam::init('product_accountvault_active', $productAccountvaultActive)
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
             ->type(ResponseLocationInfo::class);
 
         return $this->execute($_reqBuilder, $_resHandler);

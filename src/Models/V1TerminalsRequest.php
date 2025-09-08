@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class V1TerminalsRequest implements \JsonSerializable
@@ -35,7 +36,7 @@ class V1TerminalsRequest implements \JsonSerializable
     private $terminalCvmId = [];
 
     /**
-     * @var int
+     * @var string
      */
     private $terminalManufacturerCode;
 
@@ -205,9 +206,14 @@ class V1TerminalsRequest implements \JsonSerializable
     private $communicationType = [];
 
     /**
+     * @var bool|null
+     */
+    private $active;
+
+    /**
      * @param string $locationId
      * @param string $terminalApplicationId
-     * @param int $terminalManufacturerCode
+     * @param string $terminalManufacturerCode
      * @param string $title
      * @param string $serialNumber
      * @param bool $debit
@@ -219,7 +225,7 @@ class V1TerminalsRequest implements \JsonSerializable
     public function __construct(
         string $locationId,
         string $terminalApplicationId,
-        int $terminalManufacturerCode,
+        string $terminalManufacturerCode,
         string $title,
         string $serialNumber,
         bool $debit,
@@ -349,8 +355,10 @@ class V1TerminalsRequest implements \JsonSerializable
     /**
      * Returns Terminal Manufacturer Code.
      * Terminal Manufacturer Code
+     * >
+     * >
      */
-    public function getTerminalManufacturerCode(): int
+    public function getTerminalManufacturerCode(): string
     {
         return $this->terminalManufacturerCode;
     }
@@ -358,12 +366,14 @@ class V1TerminalsRequest implements \JsonSerializable
     /**
      * Sets Terminal Manufacturer Code.
      * Terminal Manufacturer Code
+     * >
+     * >
      *
      * @required
      * @maps terminal_manufacturer_code
      * @factory \FortisAPILib\Models\TerminalManufacturerCodeEnum::checkValue
      */
-    public function setTerminalManufacturerCode(int $terminalManufacturerCode): void
+    public function setTerminalManufacturerCode(string $terminalManufacturerCode): void
     {
         $this->terminalManufacturerCode = $terminalManufacturerCode;
     }
@@ -506,6 +516,10 @@ class V1TerminalsRequest implements \JsonSerializable
      * Returns Terminal Timeouts.
      * The following options outlines some configurable timeout values that can be used to customize the
      * experience at the terminal for the cardholder.
+     * >These timeouts are specific to Ingenico devices only.
+     * >
+     * >These timeouts are specific to Ingenico devices only.
+     * >
      */
     public function getTerminalTimeouts(): ?TerminalTimeouts
     {
@@ -516,6 +530,10 @@ class V1TerminalsRequest implements \JsonSerializable
      * Sets Terminal Timeouts.
      * The following options outlines some configurable timeout values that can be used to customize the
      * experience at the terminal for the cardholder.
+     * >These timeouts are specific to Ingenico devices only.
+     * >
+     * >These timeouts are specific to Ingenico devices only.
+     * >
      *
      * @maps terminal_timeouts
      */
@@ -998,7 +1016,7 @@ class V1TerminalsRequest implements \JsonSerializable
      * Returns Default Room Rate.
      * Default Room Rate
      */
-    public function getDefaultRoomRate(): ?float
+    public function getDefaultRoomRate(): ?int
     {
         if (count($this->defaultRoomRate) == 0) {
             return null;
@@ -1012,7 +1030,7 @@ class V1TerminalsRequest implements \JsonSerializable
      *
      * @maps default_room_rate
      */
-    public function setDefaultRoomRate(?float $defaultRoomRate): void
+    public function setDefaultRoomRate(?int $defaultRoomRate): void
     {
         $this->defaultRoomRate['value'] = $defaultRoomRate;
     }
@@ -1257,6 +1275,108 @@ class V1TerminalsRequest implements \JsonSerializable
     }
 
     /**
+     * Returns Active.
+     * Active
+     */
+    public function getActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    /**
+     * Sets Active.
+     * Active
+     *
+     * @maps active
+     */
+    public function setActive(?bool $active): void
+    {
+        $this->active = $active;
+    }
+
+    /**
+     * Converts the V1TerminalsRequest object to a human-readable string representation.
+     *
+     * @return string The string representation of the V1TerminalsRequest object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'V1TerminalsRequest',
+            [
+                'locationId' => $this->locationId,
+                'defaultProductTransactionId' => $this->getDefaultProductTransactionId(),
+                'terminalApplicationId' => $this->terminalApplicationId,
+                'terminalCvmId' => $this->getTerminalCvmId(),
+                'terminalManufacturerCode' => $this->terminalManufacturerCode,
+                'title' => $this->title,
+                'macAddress' => $this->getMacAddress(),
+                'localIpAddress' => $this->localIpAddress,
+                'port' => $this->port,
+                'serialNumber' => $this->serialNumber,
+                'terminalNumber' => $this->terminalNumber,
+                'terminalTimeouts' => $this->terminalTimeouts,
+                'tipPercents' => $this->tipPercents,
+                'locationApiId' => $this->getLocationApiId(),
+                'terminalApiId' => $this->getTerminalApiId(),
+                'headerLine1' => $this->getHeaderLine1(),
+                'headerLine2' => $this->getHeaderLine2(),
+                'headerLine3' => $this->getHeaderLine3(),
+                'headerLine4' => $this->getHeaderLine4(),
+                'headerLine5' => $this->getHeaderLine5(),
+                'trailerLine1' => $this->getTrailerLine1(),
+                'trailerLine2' => $this->getTrailerLine2(),
+                'trailerLine3' => $this->getTrailerLine3(),
+                'trailerLine4' => $this->getTrailerLine4(),
+                'trailerLine5' => $this->getTrailerLine5(),
+                'defaultCheckin' => $this->getDefaultCheckin(),
+                'defaultCheckout' => $this->getDefaultCheckout(),
+                'defaultRoomRate' => $this->getDefaultRoomRate(),
+                'defaultRoomNumber' => $this->getDefaultRoomNumber(),
+                'debit' => $this->debit,
+                'emv' => $this->emv,
+                'cashbackEnable' => $this->cashbackEnable,
+                'printEnable' => $this->printEnable,
+                'sigCaptureEnable' => $this->sigCaptureEnable,
+                'isProvisioned' => $this->isProvisioned,
+                'tipEnable' => $this->tipEnable,
+                'validatedDecryption' => $this->validatedDecryption,
+                'communicationType' => $this->getCommunicationType(),
+                'active' => $this->active,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -1368,6 +1488,10 @@ class V1TerminalsRequest implements \JsonSerializable
                     $this->communicationType['value']
                 );
         }
+        if (isset($this->active)) {
+            $json['active']                         = $this->active;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

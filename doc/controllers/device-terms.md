@@ -17,10 +17,8 @@ $deviceTermsController = $client->getDeviceTermsController();
 
 # Create a New Device Term
 
-Create a new device term
-
 ```php
-function createANewDeviceTerm(V1DeviceTermsRequest $body): ResponseAsyncProcessing
+function createANewDeviceTerm(V1DeviceTermsRequest $body): ResponseTransactionProcessing
 ```
 
 ## Parameters
@@ -31,21 +29,19 @@ function createANewDeviceTerm(V1DeviceTermsRequest $body): ResponseAsyncProcessi
 
 ## Response Type
 
-[`ResponseAsyncProcessing`](../../doc/models/response-async-processing.md)
+[`ResponseTransactionProcessing`](../../doc/models/response-transaction-processing.md)
 
 ## Example Usage
 
 ```php
-$body_locationId = '11e95f8ec39de8fbdb0a4f1a';
-$body_terminalId = '11e95f8ec39de8fbdb0a4f1a';
-$body_requireSignature = true;
-$body_termsConditions = 'FUNgib0Vh0B9c0Wbttvr50vNtGLOkTdFL0eFmhN1RJpKhK14IENeDa8irp2dEk9thEcVHvVEyriQeZLs5NjNsCzqNj9JDA4RSJwK647IFtYjrNPN1nBb9bw6hoQ71oT5kpsiXGt8HcqBFVBVeDA7psIzKAyDveAw2o1hfjipkOtXrPgWun0rYwyyFuvqkT1egQYKfYDj';
-$body = new Models\V1DeviceTermsRequest(
-    $body_locationId,
-    $body_terminalId,
-    $body_requireSignature,
-    $body_termsConditions
-);
+$body = V1DeviceTermsRequestBuilder::init(
+    '11e95f8ec39de8fbdb0a4f1a',
+    '11e95f8ec39de8fbdb0a4f1a',
+    true,
+    'FUNgib0Vh0B9c0Wbttvr50vNtGLOkTdFL0eFmhN1RJpKhK14IENeDa8irp2dEk9thEcVHvVEyriQeZLs5NjNsCzqNj9JDA4RSJwK647IFtYjrNPN1nBb9bw6hoQ71oT5kpsiXGt8HcqBFVBVeDA7psIzKAyDveAw2o1hfjipkOtXrPgWun0rYwyyFuvqkT1egQYKfYDj'
+)
+    ->deviceTermApiId('device_term134')
+    ->build();
 
 $result = $deviceTermsController->createANewDeviceTerm($body);
 ```
@@ -54,7 +50,7 @@ $result = $deviceTermsController->createANewDeviceTerm($body);
 
 ```json
 {
-  "type": "AsyncProcessing",
+  "type": "TransactionProcessing",
   "data": {
     "async": {
       "code": "406c66c3-21cb-47fb-80fc-843bc42507fb",
@@ -74,14 +70,15 @@ $result = $deviceTermsController->createANewDeviceTerm($body);
 
 # List All Device Terms Related
 
-List all device terms related
-
 ```php
 function listAllDeviceTermsRelated(
     ?Page $page = null,
-    ?Sort16 $sort = null,
-    ?Filter2 $filter = null,
-    ?array $expand = null
+    ?array $order = null,
+    ?array $filterBy = null,
+    ?array $expand = null,
+    ?string $format = null,
+    ?string $typeahead = null,
+    ?array $fields = null
 ): ResponseDeviceTermsCollection
 ```
 
@@ -90,9 +87,12 @@ function listAllDeviceTermsRelated(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `page` | [`?Page`](../../doc/models/page.md) | Query, Optional | Use this field to specify paginate your results, by using page size and number. You can use one of the following methods:<br><br>> /endpoint?page={ "number": 1, "size": 50 }<br>> <br>> /endpoint?page[number]=1&page[size]=50 |
-| `sort` | [`?Sort16`](../../doc/models/sort-16.md) | Query, Optional | You can use any `field_name` from this endpoint results, and you can combine more than one field for more complex sorting. You can use one of the following methods:<br><br>> /endpoint?sort={ "field_name": "asc", "field_name2": "desc" }<br>> <br>> /endpoint?sort[field_name]=asc&sort[field_name2]=desc |
-| `filter` | [`?Filter2`](../../doc/models/filter-2.md) | Query, Optional | You can use any `field_name` from this endpoint results as a filter, and you can also use more than one field to create AND conditions. For date fields (ended with `_ts`), you can also search for ranges using the `$gte` (Greater than or equal to) and/or  `$lte` (Lower than or equal to). You can use one of the following methods:<br><br>> /endpoint?filter={ "field_name": "Value" }<br>> <br>> /endpoint?filter[field_name]=Value<br>> <br>> /endpoint?filter={ "created_ts": "today" }<br>> <br>> /endpoint?filter[created_ts]=today<br>> <br>> /endpoint?filter={ "created_ts": { "$gte": "yesterday", "$lte": "today" } }<br>> <br>> /endpoint?filter[created_ts][$gte]=yesterday&filter[created_ts][$lte]=today |
-| `expand` | [`?(string[]) (Expand5Enum)`](../../doc/models/expand-5-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `order` | [`?(Order21[])`](../../doc/models/order-21.md) | Query, Optional | Criteria used in query string parameters to order results.  Most fields from the endpoint results can be used as a `key`.  Unsupported fields or operators will return a `412`.  Must be encoded, or use syntax that does not require encoding.<br><br>> /endpoint?order[0][key]=created_ts&order[0][operator]=asc<br>> <br>> /endpoint?order=[{ "key": "created_ts", "operator": "asc"}]<br>> <br>> /endpoint?order=[{ "key": "balance", "operator": "desc"},{ "key": "created_ts", "operator": "asc"}]<br><br>**Constraints**: *Minimum Items*: `1` |
+| `filterBy` | [`?(FilterBy[])`](../../doc/models/filter-by.md) | Query, Optional | Filter criteria that can be used in query string parameters.  Most fields from the endpoint results can be used as a `key`.  Unsupported fields or operators will return a `412`. Must be encoded, or use syntax that does not require encoding.<br><br>> ?filter_by[0][key]=first_name&filter_by[0][operator]==&filter_by[0][value]=Steve<br>> <br>> /endpoint?filter_by=[{ "key": "first_name", "operator": "=", "value": "Fred" }]<br>> <br>> /endpoint?filter_by=[{ "key": "account_type", "operator": "=", "value": "VISA" }]<br>> <br>> /endpoint?filter_by=[{ "key": "created_ts", "operator": ">=", "value": "946702799" }, { "key": "created_ts", "operator": "<=", value: "1695061891" }]<br>> <br>> /endpoint?filter_by=[{ "key": "last_name", "operator": "IN", "value": "Williams,Brown,Allman" }]<br><br>**Constraints**: *Minimum Items*: `1` |
+| `expand` | [`?(string(Expand8Enum)[])`](../../doc/models/expand-8-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `format` | [`?string(Format1Enum)`](../../doc/models/format-1-enum.md) | Query, Optional | Reporting format, valid values: csv, tsv |
+| `typeahead` | `?string` | Query, Optional | You can use any `field_name` from this endpoint results to order the list using the value provided as filter for the same `field_name`. It will be ordered using the following rules: 1) Exact match, 2) Starts with, 3) Contains.<br><br>> /endpoint?filter={ "field_name": "Value" }&_typeahead=field_name |
+| `fields` | [`?(string(Field31Enum)[])`](../../doc/models/field-31-enum.md) | Query, Optional | You can use any `field_name` from this endpoint results to filter the list of fields returned on the response. |
 
 ## Response Type
 
@@ -101,7 +101,31 @@ function listAllDeviceTermsRelated(
 ## Example Usage
 
 ```php
-$result = $deviceTermsController->listAllDeviceTermsRelated();
+$page = PageBuilder::init()
+    ->number(1)
+    ->size(50)
+    ->build();
+
+$order = [
+    Order21Builder::init(
+        'first_name',
+        OperatorEnum::ASC
+    )->build()
+];
+
+$filterBy = [
+    FilterByBuilder::init(
+        'first_name',
+        Operator1Enum::ENUM_1,
+        'Fred'
+    )->build()
+];
+
+$result = $deviceTermsController->listAllDeviceTermsRelated(
+    $page,
+    $order,
+    $filterBy
+);
 ```
 
 ## Example Response *(as JSON)*
@@ -131,10 +155,8 @@ $result = $deviceTermsController->listAllDeviceTermsRelated();
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "created_user": {
         "account_number": "5454545454545454",
-        "address": "43155 Main Street STE 2310-C",
         "branding_domain_url": "{branding_domain_url}",
         "cell_phone": "3339998822",
-        "city": "Novi",
         "company_name": "Fortis Payment Systems, LLC",
         "contact_id": "11e95f8ec39de8fbdb0a4f1a",
         "date_of_birth": "2021-12-01",
@@ -149,7 +171,6 @@ $result = $deviceTermsController->listAllDeviceTermsRelated();
         "office_ext_phone": "5",
         "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
         "requires_new_password": null,
-        "state": "Michigan",
         "terms_condition_code": "20220308",
         "tz": "America/New_York",
         "ui_prefs": {
@@ -166,7 +187,15 @@ $result = $deviceTermsController->listAllDeviceTermsRelated();
         "password": null,
         "zip": "48375",
         "location_id": "11e95f8ec39de8fbdb0a4f1a",
-        "status_id": true,
+        "status_code": 1,
+        "api_only": false,
+        "is_invitation": false,
+        "address": {
+          "city": "Novi",
+          "state": "MI",
+          "postal_code": "48375",
+          "country": "US"
+        },
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "status": true,
         "login_attempts": 0,
@@ -176,7 +205,9 @@ $result = $deviceTermsController->listAllDeviceTermsRelated();
         "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
         "terms_accepted_ts": 1422040992,
         "terms_agree_ip": "192.168.0.10",
-        "current_date_time": "2019-03-11T10:38:26-0700"
+        "current_date_time": "2019-03-11T10:38:26-0700",
+        "current_login": 1422040992,
+        "log_api_response_body_ts": 1422040992
       },
       "location": {
         "id": "11e95f8ec39de8fbdb0a4f1a",
@@ -187,15 +218,12 @@ $result = $deviceTermsController->listAllDeviceTermsRelated();
           "city": "Novi",
           "state": "MI",
           "postal_code": "48375",
-          "country": "US",
-          "street": "43155 Main Street STE 2310-C",
-          "street2": "43155 Main Street STE 2310-C"
+          "country": "US"
         },
         "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
         "contact_email_trx_receipt_default": true,
         "default_ach": "11e608a7d515f1e093242bb2",
         "default_cc": "11e608a442a5f1e092242dda",
-        "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
         "email_reply_to": "email@domain.com",
         "fax": "3339998822",
         "location_api_id": "location-111111",
@@ -206,17 +234,21 @@ $result = $deviceTermsController->listAllDeviceTermsRelated();
         "name": "Sample Company Headquarters",
         "office_phone": "2481234567",
         "office_ext_phone": "1021021209",
-        "recurring_notification_days_default": 0,
         "tz": "America/New_York",
         "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+        "show_contact_notes": true,
+        "show_contact_files": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "location_type": "merchant",
+        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+        "additional_access": {}
       },
       "terminal": {
         "location_id": "11e95f8ec39de8fbdb0a4f1a",
         "default_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
         "terminal_application_id": "11e95f8ec39de8fbdb0a4f1a",
         "terminal_cvm_id": "11e95f8ec39de8fbdb0a4f1a",
-        "terminal_manufacturer_code": 1,
+        "terminal_manufacturer_code": "1",
         "title": "My terminal",
         "mac_address": "3D:F2:C9:A6:B3:4F",
         "local_ip_address": "192.168.0.10",
@@ -262,6 +294,7 @@ $result = $deviceTermsController->listAllDeviceTermsRelated();
         "tip_enable": false,
         "validated_decryption": false,
         "communication_type": "http",
+        "active": true,
         "id": "11e95f8ec39de8fbdb0a4f1a",
         "created_ts": 1422040992,
         "modified_ts": 1422040992,
@@ -303,6 +336,7 @@ $result = $deviceTermsController->listAllDeviceTermsRelated();
     "type": "Links",
     "first": "/v1/endpoint?page[size]=10&page[number]=1",
     "previous": "/v1/endpoint?page[size]=10&page[number]=5",
+    "next": "/v1/endpoint?page[size]=10&page[number]=7",
     "last": "/v1/endpoint?page[size]=10&page[number]=42"
   },
   "pagination": {
@@ -333,18 +367,21 @@ $result = $deviceTermsController->listAllDeviceTermsRelated();
 
 # View Single Device Term Record
 
-View single device term record
-
 ```php
-function viewSingleDeviceTermRecord(string $deviceTermsId, ?array $expand = null): ResponseDeviceTerm
+function viewSingleDeviceTermRecord(
+    string $deviceTermsId,
+    ?array $expand = null,
+    ?array $fields = null
+): ResponseDeviceTerm
 ```
 
 ## Parameters
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `deviceTermsId` | `string` | Template, Required | Device term ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
-| `expand` | [`?(string[]) (Expand5Enum)`](../../doc/models/expand-5-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `deviceTermsId` | `string` | Template, Required | Device term ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `expand` | [`?(string(Expand8Enum)[])`](../../doc/models/expand-8-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `fields` | [`?(string(Field31Enum)[])`](../../doc/models/field-31-enum.md) | Query, Optional | You can use any `field_name` from this endpoint results to filter the list of fields returned on the response. |
 
 ## Response Type
 
@@ -384,10 +421,8 @@ $result = $deviceTermsController->viewSingleDeviceTermRecord($deviceTermsId);
     "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
     "created_user": {
       "account_number": "5454545454545454",
-      "address": "43155 Main Street STE 2310-C",
       "branding_domain_url": "{branding_domain_url}",
       "cell_phone": "3339998822",
-      "city": "Novi",
       "company_name": "Fortis Payment Systems, LLC",
       "contact_id": "11e95f8ec39de8fbdb0a4f1a",
       "date_of_birth": "2021-12-01",
@@ -402,7 +437,6 @@ $result = $deviceTermsController->viewSingleDeviceTermRecord($deviceTermsId);
       "office_ext_phone": "5",
       "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
       "requires_new_password": null,
-      "state": "Michigan",
       "terms_condition_code": "20220308",
       "tz": "America/New_York",
       "ui_prefs": {
@@ -419,7 +453,15 @@ $result = $deviceTermsController->viewSingleDeviceTermRecord($deviceTermsId);
       "password": null,
       "zip": "48375",
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
-      "status_id": true,
+      "status_code": 1,
+      "api_only": false,
+      "is_invitation": false,
+      "address": {
+        "city": "Novi",
+        "state": "MI",
+        "postal_code": "48375",
+        "country": "US"
+      },
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "status": true,
       "login_attempts": 0,
@@ -429,7 +471,9 @@ $result = $deviceTermsController->viewSingleDeviceTermRecord($deviceTermsId);
       "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
       "terms_accepted_ts": 1422040992,
       "terms_agree_ip": "192.168.0.10",
-      "current_date_time": "2019-03-11T10:38:26-0700"
+      "current_date_time": "2019-03-11T10:38:26-0700",
+      "current_login": 1422040992,
+      "log_api_response_body_ts": 1422040992
     },
     "location": {
       "id": "11e95f8ec39de8fbdb0a4f1a",
@@ -440,15 +484,12 @@ $result = $deviceTermsController->viewSingleDeviceTermRecord($deviceTermsId);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -459,17 +500,21 @@ $result = $deviceTermsController->viewSingleDeviceTermRecord($deviceTermsId);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     },
     "terminal": {
       "location_id": "11e95f8ec39de8fbdb0a4f1a",
       "default_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
       "terminal_application_id": "11e95f8ec39de8fbdb0a4f1a",
       "terminal_cvm_id": "11e95f8ec39de8fbdb0a4f1a",
-      "terminal_manufacturer_code": 1,
+      "terminal_manufacturer_code": "1",
       "title": "My terminal",
       "mac_address": "3D:F2:C9:A6:B3:4F",
       "local_ip_address": "192.168.0.10",
@@ -515,6 +560,7 @@ $result = $deviceTermsController->viewSingleDeviceTermRecord($deviceTermsId);
       "tip_enable": false,
       "validated_decryption": false,
       "communication_type": "http",
+      "active": true,
       "id": "11e95f8ec39de8fbdb0a4f1a",
       "created_ts": 1422040992,
       "modified_ts": 1422040992,

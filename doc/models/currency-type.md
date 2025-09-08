@@ -18,8 +18,8 @@ Currency Type Information on `expand`
 
 ```json
 {
-  "id": null,
-  "title": null
+  "id": 50,
+  "title": "Sample Title"
 }
 ```
 

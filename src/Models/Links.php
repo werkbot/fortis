@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -18,42 +19,35 @@ use stdClass;
 class Links implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $type;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $first;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $previous;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private $last;
+    private $next;
 
     /**
-     * @param string $first
-     * @param string $previous
-     * @param string $last
+     * @var string|null
      */
-    public function __construct(string $first, string $previous, string $last)
-    {
-        $this->first = $first;
-        $this->previous = $previous;
-        $this->last = $last;
-    }
+    private $last;
 
     /**
      * Returns Type.
      * Object type
      */
-    public function getType(): string
+    public function getType(): ?string
     {
         return $this->type;
     }
@@ -63,8 +57,9 @@ class Links implements \JsonSerializable
      * Object type
      *
      * @maps type
+     * @factory \FortisAPILib\Models\Type2Enum::checkValue
      */
-    public function setType(string $type): void
+    public function setType(?string $type): void
     {
         $this->type = $type;
     }
@@ -73,7 +68,7 @@ class Links implements \JsonSerializable
      * Returns First.
      * Link to the first page
      */
-    public function getFirst(): string
+    public function getFirst(): ?string
     {
         return $this->first;
     }
@@ -82,10 +77,9 @@ class Links implements \JsonSerializable
      * Sets First.
      * Link to the first page
      *
-     * @required
      * @maps first
      */
-    public function setFirst(string $first): void
+    public function setFirst(?string $first): void
     {
         $this->first = $first;
     }
@@ -94,7 +88,7 @@ class Links implements \JsonSerializable
      * Returns Previous.
      * Link to the previous page
      */
-    public function getPrevious(): string
+    public function getPrevious(): ?string
     {
         return $this->previous;
     }
@@ -103,19 +97,38 @@ class Links implements \JsonSerializable
      * Sets Previous.
      * Link to the previous page
      *
-     * @required
      * @maps previous
      */
-    public function setPrevious(string $previous): void
+    public function setPrevious(?string $previous): void
     {
         $this->previous = $previous;
+    }
+
+    /**
+     * Returns Next.
+     * Link to the next page
+     */
+    public function getNext(): ?string
+    {
+        return $this->next;
+    }
+
+    /**
+     * Sets Next.
+     * Link to the next page
+     *
+     * @maps next
+     */
+    public function setNext(?string $next): void
+    {
+        $this->next = $next;
     }
 
     /**
      * Returns Last.
      * Link to the last page
      */
-    public function getLast(): string
+    public function getLast(): ?string
     {
         return $this->last;
     }
@@ -124,12 +137,59 @@ class Links implements \JsonSerializable
      * Sets Last.
      * Link to the last page
      *
-     * @required
      * @maps last
      */
-    public function setLast(string $last): void
+    public function setLast(?string $last): void
     {
         $this->last = $last;
+    }
+
+    /**
+     * Converts the Links object to a human-readable string representation.
+     *
+     * @return string The string representation of the Links object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Links',
+            [
+                'type' => $this->type,
+                'first' => $this->first,
+                'previous' => $this->previous,
+                'next' => $this->next,
+                'last' => $this->last,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -144,10 +204,22 @@ class Links implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['type']     = $this->type;
-        $json['first']    = $this->first;
-        $json['previous'] = $this->previous;
-        $json['last']     = $this->last;
+        if (isset($this->type)) {
+            $json['type']     = Type2Enum::checkValue($this->type);
+        }
+        if (isset($this->first)) {
+            $json['first']    = $this->first;
+        }
+        if (isset($this->previous)) {
+            $json['previous'] = $this->previous;
+        }
+        if (isset($this->next)) {
+            $json['next']     = $this->next;
+        }
+        if (isset($this->last)) {
+            $json['last']     = $this->last;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

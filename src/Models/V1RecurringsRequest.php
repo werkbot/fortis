@@ -10,14 +10,40 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class V1RecurringsRequest implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $accountVaultId;
+
+    /**
+     * @var string|null
+     */
+    private $tokenId;
+
+    /**
+     * @var array
+     */
+    private $contactId = [];
+
+    /**
+     * @var array
+     */
+    private $accountVaultApiId = [];
+
+    /**
+     * @var array
+     */
+    private $tokenApiId = [];
+
+    /**
+     * @var Joi|null
+     */
+    private $joi;
 
     /**
      * @var bool|null
@@ -90,7 +116,7 @@ class V1RecurringsRequest implements \JsonSerializable
     private $status = [];
 
     /**
-     * @var float
+     * @var int
      */
     private $transactionAmount;
 
@@ -125,22 +151,29 @@ class V1RecurringsRequest implements \JsonSerializable
     private $sendToProcAsRecur;
 
     /**
-     * @param string $accountVaultId
+     * @var array
+     */
+    private $tags = [];
+
+    /**
+     * @var array
+     */
+    private $secondaryAmount = [];
+
+    /**
      * @param int $interval
      * @param string $intervalType
      * @param string $locationId
      * @param string $startDate
-     * @param float $transactionAmount
+     * @param int $transactionAmount
      */
     public function __construct(
-        string $accountVaultId,
         int $interval,
         string $intervalType,
         string $locationId,
         string $startDate,
-        float $transactionAmount
+        int $transactionAmount
     ) {
-        $this->accountVaultId = $accountVaultId;
         $this->interval = $interval;
         $this->intervalType = $intervalType;
         $this->locationId = $locationId;
@@ -152,7 +185,7 @@ class V1RecurringsRequest implements \JsonSerializable
      * Returns Account Vault Id.
      * Token ID
      */
-    public function getAccountVaultId(): string
+    public function getAccountVaultId(): ?string
     {
         return $this->accountVaultId;
     }
@@ -161,12 +194,145 @@ class V1RecurringsRequest implements \JsonSerializable
      * Sets Account Vault Id.
      * Token ID
      *
-     * @required
      * @maps account_vault_id
      */
-    public function setAccountVaultId(string $accountVaultId): void
+    public function setAccountVaultId(?string $accountVaultId): void
     {
         $this->accountVaultId = $accountVaultId;
+    }
+
+    /**
+     * Returns Token Id.
+     * Token ID
+     */
+    public function getTokenId(): ?string
+    {
+        return $this->tokenId;
+    }
+
+    /**
+     * Sets Token Id.
+     * Token ID
+     *
+     * @maps token_id
+     */
+    public function setTokenId(?string $tokenId): void
+    {
+        $this->tokenId = $tokenId;
+    }
+
+    /**
+     * Returns Contact Id.
+     * Contact ID
+     */
+    public function getContactId(): ?string
+    {
+        if (count($this->contactId) == 0) {
+            return null;
+        }
+        return $this->contactId['value'];
+    }
+
+    /**
+     * Sets Contact Id.
+     * Contact ID
+     *
+     * @maps contact_id
+     */
+    public function setContactId(?string $contactId): void
+    {
+        $this->contactId['value'] = $contactId;
+    }
+
+    /**
+     * Unsets Contact Id.
+     * Contact ID
+     */
+    public function unsetContactId(): void
+    {
+        $this->contactId = [];
+    }
+
+    /**
+     * Returns Account Vault Api Id.
+     * Token API ID
+     */
+    public function getAccountVaultApiId(): ?string
+    {
+        if (count($this->accountVaultApiId) == 0) {
+            return null;
+        }
+        return $this->accountVaultApiId['value'];
+    }
+
+    /**
+     * Sets Account Vault Api Id.
+     * Token API ID
+     *
+     * @maps account_vault_api_id
+     */
+    public function setAccountVaultApiId(?string $accountVaultApiId): void
+    {
+        $this->accountVaultApiId['value'] = $accountVaultApiId;
+    }
+
+    /**
+     * Unsets Account Vault Api Id.
+     * Token API ID
+     */
+    public function unsetAccountVaultApiId(): void
+    {
+        $this->accountVaultApiId = [];
+    }
+
+    /**
+     * Returns Token Api Id.
+     * Token API ID
+     */
+    public function getTokenApiId(): ?string
+    {
+        if (count($this->tokenApiId) == 0) {
+            return null;
+        }
+        return $this->tokenApiId['value'];
+    }
+
+    /**
+     * Sets Token Api Id.
+     * Token API ID
+     *
+     * @maps token_api_id
+     */
+    public function setTokenApiId(?string $tokenApiId): void
+    {
+        $this->tokenApiId['value'] = $tokenApiId;
+    }
+
+    /**
+     * Unsets Token Api Id.
+     * Token API ID
+     */
+    public function unsetTokenApiId(): void
+    {
+        $this->tokenApiId = [];
+    }
+
+    /**
+     * Returns Joi.
+     */
+    public function getJoi(): ?Joi
+    {
+        return $this->joi;
+    }
+
+    /**
+     * Sets Joi.
+     *
+     * @maps _joi
+     */
+    public function setJoi(?Joi $joi): void
+    {
+        $this->joi = $joi;
     }
 
     /**
@@ -568,7 +734,7 @@ class V1RecurringsRequest implements \JsonSerializable
      * Returns Transaction Amount.
      * Transaction amount
      */
-    public function getTransactionAmount(): float
+    public function getTransactionAmount(): int
     {
         return $this->transactionAmount;
     }
@@ -580,7 +746,7 @@ class V1RecurringsRequest implements \JsonSerializable
      * @required
      * @maps transaction_amount
      */
-    public function setTransactionAmount(float $transactionAmount): void
+    public function setTransactionAmount(int $transactionAmount): void
     {
         $this->transactionAmount = $transactionAmount;
     }
@@ -754,6 +920,146 @@ class V1RecurringsRequest implements \JsonSerializable
     }
 
     /**
+     * Returns Tags.
+     * Tags
+     *
+     * @return string[]|null
+     */
+    public function getTags(): ?array
+    {
+        if (count($this->tags) == 0) {
+            return null;
+        }
+        return $this->tags['value'];
+    }
+
+    /**
+     * Sets Tags.
+     * Tags
+     *
+     * @maps tags
+     *
+     * @param string[]|null $tags
+     */
+    public function setTags(?array $tags): void
+    {
+        $this->tags['value'] = $tags;
+    }
+
+    /**
+     * Unsets Tags.
+     * Tags
+     */
+    public function unsetTags(): void
+    {
+        $this->tags = [];
+    }
+
+    /**
+     * Returns Secondary Amount.
+     * Retained Amount
+     */
+    public function getSecondaryAmount(): ?int
+    {
+        if (count($this->secondaryAmount) == 0) {
+            return null;
+        }
+        return $this->secondaryAmount['value'];
+    }
+
+    /**
+     * Sets Secondary Amount.
+     * Retained Amount
+     *
+     * @maps secondary_amount
+     */
+    public function setSecondaryAmount(?int $secondaryAmount): void
+    {
+        $this->secondaryAmount['value'] = $secondaryAmount;
+    }
+
+    /**
+     * Unsets Secondary Amount.
+     * Retained Amount
+     */
+    public function unsetSecondaryAmount(): void
+    {
+        $this->secondaryAmount = [];
+    }
+
+    /**
+     * Converts the V1RecurringsRequest object to a human-readable string representation.
+     *
+     * @return string The string representation of the V1RecurringsRequest object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'V1RecurringsRequest',
+            [
+                'accountVaultId' => $this->accountVaultId,
+                'tokenId' => $this->tokenId,
+                'contactId' => $this->getContactId(),
+                'accountVaultApiId' => $this->getAccountVaultApiId(),
+                'tokenApiId' => $this->getTokenApiId(),
+                'joi' => $this->joi,
+                'active' => $this->active,
+                'description' => $this->getDescription(),
+                'endDate' => $this->getEndDate(),
+                'installmentTotalCount' => $this->getInstallmentTotalCount(),
+                'interval' => $this->interval,
+                'intervalType' => $this->intervalType,
+                'locationId' => $this->locationId,
+                'notificationDays' => $this->getNotificationDays(),
+                'paymentMethod' => $this->getPaymentMethod(),
+                'productTransactionId' => $this->getProductTransactionId(),
+                'recurringId' => $this->getRecurringId(),
+                'recurringApiId' => $this->getRecurringApiId(),
+                'startDate' => $this->startDate,
+                'status' => $this->getStatus(),
+                'transactionAmount' => $this->transactionAmount,
+                'termsAgree' => $this->termsAgree,
+                'termsAgreeIp' => $this->getTermsAgreeIp(),
+                'recurringC1' => $this->getRecurringC1(),
+                'recurringC2' => $this->getRecurringC2(),
+                'recurringC3' => $this->getRecurringC3(),
+                'sendToProcAsRecur' => $this->sendToProcAsRecur,
+                'tags' => $this->getTags(),
+                'secondaryAmount' => $this->getSecondaryAmount(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -765,7 +1071,24 @@ class V1RecurringsRequest implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['account_vault_id']            = $this->accountVaultId;
+        if (isset($this->accountVaultId)) {
+            $json['account_vault_id']        = $this->accountVaultId;
+        }
+        if (isset($this->tokenId)) {
+            $json['token_id']                = $this->tokenId;
+        }
+        if (!empty($this->contactId)) {
+            $json['contact_id']              = $this->contactId['value'];
+        }
+        if (!empty($this->accountVaultApiId)) {
+            $json['account_vault_api_id']    = $this->accountVaultApiId['value'];
+        }
+        if (!empty($this->tokenApiId)) {
+            $json['token_api_id']            = $this->tokenApiId['value'];
+        }
+        if (isset($this->joi)) {
+            $json['_joi']                    = $this->joi;
+        }
         if (isset($this->active)) {
             $json['active']                  = $this->active;
         }
@@ -819,6 +1142,13 @@ class V1RecurringsRequest implements \JsonSerializable
         if (isset($this->sendToProcAsRecur)) {
             $json['send_to_proc_as_recur']   = $this->sendToProcAsRecur;
         }
+        if (!empty($this->tags)) {
+            $json['tags']                    = $this->tags['value'];
+        }
+        if (!empty($this->secondaryAmount)) {
+            $json['secondary_amount']        = $this->secondaryAmount['value'];
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

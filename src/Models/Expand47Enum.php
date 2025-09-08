@@ -16,115 +16,37 @@ use stdClass;
 
 class Expand47Enum
 {
-    public const LOG_EMAILS = 'log_emails';
-
-    public const IS_VOIDABLE = 'is_voidable';
-
-    public const IS_REVERSIBLE = 'is_reversible';
-
-    public const IS_REFUNDABLE = 'is_refundable';
-
-    public const IS_COMPLETABLE = 'is_completable';
-
-    public const IS_SETTLED = 'is_settled';
-
-    public const CREATED_USER = 'created_user';
-
     public const LOCATION = 'location';
 
     public const CONTACT = 'contact';
 
-    public const CHANGELOGS = 'changelogs';
+    public const TRANSACTIONS = 'transactions';
 
-    public const PRODUCT_TRANSACTION = 'product_transaction';
+    public const ACTIVERECURRINGS = 'activeRecurrings';
 
-    public const TAGS = 'tags';
-
-    public const ALL_TAGS = 'all_tags';
-
-    public const RECURRING = 'recurring';
-
-    public const TAGTRANSACTIONS = 'tagTransactions';
-
-    public const DECLINED_RECURRING_NOTIFICATION = 'declined_recurring_notification';
-
-    public const PAYMENT_RECURRING_NOTIFICATION = 'payment_recurring_notification';
-
-    public const ACCOUNT_VAULT = 'account_vault';
-
-    public const QUICK_INVOICE = 'quick_invoice';
-
-    public const DEVELOPER_COMPANY = 'developer_company';
-
-    public const TERMINAL = 'terminal';
-
-    public const HOSTED_PAYMENT_PAGE = 'hosted_payment_page';
-
-    public const TRANSACTION_LEVEL3 = 'transaction_level3';
-
-    public const DEVELOPER_COMPANY_ID = 'developer_company_id';
-
-    public const TRANSACTION_HISTORIES = 'transaction_histories';
-
-    public const SURCHARGE_TRANSACTION = 'surcharge_transaction';
-
-    public const SURCHARGE = 'surcharge';
+    public const IS_DELETABLE = 'is_deletable';
 
     public const SIGNATURE = 'signature';
 
-    public const REASON_CODE = 'reason_code';
+    public const CREATED_USER = 'created_user';
 
-    public const TYPE = 'type';
+    public const CHANGELOGS = 'changelogs';
 
-    public const STATUS = 'status';
+    public const ACCOUNT_VAULT_CAU_LOGS = 'account_vault_cau_logs';
 
-    public const TRANSACTION_BATCH = 'transaction_batch';
-
-    public const TRANSACTION_SPLITS = 'transaction_splits';
-
-    public const POSTBACK_LOGS = 'postback_logs';
-
-    public const CURRENCY_TYPE = 'currency_type';
-
-    public const TRANSACTION_REFERENCES = 'transaction_references';
+    public const ACCOUNT_VAULT_CAU_PRODUCT_TRANSACTIONS = 'account_vault_cau_product_transactions';
 
     private const _ALL_VALUES = [
-        self::LOG_EMAILS,
-        self::IS_VOIDABLE,
-        self::IS_REVERSIBLE,
-        self::IS_REFUNDABLE,
-        self::IS_COMPLETABLE,
-        self::IS_SETTLED,
-        self::CREATED_USER,
         self::LOCATION,
         self::CONTACT,
-        self::CHANGELOGS,
-        self::PRODUCT_TRANSACTION,
-        self::TAGS,
-        self::ALL_TAGS,
-        self::RECURRING,
-        self::TAGTRANSACTIONS,
-        self::DECLINED_RECURRING_NOTIFICATION,
-        self::PAYMENT_RECURRING_NOTIFICATION,
-        self::ACCOUNT_VAULT,
-        self::QUICK_INVOICE,
-        self::DEVELOPER_COMPANY,
-        self::TERMINAL,
-        self::HOSTED_PAYMENT_PAGE,
-        self::TRANSACTION_LEVEL3,
-        self::DEVELOPER_COMPANY_ID,
-        self::TRANSACTION_HISTORIES,
-        self::SURCHARGE_TRANSACTION,
-        self::SURCHARGE,
+        self::TRANSACTIONS,
+        self::ACTIVERECURRINGS,
+        self::IS_DELETABLE,
         self::SIGNATURE,
-        self::REASON_CODE,
-        self::TYPE,
-        self::STATUS,
-        self::TRANSACTION_BATCH,
-        self::TRANSACTION_SPLITS,
-        self::POSTBACK_LOGS,
-        self::CURRENCY_TYPE,
-        self::TRANSACTION_REFERENCES
+        self::CREATED_USER,
+        self::CHANGELOGS,
+        self::ACCOUNT_VAULT_CAU_LOGS,
+        self::ACCOUNT_VAULT_CAU_PRODUCT_TRANSACTIONS
     ];
 
     /**

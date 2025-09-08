@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -23,7 +24,7 @@ class Forecast implements \JsonSerializable
     private $id;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $recurringId;
 
@@ -53,14 +54,6 @@ class Forecast implements \JsonSerializable
     private $modifiedTs = [];
 
     /**
-     * @param string $recurringId
-     */
-    public function __construct(string $recurringId)
-    {
-        $this->recurringId = $recurringId;
-    }
-
-    /**
      * Returns Id.
      * ID
      */
@@ -84,7 +77,7 @@ class Forecast implements \JsonSerializable
      * Returns Recurring Id.
      * Recurring ID
      */
-    public function getRecurringId(): string
+    public function getRecurringId(): ?string
     {
         return $this->recurringId;
     }
@@ -93,10 +86,9 @@ class Forecast implements \JsonSerializable
      * Sets Recurring Id.
      * Recurring ID
      *
-     * @required
      * @maps recurring_id
      */
-    public function setRecurringId(string $recurringId): void
+    public function setRecurringId(?string $recurringId): void
     {
         $this->recurringId = $recurringId;
     }
@@ -262,6 +254,56 @@ class Forecast implements \JsonSerializable
     }
 
     /**
+     * Converts the Forecast object to a human-readable string representation.
+     *
+     * @return string The string representation of the Forecast object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Forecast',
+            [
+                'id' => $this->id,
+                'recurringId' => $this->recurringId,
+                'recurringType' => $this->getRecurringType(),
+                'amount' => $this->getAmount(),
+                'month' => $this->getMonth(),
+                'createdTs' => $this->getCreatedTs(),
+                'modifiedTs' => $this->getModifiedTs(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -276,7 +318,9 @@ class Forecast implements \JsonSerializable
         if (isset($this->id)) {
             $json['id']             = $this->id;
         }
-        $json['recurring_id']       = $this->recurringId;
+        if (isset($this->recurringId)) {
+            $json['recurring_id']   = $this->recurringId;
+        }
         if (!empty($this->recurringType)) {
             $json['recurring_type'] = $this->recurringType['value'];
         }
@@ -292,6 +336,7 @@ class Forecast implements \JsonSerializable
         if (!empty($this->modifiedTs)) {
             $json['modified_ts']    = $this->modifiedTs['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

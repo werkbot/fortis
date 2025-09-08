@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -18,7 +19,7 @@ use stdClass;
 class Terminal implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $locationId;
 
@@ -28,7 +29,7 @@ class Terminal implements \JsonSerializable
     private $defaultProductTransactionId = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $terminalApplicationId;
 
@@ -38,12 +39,12 @@ class Terminal implements \JsonSerializable
     private $terminalCvmId = [];
 
     /**
-     * @var int
+     * @var string|null
      */
     private $terminalManufacturerCode;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $title;
 
@@ -63,7 +64,7 @@ class Terminal implements \JsonSerializable
     private $port = 10009;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $serialNumber;
 
@@ -163,27 +164,27 @@ class Terminal implements \JsonSerializable
     private $defaultRoomNumber = [];
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $debit;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $emv;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $cashbackEnable;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $printEnable;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $sigCaptureEnable;
 
@@ -208,94 +209,45 @@ class Terminal implements \JsonSerializable
     private $communicationType = [];
 
     /**
-     * @var string
+     * @var bool|null
+     */
+    private $active;
+
+    /**
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $modifiedTs;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $lastRegistrationTs;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $createdUserId;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $modifiedUserId;
-
-    /**
-     * @param string $locationId
-     * @param string $terminalApplicationId
-     * @param int $terminalManufacturerCode
-     * @param string $title
-     * @param string $serialNumber
-     * @param bool $debit
-     * @param bool $emv
-     * @param bool $cashbackEnable
-     * @param bool $printEnable
-     * @param bool $sigCaptureEnable
-     * @param string $id
-     * @param int $createdTs
-     * @param int $modifiedTs
-     * @param int $lastRegistrationTs
-     * @param string $createdUserId
-     * @param string $modifiedUserId
-     */
-    public function __construct(
-        string $locationId,
-        string $terminalApplicationId,
-        int $terminalManufacturerCode,
-        string $title,
-        string $serialNumber,
-        bool $debit,
-        bool $emv,
-        bool $cashbackEnable,
-        bool $printEnable,
-        bool $sigCaptureEnable,
-        string $id,
-        int $createdTs,
-        int $modifiedTs,
-        int $lastRegistrationTs,
-        string $createdUserId,
-        string $modifiedUserId
-    ) {
-        $this->locationId = $locationId;
-        $this->terminalApplicationId = $terminalApplicationId;
-        $this->terminalManufacturerCode = $terminalManufacturerCode;
-        $this->title = $title;
-        $this->serialNumber = $serialNumber;
-        $this->debit = $debit;
-        $this->emv = $emv;
-        $this->cashbackEnable = $cashbackEnable;
-        $this->printEnable = $printEnable;
-        $this->sigCaptureEnable = $sigCaptureEnable;
-        $this->id = $id;
-        $this->createdTs = $createdTs;
-        $this->modifiedTs = $modifiedTs;
-        $this->lastRegistrationTs = $lastRegistrationTs;
-        $this->createdUserId = $createdUserId;
-        $this->modifiedUserId = $modifiedUserId;
-    }
 
     /**
      * Returns Location Id.
      * Location ID
      */
-    public function getLocationId(): string
+    public function getLocationId(): ?string
     {
         return $this->locationId;
     }
@@ -304,10 +256,9 @@ class Terminal implements \JsonSerializable
      * Sets Location Id.
      * Location ID
      *
-     * @required
      * @maps location_id
      */
-    public function setLocationId(string $locationId): void
+    public function setLocationId(?string $locationId): void
     {
         $this->locationId = $locationId;
     }
@@ -348,7 +299,7 @@ class Terminal implements \JsonSerializable
      * Returns Terminal Application Id.
      * Terminal Application ID
      */
-    public function getTerminalApplicationId(): string
+    public function getTerminalApplicationId(): ?string
     {
         return $this->terminalApplicationId;
     }
@@ -357,10 +308,9 @@ class Terminal implements \JsonSerializable
      * Sets Terminal Application Id.
      * Terminal Application ID
      *
-     * @required
      * @maps terminal_application_id
      */
-    public function setTerminalApplicationId(string $terminalApplicationId): void
+    public function setTerminalApplicationId(?string $terminalApplicationId): void
     {
         $this->terminalApplicationId = $terminalApplicationId;
     }
@@ -400,8 +350,10 @@ class Terminal implements \JsonSerializable
     /**
      * Returns Terminal Manufacturer Code.
      * Terminal Manufacturer Code
+     * >
+     * >
      */
-    public function getTerminalManufacturerCode(): int
+    public function getTerminalManufacturerCode(): ?string
     {
         return $this->terminalManufacturerCode;
     }
@@ -409,12 +361,13 @@ class Terminal implements \JsonSerializable
     /**
      * Sets Terminal Manufacturer Code.
      * Terminal Manufacturer Code
+     * >
+     * >
      *
-     * @required
      * @maps terminal_manufacturer_code
      * @factory \FortisAPILib\Models\TerminalManufacturerCodeEnum::checkValue
      */
-    public function setTerminalManufacturerCode(int $terminalManufacturerCode): void
+    public function setTerminalManufacturerCode(?string $terminalManufacturerCode): void
     {
         $this->terminalManufacturerCode = $terminalManufacturerCode;
     }
@@ -423,7 +376,7 @@ class Terminal implements \JsonSerializable
      * Returns Title.
      * Terminal Name
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -432,10 +385,9 @@ class Terminal implements \JsonSerializable
      * Sets Title.
      * Terminal Name
      *
-     * @required
      * @maps title
      */
-    public function setTitle(string $title): void
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -516,7 +468,7 @@ class Terminal implements \JsonSerializable
      * Returns Serial Number.
      * Terminal Serial Number
      */
-    public function getSerialNumber(): string
+    public function getSerialNumber(): ?string
     {
         return $this->serialNumber;
     }
@@ -525,10 +477,9 @@ class Terminal implements \JsonSerializable
      * Sets Serial Number.
      * Terminal Serial Number
      *
-     * @required
      * @maps serial_number
      */
-    public function setSerialNumber(string $serialNumber): void
+    public function setSerialNumber(?string $serialNumber): void
     {
         $this->serialNumber = $serialNumber;
     }
@@ -557,6 +508,10 @@ class Terminal implements \JsonSerializable
      * Returns Terminal Timeouts.
      * The following options outlines some configurable timeout values that can be used to customize the
      * experience at the terminal for the cardholder.
+     * >These timeouts are specific to Ingenico devices only.
+     * >
+     * >These timeouts are specific to Ingenico devices only.
+     * >
      */
     public function getTerminalTimeouts(): ?TerminalTimeouts
     {
@@ -567,6 +522,10 @@ class Terminal implements \JsonSerializable
      * Sets Terminal Timeouts.
      * The following options outlines some configurable timeout values that can be used to customize the
      * experience at the terminal for the cardholder.
+     * >These timeouts are specific to Ingenico devices only.
+     * >
+     * >These timeouts are specific to Ingenico devices only.
+     * >
      *
      * @maps terminal_timeouts
      */
@@ -1049,7 +1008,7 @@ class Terminal implements \JsonSerializable
      * Returns Default Room Rate.
      * Default Room Rate
      */
-    public function getDefaultRoomRate(): ?float
+    public function getDefaultRoomRate(): ?int
     {
         if (count($this->defaultRoomRate) == 0) {
             return null;
@@ -1063,7 +1022,7 @@ class Terminal implements \JsonSerializable
      *
      * @maps default_room_rate
      */
-    public function setDefaultRoomRate(?float $defaultRoomRate): void
+    public function setDefaultRoomRate(?int $defaultRoomRate): void
     {
         $this->defaultRoomRate['value'] = $defaultRoomRate;
     }
@@ -1113,7 +1072,7 @@ class Terminal implements \JsonSerializable
      * Returns Debit.
      * Debit
      */
-    public function getDebit(): bool
+    public function getDebit(): ?bool
     {
         return $this->debit;
     }
@@ -1122,10 +1081,9 @@ class Terminal implements \JsonSerializable
      * Sets Debit.
      * Debit
      *
-     * @required
      * @maps debit
      */
-    public function setDebit(bool $debit): void
+    public function setDebit(?bool $debit): void
     {
         $this->debit = $debit;
     }
@@ -1134,7 +1092,7 @@ class Terminal implements \JsonSerializable
      * Returns Emv.
      * EMV
      */
-    public function getEmv(): bool
+    public function getEmv(): ?bool
     {
         return $this->emv;
     }
@@ -1143,10 +1101,9 @@ class Terminal implements \JsonSerializable
      * Sets Emv.
      * EMV
      *
-     * @required
      * @maps emv
      */
-    public function setEmv(bool $emv): void
+    public function setEmv(?bool $emv): void
     {
         $this->emv = $emv;
     }
@@ -1155,7 +1112,7 @@ class Terminal implements \JsonSerializable
      * Returns Cashback Enable.
      * Cashback Enable
      */
-    public function getCashbackEnable(): bool
+    public function getCashbackEnable(): ?bool
     {
         return $this->cashbackEnable;
     }
@@ -1164,10 +1121,9 @@ class Terminal implements \JsonSerializable
      * Sets Cashback Enable.
      * Cashback Enable
      *
-     * @required
      * @maps cashback_enable
      */
-    public function setCashbackEnable(bool $cashbackEnable): void
+    public function setCashbackEnable(?bool $cashbackEnable): void
     {
         $this->cashbackEnable = $cashbackEnable;
     }
@@ -1176,7 +1132,7 @@ class Terminal implements \JsonSerializable
      * Returns Print Enable.
      * Print Enable
      */
-    public function getPrintEnable(): bool
+    public function getPrintEnable(): ?bool
     {
         return $this->printEnable;
     }
@@ -1185,10 +1141,9 @@ class Terminal implements \JsonSerializable
      * Sets Print Enable.
      * Print Enable
      *
-     * @required
      * @maps print_enable
      */
-    public function setPrintEnable(bool $printEnable): void
+    public function setPrintEnable(?bool $printEnable): void
     {
         $this->printEnable = $printEnable;
     }
@@ -1197,7 +1152,7 @@ class Terminal implements \JsonSerializable
      * Returns Sig Capture Enable.
      * Sig Capture Enable
      */
-    public function getSigCaptureEnable(): bool
+    public function getSigCaptureEnable(): ?bool
     {
         return $this->sigCaptureEnable;
     }
@@ -1206,10 +1161,9 @@ class Terminal implements \JsonSerializable
      * Sets Sig Capture Enable.
      * Sig Capture Enable
      *
-     * @required
      * @maps sig_capture_enable
      */
-    public function setSigCaptureEnable(bool $sigCaptureEnable): void
+    public function setSigCaptureEnable(?bool $sigCaptureEnable): void
     {
         $this->sigCaptureEnable = $sigCaptureEnable;
     }
@@ -1308,10 +1262,30 @@ class Terminal implements \JsonSerializable
     }
 
     /**
+     * Returns Active.
+     * Active
+     */
+    public function getActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    /**
+     * Sets Active.
+     * Active
+     *
+     * @maps active
+     */
+    public function setActive(?bool $active): void
+    {
+        $this->active = $active;
+    }
+
+    /**
      * Returns Id.
      * Terminal ID
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -1320,10 +1294,9 @@ class Terminal implements \JsonSerializable
      * Sets Id.
      * Terminal ID
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -1332,7 +1305,7 @@ class Terminal implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -1341,10 +1314,9 @@ class Terminal implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -1353,7 +1325,7 @@ class Terminal implements \JsonSerializable
      * Returns Modified Ts.
      * Modified Time Stamp
      */
-    public function getModifiedTs(): int
+    public function getModifiedTs(): ?int
     {
         return $this->modifiedTs;
     }
@@ -1362,10 +1334,9 @@ class Terminal implements \JsonSerializable
      * Sets Modified Ts.
      * Modified Time Stamp
      *
-     * @required
      * @maps modified_ts
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setModifiedTs(?int $modifiedTs): void
     {
         $this->modifiedTs = $modifiedTs;
     }
@@ -1374,7 +1345,7 @@ class Terminal implements \JsonSerializable
      * Returns Last Registration Ts.
      * Modified Time Stamp
      */
-    public function getLastRegistrationTs(): int
+    public function getLastRegistrationTs(): ?int
     {
         return $this->lastRegistrationTs;
     }
@@ -1383,10 +1354,9 @@ class Terminal implements \JsonSerializable
      * Sets Last Registration Ts.
      * Modified Time Stamp
      *
-     * @required
      * @maps last_registration_ts
      */
-    public function setLastRegistrationTs(int $lastRegistrationTs): void
+    public function setLastRegistrationTs(?int $lastRegistrationTs): void
     {
         $this->lastRegistrationTs = $lastRegistrationTs;
     }
@@ -1395,7 +1365,7 @@ class Terminal implements \JsonSerializable
      * Returns Created User Id.
      * User ID Created the register
      */
-    public function getCreatedUserId(): string
+    public function getCreatedUserId(): ?string
     {
         return $this->createdUserId;
     }
@@ -1404,10 +1374,9 @@ class Terminal implements \JsonSerializable
      * Sets Created User Id.
      * User ID Created the register
      *
-     * @required
      * @maps created_user_id
      */
-    public function setCreatedUserId(string $createdUserId): void
+    public function setCreatedUserId(?string $createdUserId): void
     {
         $this->createdUserId = $createdUserId;
     }
@@ -1416,7 +1385,7 @@ class Terminal implements \JsonSerializable
      * Returns Modified User Id.
      * Last User ID that updated the register
      */
-    public function getModifiedUserId(): string
+    public function getModifiedUserId(): ?string
     {
         return $this->modifiedUserId;
     }
@@ -1425,12 +1394,99 @@ class Terminal implements \JsonSerializable
      * Sets Modified User Id.
      * Last User ID that updated the register
      *
-     * @required
      * @maps modified_user_id
      */
-    public function setModifiedUserId(string $modifiedUserId): void
+    public function setModifiedUserId(?string $modifiedUserId): void
     {
         $this->modifiedUserId = $modifiedUserId;
+    }
+
+    /**
+     * Converts the Terminal object to a human-readable string representation.
+     *
+     * @return string The string representation of the Terminal object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Terminal',
+            [
+                'locationId' => $this->locationId,
+                'defaultProductTransactionId' => $this->getDefaultProductTransactionId(),
+                'terminalApplicationId' => $this->terminalApplicationId,
+                'terminalCvmId' => $this->getTerminalCvmId(),
+                'terminalManufacturerCode' => $this->terminalManufacturerCode,
+                'title' => $this->title,
+                'macAddress' => $this->getMacAddress(),
+                'localIpAddress' => $this->localIpAddress,
+                'port' => $this->port,
+                'serialNumber' => $this->serialNumber,
+                'terminalNumber' => $this->terminalNumber,
+                'terminalTimeouts' => $this->terminalTimeouts,
+                'tipPercents' => $this->tipPercents,
+                'locationApiId' => $this->getLocationApiId(),
+                'terminalApiId' => $this->getTerminalApiId(),
+                'headerLine1' => $this->getHeaderLine1(),
+                'headerLine2' => $this->getHeaderLine2(),
+                'headerLine3' => $this->getHeaderLine3(),
+                'headerLine4' => $this->getHeaderLine4(),
+                'headerLine5' => $this->getHeaderLine5(),
+                'trailerLine1' => $this->getTrailerLine1(),
+                'trailerLine2' => $this->getTrailerLine2(),
+                'trailerLine3' => $this->getTrailerLine3(),
+                'trailerLine4' => $this->getTrailerLine4(),
+                'trailerLine5' => $this->getTrailerLine5(),
+                'defaultCheckin' => $this->getDefaultCheckin(),
+                'defaultCheckout' => $this->getDefaultCheckout(),
+                'defaultRoomRate' => $this->getDefaultRoomRate(),
+                'defaultRoomNumber' => $this->getDefaultRoomNumber(),
+                'debit' => $this->debit,
+                'emv' => $this->emv,
+                'cashbackEnable' => $this->cashbackEnable,
+                'printEnable' => $this->printEnable,
+                'sigCaptureEnable' => $this->sigCaptureEnable,
+                'isProvisioned' => $this->isProvisioned,
+                'tipEnable' => $this->tipEnable,
+                'validatedDecryption' => $this->validatedDecryption,
+                'communicationType' => $this->getCommunicationType(),
+                'active' => $this->active,
+                'id' => $this->id,
+                'createdTs' => $this->createdTs,
+                'modifiedTs' => $this->modifiedTs,
+                'lastRegistrationTs' => $this->lastRegistrationTs,
+                'createdUserId' => $this->createdUserId,
+                'modifiedUserId' => $this->modifiedUserId,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -1445,19 +1501,27 @@ class Terminal implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['location_id']                        = $this->locationId;
+        if (isset($this->locationId)) {
+            $json['location_id']                    = $this->locationId;
+        }
         if (!empty($this->defaultProductTransactionId)) {
             $json['default_product_transaction_id'] = $this->defaultProductTransactionId['value'];
         }
-        $json['terminal_application_id']            = $this->terminalApplicationId;
+        if (isset($this->terminalApplicationId)) {
+            $json['terminal_application_id']        = $this->terminalApplicationId;
+        }
         if (!empty($this->terminalCvmId)) {
             $json['terminal_cvm_id']                = $this->terminalCvmId['value'];
         }
-        $json['terminal_manufacturer_code']         =
-            TerminalManufacturerCodeEnum::checkValue(
-                $this->terminalManufacturerCode
-            );
-        $json['title']                              = $this->title;
+        if (isset($this->terminalManufacturerCode)) {
+            $json['terminal_manufacturer_code']     =
+                TerminalManufacturerCodeEnum::checkValue(
+                    $this->terminalManufacturerCode
+                );
+        }
+        if (isset($this->title)) {
+            $json['title']                          = $this->title;
+        }
         if (!empty($this->macAddress)) {
             $json['mac_address']                    = $this->macAddress['value'];
         }
@@ -1467,7 +1531,9 @@ class Terminal implements \JsonSerializable
         if (isset($this->port)) {
             $json['port']                           = $this->port;
         }
-        $json['serial_number']                      = $this->serialNumber;
+        if (isset($this->serialNumber)) {
+            $json['serial_number']                  = $this->serialNumber;
+        }
         if (isset($this->terminalNumber)) {
             $json['terminal_number']                = $this->terminalNumber;
         }
@@ -1525,11 +1591,21 @@ class Terminal implements \JsonSerializable
         if (!empty($this->defaultRoomNumber)) {
             $json['default_room_number']            = $this->defaultRoomNumber['value'];
         }
-        $json['debit']                              = $this->debit;
-        $json['emv']                                = $this->emv;
-        $json['cashback_enable']                    = $this->cashbackEnable;
-        $json['print_enable']                       = $this->printEnable;
-        $json['sig_capture_enable']                 = $this->sigCaptureEnable;
+        if (isset($this->debit)) {
+            $json['debit']                          = $this->debit;
+        }
+        if (isset($this->emv)) {
+            $json['emv']                            = $this->emv;
+        }
+        if (isset($this->cashbackEnable)) {
+            $json['cashback_enable']                = $this->cashbackEnable;
+        }
+        if (isset($this->printEnable)) {
+            $json['print_enable']                   = $this->printEnable;
+        }
+        if (isset($this->sigCaptureEnable)) {
+            $json['sig_capture_enable']             = $this->sigCaptureEnable;
+        }
         if (isset($this->isProvisioned)) {
             $json['is_provisioned']                 = $this->isProvisioned;
         }
@@ -1545,12 +1621,28 @@ class Terminal implements \JsonSerializable
                     $this->communicationType['value']
                 );
         }
-        $json['id']                                 = $this->id;
-        $json['created_ts']                         = $this->createdTs;
-        $json['modified_ts']                        = $this->modifiedTs;
-        $json['last_registration_ts']               = $this->lastRegistrationTs;
-        $json['created_user_id']                    = $this->createdUserId;
-        $json['modified_user_id']                   = $this->modifiedUserId;
+        if (isset($this->active)) {
+            $json['active']                         = $this->active;
+        }
+        if (isset($this->id)) {
+            $json['id']                             = $this->id;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']                     = $this->createdTs;
+        }
+        if (isset($this->modifiedTs)) {
+            $json['modified_ts']                    = $this->modifiedTs;
+        }
+        if (isset($this->lastRegistrationTs)) {
+            $json['last_registration_ts']           = $this->lastRegistrationTs;
+        }
+        if (isset($this->createdUserId)) {
+            $json['created_user_id']                = $this->createdUserId;
+        }
+        if (isset($this->modifiedUserId)) {
+            $json['modified_user_id']               = $this->modifiedUserId;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -33,17 +34,9 @@ class Contact implements \JsonSerializable
     private $email = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $phoneNumber;
-
-    /**
-     * @param string $phoneNumber
-     */
-    public function __construct(string $phoneNumber)
-    {
-        $this->phoneNumber = $phoneNumber;
-    }
 
     /**
      * Returns First Name.
@@ -145,7 +138,7 @@ class Contact implements \JsonSerializable
      * Returns Phone Number.
      * Contact's phone.
      */
-    public function getPhoneNumber(): string
+    public function getPhoneNumber(): ?string
     {
         return $this->phoneNumber;
     }
@@ -154,12 +147,58 @@ class Contact implements \JsonSerializable
      * Sets Phone Number.
      * Contact's phone.
      *
-     * @required
      * @maps phone_number
      */
-    public function setPhoneNumber(string $phoneNumber): void
+    public function setPhoneNumber(?string $phoneNumber): void
     {
         $this->phoneNumber = $phoneNumber;
+    }
+
+    /**
+     * Converts the Contact object to a human-readable string representation.
+     *
+     * @return string The string representation of the Contact object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Contact',
+            [
+                'firstName' => $this->getFirstName(),
+                'lastName' => $this->getLastName(),
+                'email' => $this->getEmail(),
+                'phoneNumber' => $this->phoneNumber,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -175,15 +214,18 @@ class Contact implements \JsonSerializable
     {
         $json = [];
         if (!empty($this->firstName)) {
-            $json['first_name'] = $this->firstName['value'];
+            $json['first_name']   = $this->firstName['value'];
         }
         if (!empty($this->lastName)) {
-            $json['last_name']  = $this->lastName['value'];
+            $json['last_name']    = $this->lastName['value'];
         }
         if (!empty($this->email)) {
-            $json['email']      = $this->email['value'];
+            $json['email']        = $this->email['value'];
         }
-        $json['phone_number']   = $this->phoneNumber;
+        if (isset($this->phoneNumber)) {
+            $json['phone_number'] = $this->phoneNumber;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

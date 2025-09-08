@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class TransactionReference implements \JsonSerializable
@@ -147,7 +148,7 @@ class TransactionReference implements \JsonSerializable
      * Returns Transaction Amount.
      * Transaction Amount
      */
-    public function getTransactionAmount(): ?string
+    public function getTransactionAmount(): ?int
     {
         if (count($this->transactionAmount) == 0) {
             return null;
@@ -161,7 +162,7 @@ class TransactionReference implements \JsonSerializable
      *
      * @maps transaction_amount
      */
-    public function setTransactionAmount(?string $transactionAmount): void
+    public function setTransactionAmount(?int $transactionAmount): void
     {
         $this->transactionAmount['value'] = $transactionAmount;
     }
@@ -179,7 +180,7 @@ class TransactionReference implements \JsonSerializable
      * Returns Previous Transaction Amount.
      * Previous Transaction Amount
      */
-    public function getPreviousTransactionAmount(): ?string
+    public function getPreviousTransactionAmount(): ?int
     {
         if (count($this->previousTransactionAmount) == 0) {
             return null;
@@ -193,7 +194,7 @@ class TransactionReference implements \JsonSerializable
      *
      * @maps previous_transaction_amount
      */
-    public function setPreviousTransactionAmount(?string $previousTransactionAmount): void
+    public function setPreviousTransactionAmount(?int $previousTransactionAmount): void
     {
         $this->previousTransactionAmount['value'] = $previousTransactionAmount;
     }
@@ -336,6 +337,58 @@ class TransactionReference implements \JsonSerializable
     }
 
     /**
+     * Converts the TransactionReference object to a human-readable string representation.
+     *
+     * @return string The string representation of the TransactionReference object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'TransactionReference',
+            [
+                'id' => $this->id,
+                'transactionId' => $this->getTransactionId(),
+                'previousTransactionId' => $this->getPreviousTransactionId(),
+                'transactionAmount' => $this->getTransactionAmount(),
+                'previousTransactionAmount' => $this->getPreviousTransactionAmount(),
+                'previousTransactionCreatedTs' => $this->getPreviousTransactionCreatedTs(),
+                'referenceType' => $this->getReferenceType(),
+                'createdTs' => $this->getCreatedTs(),
+                'createdUserId' => $this->getCreatedUserId(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -374,6 +427,7 @@ class TransactionReference implements \JsonSerializable
         if (!empty($this->createdUserId)) {
             $json['created_user_id']                 = $this->createdUserId['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

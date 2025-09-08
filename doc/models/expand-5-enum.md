@@ -9,10 +9,7 @@
 
 | Name |
 |  --- |
-| `CREATED_USER` |
-| `LOCATION` |
-| `TERMINAL` |
-| `CHANGELOGS` |
-| `SIGNATURE` |
-| `REASON_CODE` |
+| `RECURRING` |
+| `PAYMENT_TRANSACTION` |
+| `DECLINED_TRANSACTION` |
 

@@ -3,6 +3,8 @@
 
 Terminal Manufacturer Code
 
+
+
 ## Enumeration
 
 `TerminalManufacturerCodeEnum`

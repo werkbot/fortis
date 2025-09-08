@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class V1WebhooksBatchRequest1 implements \JsonSerializable
@@ -68,6 +69,11 @@ class V1WebhooksBatchRequest1 implements \JsonSerializable
      * @var bool|null
      */
     private $onDelete;
+
+    /**
+     * @var bool|null
+     */
+    private $legacy = true;
 
     /**
      * @var array
@@ -130,6 +136,8 @@ class V1WebhooksBatchRequest1 implements \JsonSerializable
      * Returns Basic Auth Username.
      * The Basic authorization username for the URL, if not supplied, the postback will be submitted
      * without Basic authorization headers
+     * >This is only expandable for response but settable in the POST/PUT request
+     * >
      */
     public function getBasicAuthUsername(): ?string
     {
@@ -143,6 +151,8 @@ class V1WebhooksBatchRequest1 implements \JsonSerializable
      * Sets Basic Auth Username.
      * The Basic authorization username for the URL, if not supplied, the postback will be submitted
      * without Basic authorization headers
+     * >This is only expandable for response but settable in the POST/PUT request
+     * >
      *
      * @maps basic_auth_username
      */
@@ -155,6 +165,8 @@ class V1WebhooksBatchRequest1 implements \JsonSerializable
      * Unsets Basic Auth Username.
      * The Basic authorization username for the URL, if not supplied, the postback will be submitted
      * without Basic authorization headers
+     * >This is only expandable for response but settable in the POST/PUT request
+     * >
      */
     public function unsetBasicAuthUsername(): void
     {
@@ -164,6 +176,8 @@ class V1WebhooksBatchRequest1 implements \JsonSerializable
     /**
      * Returns Basic Auth Password.
      * The basic authorization password
+     * >This is only expandable for response but settable in the POST/PUT request
+     * >
      */
     public function getBasicAuthPassword(): ?string
     {
@@ -176,6 +190,8 @@ class V1WebhooksBatchRequest1 implements \JsonSerializable
     /**
      * Sets Basic Auth Password.
      * The basic authorization password
+     * >This is only expandable for response but settable in the POST/PUT request
+     * >
      *
      * @maps basic_auth_password
      */
@@ -187,6 +203,8 @@ class V1WebhooksBatchRequest1 implements \JsonSerializable
     /**
      * Unsets Basic Auth Password.
      * The basic authorization password
+     * >This is only expandable for response but settable in the POST/PUT request
+     * >
      */
     public function unsetBasicAuthPassword(): void
     {
@@ -406,6 +424,26 @@ class V1WebhooksBatchRequest1 implements \JsonSerializable
     }
 
     /**
+     * Returns Legacy.
+     * Prefer the legacy api format.
+     */
+    public function getLegacy(): ?bool
+    {
+        return $this->legacy;
+    }
+
+    /**
+     * Sets Legacy.
+     * Prefer the legacy api format.
+     *
+     * @maps legacy
+     */
+    public function setLegacy(?bool $legacy): void
+    {
+        $this->legacy = $legacy;
+    }
+
+    /**
      * Returns Postback Config Id.
      * Postback Config ID
      */
@@ -472,6 +510,8 @@ class V1WebhooksBatchRequest1 implements \JsonSerializable
     /**
      * Returns Resource.
      * The resource you want to subscribe the postbacks to.
+     * >Possible values include: 'contact', 'transaction', 'transactionbatch'
+     * >
      */
     public function getResource(): ?string
     {
@@ -484,6 +524,8 @@ class V1WebhooksBatchRequest1 implements \JsonSerializable
     /**
      * Sets Resource.
      * The resource you want to subscribe the postbacks to.
+     * >Possible values include: 'contact', 'transaction', 'transactionbatch'
+     * >
      *
      * @maps resource
      * @factory \FortisAPILib\Models\Resource12Enum::checkValue
@@ -496,6 +538,8 @@ class V1WebhooksBatchRequest1 implements \JsonSerializable
     /**
      * Unsets Resource.
      * The resource you want to subscribe the postbacks to.
+     * >Possible values include: 'contact', 'transaction', 'transactionbatch'
+     * >
      */
     public function unsetResource(): void
     {
@@ -567,6 +611,66 @@ class V1WebhooksBatchRequest1 implements \JsonSerializable
     }
 
     /**
+     * Converts the V1WebhooksBatchRequest1 object to a human-readable string representation.
+     *
+     * @return string The string representation of the V1WebhooksBatchRequest1 object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'V1WebhooksBatchRequest1',
+            [
+                'attemptInterval' => $this->getAttemptInterval(),
+                'basicAuthUsername' => $this->getBasicAuthUsername(),
+                'basicAuthPassword' => $this->getBasicAuthPassword(),
+                'expands' => $this->getExpands(),
+                'format' => $this->getFormat(),
+                'isActive' => $this->isActive,
+                'locationId' => $this->getLocationId(),
+                'locationApiId' => $this->getLocationApiId(),
+                'onCreate' => $this->onCreate,
+                'onUpdate' => $this->onUpdate,
+                'onDelete' => $this->onDelete,
+                'legacy' => $this->legacy,
+                'postbackConfigId' => $this->getPostbackConfigId(),
+                'productTransactionId' => $this->getProductTransactionId(),
+                'resource' => $this->getResource(),
+                'numberOfAttempts' => $this->getNumberOfAttempts(),
+                'url' => $this->getUrl(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -611,6 +715,9 @@ class V1WebhooksBatchRequest1 implements \JsonSerializable
         if (isset($this->onDelete)) {
             $json['on_delete']              = $this->onDelete;
         }
+        if (isset($this->legacy)) {
+            $json['legacy']                 = $this->legacy;
+        }
         if (!empty($this->postbackConfigId)) {
             $json['postback_config_id']     = $this->postbackConfigId['value'];
         }
@@ -626,6 +733,7 @@ class V1WebhooksBatchRequest1 implements \JsonSerializable
         if (!empty($this->url)) {
             $json['url']                    = $this->url['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

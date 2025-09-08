@@ -9,40 +9,52 @@
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `locationId` | `string` | Required | Location ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getLocationId(): string | setLocationId(string locationId): void |
-| `ccProductTransactionId` | `string` | Required | cc_product_transaction_id<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getCcProductTransactionId(): string | setCcProductTransactionId(string ccProductTransactionId): void |
-| `email` | `string` | Required | Email<br>**Constraints**: *Maximum Length*: `128` | getEmail(): string | setEmail(string email): void |
-| `amountDue` | `float` | Required | Amount Due | getAmountDue(): float | setAmountDue(float amountDue): void |
-| `locationApiId` | `?string` | Optional | Location Api Id | getLocationApiId(): ?string | setLocationApiId(?string locationApiId): void |
-| `contactId` | `?string` | Optional | Contact Id<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getContactId(): ?string | setContactId(?string contactId): void |
-| `contactApiId` | `?string` | Optional | Contact Api Id | getContactApiId(): ?string | setContactApiId(?string contactApiId): void |
-| `paylinkApiId` | `?string` | Optional | Paylinke Api Id<br>**Constraints**: *Maximum Length*: `64` | getPaylinkApiId(): ?string | setPaylinkApiId(?string paylinkApiId): void |
-| `achProductTransactionId` | `?string` | Optional | Ach Product Transaction Id<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getAchProductTransactionId(): ?string | setAchProductTransactionId(?string achProductTransactionId): void |
-| `expireDate` | `?string` | Optional | Expire Date<br>**Constraints**: *Maximum Length*: `10`, *Pattern*: `^[\d]{4}-[\d]{2}-[\d]{2}$` | getExpireDate(): ?string | setExpireDate(?string expireDate): void |
-| `displayProductTransactionReceiptDetails` | `?bool` | Optional | Display Product Transaction Receipt Details | getDisplayProductTransactionReceiptDetails(): ?bool | setDisplayProductTransactionReceiptDetails(?bool displayProductTransactionReceiptDetails): void |
-| `displayBillingFields` | `?bool` | Optional | Display Billing Fields | getDisplayBillingFields(): ?bool | setDisplayBillingFields(?bool displayBillingFields): void |
-| `deliveryMethod` | [`?int (DeliveryMethodEnum)`](../../doc/models/delivery-method-enum.md) | Optional | Delivery Method<br><br>> 0 - Do not send<br>> <br>> 1 - Email<br>> <br>> 2 - SMS<br>> <br>> 3 - Both | getDeliveryMethod(): ?int | setDeliveryMethod(?int deliveryMethod): void |
-| `cellPhone` | `?string` | Optional | Cell Phone<br>**Constraints**: *Minimum Length*: `10`, *Maximum Length*: `10`, *Pattern*: `^\d{10}$` | getCellPhone(): ?string | setCellPhone(?string cellPhone): void |
-| `description` | `?string` | Optional | Description<br>**Constraints**: *Maximum Length*: `64` | getDescription(): ?string | setDescription(?string description): void |
-| `id` | `string` | Required | Paylink Id<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getId(): string | setId(string id): void |
-| `statusId` | `?bool` | Optional | Status Id | getStatusId(): ?bool | setStatusId(?bool statusId): void |
-| `active` | `?bool` | Optional | Active | getActive(): ?bool | setActive(?bool active): void |
-| `createdTs` | `int` | Required | Created Time Stamp | getCreatedTs(): int | setCreatedTs(int createdTs): void |
-| `modifiedTs` | `int` | Required | Modified Time Stamp | getModifiedTs(): int | setModifiedTs(int modifiedTs): void |
-| `createdUserId` | `?string` | Optional | User ID Created the register<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getCreatedUserId(): ?string | setCreatedUserId(?string createdUserId): void |
-| `modifiedUserId` | `?string` | Optional | Last User ID that updated the register<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getModifiedUserId(): ?string | setModifiedUserId(?string modifiedUserId): void |
+| `action` | [`?string(ActionEnum)`](../../doc/models/action-enum.md) | Optional | The action to be performed<br><br>**Default**: `ActionEnum::SALE` | getAction(): ?string | setAction(?string action): void |
+| `digitalWalletsOnly` | `?bool` | Optional | **Default**: `false` | getDigitalWalletsOnly(): ?bool | setDigitalWalletsOnly(?bool digitalWalletsOnly): void |
+| `methods` | [`?(Method3[])`](../../doc/models/method-3.md) | Optional | By default the system will try to offer all the availables payment methods from your account. But if you like, you can specify exactly what services you want to use.<br><br>**Constraints**: *Minimum Items*: `1`, *Unique Items Required* | getMethods(): ?array | setMethods(?array methods): void |
+| `amount` | `?int` | Optional | The total amount to be charged. Allowed on the actions: `sale`, `auth-only`, `refund`<br><br>**Constraints**: `>= 1`, `<= 999999999` | getAmount(): ?int | setAmount(?int amount): void |
+| `taxAmount` | int\|null | Optional | This is a container for any-of cases.<br><br>**Constraints**: `>= 1`, `<= 999999999` | getTaxAmount(): ?int | setTaxAmount(?int taxAmount): void |
+| `secondaryAmount` | int\|null | Optional | This is a container for any-of cases.<br><br>**Constraints**: `>= 0`, `<= 999999999` | getSecondaryAmount(): ?int | setSecondaryAmount(?int secondaryAmount): void |
+| `locationId` | `?string` | Optional | Location ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getLocationId(): ?string | setLocationId(?string locationId): void |
+| `contactId` | `?string` | Optional | Contact ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getContactId(): ?string | setContactId(?string contactId): void |
+| `saveAccount` | bool\|null | Optional | This is a container for any-of cases. | getSaveAccount(): ?bool | setSaveAccount(?bool saveAccount): void |
+| `saveAccountTitle` | string\|null | Optional | This is a container for any-of cases.<br><br>**Constraints**: *Maximum Length*: `16` | getSaveAccountTitle(): ?string | setSaveAccountTitle(?string saveAccountTitle): void |
+| `title` | string\|null | Optional | This is a container for any-of cases.<br><br>**Constraints**: *Maximum Length*: `16` | getTitle(): ?string | setTitle(?string title): void |
+| `achSecCode` | [`?string(AchSecCodeEnum)`](../../doc/models/ach-sec-code-enum.md) | Optional | SEC code for the transaction if it's an ACH transaction<br><br>**Default**: `AchSecCodeEnum::WEB` | getAchSecCode(): ?string | setAchSecCode(?string achSecCode): void |
+| `bankFundedOnlyOverride` | bool\|null | Optional | This is a container for any-of cases. | getBankFundedOnlyOverride(): ?bool | setBankFundedOnlyOverride(?bool bankFundedOnlyOverride): void |
+| `allowPartialAuthorizationOverride` | bool\|null | Optional | This is a container for any-of cases. | getAllowPartialAuthorizationOverride(): ?bool | setAllowPartialAuthorizationOverride(?bool allowPartialAuthorizationOverride): void |
+| `autoDeclineCvvOverride` | bool\|null | Optional | This is a container for any-of cases. | getAutoDeclineCvvOverride(): ?bool | setAutoDeclineCvvOverride(?bool autoDeclineCvvOverride): void |
+| `autoDeclineStreetOverride` | bool\|null | Optional | This is a container for any-of cases. | getAutoDeclineStreetOverride(): ?bool | setAutoDeclineStreetOverride(?bool autoDeclineStreetOverride): void |
+| `autoDeclineZipOverride` | bool\|null | Optional | This is a container for any-of cases. | getAutoDeclineZipOverride(): ?bool | setAutoDeclineZipOverride(?bool autoDeclineZipOverride): void |
+| `message` | `?string` | Optional | A custom text message that displays after the payment is processed.<br><br>**Constraints**: *Maximum Length*: `120` | getMessage(): ?string | setMessage(?string message): void |
+| `clientToken` | `?string` | Optional | A JWT to be used to create the elements.<br><br>> This is a one-time only use token.<br>> Do not store for long term use, it expires after 48 hours. | getClientToken(): ?string | setClientToken(?string clientToken): void |
 
 ## Example (as JSON)
 
 ```json
 {
+  "action": "sale",
+  "digitalWalletsOnly": false,
+  "amount": 1099,
   "location_id": "11e95f8ec39de8fbdb0a4f1a",
-  "cc_product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
-  "email": "email@domain.com",
-  "amount_due": 10,
-  "id": "11e95f8ec39de8fbdb0a4f1a",
-  "created_ts": 1422040992,
-  "modified_ts": 1422040992
+  "contact_id": "11e95f8ec39de8fbdb0a4f1a",
+  "ach_sec_code": "WEB",
+  "client_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+  "methods": [
+    {
+      "type": "ach",
+      "product_transaction_id": "product_transaction_id4"
+    },
+    {
+      "type": "ach",
+      "product_transaction_id": "product_transaction_id4"
+    },
+    {
+      "type": "ach",
+      "product_transaction_id": "product_transaction_id4"
+    }
+  ],
+  "tax_amount": 194
 }
 ```
 

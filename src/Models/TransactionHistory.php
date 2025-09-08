@@ -10,17 +10,18 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class TransactionHistory implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $transactionId;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
@@ -40,34 +41,20 @@ class TransactionHistory implements \JsonSerializable
     private $locationId = [];
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $modifiedTs;
-
-    /**
-     * @param string $transactionId
-     * @param string $id
-     * @param int $createdTs
-     * @param int $modifiedTs
-     */
-    public function __construct(string $transactionId, string $id, int $createdTs, int $modifiedTs)
-    {
-        $this->transactionId = $transactionId;
-        $this->id = $id;
-        $this->createdTs = $createdTs;
-        $this->modifiedTs = $modifiedTs;
-    }
 
     /**
      * Returns Transaction Id.
      * Transaction ID
      */
-    public function getTransactionId(): string
+    public function getTransactionId(): ?string
     {
         return $this->transactionId;
     }
@@ -76,10 +63,9 @@ class TransactionHistory implements \JsonSerializable
      * Sets Transaction Id.
      * Transaction ID
      *
-     * @required
      * @maps transaction_id
      */
-    public function setTransactionId(string $transactionId): void
+    public function setTransactionId(?string $transactionId): void
     {
         $this->transactionId = $transactionId;
     }
@@ -88,7 +74,7 @@ class TransactionHistory implements \JsonSerializable
      * Returns Id.
      * Transaction Histories ID
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -97,10 +83,9 @@ class TransactionHistory implements \JsonSerializable
      * Sets Id.
      * Transaction Histories ID
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -205,7 +190,7 @@ class TransactionHistory implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -214,10 +199,9 @@ class TransactionHistory implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -226,7 +210,7 @@ class TransactionHistory implements \JsonSerializable
      * Returns Modified Ts.
      * Modified Time Stamp
      */
-    public function getModifiedTs(): int
+    public function getModifiedTs(): ?int
     {
         return $this->modifiedTs;
     }
@@ -235,12 +219,61 @@ class TransactionHistory implements \JsonSerializable
      * Sets Modified Ts.
      * Modified Time Stamp
      *
-     * @required
      * @maps modified_ts
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setModifiedTs(?int $modifiedTs): void
     {
         $this->modifiedTs = $modifiedTs;
+    }
+
+    /**
+     * Converts the TransactionHistory object to a human-readable string representation.
+     *
+     * @return string The string representation of the TransactionHistory object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'TransactionHistory',
+            [
+                'transactionId' => $this->transactionId,
+                'id' => $this->id,
+                'statusId' => $this->getStatusId(),
+                'eventDateTs' => $this->getEventDateTs(),
+                'locationId' => $this->getLocationId(),
+                'createdTs' => $this->createdTs,
+                'modifiedTs' => $this->modifiedTs,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -255,19 +288,28 @@ class TransactionHistory implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['transaction_id']    = $this->transactionId;
-        $json['id']                = $this->id;
+        if (isset($this->transactionId)) {
+            $json['transaction_id'] = $this->transactionId;
+        }
+        if (isset($this->id)) {
+            $json['id']             = $this->id;
+        }
         if (!empty($this->statusId)) {
-            $json['status_id']     = $this->statusId['value'];
+            $json['status_id']      = $this->statusId['value'];
         }
         if (!empty($this->eventDateTs)) {
-            $json['event_date_ts'] = $this->eventDateTs['value'];
+            $json['event_date_ts']  = $this->eventDateTs['value'];
         }
         if (!empty($this->locationId)) {
-            $json['location_id']   = $this->locationId['value'];
+            $json['location_id']    = $this->locationId['value'];
         }
-        $json['created_ts']        = $this->createdTs;
-        $json['modified_ts']       = $this->modifiedTs;
+        if (isset($this->createdTs)) {
+            $json['created_ts']     = $this->createdTs;
+        }
+        if (isset($this->modifiedTs)) {
+            $json['modified_ts']    = $this->modifiedTs;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

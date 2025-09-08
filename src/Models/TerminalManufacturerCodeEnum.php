@@ -16,25 +16,27 @@ use stdClass;
 
 /**
  * Terminal Manufacturer Code
+ * >
+ * >
  */
 class TerminalManufacturerCodeEnum
 {
-    public const ENUM_1 = 1;
+    public const ENUM_1 = '1';
 
-    public const ENUM_2 = 2;
+    public const ENUM_2 = '2';
 
-    public const ENUM_4 = 4;
+    public const ENUM_4 = '4';
 
-    public const ENUM_100 = 100;
+    public const ENUM_100 = '100';
 
     private const _ALL_VALUES = [self::ENUM_1, self::ENUM_2, self::ENUM_4, self::ENUM_100];
 
     /**
      * Ensures that all the given values are present in this Enum.
      *
-     * @param array|stdClass|null|int $value Value or a list/map of values to be checked
+     * @param array|stdClass|null|string $value Value or a list/map of values to be checked
      *
-     * @return array|null|int Input value(s), if all are a part of this Enum
+     * @return array|null|string Input value(s), if all are a part of this Enum
      *
      * @throws Exception Throws exception if any given value is not in this Enum
      */

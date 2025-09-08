@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class V1PaylinksRequest1 implements \JsonSerializable
@@ -88,6 +89,46 @@ class V1PaylinksRequest1 implements \JsonSerializable
      * @var array
      */
     private $description = [];
+
+    /**
+     * @var bool|null
+     */
+    private $storeToken;
+
+    /**
+     * @var array
+     */
+    private $storeTokenTitle = [];
+
+    /**
+     * @var array
+     */
+    private $paylinkAction = [];
+
+    /**
+     * @var bool|null
+     */
+    private $bankFundedOnlyOverride;
+
+    /**
+     * @var array
+     */
+    private $tags = [];
+
+    /**
+     * @var array
+     */
+    private $redirectUrlDelay = [];
+
+    /**
+     * @var array
+     */
+    private $redirectUrlOnApprove = [];
+
+    /**
+     * @var array
+     */
+    private $redirectUrlOnDecline = [];
 
     /**
      * Returns Location Id.
@@ -189,7 +230,7 @@ class V1PaylinksRequest1 implements \JsonSerializable
      * Returns Amount Due.
      * Amount Due
      */
-    public function getAmountDue(): ?float
+    public function getAmountDue(): ?int
     {
         if (count($this->amountDue) == 0) {
             return null;
@@ -203,7 +244,7 @@ class V1PaylinksRequest1 implements \JsonSerializable
      *
      * @maps amount_due
      */
-    public function setAmountDue(?float $amountDue): void
+    public function setAmountDue(?int $amountDue): void
     {
         $this->amountDue['value'] = $amountDue;
     }
@@ -571,6 +612,309 @@ class V1PaylinksRequest1 implements \JsonSerializable
     }
 
     /**
+     * Returns Store Token.
+     * Store Token
+     */
+    public function getStoreToken(): ?bool
+    {
+        return $this->storeToken;
+    }
+
+    /**
+     * Sets Store Token.
+     * Store Token
+     *
+     * @maps store_token
+     */
+    public function setStoreToken(?bool $storeToken): void
+    {
+        $this->storeToken = $storeToken;
+    }
+
+    /**
+     * Returns Store Token Title.
+     * Store Token Title
+     */
+    public function getStoreTokenTitle(): ?string
+    {
+        if (count($this->storeTokenTitle) == 0) {
+            return null;
+        }
+        return $this->storeTokenTitle['value'];
+    }
+
+    /**
+     * Sets Store Token Title.
+     * Store Token Title
+     *
+     * @maps store_token_title
+     */
+    public function setStoreTokenTitle(?string $storeTokenTitle): void
+    {
+        $this->storeTokenTitle['value'] = $storeTokenTitle;
+    }
+
+    /**
+     * Unsets Store Token Title.
+     * Store Token Title
+     */
+    public function unsetStoreTokenTitle(): void
+    {
+        $this->storeTokenTitle = [];
+    }
+
+    /**
+     * Returns Paylink Action.
+     * Paylink Action
+     */
+    public function getPaylinkAction(): ?string
+    {
+        if (count($this->paylinkAction) == 0) {
+            return null;
+        }
+        return $this->paylinkAction['value'];
+    }
+
+    /**
+     * Sets Paylink Action.
+     * Paylink Action
+     *
+     * @maps paylink_action
+     * @factory \FortisAPILib\Models\PaylinkActionEnum::checkValue
+     */
+    public function setPaylinkAction(?string $paylinkAction): void
+    {
+        $this->paylinkAction['value'] = $paylinkAction;
+    }
+
+    /**
+     * Unsets Paylink Action.
+     * Paylink Action
+     */
+    public function unsetPaylinkAction(): void
+    {
+        $this->paylinkAction = [];
+    }
+
+    /**
+     * Returns Bank Funded Only Override.
+     * Bank Funded Only Override
+     */
+    public function getBankFundedOnlyOverride(): ?bool
+    {
+        return $this->bankFundedOnlyOverride;
+    }
+
+    /**
+     * Sets Bank Funded Only Override.
+     * Bank Funded Only Override
+     *
+     * @maps bank_funded_only_override
+     */
+    public function setBankFundedOnlyOverride(?bool $bankFundedOnlyOverride): void
+    {
+        $this->bankFundedOnlyOverride = $bankFundedOnlyOverride;
+    }
+
+    /**
+     * Returns Tags.
+     * Used to apply tags to a paylink.
+     *
+     * @return string[]|null
+     */
+    public function getTags(): ?array
+    {
+        if (count($this->tags) == 0) {
+            return null;
+        }
+        return $this->tags['value'];
+    }
+
+    /**
+     * Sets Tags.
+     * Used to apply tags to a paylink.
+     *
+     * @maps tags
+     *
+     * @param string[]|null $tags
+     */
+    public function setTags(?array $tags): void
+    {
+        $this->tags['value'] = $tags;
+    }
+
+    /**
+     * Unsets Tags.
+     * Used to apply tags to a paylink.
+     */
+    public function unsetTags(): void
+    {
+        $this->tags = [];
+    }
+
+    /**
+     * Returns Redirect Url Delay.
+     * Redirect URL Delay in seconds
+     */
+    public function getRedirectUrlDelay(): ?float
+    {
+        if (count($this->redirectUrlDelay) == 0) {
+            return null;
+        }
+        return $this->redirectUrlDelay['value'];
+    }
+
+    /**
+     * Sets Redirect Url Delay.
+     * Redirect URL Delay in seconds
+     *
+     * @maps redirect_url_delay
+     */
+    public function setRedirectUrlDelay(?float $redirectUrlDelay): void
+    {
+        $this->redirectUrlDelay['value'] = $redirectUrlDelay;
+    }
+
+    /**
+     * Unsets Redirect Url Delay.
+     * Redirect URL Delay in seconds
+     */
+    public function unsetRedirectUrlDelay(): void
+    {
+        $this->redirectUrlDelay = [];
+    }
+
+    /**
+     * Returns Redirect Url on Approve.
+     * Redirect URL On Approval
+     */
+    public function getRedirectUrlOnApprove(): ?string
+    {
+        if (count($this->redirectUrlOnApprove) == 0) {
+            return null;
+        }
+        return $this->redirectUrlOnApprove['value'];
+    }
+
+    /**
+     * Sets Redirect Url on Approve.
+     * Redirect URL On Approval
+     *
+     * @maps redirect_url_on_approve
+     */
+    public function setRedirectUrlOnApprove(?string $redirectUrlOnApprove): void
+    {
+        $this->redirectUrlOnApprove['value'] = $redirectUrlOnApprove;
+    }
+
+    /**
+     * Unsets Redirect Url on Approve.
+     * Redirect URL On Approval
+     */
+    public function unsetRedirectUrlOnApprove(): void
+    {
+        $this->redirectUrlOnApprove = [];
+    }
+
+    /**
+     * Returns Redirect Url on Decline.
+     * Redirect URL On Decline
+     */
+    public function getRedirectUrlOnDecline(): ?string
+    {
+        if (count($this->redirectUrlOnDecline) == 0) {
+            return null;
+        }
+        return $this->redirectUrlOnDecline['value'];
+    }
+
+    /**
+     * Sets Redirect Url on Decline.
+     * Redirect URL On Decline
+     *
+     * @maps redirect_url_on_decline
+     */
+    public function setRedirectUrlOnDecline(?string $redirectUrlOnDecline): void
+    {
+        $this->redirectUrlOnDecline['value'] = $redirectUrlOnDecline;
+    }
+
+    /**
+     * Unsets Redirect Url on Decline.
+     * Redirect URL On Decline
+     */
+    public function unsetRedirectUrlOnDecline(): void
+    {
+        $this->redirectUrlOnDecline = [];
+    }
+
+    /**
+     * Converts the V1PaylinksRequest1 object to a human-readable string representation.
+     *
+     * @return string The string representation of the V1PaylinksRequest1 object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'V1PaylinksRequest1',
+            [
+                'locationId' => $this->getLocationId(),
+                'ccProductTransactionId' => $this->getCcProductTransactionId(),
+                'email' => $this->getEmail(),
+                'amountDue' => $this->getAmountDue(),
+                'locationApiId' => $this->getLocationApiId(),
+                'contactId' => $this->getContactId(),
+                'contactApiId' => $this->getContactApiId(),
+                'paylinkApiId' => $this->getPaylinkApiId(),
+                'achProductTransactionId' => $this->getAchProductTransactionId(),
+                'expireDate' => $this->getExpireDate(),
+                'displayProductTransactionReceiptDetails' => $this->displayProductTransactionReceiptDetails,
+                'displayBillingFields' => $this->displayBillingFields,
+                'deliveryMethod' => $this->getDeliveryMethod(),
+                'cellPhone' => $this->getCellPhone(),
+                'description' => $this->getDescription(),
+                'storeToken' => $this->storeToken,
+                'storeTokenTitle' => $this->getStoreTokenTitle(),
+                'paylinkAction' => $this->getPaylinkAction(),
+                'bankFundedOnlyOverride' => $this->bankFundedOnlyOverride,
+                'tags' => $this->getTags(),
+                'redirectUrlDelay' => $this->getRedirectUrlDelay(),
+                'redirectUrlOnApprove' => $this->getRedirectUrlOnApprove(),
+                'redirectUrlOnDecline' => $this->getRedirectUrlOnDecline(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -630,6 +974,34 @@ class V1PaylinksRequest1 implements \JsonSerializable
         if (!empty($this->description)) {
             $json['description']                                 = $this->description['value'];
         }
+        if (isset($this->storeToken)) {
+            $json['store_token']                                 = $this->storeToken;
+        }
+        if (!empty($this->storeTokenTitle)) {
+            $json['store_token_title']                           = $this->storeTokenTitle['value'];
+        }
+        if (!empty($this->paylinkAction)) {
+            $json['paylink_action']                              =
+                PaylinkActionEnum::checkValue(
+                    $this->paylinkAction['value']
+                );
+        }
+        if (isset($this->bankFundedOnlyOverride)) {
+            $json['bank_funded_only_override']                   = $this->bankFundedOnlyOverride;
+        }
+        if (!empty($this->tags)) {
+            $json['tags']                                        = $this->tags['value'];
+        }
+        if (!empty($this->redirectUrlDelay)) {
+            $json['redirect_url_delay']                          = $this->redirectUrlDelay['value'];
+        }
+        if (!empty($this->redirectUrlOnApprove)) {
+            $json['redirect_url_on_approve']                     = $this->redirectUrlOnApprove['value'];
+        }
+        if (!empty($this->redirectUrlOnDecline)) {
+            $json['redirect_url_on_decline']                     = $this->redirectUrlOnDecline['value'];
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

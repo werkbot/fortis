@@ -9,15 +9,15 @@
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `method` | [`?string (Method2Enum)`](../../doc/models/method-2-enum.md) | Optional | - | getMethod(): ?string | setMethod(?string method): void |
-| `values` | [`?string (ValuesEnum)`](../../doc/models/values-enum.md) | Optional | - | getValues(): ?string | setValues(?string values): void |
+| `method` | [`?string(MethodEnum)`](../../doc/models/method-enum.md) | Optional | - | getMethod(): ?string | setMethod(?string method): void |
+| `values` | [`?string(ValuesEnum)`](../../doc/models/values-enum.md) | Optional | - | getValues(): ?string | setValues(?string values): void |
 
 ## Example (as JSON)
 
 ```json
 {
-  "method": null,
-  "values": null
+  "method": "xor",
+  "values": "account_vault_id"
 }
 ```
 

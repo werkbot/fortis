@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -18,12 +19,12 @@ use stdClass;
 class Surcharge implements \JsonSerializable
 {
     /**
-     * @var float
+     * @var int|null
      */
     private $surchargeFee;
 
     /**
-     * @var float
+     * @var int|null
      */
     private $surchargeRate;
 
@@ -53,7 +54,12 @@ class Surcharge implements \JsonSerializable
     private $refundSurcharges;
 
     /**
-     * @var string
+     * @var bool|null
+     */
+    private $blindRefundSurcharges;
+
+    /**
+     * @var string|null
      */
     private $productTransactionId;
 
@@ -83,65 +89,45 @@ class Surcharge implements \JsonSerializable
     private $surchargeTransactionProductId = [];
 
     /**
-     * @var string
+     * @var bool|null
+     */
+    private $stateExceptionCheck;
+
+    /**
+     * @var bool|null
+     */
+    private $compliant;
+
+    /**
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $createdUserId;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $modifiedUserId;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $modifiedTs;
-
-    /**
-     * @param float $surchargeFee
-     * @param float $surchargeRate
-     * @param string $productTransactionId
-     * @param string $id
-     * @param string $createdUserId
-     * @param string $modifiedUserId
-     * @param int $createdTs
-     * @param int $modifiedTs
-     */
-    public function __construct(
-        float $surchargeFee,
-        float $surchargeRate,
-        string $productTransactionId,
-        string $id,
-        string $createdUserId,
-        string $modifiedUserId,
-        int $createdTs,
-        int $modifiedTs
-    ) {
-        $this->surchargeFee = $surchargeFee;
-        $this->surchargeRate = $surchargeRate;
-        $this->productTransactionId = $productTransactionId;
-        $this->id = $id;
-        $this->createdUserId = $createdUserId;
-        $this->modifiedUserId = $modifiedUserId;
-        $this->createdTs = $createdTs;
-        $this->modifiedTs = $modifiedTs;
-    }
 
     /**
      * Returns Surcharge Fee.
      * Surcharge Fee
      */
-    public function getSurchargeFee(): float
+    public function getSurchargeFee(): ?int
     {
         return $this->surchargeFee;
     }
@@ -150,10 +136,9 @@ class Surcharge implements \JsonSerializable
      * Sets Surcharge Fee.
      * Surcharge Fee
      *
-     * @required
      * @maps surcharge_fee
      */
-    public function setSurchargeFee(float $surchargeFee): void
+    public function setSurchargeFee(?int $surchargeFee): void
     {
         $this->surchargeFee = $surchargeFee;
     }
@@ -162,7 +147,7 @@ class Surcharge implements \JsonSerializable
      * Returns Surcharge Rate.
      * Surcharge Rate
      */
-    public function getSurchargeRate(): float
+    public function getSurchargeRate(): ?int
     {
         return $this->surchargeRate;
     }
@@ -171,10 +156,9 @@ class Surcharge implements \JsonSerializable
      * Sets Surcharge Rate.
      * Surcharge Rate
      *
-     * @required
      * @maps surcharge_rate
      */
-    public function setSurchargeRate(float $surchargeRate): void
+    public function setSurchargeRate(?int $surchargeRate): void
     {
         $this->surchargeRate = $surchargeRate;
     }
@@ -183,7 +167,7 @@ class Surcharge implements \JsonSerializable
      * Returns Max Transaction Amount.
      * Max Transaction Amount
      */
-    public function getMaxTransactionAmount(): ?float
+    public function getMaxTransactionAmount(): ?int
     {
         if (count($this->maxTransactionAmount) == 0) {
             return null;
@@ -197,7 +181,7 @@ class Surcharge implements \JsonSerializable
      *
      * @maps max_transaction_amount
      */
-    public function setMaxTransactionAmount(?float $maxTransactionAmount): void
+    public function setMaxTransactionAmount(?int $maxTransactionAmount): void
     {
         $this->maxTransactionAmount['value'] = $maxTransactionAmount;
     }
@@ -215,7 +199,7 @@ class Surcharge implements \JsonSerializable
      * Returns Min Fee Amount.
      * Min Fee Amount
      */
-    public function getMinFeeAmount(): ?float
+    public function getMinFeeAmount(): ?int
     {
         if (count($this->minFeeAmount) == 0) {
             return null;
@@ -229,7 +213,7 @@ class Surcharge implements \JsonSerializable
      *
      * @maps min_fee_amount
      */
-    public function setMinFeeAmount(?float $minFeeAmount): void
+    public function setMinFeeAmount(?int $minFeeAmount): void
     {
         $this->minFeeAmount['value'] = $minFeeAmount;
     }
@@ -247,7 +231,7 @@ class Surcharge implements \JsonSerializable
      * Returns Max Fee Amount.
      * Max Fee Amount
      */
-    public function getMaxFeeAmount(): ?float
+    public function getMaxFeeAmount(): ?int
     {
         if (count($this->maxFeeAmount) == 0) {
             return null;
@@ -261,7 +245,7 @@ class Surcharge implements \JsonSerializable
      *
      * @maps max_fee_amount
      */
-    public function setMaxFeeAmount(?float $maxFeeAmount): void
+    public function setMaxFeeAmount(?int $maxFeeAmount): void
     {
         $this->maxFeeAmount['value'] = $maxFeeAmount;
     }
@@ -316,10 +300,30 @@ class Surcharge implements \JsonSerializable
     }
 
     /**
+     * Returns Blind Refund Surcharges.
+     * Blind Refund Surcharges
+     */
+    public function getBlindRefundSurcharges(): ?bool
+    {
+        return $this->blindRefundSurcharges;
+    }
+
+    /**
+     * Sets Blind Refund Surcharges.
+     * Blind Refund Surcharges
+     *
+     * @maps blind_refund_surcharges
+     */
+    public function setBlindRefundSurcharges(?bool $blindRefundSurcharges): void
+    {
+        $this->blindRefundSurcharges = $blindRefundSurcharges;
+    }
+
+    /**
      * Returns Product Transaction Id.
      * Product Transaction Id
      */
-    public function getProductTransactionId(): string
+    public function getProductTransactionId(): ?string
     {
         return $this->productTransactionId;
     }
@@ -328,10 +332,9 @@ class Surcharge implements \JsonSerializable
      * Sets Product Transaction Id.
      * Product Transaction Id
      *
-     * @required
      * @maps product_transaction_id
      */
-    public function setProductTransactionId(string $productTransactionId): void
+    public function setProductTransactionId(?string $productTransactionId): void
     {
         $this->productTransactionId = $productTransactionId;
     }
@@ -485,10 +488,50 @@ class Surcharge implements \JsonSerializable
     }
 
     /**
+     * Returns State Exception Check.
+     * State Exception Check
+     */
+    public function getStateExceptionCheck(): ?bool
+    {
+        return $this->stateExceptionCheck;
+    }
+
+    /**
+     * Sets State Exception Check.
+     * State Exception Check
+     *
+     * @maps state_exception_check
+     */
+    public function setStateExceptionCheck(?bool $stateExceptionCheck): void
+    {
+        $this->stateExceptionCheck = $stateExceptionCheck;
+    }
+
+    /**
+     * Returns Compliant.
+     * Compliant
+     */
+    public function getCompliant(): ?bool
+    {
+        return $this->compliant;
+    }
+
+    /**
+     * Sets Compliant.
+     * Compliant
+     *
+     * @maps compliant
+     */
+    public function setCompliant(?bool $compliant): void
+    {
+        $this->compliant = $compliant;
+    }
+
+    /**
      * Returns Id.
      * Surcharge Id
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -497,10 +540,9 @@ class Surcharge implements \JsonSerializable
      * Sets Id.
      * Surcharge Id
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -509,7 +551,7 @@ class Surcharge implements \JsonSerializable
      * Returns Created User Id.
      * User ID Created the register
      */
-    public function getCreatedUserId(): string
+    public function getCreatedUserId(): ?string
     {
         return $this->createdUserId;
     }
@@ -518,10 +560,9 @@ class Surcharge implements \JsonSerializable
      * Sets Created User Id.
      * User ID Created the register
      *
-     * @required
      * @maps created_user_id
      */
-    public function setCreatedUserId(string $createdUserId): void
+    public function setCreatedUserId(?string $createdUserId): void
     {
         $this->createdUserId = $createdUserId;
     }
@@ -530,7 +571,7 @@ class Surcharge implements \JsonSerializable
      * Returns Modified User Id.
      * Last User ID that updated the register
      */
-    public function getModifiedUserId(): string
+    public function getModifiedUserId(): ?string
     {
         return $this->modifiedUserId;
     }
@@ -539,10 +580,9 @@ class Surcharge implements \JsonSerializable
      * Sets Modified User Id.
      * Last User ID that updated the register
      *
-     * @required
      * @maps modified_user_id
      */
-    public function setModifiedUserId(string $modifiedUserId): void
+    public function setModifiedUserId(?string $modifiedUserId): void
     {
         $this->modifiedUserId = $modifiedUserId;
     }
@@ -551,7 +591,7 @@ class Surcharge implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -560,10 +600,9 @@ class Surcharge implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -572,7 +611,7 @@ class Surcharge implements \JsonSerializable
      * Returns Modified Ts.
      * Modified Time Stamp
      */
-    public function getModifiedTs(): int
+    public function getModifiedTs(): ?int
     {
         return $this->modifiedTs;
     }
@@ -581,12 +620,75 @@ class Surcharge implements \JsonSerializable
      * Sets Modified Ts.
      * Modified Time Stamp
      *
-     * @required
      * @maps modified_ts
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setModifiedTs(?int $modifiedTs): void
     {
         $this->modifiedTs = $modifiedTs;
+    }
+
+    /**
+     * Converts the Surcharge object to a human-readable string representation.
+     *
+     * @return string The string representation of the Surcharge object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Surcharge',
+            [
+                'surchargeFee' => $this->surchargeFee,
+                'surchargeRate' => $this->surchargeRate,
+                'maxTransactionAmount' => $this->getMaxTransactionAmount(),
+                'minFeeAmount' => $this->getMinFeeAmount(),
+                'maxFeeAmount' => $this->getMaxFeeAmount(),
+                'surchargeOnRecurring' => $this->surchargeOnRecurring,
+                'refundSurcharges' => $this->refundSurcharges,
+                'blindRefundSurcharges' => $this->blindRefundSurcharges,
+                'productTransactionId' => $this->productTransactionId,
+                'runAsSeparateTransaction' => $this->runAsSeparateTransaction,
+                'applyToUserTypeId' => $this->getApplyToUserTypeId(),
+                'title' => $this->getTitle(),
+                'surchargeLabel' => $this->getSurchargeLabel(),
+                'surchargeTransactionProductId' => $this->getSurchargeTransactionProductId(),
+                'stateExceptionCheck' => $this->stateExceptionCheck,
+                'compliant' => $this->compliant,
+                'id' => $this->id,
+                'createdUserId' => $this->createdUserId,
+                'modifiedUserId' => $this->modifiedUserId,
+                'createdTs' => $this->createdTs,
+                'modifiedTs' => $this->modifiedTs,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -601,8 +703,12 @@ class Surcharge implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['surcharge_fee']                        = $this->surchargeFee;
-        $json['surcharge_rate']                       = $this->surchargeRate;
+        if (isset($this->surchargeFee)) {
+            $json['surcharge_fee']                    = $this->surchargeFee;
+        }
+        if (isset($this->surchargeRate)) {
+            $json['surcharge_rate']                   = $this->surchargeRate;
+        }
         if (!empty($this->maxTransactionAmount)) {
             $json['max_transaction_amount']           = $this->maxTransactionAmount['value'];
         }
@@ -618,7 +724,12 @@ class Surcharge implements \JsonSerializable
         if (isset($this->refundSurcharges)) {
             $json['refund_surcharges']                = $this->refundSurcharges;
         }
-        $json['product_transaction_id']               = $this->productTransactionId;
+        if (isset($this->blindRefundSurcharges)) {
+            $json['blind_refund_surcharges']          = $this->blindRefundSurcharges;
+        }
+        if (isset($this->productTransactionId)) {
+            $json['product_transaction_id']           = $this->productTransactionId;
+        }
         if (isset($this->runAsSeparateTransaction)) {
             $json['run_as_separate_transaction']      = $this->runAsSeparateTransaction;
         }
@@ -634,11 +745,28 @@ class Surcharge implements \JsonSerializable
         if (!empty($this->surchargeTransactionProductId)) {
             $json['surcharge_transaction_product_id'] = $this->surchargeTransactionProductId['value'];
         }
-        $json['id']                                   = $this->id;
-        $json['created_user_id']                      = $this->createdUserId;
-        $json['modified_user_id']                     = $this->modifiedUserId;
-        $json['created_ts']                           = $this->createdTs;
-        $json['modified_ts']                          = $this->modifiedTs;
+        if (isset($this->stateExceptionCheck)) {
+            $json['state_exception_check']            = $this->stateExceptionCheck;
+        }
+        if (isset($this->compliant)) {
+            $json['compliant']                        = $this->compliant;
+        }
+        if (isset($this->id)) {
+            $json['id']                               = $this->id;
+        }
+        if (isset($this->createdUserId)) {
+            $json['created_user_id']                  = $this->createdUserId;
+        }
+        if (isset($this->modifiedUserId)) {
+            $json['modified_user_id']                 = $this->modifiedUserId;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']                       = $this->createdTs;
+        }
+        if (isset($this->modifiedTs)) {
+            $json['modified_ts']                      = $this->modifiedTs;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

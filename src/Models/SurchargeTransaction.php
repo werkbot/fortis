@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -23,22 +24,22 @@ class SurchargeTransaction implements \JsonSerializable
     private $id;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $modelName;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $transactionId;
 
     /**
-     * @var float
+     * @var int|null
      */
     private $surchargeFee;
 
     /**
-     * @var float
+     * @var int|null
      */
     private $surchargeRate;
 
@@ -78,20 +79,6 @@ class SurchargeTransaction implements \JsonSerializable
     private $modifiedUserId = [];
 
     /**
-     * @param string $modelName
-     * @param string $transactionId
-     * @param float $surchargeFee
-     * @param float $surchargeRate
-     */
-    public function __construct(string $modelName, string $transactionId, float $surchargeFee, float $surchargeRate)
-    {
-        $this->modelName = $modelName;
-        $this->transactionId = $transactionId;
-        $this->surchargeFee = $surchargeFee;
-        $this->surchargeRate = $surchargeRate;
-    }
-
-    /**
      * Returns Id.
      * ID
      */
@@ -115,7 +102,7 @@ class SurchargeTransaction implements \JsonSerializable
      * Returns Model Name.
      * Model Name
      */
-    public function getModelName(): string
+    public function getModelName(): ?string
     {
         return $this->modelName;
     }
@@ -124,10 +111,9 @@ class SurchargeTransaction implements \JsonSerializable
      * Sets Model Name.
      * Model Name
      *
-     * @required
      * @maps model_name
      */
-    public function setModelName(string $modelName): void
+    public function setModelName(?string $modelName): void
     {
         $this->modelName = $modelName;
     }
@@ -136,7 +122,7 @@ class SurchargeTransaction implements \JsonSerializable
      * Returns Transaction Id.
      * Transaction ID
      */
-    public function getTransactionId(): string
+    public function getTransactionId(): ?string
     {
         return $this->transactionId;
     }
@@ -145,10 +131,9 @@ class SurchargeTransaction implements \JsonSerializable
      * Sets Transaction Id.
      * Transaction ID
      *
-     * @required
      * @maps transaction_id
      */
-    public function setTransactionId(string $transactionId): void
+    public function setTransactionId(?string $transactionId): void
     {
         $this->transactionId = $transactionId;
     }
@@ -157,7 +142,7 @@ class SurchargeTransaction implements \JsonSerializable
      * Returns Surcharge Fee.
      * Surcharge Fee
      */
-    public function getSurchargeFee(): float
+    public function getSurchargeFee(): ?int
     {
         return $this->surchargeFee;
     }
@@ -166,10 +151,9 @@ class SurchargeTransaction implements \JsonSerializable
      * Sets Surcharge Fee.
      * Surcharge Fee
      *
-     * @required
      * @maps surcharge_fee
      */
-    public function setSurchargeFee(float $surchargeFee): void
+    public function setSurchargeFee(?int $surchargeFee): void
     {
         $this->surchargeFee = $surchargeFee;
     }
@@ -178,7 +162,7 @@ class SurchargeTransaction implements \JsonSerializable
      * Returns Surcharge Rate.
      * Surcharge Rate
      */
-    public function getSurchargeRate(): float
+    public function getSurchargeRate(): ?int
     {
         return $this->surchargeRate;
     }
@@ -187,10 +171,9 @@ class SurchargeTransaction implements \JsonSerializable
      * Sets Surcharge Rate.
      * Surcharge Rate
      *
-     * @required
      * @maps surcharge_rate
      */
-    public function setSurchargeRate(float $surchargeRate): void
+    public function setSurchargeRate(?int $surchargeRate): void
     {
         $this->surchargeRate = $surchargeRate;
     }
@@ -199,7 +182,7 @@ class SurchargeTransaction implements \JsonSerializable
      * Returns Surcharge Amount.
      * Surcharge Amount
      */
-    public function getSurchargeAmount(): ?float
+    public function getSurchargeAmount(): ?int
     {
         if (count($this->surchargeAmount) == 0) {
             return null;
@@ -213,7 +196,7 @@ class SurchargeTransaction implements \JsonSerializable
      *
      * @maps surcharge_amount
      */
-    public function setSurchargeAmount(?float $surchargeAmount): void
+    public function setSurchargeAmount(?int $surchargeAmount): void
     {
         $this->surchargeAmount['value'] = $surchargeAmount;
     }
@@ -231,7 +214,7 @@ class SurchargeTransaction implements \JsonSerializable
      * Returns Surcharge Transaction Min.
      * Surcharge Transaction Minimum
      */
-    public function getSurchargeTransactionMin(): ?float
+    public function getSurchargeTransactionMin(): ?int
     {
         if (count($this->surchargeTransactionMin) == 0) {
             return null;
@@ -245,7 +228,7 @@ class SurchargeTransaction implements \JsonSerializable
      *
      * @maps surcharge_transaction_min
      */
-    public function setSurchargeTransactionMin(?float $surchargeTransactionMin): void
+    public function setSurchargeTransactionMin(?int $surchargeTransactionMin): void
     {
         $this->surchargeTransactionMin['value'] = $surchargeTransactionMin;
     }
@@ -263,7 +246,7 @@ class SurchargeTransaction implements \JsonSerializable
      * Returns Surcharge Transaction Max.
      * Surcharge Transaction Maximum
      */
-    public function getSurchargeTransactionMax(): ?float
+    public function getSurchargeTransactionMax(): ?int
     {
         if (count($this->surchargeTransactionMax) == 0) {
             return null;
@@ -277,7 +260,7 @@ class SurchargeTransaction implements \JsonSerializable
      *
      * @maps surcharge_transaction_max
      */
-    public function setSurchargeTransactionMax(?float $surchargeTransactionMax): void
+    public function setSurchargeTransactionMax(?int $surchargeTransactionMax): void
     {
         $this->surchargeTransactionMax['value'] = $surchargeTransactionMax;
     }
@@ -420,6 +403,61 @@ class SurchargeTransaction implements \JsonSerializable
     }
 
     /**
+     * Converts the SurchargeTransaction object to a human-readable string representation.
+     *
+     * @return string The string representation of the SurchargeTransaction object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'SurchargeTransaction',
+            [
+                'id' => $this->id,
+                'modelName' => $this->modelName,
+                'transactionId' => $this->transactionId,
+                'surchargeFee' => $this->surchargeFee,
+                'surchargeRate' => $this->surchargeRate,
+                'surchargeAmount' => $this->getSurchargeAmount(),
+                'surchargeTransactionMin' => $this->getSurchargeTransactionMin(),
+                'surchargeTransactionMax' => $this->getSurchargeTransactionMax(),
+                'created' => $this->getCreated(),
+                'modified' => $this->getModified(),
+                'createdUserId' => $this->getCreatedUserId(),
+                'modifiedUserId' => $this->getModifiedUserId(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -434,10 +472,18 @@ class SurchargeTransaction implements \JsonSerializable
         if (isset($this->id)) {
             $json['id']                        = $this->id;
         }
-        $json['model_name']                    = $this->modelName;
-        $json['transaction_id']                = $this->transactionId;
-        $json['surcharge_fee']                 = $this->surchargeFee;
-        $json['surcharge_rate']                = $this->surchargeRate;
+        if (isset($this->modelName)) {
+            $json['model_name']                = $this->modelName;
+        }
+        if (isset($this->transactionId)) {
+            $json['transaction_id']            = $this->transactionId;
+        }
+        if (isset($this->surchargeFee)) {
+            $json['surcharge_fee']             = $this->surchargeFee;
+        }
+        if (isset($this->surchargeRate)) {
+            $json['surcharge_rate']            = $this->surchargeRate;
+        }
         if (!empty($this->surchargeAmount)) {
             $json['surcharge_amount']          = $this->surchargeAmount['value'];
         }
@@ -459,6 +505,7 @@ class SurchargeTransaction implements \JsonSerializable
         if (!empty($this->modifiedUserId)) {
             $json['modified_user_id']          = $this->modifiedUserId['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

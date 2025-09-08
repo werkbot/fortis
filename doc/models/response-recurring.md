@@ -9,14 +9,21 @@
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `type` | `string` | Required, Constant | Resource Type<br>**Default**: `'Recurring'` | getType(): string | setType(string type): void |
-| `data` | [`?Data10`](../../doc/models/data-10.md) | Optional | - | getData(): ?Data10 | setData(?Data10 data): void |
+| `type` | [`?string(Type67Enum)`](../../doc/models/type-67-enum.md) | Optional | Resource Type<br><br>**Default**: `Type67Enum::RECURRING` | getType(): ?string | setType(?string type): void |
+| `data` | [`?Data20`](../../doc/models/data-20.md) | Optional | - | getData(): ?Data20 | setData(?Data20 data): void |
 
 ## Example (as JSON)
 
 ```json
 {
-  "type": "Recurring"
+  "type": "Recurring",
+  "data": {
+    "account_vault_id": "account_vault_id6",
+    "token_id": "token_id4",
+    "contact_id": "contact_id4",
+    "account_vault_api_id": "account_vault_api_id4",
+    "token_api_id": "token_api_id6"
+  }
 }
 ```
 

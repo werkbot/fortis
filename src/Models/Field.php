@@ -10,35 +10,26 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class Field implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $field;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $order;
-
-    /**
-     * @param string $field
-     * @param string $order
-     */
-    public function __construct(string $field, string $order)
-    {
-        $this->field = $field;
-        $this->order = $order;
-    }
 
     /**
      * Returns Field.
      * Field name used on the sort
      */
-    public function getField(): string
+    public function getField(): ?string
     {
         return $this->field;
     }
@@ -47,10 +38,9 @@ class Field implements \JsonSerializable
      * Sets Field.
      * Field name used on the sort
      *
-     * @required
      * @maps field
      */
-    public function setField(string $field): void
+    public function setField(?string $field): void
     {
         $this->field = $field;
     }
@@ -59,7 +49,7 @@ class Field implements \JsonSerializable
      * Returns Order.
      * Sort direction ASC/DESC
      */
-    public function getOrder(): string
+    public function getOrder(): ?string
     {
         return $this->order;
     }
@@ -68,13 +58,57 @@ class Field implements \JsonSerializable
      * Sets Order.
      * Sort direction ASC/DESC
      *
-     * @required
      * @maps order
      * @factory \FortisAPILib\Models\OrderEnum::checkValue
      */
-    public function setOrder(string $order): void
+    public function setOrder(?string $order): void
     {
         $this->order = $order;
+    }
+
+    /**
+     * Converts the Field object to a human-readable string representation.
+     *
+     * @return string The string representation of the Field object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Field',
+            [
+                'field' => $this->field,
+                'order' => $this->order,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -89,8 +123,13 @@ class Field implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['field'] = $this->field;
-        $json['order'] = OrderEnum::checkValue($this->order);
+        if (isset($this->field)) {
+            $json['field'] = $this->field;
+        }
+        if (isset($this->order)) {
+            $json['order'] = OrderEnum::checkValue($this->order);
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

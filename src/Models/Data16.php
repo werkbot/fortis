@@ -10,517 +10,1141 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class Data16 implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var array
      */
-    private $issuerBankName;
-
-    /**
-     * @var string
-     */
-    private $countryCode;
-
-    /**
-     * @var string
-     */
-    private $detailCardProduct;
-
-    /**
-     * @var string
-     */
-    private $detailCardIndicator;
-
-    /**
-     * @var string
-     */
-    private $fsaIndicator;
-
-    /**
-     * @var string
-     */
-    private $prepaidIndicator;
-
-    /**
-     * @var string
-     */
-    private $productId;
-
-    /**
-     * @var string
-     */
-    private $regulatorIndicator;
+    private $locationId = [];
 
     /**
      * @var array
      */
-    private $visaProductSubType = [];
+    private $ccProductTransactionId = [];
 
     /**
      * @var array
      */
-    private $visaLargeTicketIndicator = [];
+    private $email = [];
 
     /**
-     * @var string
+     * @var int|null
      */
-    private $accountFundSource;
-
-    /**
-     * @var array
-     */
-    private $cardClass = [];
+    private $amountDue;
 
     /**
      * @var array
      */
-    private $tokenInd = [];
+    private $locationApiId = [];
 
     /**
      * @var array
      */
-    private $issuingNetwork = [];
+    private $contactId = [];
 
     /**
-     * @param string $issuerBankName
-     * @param string $countryCode
-     * @param string $detailCardProduct
-     * @param string $detailCardIndicator
-     * @param string $fsaIndicator
-     * @param string $prepaidIndicator
-     * @param string $productId
-     * @param string $regulatorIndicator
-     * @param string $accountFundSource
+     * @var array
      */
-    public function __construct(
-        string $issuerBankName,
-        string $countryCode,
-        string $detailCardProduct,
-        string $detailCardIndicator,
-        string $fsaIndicator,
-        string $prepaidIndicator,
-        string $productId,
-        string $regulatorIndicator,
-        string $accountFundSource
-    ) {
-        $this->issuerBankName = $issuerBankName;
-        $this->countryCode = $countryCode;
-        $this->detailCardProduct = $detailCardProduct;
-        $this->detailCardIndicator = $detailCardIndicator;
-        $this->fsaIndicator = $fsaIndicator;
-        $this->prepaidIndicator = $prepaidIndicator;
-        $this->productId = $productId;
-        $this->regulatorIndicator = $regulatorIndicator;
-        $this->accountFundSource = $accountFundSource;
-    }
+    private $contactApiId = [];
 
     /**
-     * Returns Issuer Bank Name.
-     * The Issuer Bank name for the BIN
+     * @var array
      */
-    public function getIssuerBankName(): string
+    private $paylinkApiId = [];
+
+    /**
+     * @var array
+     */
+    private $achProductTransactionId = [];
+
+    /**
+     * @var array
+     */
+    private $expireDate = [];
+
+    /**
+     * @var bool|null
+     */
+    private $displayProductTransactionReceiptDetails;
+
+    /**
+     * @var bool|null
+     */
+    private $displayBillingFields;
+
+    /**
+     * @var array
+     */
+    private $deliveryMethod = [];
+
+    /**
+     * @var array
+     */
+    private $cellPhone = [];
+
+    /**
+     * @var array
+     */
+    private $description = [];
+
+    /**
+     * @var bool|null
+     */
+    private $storeToken;
+
+    /**
+     * @var array
+     */
+    private $storeTokenTitle = [];
+
+    /**
+     * @var array
+     */
+    private $paylinkAction = [];
+
+    /**
+     * @var bool|null
+     */
+    private $bankFundedOnlyOverride;
+
+    /**
+     * @var array
+     */
+    private $tags = [];
+
+    /**
+     * @var array
+     */
+    private $redirectUrlDelay = ['value' => 15];
+
+    /**
+     * @var array
+     */
+    private $redirectUrlOnApprove = [];
+
+    /**
+     * @var array
+     */
+    private $redirectUrlOnDecline = [];
+
+    /**
+     * @var string|null
+     */
+    private $id;
+
+    /**
+     * @var bool|null
+     */
+    private $statusId;
+
+    /**
+     * @var array
+     */
+    private $statusCode = [];
+
+    /**
+     * @var bool|null
+     */
+    private $active;
+
+    /**
+     * @var int|null
+     */
+    private $createdTs;
+
+    /**
+     * @var int|null
+     */
+    private $modifiedTs;
+
+    /**
+     * @var array
+     */
+    private $createdUserId = [];
+
+    /**
+     * @var array
+     */
+    private $modifiedUserId = [];
+
+    /**
+     * Returns Location Id.
+     * Location ID
+     */
+    public function getLocationId(): ?string
     {
-        return $this->issuerBankName;
-    }
-
-    /**
-     * Sets Issuer Bank Name.
-     * The Issuer Bank name for the BIN
-     *
-     * @required
-     * @maps issuer_bank_name
-     */
-    public function setIssuerBankName(string $issuerBankName): void
-    {
-        $this->issuerBankName = $issuerBankName;
-    }
-
-    /**
-     * Returns Country Code.
-     * VISA - Three character alpha country code
-     * MC - Three character alpha country code
-     * Maestro - Three character alpha country code
-     * Amex - Space Filled
-     * Discover - Three character alpha country code or spaces when Discover doesn't share issuer country.
-     */
-    public function getCountryCode(): string
-    {
-        return $this->countryCode;
-    }
-
-    /**
-     * Sets Country Code.
-     * VISA - Three character alpha country code
-     * MC - Three character alpha country code
-     * Maestro - Three character alpha country code
-     * Amex - Space Filled
-     * Discover - Three character alpha country code or spaces when Discover doesn't share issuer country.
-     *
-     * @required
-     * @maps country_code
-     */
-    public function setCountryCode(string $countryCode): void
-    {
-        $this->countryCode = $countryCode;
-    }
-
-    /**
-     * Returns Detail Card Product.
-     * V - Visa
-     * M - MasterCard
-     * A - American Express
-     * D - Discover
-     * N - PIN Only (Non-Visa/MasterCard/AMEX/Discover
-     */
-    public function getDetailCardProduct(): string
-    {
-        return $this->detailCardProduct;
-    }
-
-    /**
-     * Sets Detail Card Product.
-     * V - Visa
-     * M - MasterCard
-     * A - American Express
-     * D - Discover
-     * N - PIN Only (Non-Visa/MasterCard/AMEX/Discover
-     *
-     * @required
-     * @maps detail_card_product
-     */
-    public function setDetailCardProduct(string $detailCardProduct): void
-    {
-        $this->detailCardProduct = $detailCardProduct;
-    }
-
-    /**
-     * Returns Detail Card Indicator.
-     * Left justified, Space filled
-     */
-    public function getDetailCardIndicator(): string
-    {
-        return $this->detailCardIndicator;
-    }
-
-    /**
-     * Sets Detail Card Indicator.
-     * Left justified, Space filled
-     *
-     * @required
-     * @maps detail_card_indicator
-     */
-    public function setDetailCardIndicator(string $detailCardIndicator): void
-    {
-        $this->detailCardIndicator = $detailCardIndicator;
-    }
-
-    /**
-     * Returns Fsa Indicator.
-     * Left justified, Space filled
-     */
-    public function getFsaIndicator(): string
-    {
-        return $this->fsaIndicator;
-    }
-
-    /**
-     * Sets Fsa Indicator.
-     * Left justified, Space filled
-     *
-     * @required
-     * @maps fsa_indicator
-     */
-    public function setFsaIndicator(string $fsaIndicator): void
-    {
-        $this->fsaIndicator = $fsaIndicator;
-    }
-
-    /**
-     * Returns Prepaid Indicator.
-     * P = Prepaid Card
-     * Default: Space filled
-     */
-    public function getPrepaidIndicator(): string
-    {
-        return $this->prepaidIndicator;
-    }
-
-    /**
-     * Sets Prepaid Indicator.
-     * P = Prepaid Card
-     * Default: Space filled
-     *
-     * @required
-     * @maps prepaid_indicator
-     */
-    public function setPrepaidIndicator(string $prepaidIndicator): void
-    {
-        $this->prepaidIndicator = $prepaidIndicator;
-    }
-
-    /**
-     * Returns Product Id.
-     * P = Prepaid Card
-     * Default: Space filled
-     */
-    public function getProductId(): string
-    {
-        return $this->productId;
-    }
-
-    /**
-     * Sets Product Id.
-     * P = Prepaid Card
-     * Default: Space filled
-     *
-     * @required
-     * @maps product_id
-     */
-    public function setProductId(string $productId): void
-    {
-        $this->productId = $productId;
-    }
-
-    /**
-     * Returns Regulator Indicator.
-     * P = Prepaid Card
-     * Default: Space filled
-     */
-    public function getRegulatorIndicator(): string
-    {
-        return $this->regulatorIndicator;
-    }
-
-    /**
-     * Sets Regulator Indicator.
-     * P = Prepaid Card
-     * Default: Space filled
-     *
-     * @required
-     * @maps regulator_indicator
-     */
-    public function setRegulatorIndicator(string $regulatorIndicator): void
-    {
-        $this->regulatorIndicator = $regulatorIndicator;
-    }
-
-    /**
-     * Returns Visa Product Sub Type.
-     * This is used to identify product sub-types, i.e. further classification of product.
-     */
-    public function getVisaProductSubType(): ?string
-    {
-        if (count($this->visaProductSubType) == 0) {
+        if (count($this->locationId) == 0) {
             return null;
         }
-        return $this->visaProductSubType['value'];
+        return $this->locationId['value'];
     }
 
     /**
-     * Sets Visa Product Sub Type.
-     * This is used to identify product sub-types, i.e. further classification of product.
+     * Sets Location Id.
+     * Location ID
      *
-     * @maps visa_product_sub_type
+     * @maps location_id
      */
-    public function setVisaProductSubType(?string $visaProductSubType): void
+    public function setLocationId(?string $locationId): void
     {
-        $this->visaProductSubType['value'] = $visaProductSubType;
+        $this->locationId['value'] = $locationId;
     }
 
     /**
-     * Unsets Visa Product Sub Type.
-     * This is used to identify product sub-types, i.e. further classification of product.
+     * Unsets Location Id.
+     * Location ID
      */
-    public function unsetVisaProductSubType(): void
+    public function unsetLocationId(): void
     {
-        $this->visaProductSubType = [];
+        $this->locationId = [];
     }
 
     /**
-     * Returns Visa Large Ticket Indicator.
-     * L = Visa Large Ticket.
-     * Default: Space filled
+     * Returns Cc Product Transaction Id.
+     * cc_product_transaction_id
      */
-    public function getVisaLargeTicketIndicator(): ?string
+    public function getCcProductTransactionId(): ?string
     {
-        if (count($this->visaLargeTicketIndicator) == 0) {
+        if (count($this->ccProductTransactionId) == 0) {
             return null;
         }
-        return $this->visaLargeTicketIndicator['value'];
+        return $this->ccProductTransactionId['value'];
     }
 
     /**
-     * Sets Visa Large Ticket Indicator.
-     * L = Visa Large Ticket.
-     * Default: Space filled
+     * Sets Cc Product Transaction Id.
+     * cc_product_transaction_id
      *
-     * @maps visa_large_ticket_indicator
+     * @maps cc_product_transaction_id
      */
-    public function setVisaLargeTicketIndicator(?string $visaLargeTicketIndicator): void
+    public function setCcProductTransactionId(?string $ccProductTransactionId): void
     {
-        $this->visaLargeTicketIndicator['value'] = $visaLargeTicketIndicator;
+        $this->ccProductTransactionId['value'] = $ccProductTransactionId;
     }
 
     /**
-     * Unsets Visa Large Ticket Indicator.
-     * L = Visa Large Ticket.
-     * Default: Space filled
+     * Unsets Cc Product Transaction Id.
+     * cc_product_transaction_id
      */
-    public function unsetVisaLargeTicketIndicator(): void
+    public function unsetCcProductTransactionId(): void
     {
-        $this->visaLargeTicketIndicator = [];
+        $this->ccProductTransactionId = [];
     }
 
     /**
-     * Returns Account Fund Source.
-     * For Visa, MasterCard, and Discover.  Identifies the source of the funds associated with the primary
-     * account for the card.
+     * Returns Email.
+     * Email
      */
-    public function getAccountFundSource(): string
+    public function getEmail(): ?string
     {
-        return $this->accountFundSource;
-    }
-
-    /**
-     * Sets Account Fund Source.
-     * For Visa, MasterCard, and Discover.  Identifies the source of the funds associated with the primary
-     * account for the card.
-     *
-     * @required
-     * @maps account_fund_source
-     */
-    public function setAccountFundSource(string $accountFundSource): void
-    {
-        $this->accountFundSource = $accountFundSource;
-    }
-
-    /**
-     * Returns Card Class.
-     * Categorizes the BIN as a Business card, Corporate T&E card, Purchase card or Consumer card. Assists
-     * the POS device with prompting decisions – to collect addenda or not.  Visa, MasterCard and Discover
-     * only.
-     */
-    public function getCardClass(): ?string
-    {
-        if (count($this->cardClass) == 0) {
+        if (count($this->email) == 0) {
             return null;
         }
-        return $this->cardClass['value'];
+        return $this->email['value'];
     }
 
     /**
-     * Sets Card Class.
-     * Categorizes the BIN as a Business card, Corporate T&E card, Purchase card or Consumer card. Assists
-     * the POS device with prompting decisions – to collect addenda or not.  Visa, MasterCard and Discover
-     * only.
+     * Sets Email.
+     * Email
      *
-     * @maps card_class
+     * @maps email
      */
-    public function setCardClass(?string $cardClass): void
+    public function setEmail(?string $email): void
     {
-        $this->cardClass['value'] = $cardClass;
+        $this->email['value'] = $email;
     }
 
     /**
-     * Unsets Card Class.
-     * Categorizes the BIN as a Business card, Corporate T&E card, Purchase card or Consumer card. Assists
-     * the POS device with prompting decisions – to collect addenda or not.  Visa, MasterCard and Discover
-     * only.
+     * Unsets Email.
+     * Email
      */
-    public function unsetCardClass(): void
+    public function unsetEmail(): void
     {
-        $this->cardClass = [];
+        $this->email = [];
     }
 
     /**
-     * Returns Token Ind.
-     * Token Indicator values:
-     * Y = Token BIN
-     * Default: Space filled
-     * VISA, MC, and Discover Only
+     * Returns Amount Due.
+     * Amount Due
      */
-    public function getTokenInd(): ?string
+    public function getAmountDue(): ?int
     {
-        if (count($this->tokenInd) == 0) {
+        return $this->amountDue;
+    }
+
+    /**
+     * Sets Amount Due.
+     * Amount Due
+     *
+     * @maps amount_due
+     */
+    public function setAmountDue(?int $amountDue): void
+    {
+        $this->amountDue = $amountDue;
+    }
+
+    /**
+     * Returns Location Api Id.
+     * Location Api Id
+     */
+    public function getLocationApiId(): ?string
+    {
+        if (count($this->locationApiId) == 0) {
             return null;
         }
-        return $this->tokenInd['value'];
+        return $this->locationApiId['value'];
     }
 
     /**
-     * Sets Token Ind.
-     * Token Indicator values:
-     * Y = Token BIN
-     * Default: Space filled
-     * VISA, MC, and Discover Only
+     * Sets Location Api Id.
+     * Location Api Id
      *
-     * @maps token_ind
+     * @maps location_api_id
      */
-    public function setTokenInd(?string $tokenInd): void
+    public function setLocationApiId(?string $locationApiId): void
     {
-        $this->tokenInd['value'] = $tokenInd;
+        $this->locationApiId['value'] = $locationApiId;
     }
 
     /**
-     * Unsets Token Ind.
-     * Token Indicator values:
-     * Y = Token BIN
-     * Default: Space filled
-     * VISA, MC, and Discover Only
+     * Unsets Location Api Id.
+     * Location Api Id
      */
-    public function unsetTokenInd(): void
+    public function unsetLocationApiId(): void
     {
-        $this->tokenInd = [];
+        $this->locationApiId = [];
     }
 
     /**
-     * Returns Issuing Network.
-     * For Discover card types
-     * 00 - Discover
-     * 01 - Diners
-     * 02 - JCB (Japanese Credit Bank)
-     * 03 - CUP (China Union Pay)
-     * 04 PayPal
+     * Returns Contact Id.
+     * Contact Id
      */
-    public function getIssuingNetwork(): ?string
+    public function getContactId(): ?string
     {
-        if (count($this->issuingNetwork) == 0) {
+        if (count($this->contactId) == 0) {
             return null;
         }
-        return $this->issuingNetwork['value'];
+        return $this->contactId['value'];
     }
 
     /**
-     * Sets Issuing Network.
-     * For Discover card types
-     * 00 - Discover
-     * 01 - Diners
-     * 02 - JCB (Japanese Credit Bank)
-     * 03 - CUP (China Union Pay)
-     * 04 PayPal
+     * Sets Contact Id.
+     * Contact Id
      *
-     * @maps issuing_network
+     * @maps contact_id
      */
-    public function setIssuingNetwork(?string $issuingNetwork): void
+    public function setContactId(?string $contactId): void
     {
-        $this->issuingNetwork['value'] = $issuingNetwork;
+        $this->contactId['value'] = $contactId;
     }
 
     /**
-     * Unsets Issuing Network.
-     * For Discover card types
-     * 00 - Discover
-     * 01 - Diners
-     * 02 - JCB (Japanese Credit Bank)
-     * 03 - CUP (China Union Pay)
-     * 04 PayPal
+     * Unsets Contact Id.
+     * Contact Id
      */
-    public function unsetIssuingNetwork(): void
+    public function unsetContactId(): void
     {
-        $this->issuingNetwork = [];
+        $this->contactId = [];
+    }
+
+    /**
+     * Returns Contact Api Id.
+     * Contact Api Id
+     */
+    public function getContactApiId(): ?string
+    {
+        if (count($this->contactApiId) == 0) {
+            return null;
+        }
+        return $this->contactApiId['value'];
+    }
+
+    /**
+     * Sets Contact Api Id.
+     * Contact Api Id
+     *
+     * @maps contact_api_id
+     */
+    public function setContactApiId(?string $contactApiId): void
+    {
+        $this->contactApiId['value'] = $contactApiId;
+    }
+
+    /**
+     * Unsets Contact Api Id.
+     * Contact Api Id
+     */
+    public function unsetContactApiId(): void
+    {
+        $this->contactApiId = [];
+    }
+
+    /**
+     * Returns Paylink Api Id.
+     * Paylinke Api Id
+     */
+    public function getPaylinkApiId(): ?string
+    {
+        if (count($this->paylinkApiId) == 0) {
+            return null;
+        }
+        return $this->paylinkApiId['value'];
+    }
+
+    /**
+     * Sets Paylink Api Id.
+     * Paylinke Api Id
+     *
+     * @maps paylink_api_id
+     */
+    public function setPaylinkApiId(?string $paylinkApiId): void
+    {
+        $this->paylinkApiId['value'] = $paylinkApiId;
+    }
+
+    /**
+     * Unsets Paylink Api Id.
+     * Paylinke Api Id
+     */
+    public function unsetPaylinkApiId(): void
+    {
+        $this->paylinkApiId = [];
+    }
+
+    /**
+     * Returns Ach Product Transaction Id.
+     * Ach Product Transaction Id
+     */
+    public function getAchProductTransactionId(): ?string
+    {
+        if (count($this->achProductTransactionId) == 0) {
+            return null;
+        }
+        return $this->achProductTransactionId['value'];
+    }
+
+    /**
+     * Sets Ach Product Transaction Id.
+     * Ach Product Transaction Id
+     *
+     * @maps ach_product_transaction_id
+     */
+    public function setAchProductTransactionId(?string $achProductTransactionId): void
+    {
+        $this->achProductTransactionId['value'] = $achProductTransactionId;
+    }
+
+    /**
+     * Unsets Ach Product Transaction Id.
+     * Ach Product Transaction Id
+     */
+    public function unsetAchProductTransactionId(): void
+    {
+        $this->achProductTransactionId = [];
+    }
+
+    /**
+     * Returns Expire Date.
+     * Expire Date
+     */
+    public function getExpireDate(): ?string
+    {
+        if (count($this->expireDate) == 0) {
+            return null;
+        }
+        return $this->expireDate['value'];
+    }
+
+    /**
+     * Sets Expire Date.
+     * Expire Date
+     *
+     * @maps expire_date
+     */
+    public function setExpireDate(?string $expireDate): void
+    {
+        $this->expireDate['value'] = $expireDate;
+    }
+
+    /**
+     * Unsets Expire Date.
+     * Expire Date
+     */
+    public function unsetExpireDate(): void
+    {
+        $this->expireDate = [];
+    }
+
+    /**
+     * Returns Display Product Transaction Receipt Details.
+     * Display Product Transaction Receipt Details
+     */
+    public function getDisplayProductTransactionReceiptDetails(): ?bool
+    {
+        return $this->displayProductTransactionReceiptDetails;
+    }
+
+    /**
+     * Sets Display Product Transaction Receipt Details.
+     * Display Product Transaction Receipt Details
+     *
+     * @maps display_product_transaction_receipt_details
+     */
+    public function setDisplayProductTransactionReceiptDetails(?bool $displayProductTransactionReceiptDetails): void
+    {
+        $this->displayProductTransactionReceiptDetails = $displayProductTransactionReceiptDetails;
+    }
+
+    /**
+     * Returns Display Billing Fields.
+     * Display Billing Fields
+     */
+    public function getDisplayBillingFields(): ?bool
+    {
+        return $this->displayBillingFields;
+    }
+
+    /**
+     * Sets Display Billing Fields.
+     * Display Billing Fields
+     *
+     * @maps display_billing_fields
+     */
+    public function setDisplayBillingFields(?bool $displayBillingFields): void
+    {
+        $this->displayBillingFields = $displayBillingFields;
+    }
+
+    /**
+     * Returns Delivery Method.
+     * Delivery Method
+     * >0 - Do not send
+     * >
+     * >1 - Email
+     * >
+     * >2 - SMS
+     * >
+     * >3 - Both
+     * >
+     */
+    public function getDeliveryMethod(): ?int
+    {
+        if (count($this->deliveryMethod) == 0) {
+            return null;
+        }
+        return $this->deliveryMethod['value'];
+    }
+
+    /**
+     * Sets Delivery Method.
+     * Delivery Method
+     * >0 - Do not send
+     * >
+     * >1 - Email
+     * >
+     * >2 - SMS
+     * >
+     * >3 - Both
+     * >
+     *
+     * @maps delivery_method
+     * @factory \FortisAPILib\Models\DeliveryMethodEnum::checkValue
+     */
+    public function setDeliveryMethod(?int $deliveryMethod): void
+    {
+        $this->deliveryMethod['value'] = $deliveryMethod;
+    }
+
+    /**
+     * Unsets Delivery Method.
+     * Delivery Method
+     * >0 - Do not send
+     * >
+     * >1 - Email
+     * >
+     * >2 - SMS
+     * >
+     * >3 - Both
+     * >
+     */
+    public function unsetDeliveryMethod(): void
+    {
+        $this->deliveryMethod = [];
+    }
+
+    /**
+     * Returns Cell Phone.
+     * Cell Phone
+     */
+    public function getCellPhone(): ?string
+    {
+        if (count($this->cellPhone) == 0) {
+            return null;
+        }
+        return $this->cellPhone['value'];
+    }
+
+    /**
+     * Sets Cell Phone.
+     * Cell Phone
+     *
+     * @maps cell_phone
+     */
+    public function setCellPhone(?string $cellPhone): void
+    {
+        $this->cellPhone['value'] = $cellPhone;
+    }
+
+    /**
+     * Unsets Cell Phone.
+     * Cell Phone
+     */
+    public function unsetCellPhone(): void
+    {
+        $this->cellPhone = [];
+    }
+
+    /**
+     * Returns Description.
+     * Description
+     */
+    public function getDescription(): ?string
+    {
+        if (count($this->description) == 0) {
+            return null;
+        }
+        return $this->description['value'];
+    }
+
+    /**
+     * Sets Description.
+     * Description
+     *
+     * @maps description
+     */
+    public function setDescription(?string $description): void
+    {
+        $this->description['value'] = $description;
+    }
+
+    /**
+     * Unsets Description.
+     * Description
+     */
+    public function unsetDescription(): void
+    {
+        $this->description = [];
+    }
+
+    /**
+     * Returns Store Token.
+     * Store Token
+     */
+    public function getStoreToken(): ?bool
+    {
+        return $this->storeToken;
+    }
+
+    /**
+     * Sets Store Token.
+     * Store Token
+     *
+     * @maps store_token
+     */
+    public function setStoreToken(?bool $storeToken): void
+    {
+        $this->storeToken = $storeToken;
+    }
+
+    /**
+     * Returns Store Token Title.
+     * Store Token Title
+     */
+    public function getStoreTokenTitle(): ?string
+    {
+        if (count($this->storeTokenTitle) == 0) {
+            return null;
+        }
+        return $this->storeTokenTitle['value'];
+    }
+
+    /**
+     * Sets Store Token Title.
+     * Store Token Title
+     *
+     * @maps store_token_title
+     */
+    public function setStoreTokenTitle(?string $storeTokenTitle): void
+    {
+        $this->storeTokenTitle['value'] = $storeTokenTitle;
+    }
+
+    /**
+     * Unsets Store Token Title.
+     * Store Token Title
+     */
+    public function unsetStoreTokenTitle(): void
+    {
+        $this->storeTokenTitle = [];
+    }
+
+    /**
+     * Returns Paylink Action.
+     * Paylink Action
+     */
+    public function getPaylinkAction(): ?string
+    {
+        if (count($this->paylinkAction) == 0) {
+            return null;
+        }
+        return $this->paylinkAction['value'];
+    }
+
+    /**
+     * Sets Paylink Action.
+     * Paylink Action
+     *
+     * @maps paylink_action
+     * @factory \FortisAPILib\Models\PaylinkActionEnum::checkValue
+     */
+    public function setPaylinkAction(?string $paylinkAction): void
+    {
+        $this->paylinkAction['value'] = $paylinkAction;
+    }
+
+    /**
+     * Unsets Paylink Action.
+     * Paylink Action
+     */
+    public function unsetPaylinkAction(): void
+    {
+        $this->paylinkAction = [];
+    }
+
+    /**
+     * Returns Bank Funded Only Override.
+     * Bank Funded Only Override
+     */
+    public function getBankFundedOnlyOverride(): ?bool
+    {
+        return $this->bankFundedOnlyOverride;
+    }
+
+    /**
+     * Sets Bank Funded Only Override.
+     * Bank Funded Only Override
+     *
+     * @maps bank_funded_only_override
+     */
+    public function setBankFundedOnlyOverride(?bool $bankFundedOnlyOverride): void
+    {
+        $this->bankFundedOnlyOverride = $bankFundedOnlyOverride;
+    }
+
+    /**
+     * Returns Tags.
+     * Used to apply tags to a paylink.
+     *
+     * @return string[]|null
+     */
+    public function getTags(): ?array
+    {
+        if (count($this->tags) == 0) {
+            return null;
+        }
+        return $this->tags['value'];
+    }
+
+    /**
+     * Sets Tags.
+     * Used to apply tags to a paylink.
+     *
+     * @maps tags
+     *
+     * @param string[]|null $tags
+     */
+    public function setTags(?array $tags): void
+    {
+        $this->tags['value'] = $tags;
+    }
+
+    /**
+     * Unsets Tags.
+     * Used to apply tags to a paylink.
+     */
+    public function unsetTags(): void
+    {
+        $this->tags = [];
+    }
+
+    /**
+     * Returns Redirect Url Delay.
+     * Redirect URL Delay in seconds
+     */
+    public function getRedirectUrlDelay(): ?float
+    {
+        if (count($this->redirectUrlDelay) == 0) {
+            return null;
+        }
+        return $this->redirectUrlDelay['value'];
+    }
+
+    /**
+     * Sets Redirect Url Delay.
+     * Redirect URL Delay in seconds
+     *
+     * @maps redirect_url_delay
+     */
+    public function setRedirectUrlDelay(?float $redirectUrlDelay): void
+    {
+        $this->redirectUrlDelay['value'] = $redirectUrlDelay;
+    }
+
+    /**
+     * Unsets Redirect Url Delay.
+     * Redirect URL Delay in seconds
+     */
+    public function unsetRedirectUrlDelay(): void
+    {
+        $this->redirectUrlDelay = [];
+    }
+
+    /**
+     * Returns Redirect Url on Approve.
+     * Redirect URL On Approval
+     */
+    public function getRedirectUrlOnApprove(): ?string
+    {
+        if (count($this->redirectUrlOnApprove) == 0) {
+            return null;
+        }
+        return $this->redirectUrlOnApprove['value'];
+    }
+
+    /**
+     * Sets Redirect Url on Approve.
+     * Redirect URL On Approval
+     *
+     * @maps redirect_url_on_approve
+     */
+    public function setRedirectUrlOnApprove(?string $redirectUrlOnApprove): void
+    {
+        $this->redirectUrlOnApprove['value'] = $redirectUrlOnApprove;
+    }
+
+    /**
+     * Unsets Redirect Url on Approve.
+     * Redirect URL On Approval
+     */
+    public function unsetRedirectUrlOnApprove(): void
+    {
+        $this->redirectUrlOnApprove = [];
+    }
+
+    /**
+     * Returns Redirect Url on Decline.
+     * Redirect URL On Decline
+     */
+    public function getRedirectUrlOnDecline(): ?string
+    {
+        if (count($this->redirectUrlOnDecline) == 0) {
+            return null;
+        }
+        return $this->redirectUrlOnDecline['value'];
+    }
+
+    /**
+     * Sets Redirect Url on Decline.
+     * Redirect URL On Decline
+     *
+     * @maps redirect_url_on_decline
+     */
+    public function setRedirectUrlOnDecline(?string $redirectUrlOnDecline): void
+    {
+        $this->redirectUrlOnDecline['value'] = $redirectUrlOnDecline;
+    }
+
+    /**
+     * Unsets Redirect Url on Decline.
+     * Redirect URL On Decline
+     */
+    public function unsetRedirectUrlOnDecline(): void
+    {
+        $this->redirectUrlOnDecline = [];
+    }
+
+    /**
+     * Returns Id.
+     * Paylink Id
+     */
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
+
+    /**
+     * Sets Id.
+     * Paylink Id
+     *
+     * @maps id
+     */
+    public function setId(?string $id): void
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * Returns Status Id.
+     * (DEPRECATED) Status Id
+     */
+    public function getStatusId(): ?bool
+    {
+        return $this->statusId;
+    }
+
+    /**
+     * Sets Status Id.
+     * (DEPRECATED) Status Id
+     *
+     * @maps status_id
+     */
+    public function setStatusId(?bool $statusId): void
+    {
+        $this->statusId = $statusId;
+    }
+
+    /**
+     * Returns Status Code.
+     * Status Code
+     */
+    public function getStatusCode(): ?int
+    {
+        if (count($this->statusCode) == 0) {
+            return null;
+        }
+        return $this->statusCode['value'];
+    }
+
+    /**
+     * Sets Status Code.
+     * Status Code
+     *
+     * @maps status_code
+     * @factory \FortisAPILib\Models\StatusCode12Enum::checkValue
+     */
+    public function setStatusCode(?int $statusCode): void
+    {
+        $this->statusCode['value'] = $statusCode;
+    }
+
+    /**
+     * Unsets Status Code.
+     * Status Code
+     */
+    public function unsetStatusCode(): void
+    {
+        $this->statusCode = [];
+    }
+
+    /**
+     * Returns Active.
+     * Active
+     */
+    public function getActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    /**
+     * Sets Active.
+     * Active
+     *
+     * @maps active
+     */
+    public function setActive(?bool $active): void
+    {
+        $this->active = $active;
+    }
+
+    /**
+     * Returns Created Ts.
+     * Created Time Stamp
+     */
+    public function getCreatedTs(): ?int
+    {
+        return $this->createdTs;
+    }
+
+    /**
+     * Sets Created Ts.
+     * Created Time Stamp
+     *
+     * @maps created_ts
+     */
+    public function setCreatedTs(?int $createdTs): void
+    {
+        $this->createdTs = $createdTs;
+    }
+
+    /**
+     * Returns Modified Ts.
+     * Modified Time Stamp
+     */
+    public function getModifiedTs(): ?int
+    {
+        return $this->modifiedTs;
+    }
+
+    /**
+     * Sets Modified Ts.
+     * Modified Time Stamp
+     *
+     * @maps modified_ts
+     */
+    public function setModifiedTs(?int $modifiedTs): void
+    {
+        $this->modifiedTs = $modifiedTs;
+    }
+
+    /**
+     * Returns Created User Id.
+     * User ID Created the register
+     */
+    public function getCreatedUserId(): ?string
+    {
+        if (count($this->createdUserId) == 0) {
+            return null;
+        }
+        return $this->createdUserId['value'];
+    }
+
+    /**
+     * Sets Created User Id.
+     * User ID Created the register
+     *
+     * @maps created_user_id
+     */
+    public function setCreatedUserId(?string $createdUserId): void
+    {
+        $this->createdUserId['value'] = $createdUserId;
+    }
+
+    /**
+     * Unsets Created User Id.
+     * User ID Created the register
+     */
+    public function unsetCreatedUserId(): void
+    {
+        $this->createdUserId = [];
+    }
+
+    /**
+     * Returns Modified User Id.
+     * Last User ID that updated the register
+     */
+    public function getModifiedUserId(): ?string
+    {
+        if (count($this->modifiedUserId) == 0) {
+            return null;
+        }
+        return $this->modifiedUserId['value'];
+    }
+
+    /**
+     * Sets Modified User Id.
+     * Last User ID that updated the register
+     *
+     * @maps modified_user_id
+     */
+    public function setModifiedUserId(?string $modifiedUserId): void
+    {
+        $this->modifiedUserId['value'] = $modifiedUserId;
+    }
+
+    /**
+     * Unsets Modified User Id.
+     * Last User ID that updated the register
+     */
+    public function unsetModifiedUserId(): void
+    {
+        $this->modifiedUserId = [];
+    }
+
+    /**
+     * Converts the Data16 object to a human-readable string representation.
+     *
+     * @return string The string representation of the Data16 object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Data16',
+            [
+                'locationId' => $this->getLocationId(),
+                'ccProductTransactionId' => $this->getCcProductTransactionId(),
+                'email' => $this->getEmail(),
+                'amountDue' => $this->amountDue,
+                'locationApiId' => $this->getLocationApiId(),
+                'contactId' => $this->getContactId(),
+                'contactApiId' => $this->getContactApiId(),
+                'paylinkApiId' => $this->getPaylinkApiId(),
+                'achProductTransactionId' => $this->getAchProductTransactionId(),
+                'expireDate' => $this->getExpireDate(),
+                'displayProductTransactionReceiptDetails' => $this->displayProductTransactionReceiptDetails,
+                'displayBillingFields' => $this->displayBillingFields,
+                'deliveryMethod' => $this->getDeliveryMethod(),
+                'cellPhone' => $this->getCellPhone(),
+                'description' => $this->getDescription(),
+                'storeToken' => $this->storeToken,
+                'storeTokenTitle' => $this->getStoreTokenTitle(),
+                'paylinkAction' => $this->getPaylinkAction(),
+                'bankFundedOnlyOverride' => $this->bankFundedOnlyOverride,
+                'tags' => $this->getTags(),
+                'redirectUrlDelay' => $this->getRedirectUrlDelay(),
+                'redirectUrlOnApprove' => $this->getRedirectUrlOnApprove(),
+                'redirectUrlOnDecline' => $this->getRedirectUrlOnDecline(),
+                'id' => $this->id,
+                'statusId' => $this->statusId,
+                'statusCode' => $this->getStatusCode(),
+                'active' => $this->active,
+                'createdTs' => $this->createdTs,
+                'modifiedTs' => $this->modifiedTs,
+                'createdUserId' => $this->getCreatedUserId(),
+                'modifiedUserId' => $this->getModifiedUserId(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -535,30 +1159,109 @@ class Data16 implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['issuer_bank_name']                = $this->issuerBankName;
-        $json['country_code']                    = $this->countryCode;
-        $json['detail_card_product']             = $this->detailCardProduct;
-        $json['detail_card_indicator']           = $this->detailCardIndicator;
-        $json['fsa_indicator']                   = $this->fsaIndicator;
-        $json['prepaid_indicator']               = $this->prepaidIndicator;
-        $json['product_id']                      = $this->productId;
-        $json['regulator_indicator']             = $this->regulatorIndicator;
-        if (!empty($this->visaProductSubType)) {
-            $json['visa_product_sub_type']       = $this->visaProductSubType['value'];
+        if (!empty($this->locationId)) {
+            $json['location_id']                                 = $this->locationId['value'];
         }
-        if (!empty($this->visaLargeTicketIndicator)) {
-            $json['visa_large_ticket_indicator'] = $this->visaLargeTicketIndicator['value'];
+        if (!empty($this->ccProductTransactionId)) {
+            $json['cc_product_transaction_id']                   = $this->ccProductTransactionId['value'];
         }
-        $json['account_fund_source']             = $this->accountFundSource;
-        if (!empty($this->cardClass)) {
-            $json['card_class']                  = $this->cardClass['value'];
+        if (!empty($this->email)) {
+            $json['email']                                       = $this->email['value'];
         }
-        if (!empty($this->tokenInd)) {
-            $json['token_ind']                   = $this->tokenInd['value'];
+        if (isset($this->amountDue)) {
+            $json['amount_due']                                  = $this->amountDue;
         }
-        if (!empty($this->issuingNetwork)) {
-            $json['issuing_network']             = $this->issuingNetwork['value'];
+        if (!empty($this->locationApiId)) {
+            $json['location_api_id']                             = $this->locationApiId['value'];
         }
+        if (!empty($this->contactId)) {
+            $json['contact_id']                                  = $this->contactId['value'];
+        }
+        if (!empty($this->contactApiId)) {
+            $json['contact_api_id']                              = $this->contactApiId['value'];
+        }
+        if (!empty($this->paylinkApiId)) {
+            $json['paylink_api_id']                              = $this->paylinkApiId['value'];
+        }
+        if (!empty($this->achProductTransactionId)) {
+            $json['ach_product_transaction_id']                  = $this->achProductTransactionId['value'];
+        }
+        if (!empty($this->expireDate)) {
+            $json['expire_date']                                 = $this->expireDate['value'];
+        }
+        if (isset($this->displayProductTransactionReceiptDetails)) {
+            $json['display_product_transaction_receipt_details'] = $this->displayProductTransactionReceiptDetails;
+        }
+        if (isset($this->displayBillingFields)) {
+            $json['display_billing_fields']                      = $this->displayBillingFields;
+        }
+        if (!empty($this->deliveryMethod)) {
+            $json['delivery_method']                             =
+                DeliveryMethodEnum::checkValue(
+                    $this->deliveryMethod['value']
+                );
+        }
+        if (!empty($this->cellPhone)) {
+            $json['cell_phone']                                  = $this->cellPhone['value'];
+        }
+        if (!empty($this->description)) {
+            $json['description']                                 = $this->description['value'];
+        }
+        if (isset($this->storeToken)) {
+            $json['store_token']                                 = $this->storeToken;
+        }
+        if (!empty($this->storeTokenTitle)) {
+            $json['store_token_title']                           = $this->storeTokenTitle['value'];
+        }
+        if (!empty($this->paylinkAction)) {
+            $json['paylink_action']                              =
+                PaylinkActionEnum::checkValue(
+                    $this->paylinkAction['value']
+                );
+        }
+        if (isset($this->bankFundedOnlyOverride)) {
+            $json['bank_funded_only_override']                   = $this->bankFundedOnlyOverride;
+        }
+        if (!empty($this->tags)) {
+            $json['tags']                                        = $this->tags['value'];
+        }
+        if (!empty($this->redirectUrlDelay)) {
+            $json['redirect_url_delay']                          = $this->redirectUrlDelay['value'];
+        }
+        if (!empty($this->redirectUrlOnApprove)) {
+            $json['redirect_url_on_approve']                     = $this->redirectUrlOnApprove['value'];
+        }
+        if (!empty($this->redirectUrlOnDecline)) {
+            $json['redirect_url_on_decline']                     = $this->redirectUrlOnDecline['value'];
+        }
+        if (isset($this->id)) {
+            $json['id']                                          = $this->id;
+        }
+        if (isset($this->statusId)) {
+            $json['status_id']                                   = $this->statusId;
+        }
+        if (!empty($this->statusCode)) {
+            $json['status_code']                                 =
+                StatusCode12Enum::checkValue(
+                    $this->statusCode['value']
+                );
+        }
+        if (isset($this->active)) {
+            $json['active']                                      = $this->active;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']                                  = $this->createdTs;
+        }
+        if (isset($this->modifiedTs)) {
+            $json['modified_ts']                                 = $this->modifiedTs;
+        }
+        if (!empty($this->createdUserId)) {
+            $json['created_user_id']                             = $this->createdUserId['value'];
+        }
+        if (!empty($this->modifiedUserId)) {
+            $json['modified_user_id']                            = $this->modifiedUserId['value'];
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

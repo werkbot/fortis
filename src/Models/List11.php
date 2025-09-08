@@ -10,49 +10,20 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class List11 implements \JsonSerializable
 {
     /**
-     * @var array
+     * @var string|null
      */
-    private $accountHolderName = [];
+    private $accountVaultId;
 
     /**
-     * @var array
+     * @var string|null
      */
-    private $accountNumber = [];
-
-    /**
-     * @var array
-     */
-    private $accountVaultApiId = [];
-
-    /**
-     * @var array
-     */
-    private $accountvaultC1 = [];
-
-    /**
-     * @var array
-     */
-    private $accountvaultC2 = [];
-
-    /**
-     * @var array
-     */
-    private $accountvaultC3 = [];
-
-    /**
-     * @var array
-     */
-    private $achSecCode = [];
-
-    /**
-     * @var BillingAddress|null
-     */
-    private $billingAddress;
+    private $tokenId;
 
     /**
      * @var array
@@ -62,32 +33,92 @@ class List11 implements \JsonSerializable
     /**
      * @var array
      */
-    private $customerId = [];
+    private $accountVaultApiId = [];
 
     /**
-     * @var IdentityVerification2|null
+     * @var array
      */
-    private $identityVerification;
+    private $tokenApiId = [];
 
     /**
-     * @var string
+     * @var Joi|null
+     */
+    private $joi;
+
+    /**
+     * @var bool|null
+     */
+    private $active;
+
+    /**
+     * @var array
+     */
+    private $description = [];
+
+    /**
+     * @var array
+     */
+    private $endDate = [];
+
+    /**
+     * @var array
+     */
+    private $installmentTotalCount = [];
+
+    /**
+     * @var int|null
+     */
+    private $interval;
+
+    /**
+     * @var string|null
+     */
+    private $intervalType;
+
+    /**
+     * @var string|null
      */
     private $locationId;
 
     /**
      * @var array
      */
-    private $previousAccountVaultApiId = [];
+    private $notificationDays = [];
+
+    /**
+     * @var string|null
+     */
+    private $paymentMethod;
 
     /**
      * @var array
      */
-    private $previousAccountVaultId = [];
+    private $productTransactionId = [];
 
     /**
      * @var array
      */
-    private $previousTransactionId = [];
+    private $recurringId = [];
+
+    /**
+     * @var array
+     */
+    private $recurringApiId = [];
+
+    /**
+     * @var string|null
+     */
+    private $startDate;
+
+    /**
+     * @var string|null
+     */
+    private $status;
+
+    /**
+     * @var int|null
+     */
+    private $transactionAmount;
 
     /**
      * @var bool|null
@@ -102,97 +133,77 @@ class List11 implements \JsonSerializable
     /**
      * @var array
      */
-    private $title = [];
+    private $recurringC1 = [];
 
     /**
-     * @var string
+     * @var array
      */
-    private $id;
+    private $recurringC2 = [];
 
     /**
-     * @var string
+     * @var array
      */
-    private $accountType;
+    private $recurringC3 = [];
 
     /**
      * @var bool|null
      */
-    private $active;
+    private $sendToProcAsRecur;
 
     /**
-     * @var int
+     * @var Tag[]|null
      */
-    private $cauSummaryStatusId;
+    private $tags;
 
     /**
-     * @var int
+     * @var array
+     */
+    private $secondaryAmount = [];
+
+    /**
+     * @var string|null
+     */
+    private $currency;
+
+    /**
+     * @var string|null
+     */
+    private $id;
+
+    /**
+     * @var string|null
+     */
+    private $nextRunDate;
+
+    /**
+     * @var int|null
      */
     private $createdTs;
 
     /**
-     * @var array
-     */
-    private $eSerialNumber = [];
-
-    /**
-     * @var array
-     */
-    private $eTrackData = [];
-
-    /**
-     * @var array
-     */
-    private $eFormat = [];
-
-    /**
-     * @var array
-     */
-    private $eKeyedData = [];
-
-    /**
-     * @var array
-     */
-    private $expiringInMonths = [];
-
-    /**
-     * @var string
-     */
-    private $firstSix;
-
-    /**
-     * @var bool
-     */
-    private $hasRecurring;
-
-    /**
-     * @var string
-     */
-    private $lastFour;
-
-    /**
-     * @var int
+     * @var int|null
      */
     private $modifiedTs;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private $paymentMethod;
+    private $recurringTypeId;
 
     /**
      * @var array
      */
-    private $ticket = [];
+    private $installmentAmountTotal = [];
 
     /**
-     * @var array
+     * @var string|null
      */
-    private $trackData = [];
+    private $createdUserId;
 
     /**
-     * @var Location|null
+     * @var LogEmail[]|null
      */
-    private $location;
+    private $logEmails;
 
     /**
      * @var Contact1|null
@@ -200,24 +211,9 @@ class List11 implements \JsonSerializable
     private $contact;
 
     /**
-     * @var Transaction[]|null
+     * @var AccountVault|null
      */
-    private $transactions;
-
-    /**
-     * @var ActiveRecurring[]|null
-     */
-    private $activeRecurrings;
-
-    /**
-     * @var bool|null
-     */
-    private $isDeletable;
-
-    /**
-     * @var Signature|null
-     */
-    private $signature;
+    private $accountVault;
 
     /**
      * @var CreatedUser|null
@@ -225,307 +221,98 @@ class List11 implements \JsonSerializable
     private $createdUser;
 
     /**
+     * @var Signature|null
+     */
+    private $signature;
+
+    /**
+     * @var string[]|null
+     */
+    private $paymentSchedule;
+
+    /**
+     * @var Location|null
+     */
+    private $location;
+
+    /**
+     * @var ProductTransaction|null
+     */
+    private $productTransaction;
+
+    /**
+     * @var string|null
+     */
+    private $nextRunDateMin;
+
+    /**
+     * @var string|null
+     */
+    private $nextRunDateMax;
+
+    /**
+     * @var AllTag[]|null
+     */
+    private $allTags;
+
+    /**
      * @var Changelog[]|null
      */
     private $changelogs;
 
     /**
-     * @var AccountVaultCauLog[]|null
+     * @var Forecast|null
      */
-    private $accountVaultCauLogs;
+    private $forecast;
 
     /**
-     * @var AccountVaultCauProductTransaction[]|null
+     * @var RecurringSplit[]|null
      */
-    private $accountVaultCauProductTransactions;
+    private $recurringSplits;
 
     /**
-     * @param string $locationId
-     * @param string $id
-     * @param string $accountType
-     * @param int $cauSummaryStatusId
-     * @param int $createdTs
-     * @param string $firstSix
-     * @param bool $hasRecurring
-     * @param string $lastFour
-     * @param int $modifiedTs
-     * @param string $paymentMethod
+     * Returns Account Vault Id.
+     * Token ID
      */
-    public function __construct(
-        string $locationId,
-        string $id,
-        string $accountType,
-        int $cauSummaryStatusId,
-        int $createdTs,
-        string $firstSix,
-        bool $hasRecurring,
-        string $lastFour,
-        int $modifiedTs,
-        string $paymentMethod
-    ) {
-        $this->locationId = $locationId;
-        $this->id = $id;
-        $this->accountType = $accountType;
-        $this->cauSummaryStatusId = $cauSummaryStatusId;
-        $this->createdTs = $createdTs;
-        $this->firstSix = $firstSix;
-        $this->hasRecurring = $hasRecurring;
-        $this->lastFour = $lastFour;
-        $this->modifiedTs = $modifiedTs;
-        $this->paymentMethod = $paymentMethod;
-    }
-
-    /**
-     * Returns Account Holder Name.
-     * Account holder name
-     */
-    public function getAccountHolderName(): ?string
+    public function getAccountVaultId(): ?string
     {
-        if (count($this->accountHolderName) == 0) {
-            return null;
-        }
-        return $this->accountHolderName['value'];
+        return $this->accountVaultId;
     }
 
     /**
-     * Sets Account Holder Name.
-     * Account holder name
+     * Sets Account Vault Id.
+     * Token ID
      *
-     * @maps account_holder_name
+     * @maps account_vault_id
      */
-    public function setAccountHolderName(?string $accountHolderName): void
+    public function setAccountVaultId(?string $accountVaultId): void
     {
-        $this->accountHolderName['value'] = $accountHolderName;
+        $this->accountVaultId = $accountVaultId;
     }
 
     /**
-     * Unsets Account Holder Name.
-     * Account holder name
+     * Returns Token Id.
+     * Token ID
      */
-    public function unsetAccountHolderName(): void
+    public function getTokenId(): ?string
     {
-        $this->accountHolderName = [];
+        return $this->tokenId;
     }
 
     /**
-     * Returns Account Number.
-     * Account number
-     */
-    public function getAccountNumber(): ?string
-    {
-        if (count($this->accountNumber) == 0) {
-            return null;
-        }
-        return $this->accountNumber['value'];
-    }
-
-    /**
-     * Sets Account Number.
-     * Account number
+     * Sets Token Id.
+     * Token ID
      *
-     * @maps account_number
+     * @maps token_id
      */
-    public function setAccountNumber(?string $accountNumber): void
+    public function setTokenId(?string $tokenId): void
     {
-        $this->accountNumber['value'] = $accountNumber;
-    }
-
-    /**
-     * Unsets Account Number.
-     * Account number
-     */
-    public function unsetAccountNumber(): void
-    {
-        $this->accountNumber = [];
-    }
-
-    /**
-     * Returns Account Vault Api Id.
-     * This field can be used to correlate Tokens in our system to data within an outside software
-     * integration
-     */
-    public function getAccountVaultApiId(): ?string
-    {
-        if (count($this->accountVaultApiId) == 0) {
-            return null;
-        }
-        return $this->accountVaultApiId['value'];
-    }
-
-    /**
-     * Sets Account Vault Api Id.
-     * This field can be used to correlate Tokens in our system to data within an outside software
-     * integration
-     *
-     * @maps account_vault_api_id
-     */
-    public function setAccountVaultApiId(?string $accountVaultApiId): void
-    {
-        $this->accountVaultApiId['value'] = $accountVaultApiId;
-    }
-
-    /**
-     * Unsets Account Vault Api Id.
-     * This field can be used to correlate Tokens in our system to data within an outside software
-     * integration
-     */
-    public function unsetAccountVaultApiId(): void
-    {
-        $this->accountVaultApiId = [];
-    }
-
-    /**
-     * Returns Accountvault C1.
-     * Custom field 1 for API users to store custom data
-     */
-    public function getAccountvaultC1(): ?string
-    {
-        if (count($this->accountvaultC1) == 0) {
-            return null;
-        }
-        return $this->accountvaultC1['value'];
-    }
-
-    /**
-     * Sets Accountvault C1.
-     * Custom field 1 for API users to store custom data
-     *
-     * @maps accountvault_c1
-     */
-    public function setAccountvaultC1(?string $accountvaultC1): void
-    {
-        $this->accountvaultC1['value'] = $accountvaultC1;
-    }
-
-    /**
-     * Unsets Accountvault C1.
-     * Custom field 1 for API users to store custom data
-     */
-    public function unsetAccountvaultC1(): void
-    {
-        $this->accountvaultC1 = [];
-    }
-
-    /**
-     * Returns Accountvault C2.
-     * Custom field 2 for API users to store custom data
-     */
-    public function getAccountvaultC2(): ?string
-    {
-        if (count($this->accountvaultC2) == 0) {
-            return null;
-        }
-        return $this->accountvaultC2['value'];
-    }
-
-    /**
-     * Sets Accountvault C2.
-     * Custom field 2 for API users to store custom data
-     *
-     * @maps accountvault_c2
-     */
-    public function setAccountvaultC2(?string $accountvaultC2): void
-    {
-        $this->accountvaultC2['value'] = $accountvaultC2;
-    }
-
-    /**
-     * Unsets Accountvault C2.
-     * Custom field 2 for API users to store custom data
-     */
-    public function unsetAccountvaultC2(): void
-    {
-        $this->accountvaultC2 = [];
-    }
-
-    /**
-     * Returns Accountvault C3.
-     * Custom field 3 for API users to store custom data
-     */
-    public function getAccountvaultC3(): ?string
-    {
-        if (count($this->accountvaultC3) == 0) {
-            return null;
-        }
-        return $this->accountvaultC3['value'];
-    }
-
-    /**
-     * Sets Accountvault C3.
-     * Custom field 3 for API users to store custom data
-     *
-     * @maps accountvault_c3
-     */
-    public function setAccountvaultC3(?string $accountvaultC3): void
-    {
-        $this->accountvaultC3['value'] = $accountvaultC3;
-    }
-
-    /**
-     * Unsets Accountvault C3.
-     * Custom field 3 for API users to store custom data
-     */
-    public function unsetAccountvaultC3(): void
-    {
-        $this->accountvaultC3 = [];
-    }
-
-    /**
-     * Returns Ach Sec Code.
-     * SEC code for the account
-     */
-    public function getAchSecCode(): ?string
-    {
-        if (count($this->achSecCode) == 0) {
-            return null;
-        }
-        return $this->achSecCode['value'];
-    }
-
-    /**
-     * Sets Ach Sec Code.
-     * SEC code for the account
-     *
-     * @maps ach_sec_code
-     * @factory \FortisAPILib\Models\AchSecCode3Enum::checkValue
-     */
-    public function setAchSecCode(?string $achSecCode): void
-    {
-        $this->achSecCode['value'] = $achSecCode;
-    }
-
-    /**
-     * Unsets Ach Sec Code.
-     * SEC code for the account
-     */
-    public function unsetAchSecCode(): void
-    {
-        $this->achSecCode = [];
-    }
-
-    /**
-     * Returns Billing Address.
-     * Billing Address Object
-     */
-    public function getBillingAddress(): ?BillingAddress
-    {
-        return $this->billingAddress;
-    }
-
-    /**
-     * Sets Billing Address.
-     * Billing Address Object
-     *
-     * @maps billing_address
-     */
-    public function setBillingAddress(?BillingAddress $billingAddress): void
-    {
-        $this->billingAddress = $billingAddress;
+        $this->tokenId = $tokenId;
     }
 
     /**
      * Returns Contact Id.
-     * Used to associate the Token with a Contact.
+     * Contact ID
      */
     public function getContactId(): ?string
     {
@@ -537,7 +324,7 @@ class List11 implements \JsonSerializable
 
     /**
      * Sets Contact Id.
-     * Used to associate the Token with a Contact.
+     * Contact ID
      *
      * @maps contact_id
      */
@@ -548,7 +335,7 @@ class List11 implements \JsonSerializable
 
     /**
      * Unsets Contact Id.
-     * Used to associate the Token with a Contact.
+     * Contact ID
      */
     public function unsetContactId(): void
     {
@@ -556,177 +343,477 @@ class List11 implements \JsonSerializable
     }
 
     /**
-     * Returns Customer Id.
-     * Used to store a customer identification number.
+     * Returns Account Vault Api Id.
+     * Token API ID
      */
-    public function getCustomerId(): ?string
+    public function getAccountVaultApiId(): ?string
     {
-        if (count($this->customerId) == 0) {
+        if (count($this->accountVaultApiId) == 0) {
             return null;
         }
-        return $this->customerId['value'];
+        return $this->accountVaultApiId['value'];
     }
 
     /**
-     * Sets Customer Id.
-     * Used to store a customer identification number.
+     * Sets Account Vault Api Id.
+     * Token API ID
      *
-     * @maps customer_id
+     * @maps account_vault_api_id
      */
-    public function setCustomerId(?string $customerId): void
+    public function setAccountVaultApiId(?string $accountVaultApiId): void
     {
-        $this->customerId['value'] = $customerId;
+        $this->accountVaultApiId['value'] = $accountVaultApiId;
     }
 
     /**
-     * Unsets Customer Id.
-     * Used to store a customer identification number.
+     * Unsets Account Vault Api Id.
+     * Token API ID
      */
-    public function unsetCustomerId(): void
+    public function unsetAccountVaultApiId(): void
     {
-        $this->customerId = [];
+        $this->accountVaultApiId = [];
     }
 
     /**
-     * Returns Identity Verification.
-     * Identity verification
+     * Returns Token Api Id.
+     * Token API ID
      */
-    public function getIdentityVerification(): ?IdentityVerification2
+    public function getTokenApiId(): ?string
     {
-        return $this->identityVerification;
+        if (count($this->tokenApiId) == 0) {
+            return null;
+        }
+        return $this->tokenApiId['value'];
     }
 
     /**
-     * Sets Identity Verification.
-     * Identity verification
+     * Sets Token Api Id.
+     * Token API ID
      *
-     * @maps identity_verification
+     * @maps token_api_id
      */
-    public function setIdentityVerification(?IdentityVerification2 $identityVerification): void
+    public function setTokenApiId(?string $tokenApiId): void
     {
-        $this->identityVerification = $identityVerification;
+        $this->tokenApiId['value'] = $tokenApiId;
+    }
+
+    /**
+     * Unsets Token Api Id.
+     * Token API ID
+     */
+    public function unsetTokenApiId(): void
+    {
+        $this->tokenApiId = [];
+    }
+
+    /**
+     * Returns Joi.
+     */
+    public function getJoi(): ?Joi
+    {
+        return $this->joi;
+    }
+
+    /**
+     * Sets Joi.
+     *
+     * @maps _joi
+     */
+    public function setJoi(?Joi $joi): void
+    {
+        $this->joi = $joi;
+    }
+
+    /**
+     * Returns Active.
+     * Active
+     */
+    public function getActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    /**
+     * Sets Active.
+     * Active
+     *
+     * @maps active
+     */
+    public function setActive(?bool $active): void
+    {
+        $this->active = $active;
+    }
+
+    /**
+     * Returns Description.
+     * Description
+     */
+    public function getDescription(): ?string
+    {
+        if (count($this->description) == 0) {
+            return null;
+        }
+        return $this->description['value'];
+    }
+
+    /**
+     * Sets Description.
+     * Description
+     *
+     * @maps description
+     */
+    public function setDescription(?string $description): void
+    {
+        $this->description['value'] = $description;
+    }
+
+    /**
+     * Unsets Description.
+     * Description
+     */
+    public function unsetDescription(): void
+    {
+        $this->description = [];
+    }
+
+    /**
+     * Returns End Date.
+     * End date
+     */
+    public function getEndDate(): ?string
+    {
+        if (count($this->endDate) == 0) {
+            return null;
+        }
+        return $this->endDate['value'];
+    }
+
+    /**
+     * Sets End Date.
+     * End date
+     *
+     * @maps end_date
+     */
+    public function setEndDate(?string $endDate): void
+    {
+        $this->endDate['value'] = $endDate;
+    }
+
+    /**
+     * Unsets End Date.
+     * End date
+     */
+    public function unsetEndDate(): void
+    {
+        $this->endDate = [];
+    }
+
+    /**
+     * Returns Installment Total Count.
+     * Installment Total Count
+     */
+    public function getInstallmentTotalCount(): ?int
+    {
+        if (count($this->installmentTotalCount) == 0) {
+            return null;
+        }
+        return $this->installmentTotalCount['value'];
+    }
+
+    /**
+     * Sets Installment Total Count.
+     * Installment Total Count
+     *
+     * @maps installment_total_count
+     */
+    public function setInstallmentTotalCount(?int $installmentTotalCount): void
+    {
+        $this->installmentTotalCount['value'] = $installmentTotalCount;
+    }
+
+    /**
+     * Unsets Installment Total Count.
+     * Installment Total Count
+     */
+    public function unsetInstallmentTotalCount(): void
+    {
+        $this->installmentTotalCount = [];
+    }
+
+    /**
+     * Returns Interval.
+     * Interval
+     */
+    public function getInterval(): ?int
+    {
+        return $this->interval;
+    }
+
+    /**
+     * Sets Interval.
+     * Interval
+     *
+     * @maps interval
+     */
+    public function setInterval(?int $interval): void
+    {
+        $this->interval = $interval;
+    }
+
+    /**
+     * Returns Interval Type.
+     * Interval Type
+     */
+    public function getIntervalType(): ?string
+    {
+        return $this->intervalType;
+    }
+
+    /**
+     * Sets Interval Type.
+     * Interval Type
+     *
+     * @maps interval_type
+     * @factory \FortisAPILib\Models\IntervalTypeEnum::checkValue
+     */
+    public function setIntervalType(?string $intervalType): void
+    {
+        $this->intervalType = $intervalType;
     }
 
     /**
      * Returns Location Id.
-     * A valid Location Id associated with the Contact for this Token
+     * Location ID
      */
-    public function getLocationId(): string
+    public function getLocationId(): ?string
     {
         return $this->locationId;
     }
 
     /**
      * Sets Location Id.
-     * A valid Location Id associated with the Contact for this Token
+     * Location ID
      *
-     * @required
      * @maps location_id
      */
-    public function setLocationId(string $locationId): void
+    public function setLocationId(?string $locationId): void
     {
         $this->locationId = $locationId;
     }
 
     /**
-     * Returns Previous Account Vault Api Id.
-     * Can be used to pull payment info from a previous token api id.
+     * Returns Notification Days.
+     * Notification Days
      */
-    public function getPreviousAccountVaultApiId(): ?string
+    public function getNotificationDays(): ?int
     {
-        if (count($this->previousAccountVaultApiId) == 0) {
+        if (count($this->notificationDays) == 0) {
             return null;
         }
-        return $this->previousAccountVaultApiId['value'];
+        return $this->notificationDays['value'];
     }
 
     /**
-     * Sets Previous Account Vault Api Id.
-     * Can be used to pull payment info from a previous token api id.
+     * Sets Notification Days.
+     * Notification Days
      *
-     * @maps previous_account_vault_api_id
+     * @maps notification_days
      */
-    public function setPreviousAccountVaultApiId(?string $previousAccountVaultApiId): void
+    public function setNotificationDays(?int $notificationDays): void
     {
-        $this->previousAccountVaultApiId['value'] = $previousAccountVaultApiId;
+        $this->notificationDays['value'] = $notificationDays;
     }
 
     /**
-     * Unsets Previous Account Vault Api Id.
-     * Can be used to pull payment info from a previous token api id.
+     * Unsets Notification Days.
+     * Notification Days
      */
-    public function unsetPreviousAccountVaultApiId(): void
+    public function unsetNotificationDays(): void
     {
-        $this->previousAccountVaultApiId = [];
+        $this->notificationDays = [];
     }
 
     /**
-     * Returns Previous Account Vault Id.
-     * Can be used to pull payment info from a previous token.
+     * Returns Payment Method.
+     * Payment Method
      */
-    public function getPreviousAccountVaultId(): ?string
+    public function getPaymentMethod(): ?string
     {
-        if (count($this->previousAccountVaultId) == 0) {
+        return $this->paymentMethod;
+    }
+
+    /**
+     * Sets Payment Method.
+     * Payment Method
+     *
+     * @maps payment_method
+     * @factory \FortisAPILib\Models\PaymentMethod1Enum::checkValue
+     */
+    public function setPaymentMethod(?string $paymentMethod): void
+    {
+        $this->paymentMethod = $paymentMethod;
+    }
+
+    /**
+     * Returns Product Transaction Id.
+     * Product Transaction ID
+     */
+    public function getProductTransactionId(): ?string
+    {
+        if (count($this->productTransactionId) == 0) {
             return null;
         }
-        return $this->previousAccountVaultId['value'];
+        return $this->productTransactionId['value'];
     }
 
     /**
-     * Sets Previous Account Vault Id.
-     * Can be used to pull payment info from a previous token.
+     * Sets Product Transaction Id.
+     * Product Transaction ID
      *
-     * @maps previous_account_vault_id
+     * @maps product_transaction_id
      */
-    public function setPreviousAccountVaultId(?string $previousAccountVaultId): void
+    public function setProductTransactionId(?string $productTransactionId): void
     {
-        $this->previousAccountVaultId['value'] = $previousAccountVaultId;
+        $this->productTransactionId['value'] = $productTransactionId;
     }
 
     /**
-     * Unsets Previous Account Vault Id.
-     * Can be used to pull payment info from a previous token.
+     * Unsets Product Transaction Id.
+     * Product Transaction ID
      */
-    public function unsetPreviousAccountVaultId(): void
+    public function unsetProductTransactionId(): void
     {
-        $this->previousAccountVaultId = [];
+        $this->productTransactionId = [];
     }
 
     /**
-     * Returns Previous Transaction Id.
-     * Can be used to pull payment info from a previous transaction.
+     * Returns Recurring Id.
+     * Recurring ID
      */
-    public function getPreviousTransactionId(): ?string
+    public function getRecurringId(): ?string
     {
-        if (count($this->previousTransactionId) == 0) {
+        if (count($this->recurringId) == 0) {
             return null;
         }
-        return $this->previousTransactionId['value'];
+        return $this->recurringId['value'];
     }
 
     /**
-     * Sets Previous Transaction Id.
-     * Can be used to pull payment info from a previous transaction.
+     * Sets Recurring Id.
+     * Recurring ID
      *
-     * @maps previous_transaction_id
+     * @maps recurring_id
      */
-    public function setPreviousTransactionId(?string $previousTransactionId): void
+    public function setRecurringId(?string $recurringId): void
     {
-        $this->previousTransactionId['value'] = $previousTransactionId;
+        $this->recurringId['value'] = $recurringId;
     }
 
     /**
-     * Unsets Previous Transaction Id.
-     * Can be used to pull payment info from a previous transaction.
+     * Unsets Recurring Id.
+     * Recurring ID
      */
-    public function unsetPreviousTransactionId(): void
+    public function unsetRecurringId(): void
     {
-        $this->previousTransactionId = [];
+        $this->recurringId = [];
+    }
+
+    /**
+     * Returns Recurring Api Id.
+     * Recurring Api ID
+     */
+    public function getRecurringApiId(): ?string
+    {
+        if (count($this->recurringApiId) == 0) {
+            return null;
+        }
+        return $this->recurringApiId['value'];
+    }
+
+    /**
+     * Sets Recurring Api Id.
+     * Recurring Api ID
+     *
+     * @maps recurring_api_id
+     */
+    public function setRecurringApiId(?string $recurringApiId): void
+    {
+        $this->recurringApiId['value'] = $recurringApiId;
+    }
+
+    /**
+     * Unsets Recurring Api Id.
+     * Recurring Api ID
+     */
+    public function unsetRecurringApiId(): void
+    {
+        $this->recurringApiId = [];
+    }
+
+    /**
+     * Returns Start Date.
+     * Start date
+     */
+    public function getStartDate(): ?string
+    {
+        return $this->startDate;
+    }
+
+    /**
+     * Sets Start Date.
+     * Start date
+     *
+     * @maps start_date
+     */
+    public function setStartDate(?string $startDate): void
+    {
+        $this->startDate = $startDate;
+    }
+
+    /**
+     * Returns Status.
+     * Status
+     */
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    /**
+     * Sets Status.
+     * Status
+     *
+     * @maps status
+     * @factory \FortisAPILib\Models\StatusEnum::checkValue
+     */
+    public function setStatus(?string $status): void
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * Returns Transaction Amount.
+     * Transaction amount
+     */
+    public function getTransactionAmount(): ?int
+    {
+        return $this->transactionAmount;
+    }
+
+    /**
+     * Sets Transaction Amount.
+     * Transaction amount
+     *
+     * @maps transaction_amount
+     */
+    public function setTransactionAmount(?int $transactionAmount): void
+    {
+        $this->transactionAmount = $transactionAmount;
     }
 
     /**
      * Returns Terms Agree.
-     * Terms agreement.
+     * Terms Agree
      */
     public function getTermsAgree(): ?bool
     {
@@ -735,7 +822,7 @@ class List11 implements \JsonSerializable
 
     /**
      * Sets Terms Agree.
-     * Terms agreement.
+     * Terms Agree
      *
      * @maps terms_agree
      */
@@ -746,7 +833,7 @@ class List11 implements \JsonSerializable
 
     /**
      * Returns Terms Agree Ip.
-     * The ip address of the client that agreed to terms.
+     * Terms Agree Ip
      */
     public function getTermsAgreeIp(): ?string
     {
@@ -758,7 +845,7 @@ class List11 implements \JsonSerializable
 
     /**
      * Sets Terms Agree Ip.
-     * The ip address of the client that agreed to terms.
+     * Terms Agree Ip
      *
      * @maps terms_agree_ip
      */
@@ -769,7 +856,7 @@ class List11 implements \JsonSerializable
 
     /**
      * Unsets Terms Agree Ip.
-     * The ip address of the client that agreed to terms.
+     * Terms Agree Ip
      */
     public function unsetTermsAgreeIp(): void
     {
@@ -777,126 +864,240 @@ class List11 implements \JsonSerializable
     }
 
     /**
-     * Returns Title.
-     * Used to describe the Token for easier identification within our UI.
+     * Returns Recurring C1.
+     * Custom field used for integrations
      */
-    public function getTitle(): ?string
+    public function getRecurringC1(): ?string
     {
-        if (count($this->title) == 0) {
+        if (count($this->recurringC1) == 0) {
             return null;
         }
-        return $this->title['value'];
+        return $this->recurringC1['value'];
     }
 
     /**
-     * Sets Title.
-     * Used to describe the Token for easier identification within our UI.
+     * Sets Recurring C1.
+     * Custom field used for integrations
      *
-     * @maps title
+     * @maps recurring_c1
      */
-    public function setTitle(?string $title): void
+    public function setRecurringC1(?string $recurringC1): void
     {
-        $this->title['value'] = $title;
+        $this->recurringC1['value'] = $recurringC1;
     }
 
     /**
-     * Unsets Title.
-     * Used to describe the Token for easier identification within our UI.
+     * Unsets Recurring C1.
+     * Custom field used for integrations
      */
-    public function unsetTitle(): void
+    public function unsetRecurringC1(): void
     {
-        $this->title = [];
+        $this->recurringC1 = [];
+    }
+
+    /**
+     * Returns Recurring C2.
+     * Custom field used for integrations
+     */
+    public function getRecurringC2(): ?string
+    {
+        if (count($this->recurringC2) == 0) {
+            return null;
+        }
+        return $this->recurringC2['value'];
+    }
+
+    /**
+     * Sets Recurring C2.
+     * Custom field used for integrations
+     *
+     * @maps recurring_c2
+     */
+    public function setRecurringC2(?string $recurringC2): void
+    {
+        $this->recurringC2['value'] = $recurringC2;
+    }
+
+    /**
+     * Unsets Recurring C2.
+     * Custom field used for integrations
+     */
+    public function unsetRecurringC2(): void
+    {
+        $this->recurringC2 = [];
+    }
+
+    /**
+     * Returns Recurring C3.
+     * Custom field used for integrations
+     */
+    public function getRecurringC3(): ?string
+    {
+        if (count($this->recurringC3) == 0) {
+            return null;
+        }
+        return $this->recurringC3['value'];
+    }
+
+    /**
+     * Sets Recurring C3.
+     * Custom field used for integrations
+     *
+     * @maps recurring_c3
+     */
+    public function setRecurringC3(?string $recurringC3): void
+    {
+        $this->recurringC3['value'] = $recurringC3;
+    }
+
+    /**
+     * Unsets Recurring C3.
+     * Custom field used for integrations
+     */
+    public function unsetRecurringC3(): void
+    {
+        $this->recurringC3 = [];
+    }
+
+    /**
+     * Returns Send to Proc as Recur.
+     * Send To Proc As Recur
+     */
+    public function getSendToProcAsRecur(): ?bool
+    {
+        return $this->sendToProcAsRecur;
+    }
+
+    /**
+     * Sets Send to Proc as Recur.
+     * Send To Proc As Recur
+     *
+     * @maps send_to_proc_as_recur
+     */
+    public function setSendToProcAsRecur(?bool $sendToProcAsRecur): void
+    {
+        $this->sendToProcAsRecur = $sendToProcAsRecur;
+    }
+
+    /**
+     * Returns Tags.
+     * Tag Information on `expand`
+     *
+     * @return Tag[]|null
+     */
+    public function getTags(): ?array
+    {
+        return $this->tags;
+    }
+
+    /**
+     * Sets Tags.
+     * Tag Information on `expand`
+     *
+     * @maps tags
+     *
+     * @param Tag[]|null $tags
+     */
+    public function setTags(?array $tags): void
+    {
+        $this->tags = $tags;
+    }
+
+    /**
+     * Returns Secondary Amount.
+     * Retained Amount
+     */
+    public function getSecondaryAmount(): ?int
+    {
+        if (count($this->secondaryAmount) == 0) {
+            return null;
+        }
+        return $this->secondaryAmount['value'];
+    }
+
+    /**
+     * Sets Secondary Amount.
+     * Retained Amount
+     *
+     * @maps secondary_amount
+     */
+    public function setSecondaryAmount(?int $secondaryAmount): void
+    {
+        $this->secondaryAmount['value'] = $secondaryAmount;
+    }
+
+    /**
+     * Unsets Secondary Amount.
+     * Retained Amount
+     */
+    public function unsetSecondaryAmount(): void
+    {
+        $this->secondaryAmount = [];
+    }
+
+    /**
+     * Returns Currency.
+     */
+    public function getCurrency(): ?string
+    {
+        return $this->currency;
+    }
+
+    /**
+     * Sets Currency.
+     *
+     * @maps currency
+     */
+    public function setCurrency(?string $currency): void
+    {
+        $this->currency = $currency;
     }
 
     /**
      * Returns Id.
-     * A unique, system-generated identifier for the Token.
+     * Recurring ID
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
 
     /**
      * Sets Id.
-     * A unique, system-generated identifier for the Token.
+     * Recurring ID
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
 
     /**
-     * Returns Account Type.
-     * Account type
+     * Returns Next Run Date.
+     * Next Run Date
      */
-    public function getAccountType(): string
+    public function getNextRunDate(): ?string
     {
-        return $this->accountType;
+        return $this->nextRunDate;
     }
 
     /**
-     * Sets Account Type.
-     * Account type
+     * Sets Next Run Date.
+     * Next Run Date
      *
-     * @required
-     * @maps account_type
+     * @maps next_run_date
      */
-    public function setAccountType(string $accountType): void
+    public function setNextRunDate(?string $nextRunDate): void
     {
-        $this->accountType = $accountType;
-    }
-
-    /**
-     * Returns Active.
-     * Register is Active
-     */
-    public function getActive(): ?bool
-    {
-        return $this->active;
-    }
-
-    /**
-     * Sets Active.
-     * Register is Active
-     *
-     * @maps active
-     */
-    public function setActive(?bool $active): void
-    {
-        $this->active = $active;
-    }
-
-    /**
-     * Returns Cau Summary Status Id.
-     * CAU Summary Status ID.
-     */
-    public function getCauSummaryStatusId(): int
-    {
-        return $this->cauSummaryStatusId;
-    }
-
-    /**
-     * Sets Cau Summary Status Id.
-     * CAU Summary Status ID.
-     *
-     * @required
-     * @maps cau_summary_status_id
-     * @factory \FortisAPILib\Models\CauSummaryStatusIdEnum::checkValue
-     */
-    public function setCauSummaryStatusId(int $cauSummaryStatusId): void
-    {
-        $this->cauSummaryStatusId = $cauSummaryStatusId;
+        $this->nextRunDate = $nextRunDate;
     }
 
     /**
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -905,246 +1106,18 @@ class List11 implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
-    }
-
-    /**
-     * Returns E Serial Number.
-     * E Serial Number
-     */
-    public function getESerialNumber(): ?string
-    {
-        if (count($this->eSerialNumber) == 0) {
-            return null;
-        }
-        return $this->eSerialNumber['value'];
-    }
-
-    /**
-     * Sets E Serial Number.
-     * E Serial Number
-     *
-     * @maps e_serial_number
-     */
-    public function setESerialNumber(?string $eSerialNumber): void
-    {
-        $this->eSerialNumber['value'] = $eSerialNumber;
-    }
-
-    /**
-     * Unsets E Serial Number.
-     * E Serial Number
-     */
-    public function unsetESerialNumber(): void
-    {
-        $this->eSerialNumber = [];
-    }
-
-    /**
-     * Returns E Track Data.
-     * E Track Data
-     */
-    public function getETrackData(): ?string
-    {
-        if (count($this->eTrackData) == 0) {
-            return null;
-        }
-        return $this->eTrackData['value'];
-    }
-
-    /**
-     * Sets E Track Data.
-     * E Track Data
-     *
-     * @maps e_track_data
-     */
-    public function setETrackData(?string $eTrackData): void
-    {
-        $this->eTrackData['value'] = $eTrackData;
-    }
-
-    /**
-     * Unsets E Track Data.
-     * E Track Data
-     */
-    public function unsetETrackData(): void
-    {
-        $this->eTrackData = [];
-    }
-
-    /**
-     * Returns E Format.
-     * E Format
-     */
-    public function getEFormat(): ?string
-    {
-        if (count($this->eFormat) == 0) {
-            return null;
-        }
-        return $this->eFormat['value'];
-    }
-
-    /**
-     * Sets E Format.
-     * E Format
-     *
-     * @maps e_format
-     */
-    public function setEFormat(?string $eFormat): void
-    {
-        $this->eFormat['value'] = $eFormat;
-    }
-
-    /**
-     * Unsets E Format.
-     * E Format
-     */
-    public function unsetEFormat(): void
-    {
-        $this->eFormat = [];
-    }
-
-    /**
-     * Returns E Keyed Data.
-     * E Keyed Data
-     */
-    public function getEKeyedData(): ?string
-    {
-        if (count($this->eKeyedData) == 0) {
-            return null;
-        }
-        return $this->eKeyedData['value'];
-    }
-
-    /**
-     * Sets E Keyed Data.
-     * E Keyed Data
-     *
-     * @maps e_keyed_data
-     */
-    public function setEKeyedData(?string $eKeyedData): void
-    {
-        $this->eKeyedData['value'] = $eKeyedData;
-    }
-
-    /**
-     * Unsets E Keyed Data.
-     * E Keyed Data
-     */
-    public function unsetEKeyedData(): void
-    {
-        $this->eKeyedData = [];
-    }
-
-    /**
-     * Returns Expiring in Months.
-     * Determined by API based on card exp_date.
-     */
-    public function getExpiringInMonths(): ?int
-    {
-        if (count($this->expiringInMonths) == 0) {
-            return null;
-        }
-        return $this->expiringInMonths['value'];
-    }
-
-    /**
-     * Sets Expiring in Months.
-     * Determined by API based on card exp_date.
-     *
-     * @maps expiring_in_months
-     */
-    public function setExpiringInMonths(?int $expiringInMonths): void
-    {
-        $this->expiringInMonths['value'] = $expiringInMonths;
-    }
-
-    /**
-     * Unsets Expiring in Months.
-     * Determined by API based on card exp_date.
-     */
-    public function unsetExpiringInMonths(): void
-    {
-        $this->expiringInMonths = [];
-    }
-
-    /**
-     * Returns First Six.
-     * The first six numbers of an account number.  System will generate a value for this field
-     * automatically.
-     */
-    public function getFirstSix(): string
-    {
-        return $this->firstSix;
-    }
-
-    /**
-     * Sets First Six.
-     * The first six numbers of an account number.  System will generate a value for this field
-     * automatically.
-     *
-     * @required
-     * @maps first_six
-     */
-    public function setFirstSix(string $firstSix): void
-    {
-        $this->firstSix = $firstSix;
-    }
-
-    /**
-     * Returns Has Recurring.
-     * True indicates that this token is tied to a Recurring Payment
-     */
-    public function getHasRecurring(): bool
-    {
-        return $this->hasRecurring;
-    }
-
-    /**
-     * Sets Has Recurring.
-     * True indicates that this token is tied to a Recurring Payment
-     *
-     * @required
-     * @maps has_recurring
-     */
-    public function setHasRecurring(bool $hasRecurring): void
-    {
-        $this->hasRecurring = $hasRecurring;
-    }
-
-    /**
-     * Returns Last Four.
-     * The last four numbers of an account number.  System will generate a value for this field
-     * automatically.
-     */
-    public function getLastFour(): string
-    {
-        return $this->lastFour;
-    }
-
-    /**
-     * Sets Last Four.
-     * The last four numbers of an account number.  System will generate a value for this field
-     * automatically.
-     *
-     * @required
-     * @maps last_four
-     */
-    public function setLastFour(string $lastFour): void
-    {
-        $this->lastFour = $lastFour;
     }
 
     /**
      * Returns Modified Ts.
      * Modified Time Stamp
      */
-    public function getModifiedTs(): int
+    public function getModifiedTs(): ?int
     {
         return $this->modifiedTs;
     }
@@ -1153,118 +1126,108 @@ class List11 implements \JsonSerializable
      * Sets Modified Ts.
      * Modified Time Stamp
      *
-     * @required
      * @maps modified_ts
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setModifiedTs(?int $modifiedTs): void
     {
         $this->modifiedTs = $modifiedTs;
     }
 
     /**
-     * Returns Payment Method.
-     * Must be provided as either 'cc' or 'ach'.
+     * Returns Recurring Type Id.
+     * Recurring Type
      */
-    public function getPaymentMethod(): string
+    public function getRecurringTypeId(): ?string
     {
-        return $this->paymentMethod;
+        return $this->recurringTypeId;
     }
 
     /**
-     * Sets Payment Method.
-     * Must be provided as either 'cc' or 'ach'.
+     * Sets Recurring Type Id.
+     * Recurring Type
      *
-     * @required
-     * @maps payment_method
-     * @factory \FortisAPILib\Models\PaymentMethod10Enum::checkValue
+     * @maps recurring_type_id
+     * @factory \FortisAPILib\Models\RecurringTypeIdEnum::checkValue
      */
-    public function setPaymentMethod(string $paymentMethod): void
+    public function setRecurringTypeId(?string $recurringTypeId): void
     {
-        $this->paymentMethod = $paymentMethod;
+        $this->recurringTypeId = $recurringTypeId;
     }
 
     /**
-     * Returns Ticket.
-     * A valid ticket that was created to store the token.
+     * Returns Installment Amount Total.
+     * Installment Amount Total
      */
-    public function getTicket(): ?string
+    public function getInstallmentAmountTotal(): ?int
     {
-        if (count($this->ticket) == 0) {
+        if (count($this->installmentAmountTotal) == 0) {
             return null;
         }
-        return $this->ticket['value'];
+        return $this->installmentAmountTotal['value'];
     }
 
     /**
-     * Sets Ticket.
-     * A valid ticket that was created to store the token.
+     * Sets Installment Amount Total.
+     * Installment Amount Total
      *
-     * @maps ticket
+     * @maps installment_amount_total
      */
-    public function setTicket(?string $ticket): void
+    public function setInstallmentAmountTotal(?int $installmentAmountTotal): void
     {
-        $this->ticket['value'] = $ticket;
+        $this->installmentAmountTotal['value'] = $installmentAmountTotal;
     }
 
     /**
-     * Unsets Ticket.
-     * A valid ticket that was created to store the token.
+     * Unsets Installment Amount Total.
+     * Installment Amount Total
      */
-    public function unsetTicket(): void
+    public function unsetInstallmentAmountTotal(): void
     {
-        $this->ticket = [];
+        $this->installmentAmountTotal = [];
     }
 
     /**
-     * Returns Track Data.
-     * Track Data from a magnetic card swipe.
+     * Returns Created User Id.
+     * User ID Created the register
      */
-    public function getTrackData(): ?string
+    public function getCreatedUserId(): ?string
     {
-        if (count($this->trackData) == 0) {
-            return null;
-        }
-        return $this->trackData['value'];
+        return $this->createdUserId;
     }
 
     /**
-     * Sets Track Data.
-     * Track Data from a magnetic card swipe.
+     * Sets Created User Id.
+     * User ID Created the register
      *
-     * @maps track_data
+     * @maps created_user_id
      */
-    public function setTrackData(?string $trackData): void
+    public function setCreatedUserId(?string $createdUserId): void
     {
-        $this->trackData['value'] = $trackData;
+        $this->createdUserId = $createdUserId;
     }
 
     /**
-     * Unsets Track Data.
-     * Track Data from a magnetic card swipe.
-     */
-    public function unsetTrackData(): void
-    {
-        $this->trackData = [];
-    }
-
-    /**
-     * Returns Location.
-     * Location Information on `expand`
-     */
-    public function getLocation(): ?Location
-    {
-        return $this->location;
-    }
-
-    /**
-     * Sets Location.
-     * Location Information on `expand`
+     * Returns Log Emails.
+     * Log Email Information on `expand`
      *
-     * @maps location
+     * @return LogEmail[]|null
      */
-    public function setLocation(?Location $location): void
+    public function getLogEmails(): ?array
     {
-        $this->location = $location;
+        return $this->logEmails;
+    }
+
+    /**
+     * Sets Log Emails.
+     * Log Email Information on `expand`
+     *
+     * @maps log_emails
+     *
+     * @param LogEmail[]|null $logEmails
+     */
+    public function setLogEmails(?array $logEmails): void
+    {
+        $this->logEmails = $logEmails;
     }
 
     /**
@@ -1288,71 +1251,43 @@ class List11 implements \JsonSerializable
     }
 
     /**
-     * Returns Transactions.
-     * Transaction Information on `expand`
-     *
-     * @return Transaction[]|null
+     * Returns Account Vault.
+     * Token Information on `expand`
      */
-    public function getTransactions(): ?array
+    public function getAccountVault(): ?AccountVault
     {
-        return $this->transactions;
+        return $this->accountVault;
     }
 
     /**
-     * Sets Transactions.
-     * Transaction Information on `expand`
+     * Sets Account Vault.
+     * Token Information on `expand`
      *
-     * @maps transactions
-     *
-     * @param Transaction[]|null $transactions
+     * @maps account_vault
      */
-    public function setTransactions(?array $transactions): void
+    public function setAccountVault(?AccountVault $accountVault): void
     {
-        $this->transactions = $transactions;
+        $this->accountVault = $accountVault;
     }
 
     /**
-     * Returns Active Recurrings.
-     * ActiveRecurring Information on `expand`
-     *
-     * @return ActiveRecurring[]|null
+     * Returns Created User.
+     * User Information on `expand`
      */
-    public function getActiveRecurrings(): ?array
+    public function getCreatedUser(): ?CreatedUser
     {
-        return $this->activeRecurrings;
+        return $this->createdUser;
     }
 
     /**
-     * Sets Active Recurrings.
-     * ActiveRecurring Information on `expand`
+     * Sets Created User.
+     * User Information on `expand`
      *
-     * @maps activeRecurrings
-     *
-     * @param ActiveRecurring[]|null $activeRecurrings
+     * @maps created_user
      */
-    public function setActiveRecurrings(?array $activeRecurrings): void
+    public function setCreatedUser(?CreatedUser $createdUser): void
     {
-        $this->activeRecurrings = $activeRecurrings;
-    }
-
-    /**
-     * Returns Is Deletable.
-     * Is Deletable Information on `expand`
-     */
-    public function getIsDeletable(): ?bool
-    {
-        return $this->isDeletable;
-    }
-
-    /**
-     * Sets Is Deletable.
-     * Is Deletable Information on `expand`
-     *
-     * @maps is_deletable
-     */
-    public function setIsDeletable(?bool $isDeletable): void
-    {
-        $this->isDeletable = $isDeletable;
+        $this->createdUser = $createdUser;
     }
 
     /**
@@ -1376,23 +1311,131 @@ class List11 implements \JsonSerializable
     }
 
     /**
-     * Returns Created User.
-     * User Information on `expand`
+     * Returns Payment Schedule.
+     * Payment Schedule Information on `expand`
+     *
+     * @return string[]|null
      */
-    public function getCreatedUser(): ?CreatedUser
+    public function getPaymentSchedule(): ?array
     {
-        return $this->createdUser;
+        return $this->paymentSchedule;
     }
 
     /**
-     * Sets Created User.
-     * User Information on `expand`
+     * Sets Payment Schedule.
+     * Payment Schedule Information on `expand`
      *
-     * @maps created_user
+     * @maps payment_schedule
+     *
+     * @param string[]|null $paymentSchedule
      */
-    public function setCreatedUser(?CreatedUser $createdUser): void
+    public function setPaymentSchedule(?array $paymentSchedule): void
     {
-        $this->createdUser = $createdUser;
+        $this->paymentSchedule = $paymentSchedule;
+    }
+
+    /**
+     * Returns Location.
+     * Location Information on `expand`
+     */
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    /**
+     * Sets Location.
+     * Location Information on `expand`
+     *
+     * @maps location
+     */
+    public function setLocation(?Location $location): void
+    {
+        $this->location = $location;
+    }
+
+    /**
+     * Returns Product Transaction.
+     * Product Transaction Information on `expand`
+     */
+    public function getProductTransaction(): ?ProductTransaction
+    {
+        return $this->productTransaction;
+    }
+
+    /**
+     * Sets Product Transaction.
+     * Product Transaction Information on `expand`
+     *
+     * @maps product_transaction
+     */
+    public function setProductTransaction(?ProductTransaction $productTransaction): void
+    {
+        $this->productTransaction = $productTransaction;
+    }
+
+    /**
+     * Returns Next Run Date Min.
+     * Next Run Date Min Information on `expand`
+     */
+    public function getNextRunDateMin(): ?string
+    {
+        return $this->nextRunDateMin;
+    }
+
+    /**
+     * Sets Next Run Date Min.
+     * Next Run Date Min Information on `expand`
+     *
+     * @maps next_run_date_min
+     */
+    public function setNextRunDateMin(?string $nextRunDateMin): void
+    {
+        $this->nextRunDateMin = $nextRunDateMin;
+    }
+
+    /**
+     * Returns Next Run Date Max.
+     * Next Run Date Max Information on `expand`
+     */
+    public function getNextRunDateMax(): ?string
+    {
+        return $this->nextRunDateMax;
+    }
+
+    /**
+     * Sets Next Run Date Max.
+     * Next Run Date Max Information on `expand`
+     *
+     * @maps next_run_date_max
+     */
+    public function setNextRunDateMax(?string $nextRunDateMax): void
+    {
+        $this->nextRunDateMax = $nextRunDateMax;
+    }
+
+    /**
+     * Returns All Tags.
+     * All Tag Information on `expand`
+     *
+     * @return AllTag[]|null
+     */
+    public function getAllTags(): ?array
+    {
+        return $this->allTags;
+    }
+
+    /**
+     * Sets All Tags.
+     * All Tag Information on `expand`
+     *
+     * @maps all_tags
+     *
+     * @param AllTag[]|null $allTags
+     */
+    public function setAllTags(?array $allTags): void
+    {
+        $this->allTags = $allTags;
     }
 
     /**
@@ -1420,51 +1463,141 @@ class List11 implements \JsonSerializable
     }
 
     /**
-     * Returns Account Vault Cau Logs.
-     * Token Cau Log Information on `expand`
-     *
-     * @return AccountVaultCauLog[]|null
+     * Returns Forecast.
+     * Forecast Information on `expand`
      */
-    public function getAccountVaultCauLogs(): ?array
+    public function getForecast(): ?Forecast
     {
-        return $this->accountVaultCauLogs;
+        return $this->forecast;
     }
 
     /**
-     * Sets Account Vault Cau Logs.
-     * Token Cau Log Information on `expand`
+     * Sets Forecast.
+     * Forecast Information on `expand`
      *
-     * @maps account_vault_cau_logs
-     *
-     * @param AccountVaultCauLog[]|null $accountVaultCauLogs
+     * @maps forecast
      */
-    public function setAccountVaultCauLogs(?array $accountVaultCauLogs): void
+    public function setForecast(?Forecast $forecast): void
     {
-        $this->accountVaultCauLogs = $accountVaultCauLogs;
+        $this->forecast = $forecast;
     }
 
     /**
-     * Returns Account Vault Cau Product Transactions.
-     * Token Cau Product Transaction Information on `expand`
+     * Returns Recurring Splits.
+     * Recurring Split Information on `expand`
      *
-     * @return AccountVaultCauProductTransaction[]|null
+     * @return RecurringSplit[]|null
      */
-    public function getAccountVaultCauProductTransactions(): ?array
+    public function getRecurringSplits(): ?array
     {
-        return $this->accountVaultCauProductTransactions;
+        return $this->recurringSplits;
     }
 
     /**
-     * Sets Account Vault Cau Product Transactions.
-     * Token Cau Product Transaction Information on `expand`
+     * Sets Recurring Splits.
+     * Recurring Split Information on `expand`
      *
-     * @maps account_vault_cau_product_transactions
+     * @maps recurring_splits
      *
-     * @param AccountVaultCauProductTransaction[]|null $accountVaultCauProductTransactions
+     * @param RecurringSplit[]|null $recurringSplits
      */
-    public function setAccountVaultCauProductTransactions(?array $accountVaultCauProductTransactions): void
+    public function setRecurringSplits(?array $recurringSplits): void
     {
-        $this->accountVaultCauProductTransactions = $accountVaultCauProductTransactions;
+        $this->recurringSplits = $recurringSplits;
+    }
+
+    /**
+     * Converts the List11 object to a human-readable string representation.
+     *
+     * @return string The string representation of the List11 object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'List11',
+            [
+                'accountVaultId' => $this->accountVaultId,
+                'tokenId' => $this->tokenId,
+                'contactId' => $this->getContactId(),
+                'accountVaultApiId' => $this->getAccountVaultApiId(),
+                'tokenApiId' => $this->getTokenApiId(),
+                'joi' => $this->joi,
+                'active' => $this->active,
+                'description' => $this->getDescription(),
+                'endDate' => $this->getEndDate(),
+                'installmentTotalCount' => $this->getInstallmentTotalCount(),
+                'interval' => $this->interval,
+                'intervalType' => $this->intervalType,
+                'locationId' => $this->locationId,
+                'notificationDays' => $this->getNotificationDays(),
+                'paymentMethod' => $this->paymentMethod,
+                'productTransactionId' => $this->getProductTransactionId(),
+                'recurringId' => $this->getRecurringId(),
+                'recurringApiId' => $this->getRecurringApiId(),
+                'startDate' => $this->startDate,
+                'status' => $this->status,
+                'transactionAmount' => $this->transactionAmount,
+                'termsAgree' => $this->termsAgree,
+                'termsAgreeIp' => $this->getTermsAgreeIp(),
+                'recurringC1' => $this->getRecurringC1(),
+                'recurringC2' => $this->getRecurringC2(),
+                'recurringC3' => $this->getRecurringC3(),
+                'sendToProcAsRecur' => $this->sendToProcAsRecur,
+                'tags' => $this->tags,
+                'secondaryAmount' => $this->getSecondaryAmount(),
+                'currency' => $this->currency,
+                'id' => $this->id,
+                'nextRunDate' => $this->nextRunDate,
+                'createdTs' => $this->createdTs,
+                'modifiedTs' => $this->modifiedTs,
+                'recurringTypeId' => $this->recurringTypeId,
+                'installmentAmountTotal' => $this->getInstallmentAmountTotal(),
+                'createdUserId' => $this->createdUserId,
+                'logEmails' => $this->logEmails,
+                'contact' => $this->contact,
+                'accountVault' => $this->accountVault,
+                'createdUser' => $this->createdUser,
+                'signature' => $this->signature,
+                'paymentSchedule' => $this->paymentSchedule,
+                'location' => $this->location,
+                'productTransaction' => $this->productTransaction,
+                'nextRunDateMin' => $this->nextRunDateMin,
+                'nextRunDateMax' => $this->nextRunDateMax,
+                'allTags' => $this->allTags,
+                'changelogs' => $this->changelogs,
+                'forecast' => $this->forecast,
+                'recurringSplits' => $this->recurringSplits,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -1479,124 +1612,160 @@ class List11 implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        if (!empty($this->accountHolderName)) {
-            $json['account_holder_name']                    = $this->accountHolderName['value'];
+        if (isset($this->accountVaultId)) {
+            $json['account_vault_id']         = $this->accountVaultId;
         }
-        if (!empty($this->accountNumber)) {
-            $json['account_number']                         = $this->accountNumber['value'];
-        }
-        if (!empty($this->accountVaultApiId)) {
-            $json['account_vault_api_id']                   = $this->accountVaultApiId['value'];
-        }
-        if (!empty($this->accountvaultC1)) {
-            $json['accountvault_c1']                        = $this->accountvaultC1['value'];
-        }
-        if (!empty($this->accountvaultC2)) {
-            $json['accountvault_c2']                        = $this->accountvaultC2['value'];
-        }
-        if (!empty($this->accountvaultC3)) {
-            $json['accountvault_c3']                        = $this->accountvaultC3['value'];
-        }
-        if (!empty($this->achSecCode)) {
-            $json['ach_sec_code']                           = AchSecCode3Enum::checkValue($this->achSecCode['value']);
-        }
-        if (isset($this->billingAddress)) {
-            $json['billing_address']                        = $this->billingAddress;
+        if (isset($this->tokenId)) {
+            $json['token_id']                 = $this->tokenId;
         }
         if (!empty($this->contactId)) {
-            $json['contact_id']                             = $this->contactId['value'];
+            $json['contact_id']               = $this->contactId['value'];
         }
-        if (!empty($this->customerId)) {
-            $json['customer_id']                            = $this->customerId['value'];
+        if (!empty($this->accountVaultApiId)) {
+            $json['account_vault_api_id']     = $this->accountVaultApiId['value'];
         }
-        if (isset($this->identityVerification)) {
-            $json['identity_verification']                  = $this->identityVerification;
+        if (!empty($this->tokenApiId)) {
+            $json['token_api_id']             = $this->tokenApiId['value'];
         }
-        $json['location_id']                                = $this->locationId;
-        if (!empty($this->previousAccountVaultApiId)) {
-            $json['previous_account_vault_api_id']          = $this->previousAccountVaultApiId['value'];
+        if (isset($this->joi)) {
+            $json['_joi']                     = $this->joi;
         }
-        if (!empty($this->previousAccountVaultId)) {
-            $json['previous_account_vault_id']              = $this->previousAccountVaultId['value'];
+        if (isset($this->active)) {
+            $json['active']                   = $this->active;
         }
-        if (!empty($this->previousTransactionId)) {
-            $json['previous_transaction_id']                = $this->previousTransactionId['value'];
+        if (!empty($this->description)) {
+            $json['description']              = $this->description['value'];
+        }
+        if (!empty($this->endDate)) {
+            $json['end_date']                 = $this->endDate['value'];
+        }
+        if (!empty($this->installmentTotalCount)) {
+            $json['installment_total_count']  = $this->installmentTotalCount['value'];
+        }
+        if (isset($this->interval)) {
+            $json['interval']                 = $this->interval;
+        }
+        if (isset($this->intervalType)) {
+            $json['interval_type']            = IntervalTypeEnum::checkValue($this->intervalType);
+        }
+        if (isset($this->locationId)) {
+            $json['location_id']              = $this->locationId;
+        }
+        if (!empty($this->notificationDays)) {
+            $json['notification_days']        = $this->notificationDays['value'];
+        }
+        if (isset($this->paymentMethod)) {
+            $json['payment_method']           = PaymentMethod1Enum::checkValue($this->paymentMethod);
+        }
+        if (!empty($this->productTransactionId)) {
+            $json['product_transaction_id']   = $this->productTransactionId['value'];
+        }
+        if (!empty($this->recurringId)) {
+            $json['recurring_id']             = $this->recurringId['value'];
+        }
+        if (!empty($this->recurringApiId)) {
+            $json['recurring_api_id']         = $this->recurringApiId['value'];
+        }
+        if (isset($this->startDate)) {
+            $json['start_date']               = $this->startDate;
+        }
+        if (isset($this->status)) {
+            $json['status']                   = StatusEnum::checkValue($this->status);
+        }
+        if (isset($this->transactionAmount)) {
+            $json['transaction_amount']       = $this->transactionAmount;
         }
         if (isset($this->termsAgree)) {
-            $json['terms_agree']                            = $this->termsAgree;
+            $json['terms_agree']              = $this->termsAgree;
         }
         if (!empty($this->termsAgreeIp)) {
-            $json['terms_agree_ip']                         = $this->termsAgreeIp['value'];
+            $json['terms_agree_ip']           = $this->termsAgreeIp['value'];
         }
-        if (!empty($this->title)) {
-            $json['title']                                  = $this->title['value'];
+        if (!empty($this->recurringC1)) {
+            $json['recurring_c1']             = $this->recurringC1['value'];
         }
-        $json['id']                                         = $this->id;
-        $json['account_type']                               = $this->accountType;
-        if (isset($this->active)) {
-            $json['active']                                 = $this->active;
+        if (!empty($this->recurringC2)) {
+            $json['recurring_c2']             = $this->recurringC2['value'];
         }
-        $json['cau_summary_status_id']                      =
-            CauSummaryStatusIdEnum::checkValue(
-                $this->cauSummaryStatusId
-            );
-        $json['created_ts']                                 = $this->createdTs;
-        if (!empty($this->eSerialNumber)) {
-            $json['e_serial_number']                        = $this->eSerialNumber['value'];
+        if (!empty($this->recurringC3)) {
+            $json['recurring_c3']             = $this->recurringC3['value'];
         }
-        if (!empty($this->eTrackData)) {
-            $json['e_track_data']                           = $this->eTrackData['value'];
+        if (isset($this->sendToProcAsRecur)) {
+            $json['send_to_proc_as_recur']    = $this->sendToProcAsRecur;
         }
-        if (!empty($this->eFormat)) {
-            $json['e_format']                               = $this->eFormat['value'];
+        if (isset($this->tags)) {
+            $json['tags']                     = $this->tags;
         }
-        if (!empty($this->eKeyedData)) {
-            $json['e_keyed_data']                           = $this->eKeyedData['value'];
+        if (!empty($this->secondaryAmount)) {
+            $json['secondary_amount']         = $this->secondaryAmount['value'];
         }
-        if (!empty($this->expiringInMonths)) {
-            $json['expiring_in_months']                     = $this->expiringInMonths['value'];
+        if (isset($this->currency)) {
+            $json['currency']                 = $this->currency;
         }
-        $json['first_six']                                  = $this->firstSix;
-        $json['has_recurring']                              = $this->hasRecurring;
-        $json['last_four']                                  = $this->lastFour;
-        $json['modified_ts']                                = $this->modifiedTs;
-        $json['payment_method']                             = PaymentMethod10Enum::checkValue($this->paymentMethod);
-        if (!empty($this->ticket)) {
-            $json['ticket']                                 = $this->ticket['value'];
+        if (isset($this->id)) {
+            $json['id']                       = $this->id;
         }
-        if (!empty($this->trackData)) {
-            $json['track_data']                             = $this->trackData['value'];
+        if (isset($this->nextRunDate)) {
+            $json['next_run_date']            = $this->nextRunDate;
         }
-        if (isset($this->location)) {
-            $json['location']                               = $this->location;
+        if (isset($this->createdTs)) {
+            $json['created_ts']               = $this->createdTs;
+        }
+        if (isset($this->modifiedTs)) {
+            $json['modified_ts']              = $this->modifiedTs;
+        }
+        if (isset($this->recurringTypeId)) {
+            $json['recurring_type_id']        = RecurringTypeIdEnum::checkValue($this->recurringTypeId);
+        }
+        if (!empty($this->installmentAmountTotal)) {
+            $json['installment_amount_total'] = $this->installmentAmountTotal['value'];
+        }
+        if (isset($this->createdUserId)) {
+            $json['created_user_id']          = $this->createdUserId;
+        }
+        if (isset($this->logEmails)) {
+            $json['log_emails']               = $this->logEmails;
         }
         if (isset($this->contact)) {
-            $json['contact']                                = $this->contact;
+            $json['contact']                  = $this->contact;
         }
-        if (isset($this->transactions)) {
-            $json['transactions']                           = $this->transactions;
-        }
-        if (isset($this->activeRecurrings)) {
-            $json['activeRecurrings']                       = $this->activeRecurrings;
-        }
-        if (isset($this->isDeletable)) {
-            $json['is_deletable']                           = $this->isDeletable;
-        }
-        if (isset($this->signature)) {
-            $json['signature']                              = $this->signature;
+        if (isset($this->accountVault)) {
+            $json['account_vault']            = $this->accountVault;
         }
         if (isset($this->createdUser)) {
-            $json['created_user']                           = $this->createdUser;
+            $json['created_user']             = $this->createdUser;
+        }
+        if (isset($this->signature)) {
+            $json['signature']                = $this->signature;
+        }
+        if (isset($this->paymentSchedule)) {
+            $json['payment_schedule']         = $this->paymentSchedule;
+        }
+        if (isset($this->location)) {
+            $json['location']                 = $this->location;
+        }
+        if (isset($this->productTransaction)) {
+            $json['product_transaction']      = $this->productTransaction;
+        }
+        if (isset($this->nextRunDateMin)) {
+            $json['next_run_date_min']        = $this->nextRunDateMin;
+        }
+        if (isset($this->nextRunDateMax)) {
+            $json['next_run_date_max']        = $this->nextRunDateMax;
+        }
+        if (isset($this->allTags)) {
+            $json['all_tags']                 = $this->allTags;
         }
         if (isset($this->changelogs)) {
-            $json['changelogs']                             = $this->changelogs;
+            $json['changelogs']               = $this->changelogs;
         }
-        if (isset($this->accountVaultCauLogs)) {
-            $json['account_vault_cau_logs']                 = $this->accountVaultCauLogs;
+        if (isset($this->forecast)) {
+            $json['forecast']                 = $this->forecast;
         }
-        if (isset($this->accountVaultCauProductTransactions)) {
-            $json['account_vault_cau_product_transactions'] = $this->accountVaultCauProductTransactions;
+        if (isset($this->recurringSplits)) {
+            $json['recurring_splits']         = $this->recurringSplits;
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

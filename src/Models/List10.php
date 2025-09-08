@@ -10,229 +10,255 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class List10 implements \JsonSerializable
 {
     /**
-     * @var string
-     */
-    private $locationId;
-
-    /**
      * @var array
      */
-    private $defaultProductTransactionId = [];
+    private $locationId = [];
 
     /**
-     * @var string
-     */
-    private $terminalApplicationId;
-
-    /**
-     * @var array
-     */
-    private $terminalCvmId = [];
-
-    /**
-     * @var int
-     */
-    private $terminalManufacturerCode;
-
-    /**
-     * @var string
+     * @var string|null
      */
     private $title;
 
     /**
      * @var array
      */
-    private $macAddress = [];
+    private $ccProductTransactionId = [];
+
+    /**
+     * @var array
+     */
+    private $achProductTransactionId = [];
 
     /**
      * @var string|null
      */
-    private $localIpAddress;
+    private $dueDate;
 
     /**
-     * @var int|null
+     * @var ItemList[]|null
      */
-    private $port = 10009;
+    private $itemList;
 
     /**
-     * @var string
+     * @var bool|null
      */
-    private $serialNumber;
+    private $allowOverpayment;
+
+    /**
+     * @var array
+     */
+    private $bankFundedOnlyOverride = [];
+
+    /**
+     * @var array
+     */
+    private $email = [];
+
+    /**
+     * @var array
+     */
+    private $contactId = [];
+
+    /**
+     * @var array
+     */
+    private $contactApiId = [];
+
+    /**
+     * @var array
+     */
+    private $quickInvoiceApiId = [];
+
+    /**
+     * @var array
+     */
+    private $customerId = [];
+
+    /**
+     * @var array
+     */
+    private $expireDate = [];
+
+    /**
+     * @var bool|null
+     */
+    private $allowPartialPay;
+
+    /**
+     * @var bool|null
+     */
+    private $attachFilesToEmail;
+
+    /**
+     * @var bool|null
+     */
+    private $sendEmail;
+
+    /**
+     * @var array
+     */
+    private $invoiceNumber = [];
+
+    /**
+     * @var array
+     */
+    private $itemHeader = [];
+
+    /**
+     * @var array
+     */
+    private $itemFooter = [];
+
+    /**
+     * @var array
+     */
+    private $amountDue = [];
+
+    /**
+     * @var array
+     */
+    private $notificationEmail = [];
+
+    /**
+     * @var array
+     */
+    private $statusId = [];
+
+    /**
+     * @var array
+     */
+    private $statusCode = [];
+
+    /**
+     * @var array
+     */
+    private $note = [];
+
+    /**
+     * @var array
+     */
+    private $notificationDaysBeforeDueDate = [];
+
+    /**
+     * @var array
+     */
+    private $notificationDaysAfterDueDate = [];
+
+    /**
+     * @var bool|null
+     */
+    private $notificationOnDueDate;
+
+    /**
+     * @var bool|null
+     */
+    private $sendTextToPay;
+
+    /**
+     * @var File[]|null
+     */
+    private $files;
+
+    /**
+     * @var array
+     */
+    private $remainingBalance = [];
+
+    /**
+     * @var array
+     */
+    private $singlePaymentMinAmount = [];
+
+    /**
+     * @var array
+     */
+    private $singlePaymentMaxAmount = ['value' => 999999999];
+
+    /**
+     * @var array
+     */
+    private $cellPhone = [];
+
+    /**
+     * @var Tag[]|null
+     */
+    private $tags;
+
+    /**
+     * @var array
+     */
+    private $quickInvoiceC1 = [];
+
+    /**
+     * @var array
+     */
+    private $quickInvoiceC2 = [];
+
+    /**
+     * @var array
+     */
+    private $quickInvoiceC3 = [];
+
+    /**
+     * @var bool|null
+     */
+    private $autoReopen;
 
     /**
      * @var string|null
-     */
-    private $terminalNumber;
-
-    /**
-     * @var TerminalTimeouts|null
-     */
-    private $terminalTimeouts;
-
-    /**
-     * @var TipPercents|null
-     */
-    private $tipPercents;
-
-    /**
-     * @var array
-     */
-    private $locationApiId = [];
-
-    /**
-     * @var array
-     */
-    private $terminalApiId = [];
-
-    /**
-     * @var array
-     */
-    private $headerLine1 = [];
-
-    /**
-     * @var array
-     */
-    private $headerLine2 = [];
-
-    /**
-     * @var array
-     */
-    private $headerLine3 = [];
-
-    /**
-     * @var array
-     */
-    private $headerLine4 = [];
-
-    /**
-     * @var array
-     */
-    private $headerLine5 = [];
-
-    /**
-     * @var array
-     */
-    private $trailerLine1 = [];
-
-    /**
-     * @var array
-     */
-    private $trailerLine2 = [];
-
-    /**
-     * @var array
-     */
-    private $trailerLine3 = [];
-
-    /**
-     * @var array
-     */
-    private $trailerLine4 = [];
-
-    /**
-     * @var array
-     */
-    private $trailerLine5 = [];
-
-    /**
-     * @var array
-     */
-    private $defaultCheckin = [];
-
-    /**
-     * @var array
-     */
-    private $defaultCheckout = [];
-
-    /**
-     * @var array
-     */
-    private $defaultRoomRate = [];
-
-    /**
-     * @var array
-     */
-    private $defaultRoomNumber = [];
-
-    /**
-     * @var bool
-     */
-    private $debit;
-
-    /**
-     * @var bool
-     */
-    private $emv;
-
-    /**
-     * @var bool
-     */
-    private $cashbackEnable;
-
-    /**
-     * @var bool
-     */
-    private $printEnable;
-
-    /**
-     * @var bool
-     */
-    private $sigCaptureEnable;
-
-    /**
-     * @var bool|null
-     */
-    private $isProvisioned;
-
-    /**
-     * @var bool|null
-     */
-    private $tipEnable;
-
-    /**
-     * @var bool|null
-     */
-    private $validatedDecryption;
-
-    /**
-     * @var array
-     */
-    private $communicationType = [];
-
-    /**
-     * @var string
      */
     private $id;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $modifiedTs;
 
     /**
-     * @var int
+     * @var array
      */
-    private $lastRegistrationTs;
+    private $createdUserId = [];
 
     /**
-     * @var string
+     * @var array
      */
-    private $createdUserId;
+    private $modifiedUserId = [];
 
     /**
-     * @var string
+     * @var bool|null
      */
-    private $modifiedUserId;
+    private $active;
+
+    /**
+     * @var array
+     */
+    private $paymentStatusId = [];
+
+    /**
+     * @var bool|null
+     */
+    private $isActive;
+
+    /**
+     * @var QuickInvoiceSetting|null
+     */
+    private $quickInvoiceSetting;
+
+    /**
+     * @var QuickInvoiceView[]|null
+     */
+    private $quickInvoiceViews;
 
     /**
      * @var Location|null
@@ -245,9 +271,9 @@ class List10 implements \JsonSerializable
     private $createdUser;
 
     /**
-     * @var TerminalApplication|null
+     * @var ModifiedUser|null
      */
-    private $terminalApplication;
+    private $modifiedUser;
 
     /**
      * @var Changelog[]|null
@@ -255,1112 +281,1186 @@ class List10 implements \JsonSerializable
     private $changelogs;
 
     /**
-     * @var TerminalRouter[]|null
+     * @var Contact1|null
      */
-    private $terminalRouters;
+    private $contact;
 
     /**
-     * @var bool|null
+     * @var LogEmail[]|null
      */
-    private $hasTerminalRouters;
+    private $logEmails;
 
     /**
-     * @var TerminalCvm|null
+     * @var LogSms|null
      */
-    private $terminalCvm;
+    private $logSms;
 
     /**
-     * @var TerminalManufacturer|null
+     * @var Transaction[]|null
      */
-    private $terminalManufacturer;
+    private $transactions;
 
     /**
-     * @param string $locationId
-     * @param string $terminalApplicationId
-     * @param int $terminalManufacturerCode
-     * @param string $title
-     * @param string $serialNumber
-     * @param bool $debit
-     * @param bool $emv
-     * @param bool $cashbackEnable
-     * @param bool $printEnable
-     * @param bool $sigCaptureEnable
-     * @param string $id
-     * @param int $createdTs
-     * @param int $modifiedTs
-     * @param int $lastRegistrationTs
-     * @param string $createdUserId
-     * @param string $modifiedUserId
+     * @var CcProductTransaction|null
      */
-    public function __construct(
-        string $locationId,
-        string $terminalApplicationId,
-        int $terminalManufacturerCode,
-        string $title,
-        string $serialNumber,
-        bool $debit,
-        bool $emv,
-        bool $cashbackEnable,
-        bool $printEnable,
-        bool $sigCaptureEnable,
-        string $id,
-        int $createdTs,
-        int $modifiedTs,
-        int $lastRegistrationTs,
-        string $createdUserId,
-        string $modifiedUserId
-    ) {
-        $this->locationId = $locationId;
-        $this->terminalApplicationId = $terminalApplicationId;
-        $this->terminalManufacturerCode = $terminalManufacturerCode;
-        $this->title = $title;
-        $this->serialNumber = $serialNumber;
-        $this->debit = $debit;
-        $this->emv = $emv;
-        $this->cashbackEnable = $cashbackEnable;
-        $this->printEnable = $printEnable;
-        $this->sigCaptureEnable = $sigCaptureEnable;
-        $this->id = $id;
-        $this->createdTs = $createdTs;
-        $this->modifiedTs = $modifiedTs;
-        $this->lastRegistrationTs = $lastRegistrationTs;
-        $this->createdUserId = $createdUserId;
-        $this->modifiedUserId = $modifiedUserId;
-    }
+    private $ccProductTransaction;
+
+    /**
+     * @var AchProductTransaction|null
+     */
+    private $achProductTransaction;
+
+    /**
+     * @var EmailBlacklist|null
+     */
+    private $emailBlacklist;
+
+    /**
+     * @var SmsBlacklist|null
+     */
+    private $smsBlacklist;
+
+    /**
+     * @var array
+     */
+    private $paymentUrl = [];
 
     /**
      * Returns Location Id.
      * Location ID
      */
-    public function getLocationId(): string
+    public function getLocationId(): ?string
     {
-        return $this->locationId;
+        if (count($this->locationId) == 0) {
+            return null;
+        }
+        return $this->locationId['value'];
     }
 
     /**
      * Sets Location Id.
      * Location ID
      *
-     * @required
      * @maps location_id
      */
-    public function setLocationId(string $locationId): void
+    public function setLocationId(?string $locationId): void
     {
-        $this->locationId = $locationId;
+        $this->locationId['value'] = $locationId;
     }
 
     /**
-     * Returns Default Product Transaction Id.
-     * Product Transaction ID
+     * Unsets Location Id.
+     * Location ID
      */
-    public function getDefaultProductTransactionId(): ?string
+    public function unsetLocationId(): void
     {
-        if (count($this->defaultProductTransactionId) == 0) {
-            return null;
-        }
-        return $this->defaultProductTransactionId['value'];
-    }
-
-    /**
-     * Sets Default Product Transaction Id.
-     * Product Transaction ID
-     *
-     * @maps default_product_transaction_id
-     */
-    public function setDefaultProductTransactionId(?string $defaultProductTransactionId): void
-    {
-        $this->defaultProductTransactionId['value'] = $defaultProductTransactionId;
-    }
-
-    /**
-     * Unsets Default Product Transaction Id.
-     * Product Transaction ID
-     */
-    public function unsetDefaultProductTransactionId(): void
-    {
-        $this->defaultProductTransactionId = [];
-    }
-
-    /**
-     * Returns Terminal Application Id.
-     * Terminal Application ID
-     */
-    public function getTerminalApplicationId(): string
-    {
-        return $this->terminalApplicationId;
-    }
-
-    /**
-     * Sets Terminal Application Id.
-     * Terminal Application ID
-     *
-     * @required
-     * @maps terminal_application_id
-     */
-    public function setTerminalApplicationId(string $terminalApplicationId): void
-    {
-        $this->terminalApplicationId = $terminalApplicationId;
-    }
-
-    /**
-     * Returns Terminal Cvm Id.
-     * Terminal CVM ID
-     */
-    public function getTerminalCvmId(): ?string
-    {
-        if (count($this->terminalCvmId) == 0) {
-            return null;
-        }
-        return $this->terminalCvmId['value'];
-    }
-
-    /**
-     * Sets Terminal Cvm Id.
-     * Terminal CVM ID
-     *
-     * @maps terminal_cvm_id
-     */
-    public function setTerminalCvmId(?string $terminalCvmId): void
-    {
-        $this->terminalCvmId['value'] = $terminalCvmId;
-    }
-
-    /**
-     * Unsets Terminal Cvm Id.
-     * Terminal CVM ID
-     */
-    public function unsetTerminalCvmId(): void
-    {
-        $this->terminalCvmId = [];
-    }
-
-    /**
-     * Returns Terminal Manufacturer Code.
-     * Terminal Manufacturer Code
-     */
-    public function getTerminalManufacturerCode(): int
-    {
-        return $this->terminalManufacturerCode;
-    }
-
-    /**
-     * Sets Terminal Manufacturer Code.
-     * Terminal Manufacturer Code
-     *
-     * @required
-     * @maps terminal_manufacturer_code
-     * @factory \FortisAPILib\Models\TerminalManufacturerCodeEnum::checkValue
-     */
-    public function setTerminalManufacturerCode(int $terminalManufacturerCode): void
-    {
-        $this->terminalManufacturerCode = $terminalManufacturerCode;
+        $this->locationId = [];
     }
 
     /**
      * Returns Title.
-     * Terminal Name
+     * Title
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
     /**
      * Sets Title.
-     * Terminal Name
+     * Title
      *
-     * @required
      * @maps title
      */
-    public function setTitle(string $title): void
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
     /**
-     * Returns Mac Address.
-     * Terminal MAC Address
+     * Returns Cc Product Transaction Id.
+     * Transaction ID
      */
-    public function getMacAddress(): ?string
+    public function getCcProductTransactionId(): ?string
     {
-        if (count($this->macAddress) == 0) {
+        if (count($this->ccProductTransactionId) == 0) {
             return null;
         }
-        return $this->macAddress['value'];
+        return $this->ccProductTransactionId['value'];
     }
 
     /**
-     * Sets Mac Address.
-     * Terminal MAC Address
+     * Sets Cc Product Transaction Id.
+     * Transaction ID
      *
-     * @maps mac_address
+     * @maps cc_product_transaction_id
      */
-    public function setMacAddress(?string $macAddress): void
+    public function setCcProductTransactionId(?string $ccProductTransactionId): void
     {
-        $this->macAddress['value'] = $macAddress;
+        $this->ccProductTransactionId['value'] = $ccProductTransactionId;
     }
 
     /**
-     * Unsets Mac Address.
-     * Terminal MAC Address
+     * Unsets Cc Product Transaction Id.
+     * Transaction ID
      */
-    public function unsetMacAddress(): void
+    public function unsetCcProductTransactionId(): void
     {
-        $this->macAddress = [];
+        $this->ccProductTransactionId = [];
     }
 
     /**
-     * Returns Local Ip Address.
-     * Terminal Local IP Address
+     * Returns Ach Product Transaction Id.
+     * ACH Product Transaction Id
      */
-    public function getLocalIpAddress(): ?string
+    public function getAchProductTransactionId(): ?string
     {
-        return $this->localIpAddress;
-    }
-
-    /**
-     * Sets Local Ip Address.
-     * Terminal Local IP Address
-     *
-     * @maps local_ip_address
-     */
-    public function setLocalIpAddress(?string $localIpAddress): void
-    {
-        $this->localIpAddress = $localIpAddress;
-    }
-
-    /**
-     * Returns Port.
-     * Terminal Port
-     */
-    public function getPort(): ?int
-    {
-        return $this->port;
-    }
-
-    /**
-     * Sets Port.
-     * Terminal Port
-     *
-     * @maps port
-     */
-    public function setPort(?int $port): void
-    {
-        $this->port = $port;
-    }
-
-    /**
-     * Returns Serial Number.
-     * Terminal Serial Number
-     */
-    public function getSerialNumber(): string
-    {
-        return $this->serialNumber;
-    }
-
-    /**
-     * Sets Serial Number.
-     * Terminal Serial Number
-     *
-     * @required
-     * @maps serial_number
-     */
-    public function setSerialNumber(string $serialNumber): void
-    {
-        $this->serialNumber = $serialNumber;
-    }
-
-    /**
-     * Returns Terminal Number.
-     * Terminal Number
-     */
-    public function getTerminalNumber(): ?string
-    {
-        return $this->terminalNumber;
-    }
-
-    /**
-     * Sets Terminal Number.
-     * Terminal Number
-     *
-     * @maps terminal_number
-     */
-    public function setTerminalNumber(?string $terminalNumber): void
-    {
-        $this->terminalNumber = $terminalNumber;
-    }
-
-    /**
-     * Returns Terminal Timeouts.
-     * The following options outlines some configurable timeout values that can be used to customize the
-     * experience at the terminal for the cardholder.
-     */
-    public function getTerminalTimeouts(): ?TerminalTimeouts
-    {
-        return $this->terminalTimeouts;
-    }
-
-    /**
-     * Sets Terminal Timeouts.
-     * The following options outlines some configurable timeout values that can be used to customize the
-     * experience at the terminal for the cardholder.
-     *
-     * @maps terminal_timeouts
-     */
-    public function setTerminalTimeouts(?TerminalTimeouts $terminalTimeouts): void
-    {
-        $this->terminalTimeouts = $terminalTimeouts;
-    }
-
-    /**
-     * Returns Tip Percents.
-     * A JSON of tip percents the JSON MUST contain only these three fields: percent_1, percent_2,
-     * percent_3
-     */
-    public function getTipPercents(): ?TipPercents
-    {
-        return $this->tipPercents;
-    }
-
-    /**
-     * Sets Tip Percents.
-     * A JSON of tip percents the JSON MUST contain only these three fields: percent_1, percent_2,
-     * percent_3
-     *
-     * @maps tip_percents
-     */
-    public function setTipPercents(?TipPercents $tipPercents): void
-    {
-        $this->tipPercents = $tipPercents;
-    }
-
-    /**
-     * Returns Location Api Id.
-     * Location Api ID
-     */
-    public function getLocationApiId(): ?string
-    {
-        if (count($this->locationApiId) == 0) {
+        if (count($this->achProductTransactionId) == 0) {
             return null;
         }
-        return $this->locationApiId['value'];
+        return $this->achProductTransactionId['value'];
     }
 
     /**
-     * Sets Location Api Id.
-     * Location Api ID
+     * Sets Ach Product Transaction Id.
+     * ACH Product Transaction Id
      *
-     * @maps location_api_id
+     * @maps ach_product_transaction_id
      */
-    public function setLocationApiId(?string $locationApiId): void
+    public function setAchProductTransactionId(?string $achProductTransactionId): void
     {
-        $this->locationApiId['value'] = $locationApiId;
+        $this->achProductTransactionId['value'] = $achProductTransactionId;
     }
 
     /**
-     * Unsets Location Api Id.
-     * Location Api ID
+     * Unsets Ach Product Transaction Id.
+     * ACH Product Transaction Id
      */
-    public function unsetLocationApiId(): void
+    public function unsetAchProductTransactionId(): void
     {
-        $this->locationApiId = [];
+        $this->achProductTransactionId = [];
     }
 
     /**
-     * Returns Terminal Api Id.
-     * Terminal Api ID
+     * Returns Due Date.
+     * Due Date, Format: Y-m-d
      */
-    public function getTerminalApiId(): ?string
+    public function getDueDate(): ?string
     {
-        if (count($this->terminalApiId) == 0) {
+        return $this->dueDate;
+    }
+
+    /**
+     * Sets Due Date.
+     * Due Date, Format: Y-m-d
+     *
+     * @maps due_date
+     */
+    public function setDueDate(?string $dueDate): void
+    {
+        $this->dueDate = $dueDate;
+    }
+
+    /**
+     * Returns Item List.
+     * Item List
+     *
+     * @return ItemList[]|null
+     */
+    public function getItemList(): ?array
+    {
+        return $this->itemList;
+    }
+
+    /**
+     * Sets Item List.
+     * Item List
+     *
+     * @maps item_list
+     *
+     * @param ItemList[]|null $itemList
+     */
+    public function setItemList(?array $itemList): void
+    {
+        $this->itemList = $itemList;
+    }
+
+    /**
+     * Returns Allow Overpayment.
+     * Allow Overpayment.
+     */
+    public function getAllowOverpayment(): ?bool
+    {
+        return $this->allowOverpayment;
+    }
+
+    /**
+     * Sets Allow Overpayment.
+     * Allow Overpayment.
+     *
+     * @maps allow_overpayment
+     */
+    public function setAllowOverpayment(?bool $allowOverpayment): void
+    {
+        $this->allowOverpayment = $allowOverpayment;
+    }
+
+    /**
+     * Returns Bank Funded Only Override.
+     * Bank Funded Only override
+     */
+    public function getBankFundedOnlyOverride(): ?bool
+    {
+        if (count($this->bankFundedOnlyOverride) == 0) {
             return null;
         }
-        return $this->terminalApiId['value'];
+        return $this->bankFundedOnlyOverride['value'];
     }
 
     /**
-     * Sets Terminal Api Id.
-     * Terminal Api ID
+     * Sets Bank Funded Only Override.
+     * Bank Funded Only override
      *
-     * @maps terminal_api_id
+     * @maps bank_funded_only_override
      */
-    public function setTerminalApiId(?string $terminalApiId): void
+    public function setBankFundedOnlyOverride(?bool $bankFundedOnlyOverride): void
     {
-        $this->terminalApiId['value'] = $terminalApiId;
+        $this->bankFundedOnlyOverride['value'] = $bankFundedOnlyOverride;
     }
 
     /**
-     * Unsets Terminal Api Id.
-     * Terminal Api ID
+     * Unsets Bank Funded Only Override.
+     * Bank Funded Only override
      */
-    public function unsetTerminalApiId(): void
+    public function unsetBankFundedOnlyOverride(): void
     {
-        $this->terminalApiId = [];
+        $this->bankFundedOnlyOverride = [];
     }
 
     /**
-     * Returns Header Line 1.
-     * Header Line 1
+     * Returns Email.
+     * Email
      */
-    public function getHeaderLine1(): ?string
+    public function getEmail(): ?string
     {
-        if (count($this->headerLine1) == 0) {
+        if (count($this->email) == 0) {
             return null;
         }
-        return $this->headerLine1['value'];
+        return $this->email['value'];
     }
 
     /**
-     * Sets Header Line 1.
-     * Header Line 1
+     * Sets Email.
+     * Email
      *
-     * @maps header_line_1
+     * @maps email
      */
-    public function setHeaderLine1(?string $headerLine1): void
+    public function setEmail(?string $email): void
     {
-        $this->headerLine1['value'] = $headerLine1;
+        $this->email['value'] = $email;
     }
 
     /**
-     * Unsets Header Line 1.
-     * Header Line 1
+     * Unsets Email.
+     * Email
      */
-    public function unsetHeaderLine1(): void
+    public function unsetEmail(): void
     {
-        $this->headerLine1 = [];
+        $this->email = [];
     }
 
     /**
-     * Returns Header Line 2.
-     * Header Line 2
+     * Returns Contact Id.
+     * Contact ID
      */
-    public function getHeaderLine2(): ?string
+    public function getContactId(): ?string
     {
-        if (count($this->headerLine2) == 0) {
+        if (count($this->contactId) == 0) {
             return null;
         }
-        return $this->headerLine2['value'];
+        return $this->contactId['value'];
     }
 
     /**
-     * Sets Header Line 2.
-     * Header Line 2
+     * Sets Contact Id.
+     * Contact ID
      *
-     * @maps header_line_2
+     * @maps contact_id
      */
-    public function setHeaderLine2(?string $headerLine2): void
+    public function setContactId(?string $contactId): void
     {
-        $this->headerLine2['value'] = $headerLine2;
+        $this->contactId['value'] = $contactId;
     }
 
     /**
-     * Unsets Header Line 2.
-     * Header Line 2
+     * Unsets Contact Id.
+     * Contact ID
      */
-    public function unsetHeaderLine2(): void
+    public function unsetContactId(): void
     {
-        $this->headerLine2 = [];
+        $this->contactId = [];
     }
 
     /**
-     * Returns Header Line 3.
-     * Header Line 3
+     * Returns Contact Api Id.
+     * Contact API Id
      */
-    public function getHeaderLine3(): ?string
+    public function getContactApiId(): ?string
     {
-        if (count($this->headerLine3) == 0) {
+        if (count($this->contactApiId) == 0) {
             return null;
         }
-        return $this->headerLine3['value'];
+        return $this->contactApiId['value'];
     }
 
     /**
-     * Sets Header Line 3.
-     * Header Line 3
+     * Sets Contact Api Id.
+     * Contact API Id
      *
-     * @maps header_line_3
+     * @maps contact_api_id
      */
-    public function setHeaderLine3(?string $headerLine3): void
+    public function setContactApiId(?string $contactApiId): void
     {
-        $this->headerLine3['value'] = $headerLine3;
+        $this->contactApiId['value'] = $contactApiId;
     }
 
     /**
-     * Unsets Header Line 3.
-     * Header Line 3
+     * Unsets Contact Api Id.
+     * Contact API Id
      */
-    public function unsetHeaderLine3(): void
+    public function unsetContactApiId(): void
     {
-        $this->headerLine3 = [];
+        $this->contactApiId = [];
     }
 
     /**
-     * Returns Header Line 4.
-     * Header Line 4
+     * Returns Quick Invoice Api Id.
+     * Quick Invoice API Id
      */
-    public function getHeaderLine4(): ?string
+    public function getQuickInvoiceApiId(): ?string
     {
-        if (count($this->headerLine4) == 0) {
+        if (count($this->quickInvoiceApiId) == 0) {
             return null;
         }
-        return $this->headerLine4['value'];
+        return $this->quickInvoiceApiId['value'];
     }
 
     /**
-     * Sets Header Line 4.
-     * Header Line 4
+     * Sets Quick Invoice Api Id.
+     * Quick Invoice API Id
      *
-     * @maps header_line_4
+     * @maps quick_invoice_api_id
      */
-    public function setHeaderLine4(?string $headerLine4): void
+    public function setQuickInvoiceApiId(?string $quickInvoiceApiId): void
     {
-        $this->headerLine4['value'] = $headerLine4;
+        $this->quickInvoiceApiId['value'] = $quickInvoiceApiId;
     }
 
     /**
-     * Unsets Header Line 4.
-     * Header Line 4
+     * Unsets Quick Invoice Api Id.
+     * Quick Invoice API Id
      */
-    public function unsetHeaderLine4(): void
+    public function unsetQuickInvoiceApiId(): void
     {
-        $this->headerLine4 = [];
+        $this->quickInvoiceApiId = [];
     }
 
     /**
-     * Returns Header Line 5.
-     * Header Line 5
+     * Returns Customer Id.
+     * Customer Id
      */
-    public function getHeaderLine5(): ?string
+    public function getCustomerId(): ?string
     {
-        if (count($this->headerLine5) == 0) {
+        if (count($this->customerId) == 0) {
             return null;
         }
-        return $this->headerLine5['value'];
+        return $this->customerId['value'];
     }
 
     /**
-     * Sets Header Line 5.
-     * Header Line 5
+     * Sets Customer Id.
+     * Customer Id
      *
-     * @maps header_line_5
+     * @maps customer_id
      */
-    public function setHeaderLine5(?string $headerLine5): void
+    public function setCustomerId(?string $customerId): void
     {
-        $this->headerLine5['value'] = $headerLine5;
+        $this->customerId['value'] = $customerId;
     }
 
     /**
-     * Unsets Header Line 5.
-     * Header Line 5
+     * Unsets Customer Id.
+     * Customer Id
      */
-    public function unsetHeaderLine5(): void
+    public function unsetCustomerId(): void
     {
-        $this->headerLine5 = [];
+        $this->customerId = [];
     }
 
     /**
-     * Returns Trailer Line 1.
-     * Trailer Line 1
+     * Returns Expire Date.
+     * Expire Date.
      */
-    public function getTrailerLine1(): ?string
+    public function getExpireDate(): ?string
     {
-        if (count($this->trailerLine1) == 0) {
+        if (count($this->expireDate) == 0) {
             return null;
         }
-        return $this->trailerLine1['value'];
+        return $this->expireDate['value'];
     }
 
     /**
-     * Sets Trailer Line 1.
-     * Trailer Line 1
+     * Sets Expire Date.
+     * Expire Date.
      *
-     * @maps trailer_line_1
+     * @maps expire_date
      */
-    public function setTrailerLine1(?string $trailerLine1): void
+    public function setExpireDate(?string $expireDate): void
     {
-        $this->trailerLine1['value'] = $trailerLine1;
+        $this->expireDate['value'] = $expireDate;
     }
 
     /**
-     * Unsets Trailer Line 1.
-     * Trailer Line 1
+     * Unsets Expire Date.
+     * Expire Date.
      */
-    public function unsetTrailerLine1(): void
+    public function unsetExpireDate(): void
     {
-        $this->trailerLine1 = [];
+        $this->expireDate = [];
     }
 
     /**
-     * Returns Trailer Line 2.
-     * Trailer Line 2
+     * Returns Allow Partial Pay.
+     * Allow partial pay
      */
-    public function getTrailerLine2(): ?string
+    public function getAllowPartialPay(): ?bool
     {
-        if (count($this->trailerLine2) == 0) {
+        return $this->allowPartialPay;
+    }
+
+    /**
+     * Sets Allow Partial Pay.
+     * Allow partial pay
+     *
+     * @maps allow_partial_pay
+     */
+    public function setAllowPartialPay(?bool $allowPartialPay): void
+    {
+        $this->allowPartialPay = $allowPartialPay;
+    }
+
+    /**
+     * Returns Attach Files to Email.
+     * Attach Files to Email
+     */
+    public function getAttachFilesToEmail(): ?bool
+    {
+        return $this->attachFilesToEmail;
+    }
+
+    /**
+     * Sets Attach Files to Email.
+     * Attach Files to Email
+     *
+     * @maps attach_files_to_email
+     */
+    public function setAttachFilesToEmail(?bool $attachFilesToEmail): void
+    {
+        $this->attachFilesToEmail = $attachFilesToEmail;
+    }
+
+    /**
+     * Returns Send Email.
+     * Send Email
+     */
+    public function getSendEmail(): ?bool
+    {
+        return $this->sendEmail;
+    }
+
+    /**
+     * Sets Send Email.
+     * Send Email
+     *
+     * @maps send_email
+     */
+    public function setSendEmail(?bool $sendEmail): void
+    {
+        $this->sendEmail = $sendEmail;
+    }
+
+    /**
+     * Returns Invoice Number.
+     * Invoice number
+     */
+    public function getInvoiceNumber(): ?string
+    {
+        if (count($this->invoiceNumber) == 0) {
             return null;
         }
-        return $this->trailerLine2['value'];
+        return $this->invoiceNumber['value'];
     }
 
     /**
-     * Sets Trailer Line 2.
-     * Trailer Line 2
+     * Sets Invoice Number.
+     * Invoice number
      *
-     * @maps trailer_line_2
+     * @maps invoice_number
      */
-    public function setTrailerLine2(?string $trailerLine2): void
+    public function setInvoiceNumber(?string $invoiceNumber): void
     {
-        $this->trailerLine2['value'] = $trailerLine2;
+        $this->invoiceNumber['value'] = $invoiceNumber;
     }
 
     /**
-     * Unsets Trailer Line 2.
-     * Trailer Line 2
+     * Unsets Invoice Number.
+     * Invoice number
      */
-    public function unsetTrailerLine2(): void
+    public function unsetInvoiceNumber(): void
     {
-        $this->trailerLine2 = [];
+        $this->invoiceNumber = [];
     }
 
     /**
-     * Returns Trailer Line 3.
-     * Trailer Line 3
+     * Returns Item Header.
+     * Item Header
      */
-    public function getTrailerLine3(): ?string
+    public function getItemHeader(): ?string
     {
-        if (count($this->trailerLine3) == 0) {
+        if (count($this->itemHeader) == 0) {
             return null;
         }
-        return $this->trailerLine3['value'];
+        return $this->itemHeader['value'];
     }
 
     /**
-     * Sets Trailer Line 3.
-     * Trailer Line 3
+     * Sets Item Header.
+     * Item Header
      *
-     * @maps trailer_line_3
+     * @maps item_header
      */
-    public function setTrailerLine3(?string $trailerLine3): void
+    public function setItemHeader(?string $itemHeader): void
     {
-        $this->trailerLine3['value'] = $trailerLine3;
+        $this->itemHeader['value'] = $itemHeader;
     }
 
     /**
-     * Unsets Trailer Line 3.
-     * Trailer Line 3
+     * Unsets Item Header.
+     * Item Header
      */
-    public function unsetTrailerLine3(): void
+    public function unsetItemHeader(): void
     {
-        $this->trailerLine3 = [];
+        $this->itemHeader = [];
     }
 
     /**
-     * Returns Trailer Line 4.
-     * Trailer Line 4
+     * Returns Item Footer.
+     * Item footer
      */
-    public function getTrailerLine4(): ?string
+    public function getItemFooter(): ?string
     {
-        if (count($this->trailerLine4) == 0) {
+        if (count($this->itemFooter) == 0) {
             return null;
         }
-        return $this->trailerLine4['value'];
+        return $this->itemFooter['value'];
     }
 
     /**
-     * Sets Trailer Line 4.
-     * Trailer Line 4
+     * Sets Item Footer.
+     * Item footer
      *
-     * @maps trailer_line_4
+     * @maps item_footer
      */
-    public function setTrailerLine4(?string $trailerLine4): void
+    public function setItemFooter(?string $itemFooter): void
     {
-        $this->trailerLine4['value'] = $trailerLine4;
+        $this->itemFooter['value'] = $itemFooter;
     }
 
     /**
-     * Unsets Trailer Line 4.
-     * Trailer Line 4
+     * Unsets Item Footer.
+     * Item footer
      */
-    public function unsetTrailerLine4(): void
+    public function unsetItemFooter(): void
     {
-        $this->trailerLine4 = [];
+        $this->itemFooter = [];
     }
 
     /**
-     * Returns Trailer Line 5.
-     * Trailer Line 5
+     * Returns Amount Due.
+     * Amount Due
      */
-    public function getTrailerLine5(): ?string
+    public function getAmountDue(): ?float
     {
-        if (count($this->trailerLine5) == 0) {
+        if (count($this->amountDue) == 0) {
             return null;
         }
-        return $this->trailerLine5['value'];
+        return $this->amountDue['value'];
     }
 
     /**
-     * Sets Trailer Line 5.
-     * Trailer Line 5
+     * Sets Amount Due.
+     * Amount Due
      *
-     * @maps trailer_line_5
+     * @maps amount_due
      */
-    public function setTrailerLine5(?string $trailerLine5): void
+    public function setAmountDue(?float $amountDue): void
     {
-        $this->trailerLine5['value'] = $trailerLine5;
+        $this->amountDue['value'] = $amountDue;
     }
 
     /**
-     * Unsets Trailer Line 5.
-     * Trailer Line 5
+     * Unsets Amount Due.
+     * Amount Due
      */
-    public function unsetTrailerLine5(): void
+    public function unsetAmountDue(): void
     {
-        $this->trailerLine5 = [];
+        $this->amountDue = [];
     }
 
     /**
-     * Returns Default Checkin.
-     * Default Checkin
+     * Returns Notification Email.
+     * Notification email
      */
-    public function getDefaultCheckin(): ?string
+    public function getNotificationEmail(): ?string
     {
-        if (count($this->defaultCheckin) == 0) {
+        if (count($this->notificationEmail) == 0) {
             return null;
         }
-        return $this->defaultCheckin['value'];
+        return $this->notificationEmail['value'];
     }
 
     /**
-     * Sets Default Checkin.
-     * Default Checkin
+     * Sets Notification Email.
+     * Notification email
      *
-     * @maps default_checkin
+     * @maps notification_email
      */
-    public function setDefaultCheckin(?string $defaultCheckin): void
+    public function setNotificationEmail(?string $notificationEmail): void
     {
-        $this->defaultCheckin['value'] = $defaultCheckin;
+        $this->notificationEmail['value'] = $notificationEmail;
     }
 
     /**
-     * Unsets Default Checkin.
-     * Default Checkin
+     * Unsets Notification Email.
+     * Notification email
      */
-    public function unsetDefaultCheckin(): void
+    public function unsetNotificationEmail(): void
     {
-        $this->defaultCheckin = [];
+        $this->notificationEmail = [];
     }
 
     /**
-     * Returns Default Checkout.
-     * Default Checkout
+     * Returns Status Id.
+     * (DEPRECATED) Status Id
      */
-    public function getDefaultCheckout(): ?string
+    public function getStatusId(): ?int
     {
-        if (count($this->defaultCheckout) == 0) {
+        if (count($this->statusId) == 0) {
             return null;
         }
-        return $this->defaultCheckout['value'];
+        return $this->statusId['value'];
     }
 
     /**
-     * Sets Default Checkout.
-     * Default Checkout
+     * Sets Status Id.
+     * (DEPRECATED) Status Id
      *
-     * @maps default_checkout
+     * @maps status_id
+     * @factory \FortisAPILib\Models\StatusIdEnum::checkValue
      */
-    public function setDefaultCheckout(?string $defaultCheckout): void
+    public function setStatusId(?int $statusId): void
     {
-        $this->defaultCheckout['value'] = $defaultCheckout;
+        $this->statusId['value'] = $statusId;
     }
 
     /**
-     * Unsets Default Checkout.
-     * Default Checkout
+     * Unsets Status Id.
+     * (DEPRECATED) Status Id
      */
-    public function unsetDefaultCheckout(): void
+    public function unsetStatusId(): void
     {
-        $this->defaultCheckout = [];
+        $this->statusId = [];
     }
 
     /**
-     * Returns Default Room Rate.
-     * Default Room Rate
+     * Returns Status Code.
+     * Status Code
      */
-    public function getDefaultRoomRate(): ?float
+    public function getStatusCode(): ?int
     {
-        if (count($this->defaultRoomRate) == 0) {
+        if (count($this->statusCode) == 0) {
             return null;
         }
-        return $this->defaultRoomRate['value'];
+        return $this->statusCode['value'];
     }
 
     /**
-     * Sets Default Room Rate.
-     * Default Room Rate
+     * Sets Status Code.
+     * Status Code
      *
-     * @maps default_room_rate
+     * @maps status_code
+     * @factory \FortisAPILib\Models\StatusCode12Enum::checkValue
      */
-    public function setDefaultRoomRate(?float $defaultRoomRate): void
+    public function setStatusCode(?int $statusCode): void
     {
-        $this->defaultRoomRate['value'] = $defaultRoomRate;
+        $this->statusCode['value'] = $statusCode;
     }
 
     /**
-     * Unsets Default Room Rate.
-     * Default Room Rate
+     * Unsets Status Code.
+     * Status Code
      */
-    public function unsetDefaultRoomRate(): void
+    public function unsetStatusCode(): void
     {
-        $this->defaultRoomRate = [];
+        $this->statusCode = [];
     }
 
     /**
-     * Returns Default Room Number.
-     * Default Room Number
+     * Returns Note.
+     * Note
      */
-    public function getDefaultRoomNumber(): ?string
+    public function getNote(): ?string
     {
-        if (count($this->defaultRoomNumber) == 0) {
+        if (count($this->note) == 0) {
             return null;
         }
-        return $this->defaultRoomNumber['value'];
+        return $this->note['value'];
     }
 
     /**
-     * Sets Default Room Number.
-     * Default Room Number
+     * Sets Note.
+     * Note
      *
-     * @maps default_room_number
+     * @maps note
      */
-    public function setDefaultRoomNumber(?string $defaultRoomNumber): void
+    public function setNote(?string $note): void
     {
-        $this->defaultRoomNumber['value'] = $defaultRoomNumber;
+        $this->note['value'] = $note;
     }
 
     /**
-     * Unsets Default Room Number.
-     * Default Room Number
+     * Unsets Note.
+     * Note
      */
-    public function unsetDefaultRoomNumber(): void
+    public function unsetNote(): void
     {
-        $this->defaultRoomNumber = [];
+        $this->note = [];
     }
 
     /**
-     * Returns Debit.
-     * Debit
+     * Returns Notification Days Before Due Date.
+     * Notification days before due date
      */
-    public function getDebit(): bool
+    public function getNotificationDaysBeforeDueDate(): ?int
     {
-        return $this->debit;
-    }
-
-    /**
-     * Sets Debit.
-     * Debit
-     *
-     * @required
-     * @maps debit
-     */
-    public function setDebit(bool $debit): void
-    {
-        $this->debit = $debit;
-    }
-
-    /**
-     * Returns Emv.
-     * EMV
-     */
-    public function getEmv(): bool
-    {
-        return $this->emv;
-    }
-
-    /**
-     * Sets Emv.
-     * EMV
-     *
-     * @required
-     * @maps emv
-     */
-    public function setEmv(bool $emv): void
-    {
-        $this->emv = $emv;
-    }
-
-    /**
-     * Returns Cashback Enable.
-     * Cashback Enable
-     */
-    public function getCashbackEnable(): bool
-    {
-        return $this->cashbackEnable;
-    }
-
-    /**
-     * Sets Cashback Enable.
-     * Cashback Enable
-     *
-     * @required
-     * @maps cashback_enable
-     */
-    public function setCashbackEnable(bool $cashbackEnable): void
-    {
-        $this->cashbackEnable = $cashbackEnable;
-    }
-
-    /**
-     * Returns Print Enable.
-     * Print Enable
-     */
-    public function getPrintEnable(): bool
-    {
-        return $this->printEnable;
-    }
-
-    /**
-     * Sets Print Enable.
-     * Print Enable
-     *
-     * @required
-     * @maps print_enable
-     */
-    public function setPrintEnable(bool $printEnable): void
-    {
-        $this->printEnable = $printEnable;
-    }
-
-    /**
-     * Returns Sig Capture Enable.
-     * Sig Capture Enable
-     */
-    public function getSigCaptureEnable(): bool
-    {
-        return $this->sigCaptureEnable;
-    }
-
-    /**
-     * Sets Sig Capture Enable.
-     * Sig Capture Enable
-     *
-     * @required
-     * @maps sig_capture_enable
-     */
-    public function setSigCaptureEnable(bool $sigCaptureEnable): void
-    {
-        $this->sigCaptureEnable = $sigCaptureEnable;
-    }
-
-    /**
-     * Returns Is Provisioned.
-     * Is Provisioned
-     */
-    public function getIsProvisioned(): ?bool
-    {
-        return $this->isProvisioned;
-    }
-
-    /**
-     * Sets Is Provisioned.
-     * Is Provisioned
-     *
-     * @maps is_provisioned
-     */
-    public function setIsProvisioned(?bool $isProvisioned): void
-    {
-        $this->isProvisioned = $isProvisioned;
-    }
-
-    /**
-     * Returns Tip Enable.
-     * Tip Enable
-     */
-    public function getTipEnable(): ?bool
-    {
-        return $this->tipEnable;
-    }
-
-    /**
-     * Sets Tip Enable.
-     * Tip Enable
-     *
-     * @maps tip_enable
-     */
-    public function setTipEnable(?bool $tipEnable): void
-    {
-        $this->tipEnable = $tipEnable;
-    }
-
-    /**
-     * Returns Validated Decryption.
-     * Validated Decryption
-     */
-    public function getValidatedDecryption(): ?bool
-    {
-        return $this->validatedDecryption;
-    }
-
-    /**
-     * Sets Validated Decryption.
-     * Validated Decryption
-     *
-     * @maps validated_decryption
-     */
-    public function setValidatedDecryption(?bool $validatedDecryption): void
-    {
-        $this->validatedDecryption = $validatedDecryption;
-    }
-
-    /**
-     * Returns Communication Type.
-     * Communication Type
-     */
-    public function getCommunicationType(): ?string
-    {
-        if (count($this->communicationType) == 0) {
+        if (count($this->notificationDaysBeforeDueDate) == 0) {
             return null;
         }
-        return $this->communicationType['value'];
+        return $this->notificationDaysBeforeDueDate['value'];
     }
 
     /**
-     * Sets Communication Type.
-     * Communication Type
+     * Sets Notification Days Before Due Date.
+     * Notification days before due date
      *
-     * @maps communication_type
-     * @factory \FortisAPILib\Models\CommunicationTypeEnum::checkValue
+     * @maps notification_days_before_due_date
      */
-    public function setCommunicationType(?string $communicationType): void
+    public function setNotificationDaysBeforeDueDate(?int $notificationDaysBeforeDueDate): void
     {
-        $this->communicationType['value'] = $communicationType;
+        $this->notificationDaysBeforeDueDate['value'] = $notificationDaysBeforeDueDate;
     }
 
     /**
-     * Unsets Communication Type.
-     * Communication Type
+     * Unsets Notification Days Before Due Date.
+     * Notification days before due date
      */
-    public function unsetCommunicationType(): void
+    public function unsetNotificationDaysBeforeDueDate(): void
     {
-        $this->communicationType = [];
+        $this->notificationDaysBeforeDueDate = [];
+    }
+
+    /**
+     * Returns Notification Days After Due Date.
+     * Notification days after due date
+     */
+    public function getNotificationDaysAfterDueDate(): ?int
+    {
+        if (count($this->notificationDaysAfterDueDate) == 0) {
+            return null;
+        }
+        return $this->notificationDaysAfterDueDate['value'];
+    }
+
+    /**
+     * Sets Notification Days After Due Date.
+     * Notification days after due date
+     *
+     * @maps notification_days_after_due_date
+     */
+    public function setNotificationDaysAfterDueDate(?int $notificationDaysAfterDueDate): void
+    {
+        $this->notificationDaysAfterDueDate['value'] = $notificationDaysAfterDueDate;
+    }
+
+    /**
+     * Unsets Notification Days After Due Date.
+     * Notification days after due date
+     */
+    public function unsetNotificationDaysAfterDueDate(): void
+    {
+        $this->notificationDaysAfterDueDate = [];
+    }
+
+    /**
+     * Returns Notification on Due Date.
+     * Notification on due date
+     */
+    public function getNotificationOnDueDate(): ?bool
+    {
+        return $this->notificationOnDueDate;
+    }
+
+    /**
+     * Sets Notification on Due Date.
+     * Notification on due date
+     *
+     * @maps notification_on_due_date
+     */
+    public function setNotificationOnDueDate(?bool $notificationOnDueDate): void
+    {
+        $this->notificationOnDueDate = $notificationOnDueDate;
+    }
+
+    /**
+     * Returns Send Text to Pay.
+     * Send Text To Pay
+     */
+    public function getSendTextToPay(): ?bool
+    {
+        return $this->sendTextToPay;
+    }
+
+    /**
+     * Sets Send Text to Pay.
+     * Send Text To Pay
+     *
+     * @maps send_text_to_pay
+     */
+    public function setSendTextToPay(?bool $sendTextToPay): void
+    {
+        $this->sendTextToPay = $sendTextToPay;
+    }
+
+    /**
+     * Returns Files.
+     * File Information on `expand`
+     *
+     * @return File[]|null
+     */
+    public function getFiles(): ?array
+    {
+        return $this->files;
+    }
+
+    /**
+     * Sets Files.
+     * File Information on `expand`
+     *
+     * @maps files
+     *
+     * @param File[]|null $files
+     */
+    public function setFiles(?array $files): void
+    {
+        $this->files = $files;
+    }
+
+    /**
+     * Returns Remaining Balance.
+     * Remaining Balance
+     */
+    public function getRemainingBalance(): ?float
+    {
+        if (count($this->remainingBalance) == 0) {
+            return null;
+        }
+        return $this->remainingBalance['value'];
+    }
+
+    /**
+     * Sets Remaining Balance.
+     * Remaining Balance
+     *
+     * @maps remaining_balance
+     */
+    public function setRemainingBalance(?float $remainingBalance): void
+    {
+        $this->remainingBalance['value'] = $remainingBalance;
+    }
+
+    /**
+     * Unsets Remaining Balance.
+     * Remaining Balance
+     */
+    public function unsetRemainingBalance(): void
+    {
+        $this->remainingBalance = [];
+    }
+
+    /**
+     * Returns Single Payment Min Amount.
+     * Single Payment Min Amount
+     */
+    public function getSinglePaymentMinAmount(): ?int
+    {
+        if (count($this->singlePaymentMinAmount) == 0) {
+            return null;
+        }
+        return $this->singlePaymentMinAmount['value'];
+    }
+
+    /**
+     * Sets Single Payment Min Amount.
+     * Single Payment Min Amount
+     *
+     * @maps single_payment_min_amount
+     */
+    public function setSinglePaymentMinAmount(?int $singlePaymentMinAmount): void
+    {
+        $this->singlePaymentMinAmount['value'] = $singlePaymentMinAmount;
+    }
+
+    /**
+     * Unsets Single Payment Min Amount.
+     * Single Payment Min Amount
+     */
+    public function unsetSinglePaymentMinAmount(): void
+    {
+        $this->singlePaymentMinAmount = [];
+    }
+
+    /**
+     * Returns Single Payment Max Amount.
+     * Single Payment Max Amount
+     */
+    public function getSinglePaymentMaxAmount(): ?int
+    {
+        if (count($this->singlePaymentMaxAmount) == 0) {
+            return null;
+        }
+        return $this->singlePaymentMaxAmount['value'];
+    }
+
+    /**
+     * Sets Single Payment Max Amount.
+     * Single Payment Max Amount
+     *
+     * @maps single_payment_max_amount
+     */
+    public function setSinglePaymentMaxAmount(?int $singlePaymentMaxAmount): void
+    {
+        $this->singlePaymentMaxAmount['value'] = $singlePaymentMaxAmount;
+    }
+
+    /**
+     * Unsets Single Payment Max Amount.
+     * Single Payment Max Amount
+     */
+    public function unsetSinglePaymentMaxAmount(): void
+    {
+        $this->singlePaymentMaxAmount = [];
+    }
+
+    /**
+     * Returns Cell Phone.
+     * Cell Phone
+     */
+    public function getCellPhone(): ?string
+    {
+        if (count($this->cellPhone) == 0) {
+            return null;
+        }
+        return $this->cellPhone['value'];
+    }
+
+    /**
+     * Sets Cell Phone.
+     * Cell Phone
+     *
+     * @maps cell_phone
+     */
+    public function setCellPhone(?string $cellPhone): void
+    {
+        $this->cellPhone['value'] = $cellPhone;
+    }
+
+    /**
+     * Unsets Cell Phone.
+     * Cell Phone
+     */
+    public function unsetCellPhone(): void
+    {
+        $this->cellPhone = [];
+    }
+
+    /**
+     * Returns Tags.
+     * Tag Information on `expand`
+     *
+     * @return Tag[]|null
+     */
+    public function getTags(): ?array
+    {
+        return $this->tags;
+    }
+
+    /**
+     * Sets Tags.
+     * Tag Information on `expand`
+     *
+     * @maps tags
+     *
+     * @param Tag[]|null $tags
+     */
+    public function setTags(?array $tags): void
+    {
+        $this->tags = $tags;
+    }
+
+    /**
+     * Returns Quick Invoice C1.
+     * Custom field 1 for api users to store custom data
+     */
+    public function getQuickInvoiceC1(): ?string
+    {
+        if (count($this->quickInvoiceC1) == 0) {
+            return null;
+        }
+        return $this->quickInvoiceC1['value'];
+    }
+
+    /**
+     * Sets Quick Invoice C1.
+     * Custom field 1 for api users to store custom data
+     *
+     * @maps quick_invoice_c1
+     */
+    public function setQuickInvoiceC1(?string $quickInvoiceC1): void
+    {
+        $this->quickInvoiceC1['value'] = $quickInvoiceC1;
+    }
+
+    /**
+     * Unsets Quick Invoice C1.
+     * Custom field 1 for api users to store custom data
+     */
+    public function unsetQuickInvoiceC1(): void
+    {
+        $this->quickInvoiceC1 = [];
+    }
+
+    /**
+     * Returns Quick Invoice C2.
+     * Custom field 2 for api users to store custom data
+     */
+    public function getQuickInvoiceC2(): ?string
+    {
+        if (count($this->quickInvoiceC2) == 0) {
+            return null;
+        }
+        return $this->quickInvoiceC2['value'];
+    }
+
+    /**
+     * Sets Quick Invoice C2.
+     * Custom field 2 for api users to store custom data
+     *
+     * @maps quick_invoice_c2
+     */
+    public function setQuickInvoiceC2(?string $quickInvoiceC2): void
+    {
+        $this->quickInvoiceC2['value'] = $quickInvoiceC2;
+    }
+
+    /**
+     * Unsets Quick Invoice C2.
+     * Custom field 2 for api users to store custom data
+     */
+    public function unsetQuickInvoiceC2(): void
+    {
+        $this->quickInvoiceC2 = [];
+    }
+
+    /**
+     * Returns Quick Invoice C3.
+     * Custom field 1 for api users to store custom data
+     */
+    public function getQuickInvoiceC3(): ?string
+    {
+        if (count($this->quickInvoiceC3) == 0) {
+            return null;
+        }
+        return $this->quickInvoiceC3['value'];
+    }
+
+    /**
+     * Sets Quick Invoice C3.
+     * Custom field 1 for api users to store custom data
+     *
+     * @maps quick_invoice_c3
+     */
+    public function setQuickInvoiceC3(?string $quickInvoiceC3): void
+    {
+        $this->quickInvoiceC3['value'] = $quickInvoiceC3;
+    }
+
+    /**
+     * Unsets Quick Invoice C3.
+     * Custom field 1 for api users to store custom data
+     */
+    public function unsetQuickInvoiceC3(): void
+    {
+        $this->quickInvoiceC3 = [];
+    }
+
+    /**
+     * Returns Auto Reopen.
+     * Auto Reopen. If set to true, a void, refund or detachment of a Transaction Payment will cause the
+     * QuickInvoice to be opened again
+     */
+    public function getAutoReopen(): ?bool
+    {
+        return $this->autoReopen;
+    }
+
+    /**
+     * Sets Auto Reopen.
+     * Auto Reopen. If set to true, a void, refund or detachment of a Transaction Payment will cause the
+     * QuickInvoice to be opened again
+     *
+     * @maps auto_reopen
+     */
+    public function setAutoReopen(?bool $autoReopen): void
+    {
+        $this->autoReopen = $autoReopen;
     }
 
     /**
      * Returns Id.
-     * Terminal ID
+     * Quick Invoice ID
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
 
     /**
      * Sets Id.
-     * Terminal ID
+     * Quick Invoice ID
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -1369,7 +1469,7 @@ class List10 implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -1378,10 +1478,9 @@ class List10 implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -1390,7 +1489,7 @@ class List10 implements \JsonSerializable
      * Returns Modified Ts.
      * Modified Time Stamp
      */
-    public function getModifiedTs(): int
+    public function getModifiedTs(): ?int
     {
         return $this->modifiedTs;
     }
@@ -1399,75 +1498,191 @@ class List10 implements \JsonSerializable
      * Sets Modified Ts.
      * Modified Time Stamp
      *
-     * @required
      * @maps modified_ts
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setModifiedTs(?int $modifiedTs): void
     {
         $this->modifiedTs = $modifiedTs;
     }
 
     /**
-     * Returns Last Registration Ts.
-     * Modified Time Stamp
-     */
-    public function getLastRegistrationTs(): int
-    {
-        return $this->lastRegistrationTs;
-    }
-
-    /**
-     * Sets Last Registration Ts.
-     * Modified Time Stamp
-     *
-     * @required
-     * @maps last_registration_ts
-     */
-    public function setLastRegistrationTs(int $lastRegistrationTs): void
-    {
-        $this->lastRegistrationTs = $lastRegistrationTs;
-    }
-
-    /**
      * Returns Created User Id.
-     * User ID Created the register
+     * Created User Id
      */
-    public function getCreatedUserId(): string
+    public function getCreatedUserId(): ?string
     {
-        return $this->createdUserId;
+        if (count($this->createdUserId) == 0) {
+            return null;
+        }
+        return $this->createdUserId['value'];
     }
 
     /**
      * Sets Created User Id.
-     * User ID Created the register
+     * Created User Id
      *
-     * @required
      * @maps created_user_id
      */
-    public function setCreatedUserId(string $createdUserId): void
+    public function setCreatedUserId(?string $createdUserId): void
     {
-        $this->createdUserId = $createdUserId;
+        $this->createdUserId['value'] = $createdUserId;
+    }
+
+    /**
+     * Unsets Created User Id.
+     * Created User Id
+     */
+    public function unsetCreatedUserId(): void
+    {
+        $this->createdUserId = [];
     }
 
     /**
      * Returns Modified User Id.
-     * Last User ID that updated the register
+     * Modified User Id
      */
-    public function getModifiedUserId(): string
+    public function getModifiedUserId(): ?string
     {
-        return $this->modifiedUserId;
+        if (count($this->modifiedUserId) == 0) {
+            return null;
+        }
+        return $this->modifiedUserId['value'];
     }
 
     /**
      * Sets Modified User Id.
-     * Last User ID that updated the register
+     * Modified User Id
      *
-     * @required
      * @maps modified_user_id
      */
-    public function setModifiedUserId(string $modifiedUserId): void
+    public function setModifiedUserId(?string $modifiedUserId): void
     {
-        $this->modifiedUserId = $modifiedUserId;
+        $this->modifiedUserId['value'] = $modifiedUserId;
+    }
+
+    /**
+     * Unsets Modified User Id.
+     * Modified User Id
+     */
+    public function unsetModifiedUserId(): void
+    {
+        $this->modifiedUserId = [];
+    }
+
+    /**
+     * Returns Active.
+     * Active status
+     */
+    public function getActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    /**
+     * Sets Active.
+     * Active status
+     *
+     * @maps active
+     */
+    public function setActive(?bool $active): void
+    {
+        $this->active = $active;
+    }
+
+    /**
+     * Returns Payment Status Id.
+     * Payment Status Id
+     */
+    public function getPaymentStatusId(): ?int
+    {
+        if (count($this->paymentStatusId) == 0) {
+            return null;
+        }
+        return $this->paymentStatusId['value'];
+    }
+
+    /**
+     * Sets Payment Status Id.
+     * Payment Status Id
+     *
+     * @maps payment_status_id
+     */
+    public function setPaymentStatusId(?int $paymentStatusId): void
+    {
+        $this->paymentStatusId['value'] = $paymentStatusId;
+    }
+
+    /**
+     * Unsets Payment Status Id.
+     * Payment Status Id
+     */
+    public function unsetPaymentStatusId(): void
+    {
+        $this->paymentStatusId = [];
+    }
+
+    /**
+     * Returns Is Active.
+     * Register is active
+     */
+    public function getIsActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * Sets Is Active.
+     * Register is active
+     *
+     * @maps is_active
+     */
+    public function setIsActive(?bool $isActive): void
+    {
+        $this->isActive = $isActive;
+    }
+
+    /**
+     * Returns Quick Invoice Setting.
+     * Quick Invoice Setting Information on `expand`
+     */
+    public function getQuickInvoiceSetting(): ?QuickInvoiceSetting
+    {
+        return $this->quickInvoiceSetting;
+    }
+
+    /**
+     * Sets Quick Invoice Setting.
+     * Quick Invoice Setting Information on `expand`
+     *
+     * @maps quick_invoice_setting
+     */
+    public function setQuickInvoiceSetting(?QuickInvoiceSetting $quickInvoiceSetting): void
+    {
+        $this->quickInvoiceSetting = $quickInvoiceSetting;
+    }
+
+    /**
+     * Returns Quick Invoice Views.
+     * Quick Invoice View Information on `expand`
+     *
+     * @return QuickInvoiceView[]|null
+     */
+    public function getQuickInvoiceViews(): ?array
+    {
+        return $this->quickInvoiceViews;
+    }
+
+    /**
+     * Sets Quick Invoice Views.
+     * Quick Invoice View Information on `expand`
+     *
+     * @maps quick_invoice_views
+     *
+     * @param QuickInvoiceView[]|null $quickInvoiceViews
+     */
+    public function setQuickInvoiceViews(?array $quickInvoiceViews): void
+    {
+        $this->quickInvoiceViews = $quickInvoiceViews;
     }
 
     /**
@@ -1511,23 +1726,23 @@ class List10 implements \JsonSerializable
     }
 
     /**
-     * Returns Terminal Application.
-     * Terminal Application Information on `expand`
+     * Returns Modified User.
+     * Modified User Information on `expand`
      */
-    public function getTerminalApplication(): ?TerminalApplication
+    public function getModifiedUser(): ?ModifiedUser
     {
-        return $this->terminalApplication;
+        return $this->modifiedUser;
     }
 
     /**
-     * Sets Terminal Application.
-     * Terminal Application Information on `expand`
+     * Sets Modified User.
+     * Modified User Information on `expand`
      *
-     * @maps terminal_application
+     * @maps modified_user
      */
-    public function setTerminalApplication(?TerminalApplication $terminalApplication): void
+    public function setModifiedUser(?ModifiedUser $modifiedUser): void
     {
-        $this->terminalApplication = $terminalApplication;
+        $this->modifiedUser = $modifiedUser;
     }
 
     /**
@@ -1555,87 +1770,308 @@ class List10 implements \JsonSerializable
     }
 
     /**
-     * Returns Terminal Routers.
-     * Terminal Router Information on `expand`
+     * Returns Contact.
+     * Contact Information on `expand`
+     */
+    public function getContact(): ?Contact1
+    {
+        return $this->contact;
+    }
+
+    /**
+     * Sets Contact.
+     * Contact Information on `expand`
      *
-     * @return TerminalRouter[]|null
+     * @maps contact
      */
-    public function getTerminalRouters(): ?array
+    public function setContact(?Contact1 $contact): void
     {
-        return $this->terminalRouters;
+        $this->contact = $contact;
     }
 
     /**
-     * Sets Terminal Routers.
-     * Terminal Router Information on `expand`
+     * Returns Log Emails.
+     * Log Email Information on `expand`
      *
-     * @maps terminal_routers
+     * @return LogEmail[]|null
+     */
+    public function getLogEmails(): ?array
+    {
+        return $this->logEmails;
+    }
+
+    /**
+     * Sets Log Emails.
+     * Log Email Information on `expand`
      *
-     * @param TerminalRouter[]|null $terminalRouters
-     */
-    public function setTerminalRouters(?array $terminalRouters): void
-    {
-        $this->terminalRouters = $terminalRouters;
-    }
-
-    /**
-     * Returns Has Terminal Routers.
-     * Has Terminal Router Information on `expand`
-     */
-    public function getHasTerminalRouters(): ?bool
-    {
-        return $this->hasTerminalRouters;
-    }
-
-    /**
-     * Sets Has Terminal Routers.
-     * Has Terminal Router Information on `expand`
+     * @maps log_emails
      *
-     * @maps has_terminal_routers
+     * @param LogEmail[]|null $logEmails
      */
-    public function setHasTerminalRouters(?bool $hasTerminalRouters): void
+    public function setLogEmails(?array $logEmails): void
     {
-        $this->hasTerminalRouters = $hasTerminalRouters;
+        $this->logEmails = $logEmails;
     }
 
     /**
-     * Returns Terminal Cvm.
-     * Terminal Cvm Information on `expand`
+     * Returns Log Sms.
+     * Log Sms Information on `expand`
      */
-    public function getTerminalCvm(): ?TerminalCvm
+    public function getLogSms(): ?LogSms
     {
-        return $this->terminalCvm;
+        return $this->logSms;
     }
 
     /**
-     * Sets Terminal Cvm.
-     * Terminal Cvm Information on `expand`
+     * Sets Log Sms.
+     * Log Sms Information on `expand`
      *
-     * @maps terminal_cvm
+     * @maps log_sms
      */
-    public function setTerminalCvm(?TerminalCvm $terminalCvm): void
+    public function setLogSms(?LogSms $logSms): void
     {
-        $this->terminalCvm = $terminalCvm;
+        $this->logSms = $logSms;
     }
 
     /**
-     * Returns Terminal Manufacturer.
-     * Terminal Manufacturer Information on `expand`
-     */
-    public function getTerminalManufacturer(): ?TerminalManufacturer
-    {
-        return $this->terminalManufacturer;
-    }
-
-    /**
-     * Sets Terminal Manufacturer.
-     * Terminal Manufacturer Information on `expand`
+     * Returns Transactions.
+     * Transaction Information on `expand`
      *
-     * @maps terminal_manufacturer
+     * @return Transaction[]|null
      */
-    public function setTerminalManufacturer(?TerminalManufacturer $terminalManufacturer): void
+    public function getTransactions(): ?array
     {
-        $this->terminalManufacturer = $terminalManufacturer;
+        return $this->transactions;
+    }
+
+    /**
+     * Sets Transactions.
+     * Transaction Information on `expand`
+     *
+     * @maps transactions
+     *
+     * @param Transaction[]|null $transactions
+     */
+    public function setTransactions(?array $transactions): void
+    {
+        $this->transactions = $transactions;
+    }
+
+    /**
+     * Returns Cc Product Transaction.
+     * Cc Product Transaction Information on `expand`
+     */
+    public function getCcProductTransaction(): ?CcProductTransaction
+    {
+        return $this->ccProductTransaction;
+    }
+
+    /**
+     * Sets Cc Product Transaction.
+     * Cc Product Transaction Information on `expand`
+     *
+     * @maps cc_product_transaction
+     */
+    public function setCcProductTransaction(?CcProductTransaction $ccProductTransaction): void
+    {
+        $this->ccProductTransaction = $ccProductTransaction;
+    }
+
+    /**
+     * Returns Ach Product Transaction.
+     * Ach Product Transaction Information on `expand`
+     */
+    public function getAchProductTransaction(): ?AchProductTransaction
+    {
+        return $this->achProductTransaction;
+    }
+
+    /**
+     * Sets Ach Product Transaction.
+     * Ach Product Transaction Information on `expand`
+     *
+     * @maps ach_product_transaction
+     */
+    public function setAchProductTransaction(?AchProductTransaction $achProductTransaction): void
+    {
+        $this->achProductTransaction = $achProductTransaction;
+    }
+
+    /**
+     * Returns Email Blacklist.
+     * Email Blacklist Information on `expand`
+     */
+    public function getEmailBlacklist(): ?EmailBlacklist
+    {
+        return $this->emailBlacklist;
+    }
+
+    /**
+     * Sets Email Blacklist.
+     * Email Blacklist Information on `expand`
+     *
+     * @maps email_blacklist
+     */
+    public function setEmailBlacklist(?EmailBlacklist $emailBlacklist): void
+    {
+        $this->emailBlacklist = $emailBlacklist;
+    }
+
+    /**
+     * Returns Sms Blacklist.
+     * Sms Blacklist Information on `expand`
+     */
+    public function getSmsBlacklist(): ?SmsBlacklist
+    {
+        return $this->smsBlacklist;
+    }
+
+    /**
+     * Sets Sms Blacklist.
+     * Sms Blacklist Information on `expand`
+     *
+     * @maps sms_blacklist
+     */
+    public function setSmsBlacklist(?SmsBlacklist $smsBlacklist): void
+    {
+        $this->smsBlacklist = $smsBlacklist;
+    }
+
+    /**
+     * Returns Payment Url.
+     * Payment Url Information on `expand`
+     */
+    public function getPaymentUrl(): ?string
+    {
+        if (count($this->paymentUrl) == 0) {
+            return null;
+        }
+        return $this->paymentUrl['value'];
+    }
+
+    /**
+     * Sets Payment Url.
+     * Payment Url Information on `expand`
+     *
+     * @maps payment_url
+     */
+    public function setPaymentUrl(?string $paymentUrl): void
+    {
+        $this->paymentUrl['value'] = $paymentUrl;
+    }
+
+    /**
+     * Unsets Payment Url.
+     * Payment Url Information on `expand`
+     */
+    public function unsetPaymentUrl(): void
+    {
+        $this->paymentUrl = [];
+    }
+
+    /**
+     * Converts the List10 object to a human-readable string representation.
+     *
+     * @return string The string representation of the List10 object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'List10',
+            [
+                'locationId' => $this->getLocationId(),
+                'title' => $this->title,
+                'ccProductTransactionId' => $this->getCcProductTransactionId(),
+                'achProductTransactionId' => $this->getAchProductTransactionId(),
+                'dueDate' => $this->dueDate,
+                'itemList' => $this->itemList,
+                'allowOverpayment' => $this->allowOverpayment,
+                'bankFundedOnlyOverride' => $this->getBankFundedOnlyOverride(),
+                'email' => $this->getEmail(),
+                'contactId' => $this->getContactId(),
+                'contactApiId' => $this->getContactApiId(),
+                'quickInvoiceApiId' => $this->getQuickInvoiceApiId(),
+                'customerId' => $this->getCustomerId(),
+                'expireDate' => $this->getExpireDate(),
+                'allowPartialPay' => $this->allowPartialPay,
+                'attachFilesToEmail' => $this->attachFilesToEmail,
+                'sendEmail' => $this->sendEmail,
+                'invoiceNumber' => $this->getInvoiceNumber(),
+                'itemHeader' => $this->getItemHeader(),
+                'itemFooter' => $this->getItemFooter(),
+                'amountDue' => $this->getAmountDue(),
+                'notificationEmail' => $this->getNotificationEmail(),
+                'statusId' => $this->getStatusId(),
+                'statusCode' => $this->getStatusCode(),
+                'note' => $this->getNote(),
+                'notificationDaysBeforeDueDate' => $this->getNotificationDaysBeforeDueDate(),
+                'notificationDaysAfterDueDate' => $this->getNotificationDaysAfterDueDate(),
+                'notificationOnDueDate' => $this->notificationOnDueDate,
+                'sendTextToPay' => $this->sendTextToPay,
+                'files' => $this->files,
+                'remainingBalance' => $this->getRemainingBalance(),
+                'singlePaymentMinAmount' => $this->getSinglePaymentMinAmount(),
+                'singlePaymentMaxAmount' => $this->getSinglePaymentMaxAmount(),
+                'cellPhone' => $this->getCellPhone(),
+                'tags' => $this->tags,
+                'quickInvoiceC1' => $this->getQuickInvoiceC1(),
+                'quickInvoiceC2' => $this->getQuickInvoiceC2(),
+                'quickInvoiceC3' => $this->getQuickInvoiceC3(),
+                'autoReopen' => $this->autoReopen,
+                'id' => $this->id,
+                'createdTs' => $this->createdTs,
+                'modifiedTs' => $this->modifiedTs,
+                'createdUserId' => $this->getCreatedUserId(),
+                'modifiedUserId' => $this->getModifiedUserId(),
+                'active' => $this->active,
+                'paymentStatusId' => $this->getPaymentStatusId(),
+                'isActive' => $this->isActive,
+                'quickInvoiceSetting' => $this->quickInvoiceSetting,
+                'quickInvoiceViews' => $this->quickInvoiceViews,
+                'location' => $this->location,
+                'createdUser' => $this->createdUser,
+                'modifiedUser' => $this->modifiedUser,
+                'changelogs' => $this->changelogs,
+                'contact' => $this->contact,
+                'logEmails' => $this->logEmails,
+                'logSms' => $this->logSms,
+                'transactions' => $this->transactions,
+                'ccProductTransaction' => $this->ccProductTransaction,
+                'achProductTransaction' => $this->achProductTransaction,
+                'emailBlacklist' => $this->emailBlacklist,
+                'smsBlacklist' => $this->smsBlacklist,
+                'paymentUrl' => $this->getPaymentUrl(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -1650,136 +2086,193 @@ class List10 implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['location_id']                        = $this->locationId;
-        if (!empty($this->defaultProductTransactionId)) {
-            $json['default_product_transaction_id'] = $this->defaultProductTransactionId['value'];
+        if (!empty($this->locationId)) {
+            $json['location_id']                       = $this->locationId['value'];
         }
-        $json['terminal_application_id']            = $this->terminalApplicationId;
-        if (!empty($this->terminalCvmId)) {
-            $json['terminal_cvm_id']                = $this->terminalCvmId['value'];
+        if (isset($this->title)) {
+            $json['title']                             = $this->title;
         }
-        $json['terminal_manufacturer_code']         =
-            TerminalManufacturerCodeEnum::checkValue(
-                $this->terminalManufacturerCode
-            );
-        $json['title']                              = $this->title;
-        if (!empty($this->macAddress)) {
-            $json['mac_address']                    = $this->macAddress['value'];
+        if (!empty($this->ccProductTransactionId)) {
+            $json['cc_product_transaction_id']         = $this->ccProductTransactionId['value'];
         }
-        if (isset($this->localIpAddress)) {
-            $json['local_ip_address']               = $this->localIpAddress;
+        if (!empty($this->achProductTransactionId)) {
+            $json['ach_product_transaction_id']        = $this->achProductTransactionId['value'];
         }
-        if (isset($this->port)) {
-            $json['port']                           = $this->port;
+        if (isset($this->dueDate)) {
+            $json['due_date']                          = $this->dueDate;
         }
-        $json['serial_number']                      = $this->serialNumber;
-        if (isset($this->terminalNumber)) {
-            $json['terminal_number']                = $this->terminalNumber;
+        if (isset($this->itemList)) {
+            $json['item_list']                         = $this->itemList;
         }
-        if (isset($this->terminalTimeouts)) {
-            $json['terminal_timeouts']              = $this->terminalTimeouts;
+        if (isset($this->allowOverpayment)) {
+            $json['allow_overpayment']                 = $this->allowOverpayment;
         }
-        if (isset($this->tipPercents)) {
-            $json['tip_percents']                   = $this->tipPercents;
+        if (!empty($this->bankFundedOnlyOverride)) {
+            $json['bank_funded_only_override']         = $this->bankFundedOnlyOverride['value'];
         }
-        if (!empty($this->locationApiId)) {
-            $json['location_api_id']                = $this->locationApiId['value'];
+        if (!empty($this->email)) {
+            $json['email']                             = $this->email['value'];
         }
-        if (!empty($this->terminalApiId)) {
-            $json['terminal_api_id']                = $this->terminalApiId['value'];
+        if (!empty($this->contactId)) {
+            $json['contact_id']                        = $this->contactId['value'];
         }
-        if (!empty($this->headerLine1)) {
-            $json['header_line_1']                  = $this->headerLine1['value'];
+        if (!empty($this->contactApiId)) {
+            $json['contact_api_id']                    = $this->contactApiId['value'];
         }
-        if (!empty($this->headerLine2)) {
-            $json['header_line_2']                  = $this->headerLine2['value'];
+        if (!empty($this->quickInvoiceApiId)) {
+            $json['quick_invoice_api_id']              = $this->quickInvoiceApiId['value'];
         }
-        if (!empty($this->headerLine3)) {
-            $json['header_line_3']                  = $this->headerLine3['value'];
+        if (!empty($this->customerId)) {
+            $json['customer_id']                       = $this->customerId['value'];
         }
-        if (!empty($this->headerLine4)) {
-            $json['header_line_4']                  = $this->headerLine4['value'];
+        if (!empty($this->expireDate)) {
+            $json['expire_date']                       = $this->expireDate['value'];
         }
-        if (!empty($this->headerLine5)) {
-            $json['header_line_5']                  = $this->headerLine5['value'];
+        if (isset($this->allowPartialPay)) {
+            $json['allow_partial_pay']                 = $this->allowPartialPay;
         }
-        if (!empty($this->trailerLine1)) {
-            $json['trailer_line_1']                 = $this->trailerLine1['value'];
+        if (isset($this->attachFilesToEmail)) {
+            $json['attach_files_to_email']             = $this->attachFilesToEmail;
         }
-        if (!empty($this->trailerLine2)) {
-            $json['trailer_line_2']                 = $this->trailerLine2['value'];
+        if (isset($this->sendEmail)) {
+            $json['send_email']                        = $this->sendEmail;
         }
-        if (!empty($this->trailerLine3)) {
-            $json['trailer_line_3']                 = $this->trailerLine3['value'];
+        if (!empty($this->invoiceNumber)) {
+            $json['invoice_number']                    = $this->invoiceNumber['value'];
         }
-        if (!empty($this->trailerLine4)) {
-            $json['trailer_line_4']                 = $this->trailerLine4['value'];
+        if (!empty($this->itemHeader)) {
+            $json['item_header']                       = $this->itemHeader['value'];
         }
-        if (!empty($this->trailerLine5)) {
-            $json['trailer_line_5']                 = $this->trailerLine5['value'];
+        if (!empty($this->itemFooter)) {
+            $json['item_footer']                       = $this->itemFooter['value'];
         }
-        if (!empty($this->defaultCheckin)) {
-            $json['default_checkin']                = $this->defaultCheckin['value'];
+        if (!empty($this->amountDue)) {
+            $json['amount_due']                        = $this->amountDue['value'];
         }
-        if (!empty($this->defaultCheckout)) {
-            $json['default_checkout']               = $this->defaultCheckout['value'];
+        if (!empty($this->notificationEmail)) {
+            $json['notification_email']                = $this->notificationEmail['value'];
         }
-        if (!empty($this->defaultRoomRate)) {
-            $json['default_room_rate']              = $this->defaultRoomRate['value'];
+        if (!empty($this->statusId)) {
+            $json['status_id']                         = StatusIdEnum::checkValue($this->statusId['value']);
         }
-        if (!empty($this->defaultRoomNumber)) {
-            $json['default_room_number']            = $this->defaultRoomNumber['value'];
+        if (!empty($this->statusCode)) {
+            $json['status_code']                       = StatusCode12Enum::checkValue($this->statusCode['value']);
         }
-        $json['debit']                              = $this->debit;
-        $json['emv']                                = $this->emv;
-        $json['cashback_enable']                    = $this->cashbackEnable;
-        $json['print_enable']                       = $this->printEnable;
-        $json['sig_capture_enable']                 = $this->sigCaptureEnable;
-        if (isset($this->isProvisioned)) {
-            $json['is_provisioned']                 = $this->isProvisioned;
+        if (!empty($this->note)) {
+            $json['note']                              = $this->note['value'];
         }
-        if (isset($this->tipEnable)) {
-            $json['tip_enable']                     = $this->tipEnable;
+        if (!empty($this->notificationDaysBeforeDueDate)) {
+            $json['notification_days_before_due_date'] = $this->notificationDaysBeforeDueDate['value'];
         }
-        if (isset($this->validatedDecryption)) {
-            $json['validated_decryption']           = $this->validatedDecryption;
+        if (!empty($this->notificationDaysAfterDueDate)) {
+            $json['notification_days_after_due_date']  = $this->notificationDaysAfterDueDate['value'];
         }
-        if (!empty($this->communicationType)) {
-            $json['communication_type']             =
-                CommunicationTypeEnum::checkValue(
-                    $this->communicationType['value']
-                );
+        if (isset($this->notificationOnDueDate)) {
+            $json['notification_on_due_date']          = $this->notificationOnDueDate;
         }
-        $json['id']                                 = $this->id;
-        $json['created_ts']                         = $this->createdTs;
-        $json['modified_ts']                        = $this->modifiedTs;
-        $json['last_registration_ts']               = $this->lastRegistrationTs;
-        $json['created_user_id']                    = $this->createdUserId;
-        $json['modified_user_id']                   = $this->modifiedUserId;
+        if (isset($this->sendTextToPay)) {
+            $json['send_text_to_pay']                  = $this->sendTextToPay;
+        }
+        if (isset($this->files)) {
+            $json['files']                             = $this->files;
+        }
+        if (!empty($this->remainingBalance)) {
+            $json['remaining_balance']                 = $this->remainingBalance['value'];
+        }
+        if (!empty($this->singlePaymentMinAmount)) {
+            $json['single_payment_min_amount']         = $this->singlePaymentMinAmount['value'];
+        }
+        if (!empty($this->singlePaymentMaxAmount)) {
+            $json['single_payment_max_amount']         = $this->singlePaymentMaxAmount['value'];
+        }
+        if (!empty($this->cellPhone)) {
+            $json['cell_phone']                        = $this->cellPhone['value'];
+        }
+        if (isset($this->tags)) {
+            $json['tags']                              = $this->tags;
+        }
+        if (!empty($this->quickInvoiceC1)) {
+            $json['quick_invoice_c1']                  = $this->quickInvoiceC1['value'];
+        }
+        if (!empty($this->quickInvoiceC2)) {
+            $json['quick_invoice_c2']                  = $this->quickInvoiceC2['value'];
+        }
+        if (!empty($this->quickInvoiceC3)) {
+            $json['quick_invoice_c3']                  = $this->quickInvoiceC3['value'];
+        }
+        if (isset($this->autoReopen)) {
+            $json['auto_reopen']                       = $this->autoReopen;
+        }
+        if (isset($this->id)) {
+            $json['id']                                = $this->id;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']                        = $this->createdTs;
+        }
+        if (isset($this->modifiedTs)) {
+            $json['modified_ts']                       = $this->modifiedTs;
+        }
+        if (!empty($this->createdUserId)) {
+            $json['created_user_id']                   = $this->createdUserId['value'];
+        }
+        if (!empty($this->modifiedUserId)) {
+            $json['modified_user_id']                  = $this->modifiedUserId['value'];
+        }
+        if (isset($this->active)) {
+            $json['active']                            = $this->active;
+        }
+        if (!empty($this->paymentStatusId)) {
+            $json['payment_status_id']                 = $this->paymentStatusId['value'];
+        }
+        if (isset($this->isActive)) {
+            $json['is_active']                         = $this->isActive;
+        }
+        if (isset($this->quickInvoiceSetting)) {
+            $json['quick_invoice_setting']             = $this->quickInvoiceSetting;
+        }
+        if (isset($this->quickInvoiceViews)) {
+            $json['quick_invoice_views']               = $this->quickInvoiceViews;
+        }
         if (isset($this->location)) {
-            $json['location']                       = $this->location;
+            $json['location']                          = $this->location;
         }
         if (isset($this->createdUser)) {
-            $json['created_user']                   = $this->createdUser;
+            $json['created_user']                      = $this->createdUser;
         }
-        if (isset($this->terminalApplication)) {
-            $json['terminal_application']           = $this->terminalApplication;
+        if (isset($this->modifiedUser)) {
+            $json['modified_user']                     = $this->modifiedUser;
         }
         if (isset($this->changelogs)) {
-            $json['changelogs']                     = $this->changelogs;
+            $json['changelogs']                        = $this->changelogs;
         }
-        if (isset($this->terminalRouters)) {
-            $json['terminal_routers']               = $this->terminalRouters;
+        if (isset($this->contact)) {
+            $json['contact']                           = $this->contact;
         }
-        if (isset($this->hasTerminalRouters)) {
-            $json['has_terminal_routers']           = $this->hasTerminalRouters;
+        if (isset($this->logEmails)) {
+            $json['log_emails']                        = $this->logEmails;
         }
-        if (isset($this->terminalCvm)) {
-            $json['terminal_cvm']                   = $this->terminalCvm;
+        if (isset($this->logSms)) {
+            $json['log_sms']                           = $this->logSms;
         }
-        if (isset($this->terminalManufacturer)) {
-            $json['terminal_manufacturer']          = $this->terminalManufacturer;
+        if (isset($this->transactions)) {
+            $json['transactions']                      = $this->transactions;
         }
+        if (isset($this->ccProductTransaction)) {
+            $json['cc_product_transaction']            = $this->ccProductTransaction;
+        }
+        if (isset($this->achProductTransaction)) {
+            $json['ach_product_transaction']           = $this->achProductTransaction;
+        }
+        if (isset($this->emailBlacklist)) {
+            $json['email_blacklist']                   = $this->emailBlacklist;
+        }
+        if (isset($this->smsBlacklist)) {
+            $json['sms_blacklist']                     = $this->smsBlacklist;
+        }
+        if (!empty($this->paymentUrl)) {
+            $json['payment_url']                       = $this->paymentUrl['value'];
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

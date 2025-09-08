@@ -15,7 +15,7 @@ use Exception;
 use stdClass;
 
 /**
- * Country of contact
+ * An alpha 2 format country code of US or CA.
  */
 class CountryEnum
 {

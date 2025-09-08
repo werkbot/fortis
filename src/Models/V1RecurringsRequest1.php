@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class V1RecurringsRequest1 implements \JsonSerializable
@@ -23,6 +24,11 @@ class V1RecurringsRequest1 implements \JsonSerializable
      * @var array
      */
     private $accountVaultId = [];
+
+    /**
+     * @var array
+     */
+    private $tokenId = [];
 
     /**
      * @var bool|null
@@ -130,6 +136,21 @@ class V1RecurringsRequest1 implements \JsonSerializable
     private $sendToProcAsRecur;
 
     /**
+     * @var array
+     */
+    private $tags = [];
+
+    /**
+     * @var array
+     */
+    private $secondaryAmount = [];
+
+    /**
+     * @var array
+     */
+    private $contactId = [];
+
+    /**
      * Returns Next Run Date.
      * Next Run Date
      */
@@ -191,6 +212,38 @@ class V1RecurringsRequest1 implements \JsonSerializable
     public function unsetAccountVaultId(): void
     {
         $this->accountVaultId = [];
+    }
+
+    /**
+     * Returns Token Id.
+     * Token ID
+     */
+    public function getTokenId(): ?string
+    {
+        if (count($this->tokenId) == 0) {
+            return null;
+        }
+        return $this->tokenId['value'];
+    }
+
+    /**
+     * Sets Token Id.
+     * Token ID
+     *
+     * @maps token_id
+     */
+    public function setTokenId(?string $tokenId): void
+    {
+        $this->tokenId['value'] = $tokenId;
+    }
+
+    /**
+     * Unsets Token Id.
+     * Token ID
+     */
+    public function unsetTokenId(): void
+    {
+        $this->tokenId = [];
     }
 
     /**
@@ -636,7 +689,7 @@ class V1RecurringsRequest1 implements \JsonSerializable
      * Returns Transaction Amount.
      * Transaction amount
      */
-    public function getTransactionAmount(): ?float
+    public function getTransactionAmount(): ?int
     {
         if (count($this->transactionAmount) == 0) {
             return null;
@@ -650,7 +703,7 @@ class V1RecurringsRequest1 implements \JsonSerializable
      *
      * @maps transaction_amount
      */
-    public function setTransactionAmount(?float $transactionAmount): void
+    public function setTransactionAmount(?int $transactionAmount): void
     {
         $this->transactionAmount['value'] = $transactionAmount;
     }
@@ -833,6 +886,176 @@ class V1RecurringsRequest1 implements \JsonSerializable
     }
 
     /**
+     * Returns Tags.
+     * Tags
+     *
+     * @return string[]|null
+     */
+    public function getTags(): ?array
+    {
+        if (count($this->tags) == 0) {
+            return null;
+        }
+        return $this->tags['value'];
+    }
+
+    /**
+     * Sets Tags.
+     * Tags
+     *
+     * @maps tags
+     *
+     * @param string[]|null $tags
+     */
+    public function setTags(?array $tags): void
+    {
+        $this->tags['value'] = $tags;
+    }
+
+    /**
+     * Unsets Tags.
+     * Tags
+     */
+    public function unsetTags(): void
+    {
+        $this->tags = [];
+    }
+
+    /**
+     * Returns Secondary Amount.
+     * Retained Amount
+     */
+    public function getSecondaryAmount(): ?int
+    {
+        if (count($this->secondaryAmount) == 0) {
+            return null;
+        }
+        return $this->secondaryAmount['value'];
+    }
+
+    /**
+     * Sets Secondary Amount.
+     * Retained Amount
+     *
+     * @maps secondary_amount
+     */
+    public function setSecondaryAmount(?int $secondaryAmount): void
+    {
+        $this->secondaryAmount['value'] = $secondaryAmount;
+    }
+
+    /**
+     * Unsets Secondary Amount.
+     * Retained Amount
+     */
+    public function unsetSecondaryAmount(): void
+    {
+        $this->secondaryAmount = [];
+    }
+
+    /**
+     * Returns Contact Id.
+     * Contact ID
+     */
+    public function getContactId(): ?string
+    {
+        if (count($this->contactId) == 0) {
+            return null;
+        }
+        return $this->contactId['value'];
+    }
+
+    /**
+     * Sets Contact Id.
+     * Contact ID
+     *
+     * @maps contact_id
+     */
+    public function setContactId(?string $contactId): void
+    {
+        $this->contactId['value'] = $contactId;
+    }
+
+    /**
+     * Unsets Contact Id.
+     * Contact ID
+     */
+    public function unsetContactId(): void
+    {
+        $this->contactId = [];
+    }
+
+    /**
+     * Converts the V1RecurringsRequest1 object to a human-readable string representation.
+     *
+     * @return string The string representation of the V1RecurringsRequest1 object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'V1RecurringsRequest1',
+            [
+                'nextRunDate' => $this->getNextRunDate(),
+                'accountVaultId' => $this->getAccountVaultId(),
+                'tokenId' => $this->getTokenId(),
+                'active' => $this->active,
+                'description' => $this->getDescription(),
+                'endDate' => $this->getEndDate(),
+                'installmentTotalCount' => $this->getInstallmentTotalCount(),
+                'interval' => $this->getInterval(),
+                'intervalType' => $this->getIntervalType(),
+                'locationId' => $this->getLocationId(),
+                'notificationDays' => $this->getNotificationDays(),
+                'paymentMethod' => $this->getPaymentMethod(),
+                'productTransactionId' => $this->getProductTransactionId(),
+                'recurringId' => $this->getRecurringId(),
+                'recurringApiId' => $this->getRecurringApiId(),
+                'startDate' => $this->getStartDate(),
+                'status' => $this->getStatus(),
+                'transactionAmount' => $this->getTransactionAmount(),
+                'termsAgree' => $this->termsAgree,
+                'termsAgreeIp' => $this->getTermsAgreeIp(),
+                'recurringC1' => $this->getRecurringC1(),
+                'recurringC2' => $this->getRecurringC2(),
+                'recurringC3' => $this->getRecurringC3(),
+                'sendToProcAsRecur' => $this->sendToProcAsRecur,
+                'tags' => $this->getTags(),
+                'secondaryAmount' => $this->getSecondaryAmount(),
+                'contactId' => $this->getContactId(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -849,6 +1072,9 @@ class V1RecurringsRequest1 implements \JsonSerializable
         }
         if (!empty($this->accountVaultId)) {
             $json['account_vault_id']        = $this->accountVaultId['value'];
+        }
+        if (!empty($this->tokenId)) {
+            $json['token_id']                = $this->tokenId['value'];
         }
         if (isset($this->active)) {
             $json['active']                  = $this->active;
@@ -913,6 +1139,16 @@ class V1RecurringsRequest1 implements \JsonSerializable
         if (isset($this->sendToProcAsRecur)) {
             $json['send_to_proc_as_recur']   = $this->sendToProcAsRecur;
         }
+        if (!empty($this->tags)) {
+            $json['tags']                    = $this->tags['value'];
+        }
+        if (!empty($this->secondaryAmount)) {
+            $json['secondary_amount']        = $this->secondaryAmount['value'];
+        }
+        if (!empty($this->contactId)) {
+            $json['contact_id']              = $this->contactId['value'];
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

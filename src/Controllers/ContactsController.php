@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Controllers;
 
+use Core\Authentication\Auth;
 use Core\Request\Parameters\BodyParam;
 use Core\Request\Parameters\HeaderParam;
 use Core\Request\Parameters\QueryParam;
@@ -20,19 +21,58 @@ use FortisAPILib\Exceptions\ApiException;
 use FortisAPILib\Exceptions\Response401tokenException;
 use FortisAPILib\Exceptions\Response412Exception;
 use FortisAPILib\Models\Expand1Enum;
-use FortisAPILib\Models\Filter1;
+use FortisAPILib\Models\Field28Enum;
+use FortisAPILib\Models\FilterBy;
+use FortisAPILib\Models\Format1Enum;
+use FortisAPILib\Models\Order21;
 use FortisAPILib\Models\Page;
 use FortisAPILib\Models\ResponseContact;
 use FortisAPILib\Models\ResponseContactsCollection;
-use FortisAPILib\Models\Sort15;
+use FortisAPILib\Models\ResponseContactSearchsCollection;
 use FortisAPILib\Models\V1ContactsRequest;
 use FortisAPILib\Models\V1ContactsRequest1;
 
 class ContactsController extends BaseController
 {
     /**
-     * Create a new Contact
+     * @param string $locationId Location ID
+     * @param Page|null $page Use this field to specify paginate your results, by using page size
+     *        and number. You can use one of the following methods:
+     *        >/endpoint?page={ "number": 1, "size": 50 }
+     *        >
+     *        >/endpoint?page[number]=1&page[size]=50
+     *        >
+     * @param string|null $keyword You can use any value to search on specific fields of this
+     *        endpoint results. You can not specify the fields that are used.
+     * @param bool|null $active Active
      *
+     * @return ResponseContactSearchsCollection Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function contactsSearch(
+        string $locationId,
+        ?Page $page = null,
+        ?string $keyword = null,
+        ?bool $active = null
+    ): ResponseContactSearchsCollection {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::GET, '/v1/contact-searches')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(
+                QueryParam::init('location_id', $locationId),
+                QueryParam::init('page', $page),
+                QueryParam::init('keyword', $keyword),
+                QueryParam::init('active', $active)
+            );
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->type(ResponseContactSearchsCollection::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
+    /**
      * @param V1ContactsRequest $body
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
      *        related to the current record being retrieved. For example, if the API request is
@@ -47,7 +87,7 @@ class ContactsController extends BaseController
     public function createANewContact(V1ContactsRequest $body, ?array $expand = null): ResponseContact
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/contacts')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
@@ -55,51 +95,60 @@ class ContactsController extends BaseController
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseContact::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * List all Contacts
-     *
      * @param Page|null $page Use this field to specify paginate your results, by using page size
      *        and number. You can use one of the following methods:
      *        >/endpoint?page={ "number": 1, "size": 50 }
      *        >
      *        >/endpoint?page[number]=1&page[size]=50
      *        >
-     * @param Sort15|null $sort You can use any `field_name` from this endpoint results, and you can
-     *        combine more than one field for more complex sorting. You can use one of the
-     *        following methods:
-     *        >/endpoint?sort={ "field_name": "asc", "field_name2": "desc" }
+     * @param Order21[]|null $order Criteria used in query string parameters to order results. Most
+     *        fields from the endpoint results can be used as a `key`.  Unsupported fields or
+     *        operators will return a `412`.  Must be encoded, or use syntax that does not require
+     *        encoding.
+     *        >/endpoint?order[0][key]=created_ts&order[0][operator]=asc
      *        >
-     *        >/endpoint?sort[field_name]=asc&sort[field_name2]=desc
+     *        >/endpoint?order=[{ "key": "created_ts", "operator": "asc"}]
      *        >
-     * @param Filter1|null $filter You can use any `field_name` from this endpoint results as a
-     *        filter, and you can also use more than one field to create AND conditions. For date
-     *        fields (ended with `_ts`), you can also search for ranges using the `$gte` (Greater
-     *        than or equal to) and/or  `$lte` (Lower than or equal to). You can use one of the
-     *        following methods:
-     *        >/endpoint?filter={ "field_name": "Value" }
+     *        >/endpoint?order=[{ "key": "balance", "operator": "desc"},{ "key": "created_ts",
+     *        "operator": "asc"}]
      *        >
-     *        >/endpoint?filter[field_name]=Value
+     * @param FilterBy[]|null $filterBy Filter criteria that can be used in query string parameters.
+     *        Most fields from the endpoint results can be used as a `key`.  Unsupported fields or
+     *        operators will return a `412`. Must be encoded, or use syntax that does not require
+     *        encoding.
+     *        >?filter_by[0][key]=first_name&filter_by[0][operator]==&filter_by[0][value]=Steve
      *        >
-     *        >/endpoint?filter={ "created_ts": "today" }
+     *        >/endpoint?filter_by=[{ "key": "first_name", "operator": "=", "value": "Fred" }]
      *        >
-     *        >/endpoint?filter[created_ts]=today
+     *        >/endpoint?filter_by=[{ "key": "account_type", "operator": "=", "value": "VISA" }]
      *        >
-     *        >/endpoint?filter={ "created_ts": { "$gte": "yesterday", "$lte": "today" } }
+     *        >/endpoint?filter_by=[{ "key": "created_ts", "operator": ">=", "value": "946702799"
+     *        }, { "key": "created_ts", "operator": "<=", value: "1695061891" }]
      *        >
-     *        >/endpoint?filter[created_ts][$gte]=yesterday&filter[created_ts][$lte]=today
+     *        >/endpoint?filter_by=[{ "key": "last_name", "operator": "IN", "value": "Williams,
+     *        Brown,Allman" }]
      *        >
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
      *        related to the current record being retrieved. For example, if the API request is
      *        for the accountvaults endpoint, and the end user also needs to know which contact
      *        the token belongs to, this data can be returned in the accountvaults endpoint
      *        request.
+     * @param string|null $format Reporting format, valid values: csv, tsv
+     * @param string|null $typeahead You can use any `field_name` from this endpoint results to
+     *        order the list using the value provided as filter for the same `field_name`. It will
+     *        be ordered using the following rules: 1) Exact match, 2) Starts with, 3) Contains.
+     *        >/endpoint?filter={ "field_name": "Value" }&_typeahead=field_name
+     *        >
+     * @param string[]|null $fields You can use any `field_name` from this endpoint results to
+     *        filter the list of fields returned on the response.
      *
      * @return ResponseContactsCollection Response from the API call
      *
@@ -107,29 +156,33 @@ class ContactsController extends BaseController
      */
     public function listAllContacts(
         ?Page $page = null,
-        ?Sort15 $sort = null,
-        ?Filter1 $filter = null,
-        ?array $expand = null
+        ?array $order = null,
+        ?array $filterBy = null,
+        ?array $expand = null,
+        ?string $format = null,
+        ?string $typeahead = null,
+        ?array $fields = null
     ): ResponseContactsCollection {
         $_reqBuilder = $this->requestBuilder(RequestMethod::GET, '/v1/contacts')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 QueryParam::init('page', $page),
-                QueryParam::init('sort', $sort),
-                QueryParam::init('filter', $filter),
-                QueryParam::init('expand', $expand)->serializeBy([Expand1Enum::class, 'checkValue'])
+                QueryParam::init('order', $order),
+                QueryParam::init('filter_by', $filterBy),
+                QueryParam::init('expand', $expand)->serializeBy([Expand1Enum::class, 'checkValue']),
+                QueryParam::init('_format', $format)->serializeBy([Format1Enum::class, 'checkValue']),
+                QueryParam::init('_typeahead', $typeahead),
+                QueryParam::init('fields', $fields)->serializeBy([Field28Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
             ->type(ResponseContactsCollection::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * Delete Contact
-     *
      * @param string $contactId Contact ID
      *
      * @return ResponseContact Response from the API call
@@ -139,49 +192,48 @@ class ContactsController extends BaseController
     public function deleteContact(string $contactId): ResponseContact
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::DELETE, '/v1/contacts/{contact_id}')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(TemplateParam::init('contact_id', $contactId));
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
             ->type(ResponseContact::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * View Single Contact
-     *
      * @param string $contactId Contact ID
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
      *        related to the current record being retrieved. For example, if the API request is
      *        for the accountvaults endpoint, and the end user also needs to know which contact
      *        the token belongs to, this data can be returned in the accountvaults endpoint
      *        request.
+     * @param string[]|null $fields You can use any `field_name` from this endpoint results to
+     *        filter the list of fields returned on the response.
      *
      * @return ResponseContact Response from the API call
      *
      * @throws ApiException Thrown if API call fails
      */
-    public function viewSingleContact(string $contactId, ?array $expand = null): ResponseContact
+    public function viewSingleContact(string $contactId, ?array $expand = null, ?array $fields = null): ResponseContact
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::GET, '/v1/contacts/{contact_id}')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 TemplateParam::init('contact_id', $contactId),
-                QueryParam::init('expand', $expand)->serializeBy([Expand1Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand1Enum::class, 'checkValue']),
+                QueryParam::init('fields', $fields)->serializeBy([Field28Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
             ->type(ResponseContact::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
 
     /**
-     * Update Contact
-     *
      * @param string $contactId Contact ID
      * @param V1ContactsRequest1 $body
      * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
@@ -197,7 +249,7 @@ class ContactsController extends BaseController
     public function updateContact(string $contactId, V1ContactsRequest1 $body, ?array $expand = null): ResponseContact
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::PATCH, '/v1/contacts/{contact_id}')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 TemplateParam::init('contact_id', $contactId),
                 HeaderParam::init('Content-Type', 'application/json'),
@@ -206,8 +258,8 @@ class ContactsController extends BaseController
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseContact::class);
 
         return $this->execute($_reqBuilder, $_resHandler);

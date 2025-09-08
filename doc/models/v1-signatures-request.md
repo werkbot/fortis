@@ -10,8 +10,8 @@
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
 | `signature` | `string` | Required | Signature | getSignature(): string | setSignature(string signature): void |
-| `resource` | [`string (ResourceEnum)`](../../doc/models/resource-enum.md) | Required | Resource | getResource(): string | setResource(string resource): void |
-| `resourceId` | `string` | Required | Resource ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getResourceId(): string | setResourceId(string resourceId): void |
+| `resource` | [`string(ResourceEnum)`](../../doc/models/resource-enum.md) | Required | Resource<br><br>> Recurring, Transaction, AccountVault, DeviceTerm | getResource(): string | setResource(string resource): void |
+| `resourceId` | `string` | Required | Resource ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getResourceId(): string | setResourceId(string resourceId): void |
 
 ## Example (as JSON)
 

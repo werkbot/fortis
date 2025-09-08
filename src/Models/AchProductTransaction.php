@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -28,12 +29,12 @@ class AchProductTransaction implements \JsonSerializable
     private $industryType = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $title;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $paymentMethod;
 
@@ -43,9 +44,9 @@ class AchProductTransaction implements \JsonSerializable
     private $processor = [];
 
     /**
-     * @var string
+     * @var array
      */
-    private $mcc;
+    private $mcc = [];
 
     /**
      * @var array
@@ -73,7 +74,7 @@ class AchProductTransaction implements \JsonSerializable
     private $invoiceAdjustmentTitle = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $locationId;
 
@@ -210,6 +211,21 @@ class AchProductTransaction implements \JsonSerializable
     /**
      * @var bool|null
      */
+    private $cardTypeEbt;
+
+    /**
+     * @var bool|null
+     */
+    private $allowEbtCashBenefit;
+
+    /**
+     * @var bool|null
+     */
+    private $allowEbtFoodStamp;
+
+    /**
+     * @var bool|null
+     */
     private $invoiceLocation;
 
     /**
@@ -340,6 +356,11 @@ class AchProductTransaction implements \JsonSerializable
     /**
      * @var bool|null
      */
+    private $paylinkAllow;
+
+    /**
+     * @var bool|null
+     */
     private $quickInvoiceAllow;
 
     /**
@@ -351,6 +372,11 @@ class AchProductTransaction implements \JsonSerializable
      * @var bool|null
      */
     private $payfacEnable;
+
+    /**
+     * @var bool|null
+     */
+    private $enable3ds;
 
     /**
      * @var array
@@ -373,9 +399,14 @@ class AchProductTransaction implements \JsonSerializable
     private $surchargeId = [];
 
     /**
-     * @var array
+     * @var bool|null
      */
-    private $level3Default = [];
+    private $allowBigCommerce;
+
+    /**
+     * @var Level3Default|null
+     */
+    private $level3Default;
 
     /**
      * @var array
@@ -463,7 +494,62 @@ class AchProductTransaction implements \JsonSerializable
     private $bankFundedOnly;
 
     /**
-     * @var string
+     * @var bool|null
+     */
+    private $requireCvvOnKeyedCnp;
+
+    /**
+     * @var bool|null
+     */
+    private $requireCvvOnTokenizedCnp;
+
+    /**
+     * @var bool|null
+     */
+    private $showSecondaryAmount;
+
+    /**
+     * @var bool|null
+     */
+    private $allowSecondaryAmount;
+
+    /**
+     * @var bool|null
+     */
+    private $showGooglePay;
+
+    /**
+     * @var bool|null
+     */
+    private $showApplePay;
+
+    /**
+     * @var BatchRiskConfig|null
+     */
+    private $batchRiskConfig;
+
+    /**
+     * @var array
+     */
+    private $currencyCode = [];
+
+    /**
+     * @var bool|null
+     */
+    private $enableAchValidation;
+
+    /**
+     * @var bool|null
+     */
+    private $enableAchRetry;
+
+    /**
+     * @var bool|null
+     */
+    private $allowSoftpos;
+
+    /**
+     * @var string|null
      */
     private $id;
 
@@ -481,11 +567,6 @@ class AchProductTransaction implements \JsonSerializable
      * @var array
      */
     private $tz = [];
-
-    /**
-     * @var array
-     */
-    private $currencyCode = ['value' => 840];
 
     /**
      * @var array
@@ -513,20 +594,39 @@ class AchProductTransaction implements \JsonSerializable
     private $modifiedUserId = [];
 
     /**
-     * @param string $title
-     * @param string $paymentMethod
-     * @param string $mcc
-     * @param string $locationId
-     * @param string $id
+     * @var array
      */
-    public function __construct(string $title, string $paymentMethod, string $mcc, string $locationId, string $id)
-    {
-        $this->title = $title;
-        $this->paymentMethod = $paymentMethod;
-        $this->mcc = $mcc;
-        $this->locationId = $locationId;
-        $this->id = $id;
-    }
+    private $productTransactionApiId = [];
+
+    /**
+     * @var int|null
+     */
+    private $transactionAmountNotificationThreshold;
+
+    /**
+     * @var bool|null
+     */
+    private $isSecondaryAmountAllowed;
+
+    /**
+     * @var array
+     */
+    private $fortisId = [];
+
+    /**
+     * @var array
+     */
+    private $productBillingGroupCode = [];
+
+    /**
+     * @var array
+     */
+    private $cauSubscribeTypeCode = [];
+
+    /**
+     * @var array
+     */
+    private $merchantCode = [];
 
     /**
      * Returns Processor Version.
@@ -597,7 +697,7 @@ class AchProductTransaction implements \JsonSerializable
      * Returns Title.
      * Title
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -606,10 +706,9 @@ class AchProductTransaction implements \JsonSerializable
      * Sets Title.
      * Title
      *
-     * @required
      * @maps title
      */
-    public function setTitle(string $title): void
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -618,7 +717,7 @@ class AchProductTransaction implements \JsonSerializable
      * Returns Payment Method.
      * Payment method
      */
-    public function getPaymentMethod(): string
+    public function getPaymentMethod(): ?string
     {
         return $this->paymentMethod;
     }
@@ -627,11 +726,10 @@ class AchProductTransaction implements \JsonSerializable
      * Sets Payment Method.
      * Payment method
      *
-     * @required
      * @maps payment_method
      * @factory \FortisAPILib\Models\PaymentMethodEnum::checkValue
      */
-    public function setPaymentMethod(string $paymentMethod): void
+    public function setPaymentMethod(?string $paymentMethod): void
     {
         $this->paymentMethod = $paymentMethod;
     }
@@ -673,21 +771,32 @@ class AchProductTransaction implements \JsonSerializable
      * Returns Mcc.
      * MCC
      */
-    public function getMcc(): string
+    public function getMcc(): ?string
     {
-        return $this->mcc;
+        if (count($this->mcc) == 0) {
+            return null;
+        }
+        return $this->mcc['value'];
     }
 
     /**
      * Sets Mcc.
      * MCC
      *
-     * @required
      * @maps mcc
      */
-    public function setMcc(string $mcc): void
+    public function setMcc(?string $mcc): void
     {
-        $this->mcc = $mcc;
+        $this->mcc['value'] = $mcc;
+    }
+
+    /**
+     * Unsets Mcc.
+     * MCC
+     */
+    public function unsetMcc(): void
+    {
+        $this->mcc = [];
     }
 
     /**
@@ -856,7 +965,7 @@ class AchProductTransaction implements \JsonSerializable
      * Returns Location Id.
      * Location ID
      */
-    public function getLocationId(): string
+    public function getLocationId(): ?string
     {
         return $this->locationId;
     }
@@ -865,10 +974,9 @@ class AchProductTransaction implements \JsonSerializable
      * Sets Location Id.
      * Location ID
      *
-     * @required
      * @maps location_id
      */
-    public function setLocationId(string $locationId): void
+    public function setLocationId(?string $locationId): void
     {
         $this->locationId = $locationId;
     }
@@ -1447,6 +1555,66 @@ class AchProductTransaction implements \JsonSerializable
     public function setCardTypeJcb(?bool $cardTypeJcb): void
     {
         $this->cardTypeJcb = $cardTypeJcb;
+    }
+
+    /**
+     * Returns Card Type Ebt.
+     * Card Type EBT
+     */
+    public function getCardTypeEbt(): ?bool
+    {
+        return $this->cardTypeEbt;
+    }
+
+    /**
+     * Sets Card Type Ebt.
+     * Card Type EBT
+     *
+     * @maps card_type_ebt
+     */
+    public function setCardTypeEbt(?bool $cardTypeEbt): void
+    {
+        $this->cardTypeEbt = $cardTypeEbt;
+    }
+
+    /**
+     * Returns Allow Ebt Cash Benefit.
+     * Allow EBT Cash Benefit
+     */
+    public function getAllowEbtCashBenefit(): ?bool
+    {
+        return $this->allowEbtCashBenefit;
+    }
+
+    /**
+     * Sets Allow Ebt Cash Benefit.
+     * Allow EBT Cash Benefit
+     *
+     * @maps allow_ebt_cash_benefit
+     */
+    public function setAllowEbtCashBenefit(?bool $allowEbtCashBenefit): void
+    {
+        $this->allowEbtCashBenefit = $allowEbtCashBenefit;
+    }
+
+    /**
+     * Returns Allow Ebt Food Stamp.
+     * Allow EBT Food Stamp
+     */
+    public function getAllowEbtFoodStamp(): ?bool
+    {
+        return $this->allowEbtFoodStamp;
+    }
+
+    /**
+     * Sets Allow Ebt Food Stamp.
+     * Allow EBT Food Stamp
+     *
+     * @maps allow_ebt_food_stamp
+     */
+    public function setAllowEbtFoodStamp(?bool $allowEbtFoodStamp): void
+    {
+        $this->allowEbtFoodStamp = $allowEbtFoodStamp;
     }
 
     /**
@@ -2115,6 +2283,26 @@ class AchProductTransaction implements \JsonSerializable
     }
 
     /**
+     * Returns Paylink Allow.
+     * Paylink Allow
+     */
+    public function getPaylinkAllow(): ?bool
+    {
+        return $this->paylinkAllow;
+    }
+
+    /**
+     * Sets Paylink Allow.
+     * Paylink Allow
+     *
+     * @maps paylink_allow
+     */
+    public function setPaylinkAllow(?bool $paylinkAllow): void
+    {
+        $this->paylinkAllow = $paylinkAllow;
+    }
+
+    /**
      * Returns Quick Invoice Allow.
      * Quick Invoice Allow
      */
@@ -2172,6 +2360,26 @@ class AchProductTransaction implements \JsonSerializable
     public function setPayfacEnable(?bool $payfacEnable): void
     {
         $this->payfacEnable = $payfacEnable;
+    }
+
+    /**
+     * Returns Enable 3 Ds.
+     * Enable 3DS
+     */
+    public function getEnable3ds(): ?bool
+    {
+        return $this->enable3ds;
+    }
+
+    /**
+     * Sets Enable 3 Ds.
+     * Enable 3DS
+     *
+     * @maps enable_3ds
+     */
+    public function setEnable3ds(?bool $enable3ds): void
+    {
+        $this->enable3ds = $enable3ds;
     }
 
     /**
@@ -2291,15 +2499,32 @@ class AchProductTransaction implements \JsonSerializable
     }
 
     /**
+     * Returns Allow Big Commerce.
+     * Allow Big Commerce
+     */
+    public function getAllowBigCommerce(): ?bool
+    {
+        return $this->allowBigCommerce;
+    }
+
+    /**
+     * Sets Allow Big Commerce.
+     * Allow Big Commerce
+     *
+     * @maps allow_big_commerce
+     */
+    public function setAllowBigCommerce(?bool $allowBigCommerce): void
+    {
+        $this->allowBigCommerce = $allowBigCommerce;
+    }
+
+    /**
      * Returns Level 3 Default.
      * Level3 Default
      */
-    public function getLevel3Default(): ?string
+    public function getLevel3Default(): ?Level3Default
     {
-        if (count($this->level3Default) == 0) {
-            return null;
-        }
-        return $this->level3Default['value'];
+        return $this->level3Default;
     }
 
     /**
@@ -2308,18 +2533,9 @@ class AchProductTransaction implements \JsonSerializable
      *
      * @maps level3_default
      */
-    public function setLevel3Default(?string $level3Default): void
+    public function setLevel3Default(?Level3Default $level3Default): void
     {
-        $this->level3Default['value'] = $level3Default;
-    }
-
-    /**
-     * Unsets Level 3 Default.
-     * Level3 Default
-     */
-    public function unsetLevel3Default(): void
-    {
-        $this->level3Default = [];
+        $this->level3Default = $level3Default;
     }
 
     /**
@@ -2737,10 +2953,242 @@ class AchProductTransaction implements \JsonSerializable
     }
 
     /**
+     * Returns Require Cvv on Keyed Cnp.
+     * Require CVV on keyed CNP
+     */
+    public function getRequireCvvOnKeyedCnp(): ?bool
+    {
+        return $this->requireCvvOnKeyedCnp;
+    }
+
+    /**
+     * Sets Require Cvv on Keyed Cnp.
+     * Require CVV on keyed CNP
+     *
+     * @maps require_cvv_on_keyed_cnp
+     */
+    public function setRequireCvvOnKeyedCnp(?bool $requireCvvOnKeyedCnp): void
+    {
+        $this->requireCvvOnKeyedCnp = $requireCvvOnKeyedCnp;
+    }
+
+    /**
+     * Returns Require Cvv on Tokenized Cnp.
+     * Require CVV on tokenized CNP
+     */
+    public function getRequireCvvOnTokenizedCnp(): ?bool
+    {
+        return $this->requireCvvOnTokenizedCnp;
+    }
+
+    /**
+     * Sets Require Cvv on Tokenized Cnp.
+     * Require CVV on tokenized CNP
+     *
+     * @maps require_cvv_on_tokenized_cnp
+     */
+    public function setRequireCvvOnTokenizedCnp(?bool $requireCvvOnTokenizedCnp): void
+    {
+        $this->requireCvvOnTokenizedCnp = $requireCvvOnTokenizedCnp;
+    }
+
+    /**
+     * Returns Show Secondary Amount.
+     * Show Retained Amount
+     */
+    public function getShowSecondaryAmount(): ?bool
+    {
+        return $this->showSecondaryAmount;
+    }
+
+    /**
+     * Sets Show Secondary Amount.
+     * Show Retained Amount
+     *
+     * @maps show_secondary_amount
+     */
+    public function setShowSecondaryAmount(?bool $showSecondaryAmount): void
+    {
+        $this->showSecondaryAmount = $showSecondaryAmount;
+    }
+
+    /**
+     * Returns Allow Secondary Amount.
+     * Allow Retained Amount
+     */
+    public function getAllowSecondaryAmount(): ?bool
+    {
+        return $this->allowSecondaryAmount;
+    }
+
+    /**
+     * Sets Allow Secondary Amount.
+     * Allow Retained Amount
+     *
+     * @maps allow_secondary_amount
+     */
+    public function setAllowSecondaryAmount(?bool $allowSecondaryAmount): void
+    {
+        $this->allowSecondaryAmount = $allowSecondaryAmount;
+    }
+
+    /**
+     * Returns Show Google Pay.
+     * Vt Require Street
+     */
+    public function getShowGooglePay(): ?bool
+    {
+        return $this->showGooglePay;
+    }
+
+    /**
+     * Sets Show Google Pay.
+     * Vt Require Street
+     *
+     * @maps show_google_pay
+     */
+    public function setShowGooglePay(?bool $showGooglePay): void
+    {
+        $this->showGooglePay = $showGooglePay;
+    }
+
+    /**
+     * Returns Show Apple Pay.
+     * Vt Require Street
+     */
+    public function getShowApplePay(): ?bool
+    {
+        return $this->showApplePay;
+    }
+
+    /**
+     * Sets Show Apple Pay.
+     * Vt Require Street
+     *
+     * @maps show_apple_pay
+     */
+    public function setShowApplePay(?bool $showApplePay): void
+    {
+        $this->showApplePay = $showApplePay;
+    }
+
+    /**
+     * Returns Batch Risk Config.
+     * Batch Risk Config
+     */
+    public function getBatchRiskConfig(): ?BatchRiskConfig
+    {
+        return $this->batchRiskConfig;
+    }
+
+    /**
+     * Sets Batch Risk Config.
+     * Batch Risk Config
+     *
+     * @maps batch_risk_config
+     */
+    public function setBatchRiskConfig(?BatchRiskConfig $batchRiskConfig): void
+    {
+        $this->batchRiskConfig = $batchRiskConfig;
+    }
+
+    /**
+     * Returns Currency Code.
+     * Currency Code
+     */
+    public function getCurrencyCode(): ?float
+    {
+        if (count($this->currencyCode) == 0) {
+            return null;
+        }
+        return $this->currencyCode['value'];
+    }
+
+    /**
+     * Sets Currency Code.
+     * Currency Code
+     *
+     * @maps currency_code
+     */
+    public function setCurrencyCode(?float $currencyCode): void
+    {
+        $this->currencyCode['value'] = $currencyCode;
+    }
+
+    /**
+     * Unsets Currency Code.
+     * Currency Code
+     */
+    public function unsetCurrencyCode(): void
+    {
+        $this->currencyCode = [];
+    }
+
+    /**
+     * Returns Enable Ach Validation.
+     * Enable ACH Validation
+     */
+    public function getEnableAchValidation(): ?bool
+    {
+        return $this->enableAchValidation;
+    }
+
+    /**
+     * Sets Enable Ach Validation.
+     * Enable ACH Validation
+     *
+     * @maps enable_ach_validation
+     */
+    public function setEnableAchValidation(?bool $enableAchValidation): void
+    {
+        $this->enableAchValidation = $enableAchValidation;
+    }
+
+    /**
+     * Returns Enable Ach Retry.
+     * Enable ACH Retry
+     */
+    public function getEnableAchRetry(): ?bool
+    {
+        return $this->enableAchRetry;
+    }
+
+    /**
+     * Sets Enable Ach Retry.
+     * Enable ACH Retry
+     *
+     * @maps enable_ach_retry
+     */
+    public function setEnableAchRetry(?bool $enableAchRetry): void
+    {
+        $this->enableAchRetry = $enableAchRetry;
+    }
+
+    /**
+     * Returns Allow Softpos.
+     * Allow Soft POS
+     */
+    public function getAllowSoftpos(): ?bool
+    {
+        return $this->allowSoftpos;
+    }
+
+    /**
+     * Sets Allow Softpos.
+     * Allow Soft POS
+     *
+     * @maps allow_softpos
+     */
+    public function setAllowSoftpos(?bool $allowSoftpos): void
+    {
+        $this->allowSoftpos = $allowSoftpos;
+    }
+
+    /**
      * Returns Id.
      * User Reports ID
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -2749,10 +3197,9 @@ class AchProductTransaction implements \JsonSerializable
      * Sets Id.
      * User Reports ID
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -2827,38 +3274,6 @@ class AchProductTransaction implements \JsonSerializable
     public function unsetTz(): void
     {
         $this->tz = [];
-    }
-
-    /**
-     * Returns Currency Code.
-     * Currency Code
-     */
-    public function getCurrencyCode(): ?float
-    {
-        if (count($this->currencyCode) == 0) {
-            return null;
-        }
-        return $this->currencyCode['value'];
-    }
-
-    /**
-     * Sets Currency Code.
-     * Currency Code
-     *
-     * @maps currency_code
-     */
-    public function setCurrencyCode(?float $currencyCode): void
-    {
-        $this->currencyCode['value'] = $currencyCode;
-    }
-
-    /**
-     * Unsets Currency Code.
-     * Currency Code
-     */
-    public function unsetCurrencyCode(): void
-    {
-        $this->currencyCode = [];
     }
 
     /**
@@ -3022,6 +3437,369 @@ class AchProductTransaction implements \JsonSerializable
     }
 
     /**
+     * Returns Product Transaction Api Id.
+     * Product Transaction API ID
+     */
+    public function getProductTransactionApiId(): ?string
+    {
+        if (count($this->productTransactionApiId) == 0) {
+            return null;
+        }
+        return $this->productTransactionApiId['value'];
+    }
+
+    /**
+     * Sets Product Transaction Api Id.
+     * Product Transaction API ID
+     *
+     * @maps product_transaction_api_id
+     */
+    public function setProductTransactionApiId(?string $productTransactionApiId): void
+    {
+        $this->productTransactionApiId['value'] = $productTransactionApiId;
+    }
+
+    /**
+     * Unsets Product Transaction Api Id.
+     * Product Transaction API ID
+     */
+    public function unsetProductTransactionApiId(): void
+    {
+        $this->productTransactionApiId = [];
+    }
+
+    /**
+     * Returns Transaction Amount Notification Threshold.
+     * Transaction Amount Notification Treshold
+     */
+    public function getTransactionAmountNotificationThreshold(): ?int
+    {
+        return $this->transactionAmountNotificationThreshold;
+    }
+
+    /**
+     * Sets Transaction Amount Notification Threshold.
+     * Transaction Amount Notification Treshold
+     *
+     * @maps transaction_amount_notification_threshold
+     */
+    public function setTransactionAmountNotificationThreshold(?int $transactionAmountNotificationThreshold): void
+    {
+        $this->transactionAmountNotificationThreshold = $transactionAmountNotificationThreshold;
+    }
+
+    /**
+     * Returns Is Secondary Amount Allowed.
+     * Allow Retained Amount
+     */
+    public function getIsSecondaryAmountAllowed(): ?bool
+    {
+        return $this->isSecondaryAmountAllowed;
+    }
+
+    /**
+     * Sets Is Secondary Amount Allowed.
+     * Allow Retained Amount
+     *
+     * @maps is_secondary_amount_allowed
+     */
+    public function setIsSecondaryAmountAllowed(?bool $isSecondaryAmountAllowed): void
+    {
+        $this->isSecondaryAmountAllowed = $isSecondaryAmountAllowed;
+    }
+
+    /**
+     * Returns Fortis Id.
+     */
+    public function getFortisId(): ?string
+    {
+        if (count($this->fortisId) == 0) {
+            return null;
+        }
+        return $this->fortisId['value'];
+    }
+
+    /**
+     * Sets Fortis Id.
+     *
+     * @maps fortis_id
+     */
+    public function setFortisId(?string $fortisId): void
+    {
+        $this->fortisId['value'] = $fortisId;
+    }
+
+    /**
+     * Unsets Fortis Id.
+     */
+    public function unsetFortisId(): void
+    {
+        $this->fortisId = [];
+    }
+
+    /**
+     * Returns Product Billing Group Code.
+     * Product Billing Group Code
+     */
+    public function getProductBillingGroupCode(): ?string
+    {
+        if (count($this->productBillingGroupCode) == 0) {
+            return null;
+        }
+        return $this->productBillingGroupCode['value'];
+    }
+
+    /**
+     * Sets Product Billing Group Code.
+     * Product Billing Group Code
+     *
+     * @maps product_billing_group_code
+     */
+    public function setProductBillingGroupCode(?string $productBillingGroupCode): void
+    {
+        $this->productBillingGroupCode['value'] = $productBillingGroupCode;
+    }
+
+    /**
+     * Unsets Product Billing Group Code.
+     * Product Billing Group Code
+     */
+    public function unsetProductBillingGroupCode(): void
+    {
+        $this->productBillingGroupCode = [];
+    }
+
+    /**
+     * Returns Cau Subscribe Type Code.
+     * Cau Subscribe Type Code
+     */
+    public function getCauSubscribeTypeCode(): ?int
+    {
+        if (count($this->cauSubscribeTypeCode) == 0) {
+            return null;
+        }
+        return $this->cauSubscribeTypeCode['value'];
+    }
+
+    /**
+     * Sets Cau Subscribe Type Code.
+     * Cau Subscribe Type Code
+     *
+     * @maps cau_subscribe_type_code
+     * @factory \FortisAPILib\Models\CauSubscribeTypeCodeEnum::checkValue
+     */
+    public function setCauSubscribeTypeCode(?int $cauSubscribeTypeCode): void
+    {
+        $this->cauSubscribeTypeCode['value'] = $cauSubscribeTypeCode;
+    }
+
+    /**
+     * Unsets Cau Subscribe Type Code.
+     * Cau Subscribe Type Code
+     */
+    public function unsetCauSubscribeTypeCode(): void
+    {
+        $this->cauSubscribeTypeCode = [];
+    }
+
+    /**
+     * Returns Merchant Code.
+     * Merchant Code
+     */
+    public function getMerchantCode(): ?string
+    {
+        if (count($this->merchantCode) == 0) {
+            return null;
+        }
+        return $this->merchantCode['value'];
+    }
+
+    /**
+     * Sets Merchant Code.
+     * Merchant Code
+     *
+     * @maps merchant_code
+     */
+    public function setMerchantCode(?string $merchantCode): void
+    {
+        $this->merchantCode['value'] = $merchantCode;
+    }
+
+    /**
+     * Unsets Merchant Code.
+     * Merchant Code
+     */
+    public function unsetMerchantCode(): void
+    {
+        $this->merchantCode = [];
+    }
+
+    /**
+     * Converts the AchProductTransaction object to a human-readable string representation.
+     *
+     * @return string The string representation of the AchProductTransaction object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'AchProductTransaction',
+            [
+                'processorVersion' => $this->getProcessorVersion(),
+                'industryType' => $this->getIndustryType(),
+                'title' => $this->title,
+                'paymentMethod' => $this->paymentMethod,
+                'processor' => $this->getProcessor(),
+                'mcc' => $this->getMcc(),
+                'taxSurchargeConfig' => $this->getTaxSurchargeConfig(),
+                'terminalId' => $this->getTerminalId(),
+                'partner' => $this->getPartner(),
+                'productAchPvStoreId' => $this->getProductAchPvStoreId(),
+                'invoiceAdjustmentTitle' => $this->getInvoiceAdjustmentTitle(),
+                'locationId' => $this->locationId,
+                'locationApiId' => $this->getLocationApiId(),
+                'billingLocationApiId' => $this->getBillingLocationApiId(),
+                'portfolioId' => $this->getPortfolioId(),
+                'portfolioValidationRule' => $this->getPortfolioValidationRule(),
+                'subProcessor' => $this->getSubProcessor(),
+                'surcharge' => $this->surcharge,
+                'processorData' => $this->processorData,
+                'vtClerkNumber' => $this->vtClerkNumber,
+                'vtBillingPhone' => $this->vtBillingPhone,
+                'vtEnableTip' => $this->vtEnableTip,
+                'achAllowDebit' => $this->achAllowDebit,
+                'achAllowCredit' => $this->achAllowCredit,
+                'achAllowRefund' => $this->achAllowRefund,
+                'vtCvv' => $this->vtCvv,
+                'vtStreet' => $this->vtStreet,
+                'vtZip' => $this->vtZip,
+                'vtOrderNum' => $this->vtOrderNum,
+                'vtEnable' => $this->vtEnable,
+                'receiptShowContactName' => $this->receiptShowContactName,
+                'displayAvs' => $this->displayAvs,
+                'cardTypeVisa' => $this->cardTypeVisa,
+                'cardTypeMc' => $this->cardTypeMc,
+                'cardTypeDisc' => $this->cardTypeDisc,
+                'cardTypeAmex' => $this->cardTypeAmex,
+                'cardTypeDiners' => $this->cardTypeDiners,
+                'cardTypeJcb' => $this->cardTypeJcb,
+                'cardTypeEbt' => $this->cardTypeEbt,
+                'allowEbtCashBenefit' => $this->allowEbtCashBenefit,
+                'allowEbtFoodStamp' => $this->allowEbtFoodStamp,
+                'invoiceLocation' => $this->invoiceLocation,
+                'allowPartialAuthorization' => $this->allowPartialAuthorization,
+                'allowRecurringPartialAuthorization' => $this->allowRecurringPartialAuthorization,
+                'autoDeclineCvv' => $this->autoDeclineCvv,
+                'autoDeclineStreet' => $this->autoDeclineStreet,
+                'autoDeclineZip' => $this->autoDeclineZip,
+                'splitPaymentsAllow' => $this->splitPaymentsAllow,
+                'vtShowCustomFields' => $this->vtShowCustomFields,
+                'receiptShowCustomFields' => $this->receiptShowCustomFields,
+                'vtOverrideSalesTaxAllowed' => $this->vtOverrideSalesTaxAllowed,
+                'vtEnableSalesTax' => $this->vtEnableSalesTax,
+                'vtRequireZip' => $this->vtRequireZip,
+                'vtRequireStreet' => $this->vtRequireStreet,
+                'autoDeclineCavv' => $this->autoDeclineCavv,
+                'merchantId' => $this->getMerchantId(),
+                'receiptHeader' => $this->getReceiptHeader(),
+                'receiptFooter' => $this->getReceiptFooter(),
+                'receiptAddAccountAboveSignature' => $this->getReceiptAddAccountAboveSignature(),
+                'receiptAddRecurringAboveSignature' => $this->getReceiptAddRecurringAboveSignature(),
+                'receiptVtAboveSignature' => $this->getReceiptVtAboveSignature(),
+                'defaultTransactionType' => $this->getDefaultTransactionType(),
+                'username' => $this->getUsername(),
+                'password' => $this->getPassword(),
+                'currentBatch' => $this->getCurrentBatch(),
+                'dupCheckPerBatch' => $this->getDupCheckPerBatch(),
+                'agentCode' => $this->getAgentCode(),
+                'paylinkAllow' => $this->paylinkAllow,
+                'quickInvoiceAllow' => $this->quickInvoiceAllow,
+                'level3Allow' => $this->level3Allow,
+                'payfacEnable' => $this->payfacEnable,
+                'enable3ds' => $this->enable3ds,
+                'salesOfficeId' => $this->getSalesOfficeId(),
+                'hostedPaymentPageMaxAllowed' => $this->getHostedPaymentPageMaxAllowed(),
+                'hostedPaymentPageAllow' => $this->hostedPaymentPageAllow,
+                'surchargeId' => $this->getSurchargeId(),
+                'allowBigCommerce' => $this->allowBigCommerce,
+                'level3Default' => $this->level3Default,
+                'cauSubscribeTypeId' => $this->getCauSubscribeTypeId(),
+                'cauAccountNumber' => $this->getCauAccountNumber(),
+                'locationBillingAccountId' => $this->getLocationBillingAccountId(),
+                'productBillingGroupId' => $this->getProductBillingGroupId(),
+                'accountNumber' => $this->getAccountNumber(),
+                'runAvsOnAccountvaultCreate' => $this->runAvsOnAccountvaultCreate,
+                'accountvaultExpireNotificationEmailEnable' => $this->accountvaultExpireNotificationEmailEnable,
+                'debitAllowVoid' => $this->debitAllowVoid,
+                'quickInvoiceTextToPay' => $this->quickInvoiceTextToPay,
+                'authenticationCode' => $this->getAuthenticationCode(),
+                'smsEnable' => $this->smsEnable,
+                'vtShowCurrency' => $this->vtShowCurrency,
+                'receiptShowCurrency' => $this->receiptShowCurrency,
+                'allowBlindRefund' => $this->allowBlindRefund,
+                'vtShowCompanyName' => $this->vtShowCompanyName,
+                'receiptShowCompanyName' => $this->receiptShowCompanyName,
+                'bankFundedOnly' => $this->bankFundedOnly,
+                'requireCvvOnKeyedCnp' => $this->requireCvvOnKeyedCnp,
+                'requireCvvOnTokenizedCnp' => $this->requireCvvOnTokenizedCnp,
+                'showSecondaryAmount' => $this->showSecondaryAmount,
+                'allowSecondaryAmount' => $this->allowSecondaryAmount,
+                'showGooglePay' => $this->showGooglePay,
+                'showApplePay' => $this->showApplePay,
+                'batchRiskConfig' => $this->batchRiskConfig,
+                'currencyCode' => $this->getCurrencyCode(),
+                'enableAchValidation' => $this->enableAchValidation,
+                'enableAchRetry' => $this->enableAchRetry,
+                'allowSoftpos' => $this->allowSoftpos,
+                'id' => $this->id,
+                'receiptLogo' => $this->receiptLogo,
+                'active' => $this->active,
+                'tz' => $this->getTz(),
+                'currentStan' => $this->getCurrentStan(),
+                'createdTs' => $this->getCreatedTs(),
+                'modifiedTs' => $this->getModifiedTs(),
+                'createdUserId' => $this->getCreatedUserId(),
+                'modifiedUserId' => $this->getModifiedUserId(),
+                'productTransactionApiId' => $this->getProductTransactionApiId(),
+                'transactionAmountNotificationThreshold' => $this->transactionAmountNotificationThreshold,
+                'isSecondaryAmountAllowed' => $this->isSecondaryAmountAllowed,
+                'fortisId' => $this->getFortisId(),
+                'productBillingGroupCode' => $this->getProductBillingGroupCode(),
+                'cauSubscribeTypeCode' => $this->getCauSubscribeTypeCode(),
+                'merchantCode' => $this->getMerchantCode(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -3042,18 +3820,24 @@ class AchProductTransaction implements \JsonSerializable
                     $this->industryType['value']
                 );
         }
-        $json['title']                                             = $this->title;
-        $json['payment_method']                                    =
-            PaymentMethodEnum::checkValue(
-                $this->paymentMethod
-            );
+        if (isset($this->title)) {
+            $json['title']                                         = $this->title;
+        }
+        if (isset($this->paymentMethod)) {
+            $json['payment_method']                                =
+                PaymentMethodEnum::checkValue(
+                    $this->paymentMethod
+                );
+        }
         if (!empty($this->processor)) {
             $json['processor']                                     =
                 ProcessorEnum::checkValue(
                     $this->processor['value']
                 );
         }
-        $json['mcc']                                               = $this->mcc;
+        if (!empty($this->mcc)) {
+            $json['mcc']                                           = $this->mcc['value'];
+        }
         if (!empty($this->taxSurchargeConfig)) {
             $json['tax_surcharge_config']                          =
                 TaxSurchargeConfigEnum::checkValue(
@@ -3072,7 +3856,9 @@ class AchProductTransaction implements \JsonSerializable
         if (!empty($this->invoiceAdjustmentTitle)) {
             $json['invoice_adjustment_title']                      = $this->invoiceAdjustmentTitle['value'];
         }
-        $json['location_id']                                       = $this->locationId;
+        if (isset($this->locationId)) {
+            $json['location_id']                                   = $this->locationId;
+        }
         if (!empty($this->locationApiId)) {
             $json['location_api_id']                               = $this->locationApiId['value'];
         }
@@ -3150,6 +3936,15 @@ class AchProductTransaction implements \JsonSerializable
         }
         if (isset($this->cardTypeJcb)) {
             $json['card_type_jcb']                                 = $this->cardTypeJcb;
+        }
+        if (isset($this->cardTypeEbt)) {
+            $json['card_type_ebt']                                 = $this->cardTypeEbt;
+        }
+        if (isset($this->allowEbtCashBenefit)) {
+            $json['allow_ebt_cash_benefit']                        = $this->allowEbtCashBenefit;
+        }
+        if (isset($this->allowEbtFoodStamp)) {
+            $json['allow_ebt_food_stamp']                          = $this->allowEbtFoodStamp;
         }
         if (isset($this->invoiceLocation)) {
             $json['invoice_location']                              = $this->invoiceLocation;
@@ -3232,6 +4027,9 @@ class AchProductTransaction implements \JsonSerializable
         if (!empty($this->agentCode)) {
             $json['agent_code']                                    = $this->agentCode['value'];
         }
+        if (isset($this->paylinkAllow)) {
+            $json['paylink_allow']                                 = $this->paylinkAllow;
+        }
         if (isset($this->quickInvoiceAllow)) {
             $json['quick_invoice_allow']                           = $this->quickInvoiceAllow;
         }
@@ -3240,6 +4038,9 @@ class AchProductTransaction implements \JsonSerializable
         }
         if (isset($this->payfacEnable)) {
             $json['payfac_enable']                                 = $this->payfacEnable;
+        }
+        if (isset($this->enable3ds)) {
+            $json['enable_3ds']                                    = $this->enable3ds;
         }
         if (!empty($this->salesOfficeId)) {
             $json['sales_office_id']                               = $this->salesOfficeId['value'];
@@ -3253,8 +4054,11 @@ class AchProductTransaction implements \JsonSerializable
         if (!empty($this->surchargeId)) {
             $json['surcharge_id']                                  = $this->surchargeId['value'];
         }
-        if (!empty($this->level3Default)) {
-            $json['level3_default']                                = $this->level3Default['value'];
+        if (isset($this->allowBigCommerce)) {
+            $json['allow_big_commerce']                            = $this->allowBigCommerce;
+        }
+        if (isset($this->level3Default)) {
+            $json['level3_default']                                = $this->level3Default;
         }
         if (!empty($this->cauSubscribeTypeId)) {
             $json['cau_subscribe_type_id']                         =
@@ -3310,7 +4114,42 @@ class AchProductTransaction implements \JsonSerializable
         if (isset($this->bankFundedOnly)) {
             $json['bank_funded_only']                              = $this->bankFundedOnly;
         }
-        $json['id']                                                = $this->id;
+        if (isset($this->requireCvvOnKeyedCnp)) {
+            $json['require_cvv_on_keyed_cnp']                      = $this->requireCvvOnKeyedCnp;
+        }
+        if (isset($this->requireCvvOnTokenizedCnp)) {
+            $json['require_cvv_on_tokenized_cnp']                  = $this->requireCvvOnTokenizedCnp;
+        }
+        if (isset($this->showSecondaryAmount)) {
+            $json['show_secondary_amount']                         = $this->showSecondaryAmount;
+        }
+        if (isset($this->allowSecondaryAmount)) {
+            $json['allow_secondary_amount']                        = $this->allowSecondaryAmount;
+        }
+        if (isset($this->showGooglePay)) {
+            $json['show_google_pay']                               = $this->showGooglePay;
+        }
+        if (isset($this->showApplePay)) {
+            $json['show_apple_pay']                                = $this->showApplePay;
+        }
+        if (isset($this->batchRiskConfig)) {
+            $json['batch_risk_config']                             = $this->batchRiskConfig;
+        }
+        if (!empty($this->currencyCode)) {
+            $json['currency_code']                                 = $this->currencyCode['value'];
+        }
+        if (isset($this->enableAchValidation)) {
+            $json['enable_ach_validation']                         = $this->enableAchValidation;
+        }
+        if (isset($this->enableAchRetry)) {
+            $json['enable_ach_retry']                              = $this->enableAchRetry;
+        }
+        if (isset($this->allowSoftpos)) {
+            $json['allow_softpos']                                 = $this->allowSoftpos;
+        }
+        if (isset($this->id)) {
+            $json['id']                                            = $this->id;
+        }
         if (isset($this->receiptLogo)) {
             $json['receipt_logo']                                  = $this->receiptLogo;
         }
@@ -3319,9 +4158,6 @@ class AchProductTransaction implements \JsonSerializable
         }
         if (!empty($this->tz)) {
             $json['tz']                                            = $this->tz['value'];
-        }
-        if (!empty($this->currencyCode)) {
-            $json['currency_code']                                 = $this->currencyCode['value'];
         }
         if (!empty($this->currentStan)) {
             $json['current_stan']                                  = $this->currentStan['value'];
@@ -3338,6 +4174,31 @@ class AchProductTransaction implements \JsonSerializable
         if (!empty($this->modifiedUserId)) {
             $json['modified_user_id']                              = $this->modifiedUserId['value'];
         }
+        if (!empty($this->productTransactionApiId)) {
+            $json['product_transaction_api_id']                    = $this->productTransactionApiId['value'];
+        }
+        if (isset($this->transactionAmountNotificationThreshold)) {
+            $json['transaction_amount_notification_threshold']     = $this->transactionAmountNotificationThreshold;
+        }
+        if (isset($this->isSecondaryAmountAllowed)) {
+            $json['is_secondary_amount_allowed']                   = $this->isSecondaryAmountAllowed;
+        }
+        if (!empty($this->fortisId)) {
+            $json['fortis_id']                                     = $this->fortisId['value'];
+        }
+        if (!empty($this->productBillingGroupCode)) {
+            $json['product_billing_group_code']                    = $this->productBillingGroupCode['value'];
+        }
+        if (!empty($this->cauSubscribeTypeCode)) {
+            $json['cau_subscribe_type_code']                       =
+                CauSubscribeTypeCodeEnum::checkValue(
+                    $this->cauSubscribeTypeCode['value']
+                );
+        }
+        if (!empty($this->merchantCode)) {
+            $json['merchant_code']                                 = $this->merchantCode['value'];
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

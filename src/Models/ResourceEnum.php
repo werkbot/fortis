@@ -16,6 +16,8 @@ use stdClass;
 
 /**
  * Resource
+ * >Recurring, Transaction, AccountVault, DeviceTerm
+ * >
  */
 class ResourceEnum
 {

@@ -1,7 +1,7 @@
 
 # Type Enum
 
-Payment type. Must be unique.
+Resource Type
 
 ## Enumeration
 
@@ -11,12 +11,11 @@ Payment type. Must be unique.
 
 | Name |
 |  --- |
-| `ACH` |
-| `CC` |
+| `ASYNCSTATUS` |
 
 ## Example
 
 ```
-cc
+AsyncStatus
 ```
 

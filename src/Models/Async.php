@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -18,30 +19,20 @@ use stdClass;
 class Async implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $code;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $link;
-
-    /**
-     * @param string $code
-     * @param string $link
-     */
-    public function __construct(string $code, string $link)
-    {
-        $this->code = $code;
-        $this->link = $link;
-    }
 
     /**
      * Returns Code.
      * A [UUID v4](https://datatracker.ietf.org/doc/html/rfc4122) that's unique for the Async Request
      */
-    public function getCode(): string
+    public function getCode(): ?string
     {
         return $this->code;
     }
@@ -50,10 +41,9 @@ class Async implements \JsonSerializable
      * Sets Code.
      * A [UUID v4](https://datatracker.ietf.org/doc/html/rfc4122) that's unique for the Async Request
      *
-     * @required
      * @maps code
      */
-    public function setCode(string $code): void
+    public function setCode(?string $code): void
     {
         $this->code = $code;
     }
@@ -62,7 +52,7 @@ class Async implements \JsonSerializable
      * Returns Link.
      * Link to the status check endpoint
      */
-    public function getLink(): string
+    public function getLink(): ?string
     {
         return $this->link;
     }
@@ -71,12 +61,52 @@ class Async implements \JsonSerializable
      * Sets Link.
      * Link to the status check endpoint
      *
-     * @required
      * @maps link
      */
-    public function setLink(string $link): void
+    public function setLink(?string $link): void
     {
         $this->link = $link;
+    }
+
+    /**
+     * Converts the Async object to a human-readable string representation.
+     *
+     * @return string The string representation of the Async object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Async',
+            ['code' => $this->code, 'link' => $this->link, 'additionalProperties' => $this->additionalProperties]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -91,8 +121,13 @@ class Async implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['code'] = $this->code;
-        $json['link'] = $this->link;
+        if (isset($this->code)) {
+            $json['code'] = $this->code;
+        }
+        if (isset($this->link)) {
+            $json['link'] = $this->link;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

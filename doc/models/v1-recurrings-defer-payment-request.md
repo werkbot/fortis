@@ -9,7 +9,7 @@
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `deferCount` | `int` | Required | Defer Count<br>**Constraints**: `>= 1`, `<= 99` | getDeferCount(): int | setDeferCount(int deferCount): void |
+| `deferCount` | `int` | Required | Defer Count<br><br>**Constraints**: `>= 1`, `<= 99` | getDeferCount(): int | setDeferCount(int deferCount): void |
 
 ## Example (as JSON)
 

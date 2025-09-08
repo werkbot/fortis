@@ -9,8 +9,8 @@
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `type` | `string` | Required, Constant | Resource Type<br>**Default**: `'TokensCollection'` | getType(): string | setType(string type): void |
-| `mList` | [`List11[]`](../../doc/models/list-11.md) | Required | Resource Members | getMList(): array | setMList(array mList): void |
+| `type` | [`?string(Type94Enum)`](../../doc/models/type-94-enum.md) | Optional | Resource Type<br><br>**Default**: `Type94Enum::TOKENSCOLLECTION` | getType(): ?string | setType(?string type): void |
+| `list` | [`?(List16[])`](../../doc/models/list-16.md) | Optional | Resource Members | getList(): ?array | setList(?array list): void |
 | `links` | [`?Links`](../../doc/models/links.md) | Optional | Pagination page links | getLinks(): ?Links | setLinks(?Links links): void |
 | `pagination` | [`?Pagination`](../../doc/models/pagination.md) | Optional | Pagination info | getPagination(): ?Pagination | setPagination(?Pagination pagination): void |
 | `sort` | [`?Sort`](../../doc/models/sort.md) | Optional | Sort information used on the results | getSort(): ?Sort | setSort(?Sort sort): void |
@@ -20,17 +20,45 @@
 ```json
 {
   "type": "TokensCollection",
-  "list": {
-    "location_id": "11e95f8ec39de8fbdb0a4f1a",
-    "id": "11e95f8ec39de8fbdb0a4f1a",
-    "account_type": "checking",
-    "cau_summary_status_id": 1,
-    "created_ts": 1422040992,
-    "first_six": "700953",
-    "has_recurring": false,
-    "last_four": "3657",
-    "modified_ts": 1422040992,
-    "payment_method": "cc"
+  "list": [
+    {
+      "account_holder_name": "account_holder_name8",
+      "account_vault_api_id": "account_vault_api_id6",
+      "token_api_id": "token_api_id2",
+      "accountvault_c1": "accountvault_c16",
+      "accountvault_c2": "accountvault_c20"
+    }
+  ],
+  "links": {
+    "type": "Links",
+    "first": "first0",
+    "previous": "previous2",
+    "next": "next2",
+    "last": "last4"
+  },
+  "pagination": {
+    "type": "Pagination",
+    "total_count": 100,
+    "page_count": 212,
+    "page_number": 28,
+    "page_size": 6
+  },
+  "sort": {
+    "type": "Sorting",
+    "fields": [
+      {
+        "field": "field2",
+        "order": "asc"
+      },
+      {
+        "field": "field2",
+        "order": "asc"
+      },
+      {
+        "field": "field2",
+        "order": "asc"
+      }
+    ]
   }
 }
 ```

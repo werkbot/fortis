@@ -10,226 +10,596 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class List8 implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var array
      */
-    private $signature;
-
-    /**
-     * @var string
-     */
-    private $resource;
-
-    /**
-     * @var string
-     */
-    private $resourceId;
-
-    /**
-     * @var string
-     */
-    private $id;
-
-    /**
-     * @var int
-     */
-    private $createdTs;
-
-    /**
-     * @var int
-     */
-    private $modifiedTs;
+    private $id = [];
 
     /**
      * @var array
      */
-    private $rawSignature = [];
+    private $companyId = [];
 
     /**
-     * @param string $signature
-     * @param string $resource
-     * @param string $resourceId
-     * @param string $id
-     * @param int $createdTs
-     * @param int $modifiedTs
+     * @var string|null
      */
-    public function __construct(
-        string $signature,
-        string $resource,
-        string $resourceId,
-        string $id,
-        int $createdTs,
-        int $modifiedTs
-    ) {
-        $this->signature = $signature;
-        $this->resource = $resource;
-        $this->resourceId = $resourceId;
-        $this->id = $id;
-        $this->createdTs = $createdTs;
-        $this->modifiedTs = $modifiedTs;
-    }
+    private $merchantId;
 
     /**
-     * Returns Signature.
-     * Signature
+     * @var array
      */
-    public function getSignature(): string
-    {
-        return $this->signature;
-    }
+    private $service = [];
 
     /**
-     * Sets Signature.
-     * Signature
-     *
-     * @required
-     * @maps signature
+     * @var string[]|null
      */
-    public function setSignature(string $signature): void
-    {
-        $this->signature = $signature;
-    }
+    private $depositTypes;
 
     /**
-     * Returns Resource.
-     * Resource
+     * @var float|null
      */
-    public function getResource(): string
-    {
-        return $this->resource;
-    }
+    private $depositAmount;
 
     /**
-     * Sets Resource.
-     * Resource
-     *
-     * @required
-     * @maps resource
-     * @factory \FortisAPILib\Models\ResourceEnum::checkValue
+     * @var float|null
      */
-    public function setResource(string $resource): void
-    {
-        $this->resource = $resource;
-    }
+    private $batchAmount;
 
     /**
-     * Returns Resource Id.
-     * Resource ID
+     * @var float|null
      */
-    public function getResourceId(): string
-    {
-        return $this->resourceId;
-    }
+    private $adjustmentAmount;
 
     /**
-     * Sets Resource Id.
-     * Resource ID
-     *
-     * @required
-     * @maps resource_id
+     * @var float|null
      */
-    public function setResourceId(string $resourceId): void
-    {
-        $this->resourceId = $resourceId;
-    }
+    private $retainedAmount;
+
+    /**
+     * @var float|null
+     */
+    private $conveyedAmount;
+
+    /**
+     * @var float|null
+     */
+    private $feeAmount;
+
+    /**
+     * @var string|null
+     */
+    private $referenceNumber;
+
+    /**
+     * @var array
+     */
+    private $traceNumber = [];
+
+    /**
+     * @var string|null
+     */
+    private $currency;
+
+    /**
+     * @var int|null
+     */
+    private $createdTs;
+
+    /**
+     * @var string|null
+     */
+    private $reportedDate;
+
+    /**
+     * @var string|null
+     */
+    private $transactionDate;
+
+    /**
+     * @var string|null
+     */
+    private $depositAccount;
+
+    /**
+     * @var Detail2[]|null
+     */
+    private $details;
 
     /**
      * Returns Id.
-     * Signature ID
+     * Deposit Id
      */
-    public function getId(): string
+    public function getId(): ?string
     {
-        return $this->id;
+        if (count($this->id) == 0) {
+            return null;
+        }
+        return $this->id['value'];
     }
 
     /**
      * Sets Id.
-     * Signature ID
+     * Deposit Id
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
-        $this->id = $id;
+        $this->id['value'] = $id;
+    }
+
+    /**
+     * Unsets Id.
+     * Deposit Id
+     */
+    public function unsetId(): void
+    {
+        $this->id = [];
+    }
+
+    /**
+     * Returns Company Id.
+     * Company Id
+     */
+    public function getCompanyId(): ?string
+    {
+        if (count($this->companyId) == 0) {
+            return null;
+        }
+        return $this->companyId['value'];
+    }
+
+    /**
+     * Sets Company Id.
+     * Company Id
+     *
+     * @maps company_id
+     */
+    public function setCompanyId(?string $companyId): void
+    {
+        $this->companyId['value'] = $companyId;
+    }
+
+    /**
+     * Unsets Company Id.
+     * Company Id
+     */
+    public function unsetCompanyId(): void
+    {
+        $this->companyId = [];
+    }
+
+    /**
+     * Returns Merchant Id.
+     * Merchant Id
+     */
+    public function getMerchantId(): ?string
+    {
+        return $this->merchantId;
+    }
+
+    /**
+     * Sets Merchant Id.
+     * Merchant Id
+     *
+     * @maps merchant_id
+     */
+    public function setMerchantId(?string $merchantId): void
+    {
+        $this->merchantId = $merchantId;
+    }
+
+    /**
+     * Returns Service.
+     * Service
+     */
+    public function getService(): ?string
+    {
+        if (count($this->service) == 0) {
+            return null;
+        }
+        return $this->service['value'];
+    }
+
+    /**
+     * Sets Service.
+     * Service
+     *
+     * @maps service
+     */
+    public function setService(?string $service): void
+    {
+        $this->service['value'] = $service;
+    }
+
+    /**
+     * Unsets Service.
+     * Service
+     */
+    public function unsetService(): void
+    {
+        $this->service = [];
+    }
+
+    /**
+     * Returns Deposit Types.
+     *
+     * @return string[]|null
+     */
+    public function getDepositTypes(): ?array
+    {
+        return $this->depositTypes;
+    }
+
+    /**
+     * Sets Deposit Types.
+     *
+     * @maps deposit_types
+     * @factory \FortisAPILib\Models\DepositTypeEnum::checkValue
+     *
+     * @param string[]|null $depositTypes
+     */
+    public function setDepositTypes(?array $depositTypes): void
+    {
+        $this->depositTypes = $depositTypes;
+    }
+
+    /**
+     * Returns Deposit Amount.
+     * Deposit Amount
+     */
+    public function getDepositAmount(): ?float
+    {
+        return $this->depositAmount;
+    }
+
+    /**
+     * Sets Deposit Amount.
+     * Deposit Amount
+     *
+     * @maps deposit_amount
+     */
+    public function setDepositAmount(?float $depositAmount): void
+    {
+        $this->depositAmount = $depositAmount;
+    }
+
+    /**
+     * Returns Batch Amount.
+     * Batch Amount
+     */
+    public function getBatchAmount(): ?float
+    {
+        return $this->batchAmount;
+    }
+
+    /**
+     * Sets Batch Amount.
+     * Batch Amount
+     *
+     * @maps batch_amount
+     */
+    public function setBatchAmount(?float $batchAmount): void
+    {
+        $this->batchAmount = $batchAmount;
+    }
+
+    /**
+     * Returns Adjustment Amount.
+     * Adjustment Amount
+     */
+    public function getAdjustmentAmount(): ?float
+    {
+        return $this->adjustmentAmount;
+    }
+
+    /**
+     * Sets Adjustment Amount.
+     * Adjustment Amount
+     *
+     * @maps adjustment_amount
+     */
+    public function setAdjustmentAmount(?float $adjustmentAmount): void
+    {
+        $this->adjustmentAmount = $adjustmentAmount;
+    }
+
+    /**
+     * Returns Retained Amount.
+     * Retained Amount
+     */
+    public function getRetainedAmount(): ?float
+    {
+        return $this->retainedAmount;
+    }
+
+    /**
+     * Sets Retained Amount.
+     * Retained Amount
+     *
+     * @maps retained_amount
+     */
+    public function setRetainedAmount(?float $retainedAmount): void
+    {
+        $this->retainedAmount = $retainedAmount;
+    }
+
+    /**
+     * Returns Conveyed Amount.
+     * Conveyed Amount
+     */
+    public function getConveyedAmount(): ?float
+    {
+        return $this->conveyedAmount;
+    }
+
+    /**
+     * Sets Conveyed Amount.
+     * Conveyed Amount
+     *
+     * @maps conveyed_amount
+     */
+    public function setConveyedAmount(?float $conveyedAmount): void
+    {
+        $this->conveyedAmount = $conveyedAmount;
+    }
+
+    /**
+     * Returns Fee Amount.
+     * Fee Amount
+     */
+    public function getFeeAmount(): ?float
+    {
+        return $this->feeAmount;
+    }
+
+    /**
+     * Sets Fee Amount.
+     * Fee Amount
+     *
+     * @maps fee_amount
+     */
+    public function setFeeAmount(?float $feeAmount): void
+    {
+        $this->feeAmount = $feeAmount;
+    }
+
+    /**
+     * Returns Reference Number.
+     * Reference Number
+     */
+    public function getReferenceNumber(): ?string
+    {
+        return $this->referenceNumber;
+    }
+
+    /**
+     * Sets Reference Number.
+     * Reference Number
+     *
+     * @maps reference_number
+     */
+    public function setReferenceNumber(?string $referenceNumber): void
+    {
+        $this->referenceNumber = $referenceNumber;
+    }
+
+    /**
+     * Returns Trace Number.
+     */
+    public function getTraceNumber(): ?string
+    {
+        if (count($this->traceNumber) == 0) {
+            return null;
+        }
+        return $this->traceNumber['value'];
+    }
+
+    /**
+     * Sets Trace Number.
+     *
+     * @maps trace_number
+     */
+    public function setTraceNumber(?string $traceNumber): void
+    {
+        $this->traceNumber['value'] = $traceNumber;
+    }
+
+    /**
+     * Unsets Trace Number.
+     */
+    public function unsetTraceNumber(): void
+    {
+        $this->traceNumber = [];
+    }
+
+    /**
+     * Returns Currency.
+     * Currency
+     */
+    public function getCurrency(): ?string
+    {
+        return $this->currency;
+    }
+
+    /**
+     * Sets Currency.
+     * Currency
+     *
+     * @maps currency
+     */
+    public function setCurrency(?string $currency): void
+    {
+        $this->currency = $currency;
     }
 
     /**
      * Returns Created Ts.
-     * Created Time Stamp
+     * Created Timestamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
 
     /**
      * Sets Created Ts.
-     * Created Time Stamp
+     * Created Timestamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
 
     /**
-     * Returns Modified Ts.
-     * Modified Time Stamp
+     * Returns Reported Date.
+     * Reported Date
      */
-    public function getModifiedTs(): int
+    public function getReportedDate(): ?string
     {
-        return $this->modifiedTs;
+        return $this->reportedDate;
     }
 
     /**
-     * Sets Modified Ts.
-     * Modified Time Stamp
+     * Sets Reported Date.
+     * Reported Date
      *
-     * @required
-     * @maps modified_ts
+     * @maps reported_date
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setReportedDate(?string $reportedDate): void
     {
-        $this->modifiedTs = $modifiedTs;
+        $this->reportedDate = $reportedDate;
     }
 
     /**
-     * Returns Raw Signature.
-     * Raw Signature Information on `expand`
+     * Returns Transaction Date.
+     * Transaction Date
      */
-    public function getRawSignature(): ?string
+    public function getTransactionDate(): ?string
     {
-        if (count($this->rawSignature) == 0) {
-            return null;
+        return $this->transactionDate;
+    }
+
+    /**
+     * Sets Transaction Date.
+     * Transaction Date
+     *
+     * @maps transaction_date
+     */
+    public function setTransactionDate(?string $transactionDate): void
+    {
+        $this->transactionDate = $transactionDate;
+    }
+
+    /**
+     * Returns Deposit Account.
+     * Deposit Account
+     */
+    public function getDepositAccount(): ?string
+    {
+        return $this->depositAccount;
+    }
+
+    /**
+     * Sets Deposit Account.
+     * Deposit Account
+     *
+     * @maps deposit_account
+     */
+    public function setDepositAccount(?string $depositAccount): void
+    {
+        $this->depositAccount = $depositAccount;
+    }
+
+    /**
+     * Returns Details.
+     *
+     * @return Detail2[]|null
+     */
+    public function getDetails(): ?array
+    {
+        return $this->details;
+    }
+
+    /**
+     * Sets Details.
+     *
+     * @maps details
+     *
+     * @param Detail2[]|null $details
+     */
+    public function setDetails(?array $details): void
+    {
+        $this->details = $details;
+    }
+
+    /**
+     * Converts the List8 object to a human-readable string representation.
+     *
+     * @return string The string representation of the List8 object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'List8',
+            [
+                'id' => $this->getId(),
+                'companyId' => $this->getCompanyId(),
+                'merchantId' => $this->merchantId,
+                'service' => $this->getService(),
+                'depositTypes' => $this->depositTypes,
+                'depositAmount' => $this->depositAmount,
+                'batchAmount' => $this->batchAmount,
+                'adjustmentAmount' => $this->adjustmentAmount,
+                'retainedAmount' => $this->retainedAmount,
+                'conveyedAmount' => $this->conveyedAmount,
+                'feeAmount' => $this->feeAmount,
+                'referenceNumber' => $this->referenceNumber,
+                'traceNumber' => $this->getTraceNumber(),
+                'currency' => $this->currency,
+                'createdTs' => $this->createdTs,
+                'reportedDate' => $this->reportedDate,
+                'transactionDate' => $this->transactionDate,
+                'depositAccount' => $this->depositAccount,
+                'details' => $this->details,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
         }
-        return $this->rawSignature['value'];
-    }
-
-    /**
-     * Sets Raw Signature.
-     * Raw Signature Information on `expand`
-     *
-     * @maps raw_signature
-     */
-    public function setRawSignature(?string $rawSignature): void
-    {
-        $this->rawSignature['value'] = $rawSignature;
-    }
-
-    /**
-     * Unsets Raw Signature.
-     * Raw Signature Information on `expand`
-     */
-    public function unsetRawSignature(): void
-    {
-        $this->rawSignature = [];
+        return false;
     }
 
     /**
@@ -244,15 +614,64 @@ class List8 implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['signature']         = $this->signature;
-        $json['resource']          = ResourceEnum::checkValue($this->resource);
-        $json['resource_id']       = $this->resourceId;
-        $json['id']                = $this->id;
-        $json['created_ts']        = $this->createdTs;
-        $json['modified_ts']       = $this->modifiedTs;
-        if (!empty($this->rawSignature)) {
-            $json['raw_signature'] = $this->rawSignature['value'];
+        if (!empty($this->id)) {
+            $json['id']                = $this->id['value'];
         }
+        if (!empty($this->companyId)) {
+            $json['company_id']        = $this->companyId['value'];
+        }
+        if (isset($this->merchantId)) {
+            $json['merchant_id']       = $this->merchantId;
+        }
+        if (!empty($this->service)) {
+            $json['service']           = $this->service['value'];
+        }
+        if (isset($this->depositTypes)) {
+            $json['deposit_types']     = DepositTypeEnum::checkValue($this->depositTypes);
+        }
+        if (isset($this->depositAmount)) {
+            $json['deposit_amount']    = $this->depositAmount;
+        }
+        if (isset($this->batchAmount)) {
+            $json['batch_amount']      = $this->batchAmount;
+        }
+        if (isset($this->adjustmentAmount)) {
+            $json['adjustment_amount'] = $this->adjustmentAmount;
+        }
+        if (isset($this->retainedAmount)) {
+            $json['retained_amount']   = $this->retainedAmount;
+        }
+        if (isset($this->conveyedAmount)) {
+            $json['conveyed_amount']   = $this->conveyedAmount;
+        }
+        if (isset($this->feeAmount)) {
+            $json['fee_amount']        = $this->feeAmount;
+        }
+        if (isset($this->referenceNumber)) {
+            $json['reference_number']  = $this->referenceNumber;
+        }
+        if (!empty($this->traceNumber)) {
+            $json['trace_number']      = $this->traceNumber['value'];
+        }
+        if (isset($this->currency)) {
+            $json['currency']          = $this->currency;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']        = $this->createdTs;
+        }
+        if (isset($this->reportedDate)) {
+            $json['reported_date']     = $this->reportedDate;
+        }
+        if (isset($this->transactionDate)) {
+            $json['transaction_date']  = $this->transactionDate;
+        }
+        if (isset($this->depositAccount)) {
+            $json['deposit_account']   = $this->depositAccount;
+        }
+        if (isset($this->details)) {
+            $json['details']           = $this->details;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

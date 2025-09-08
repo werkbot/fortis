@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class Transaction implements \JsonSerializable
@@ -20,7 +21,7 @@ class Transaction implements \JsonSerializable
     private $additionalAmounts;
 
     /**
-     * @var BillingAddress|null
+     * @var BillingAddress1|null
      */
     private $billingAddress;
 
@@ -98,6 +99,31 @@ class Transaction implements \JsonSerializable
      * @var array
      */
     private $installmentCount = [];
+
+    /**
+     * @var array
+     */
+    private $recurringFlag = [];
+
+    /**
+     * @var array
+     */
+    private $installmentCounter = [];
+
+    /**
+     * @var array
+     */
+    private $installmentTotal = [];
+
+    /**
+     * @var bool|null
+     */
+    private $subscription;
+
+    /**
+     * @var bool|null
+     */
+    private $standingOrder;
 
     /**
      * @var array
@@ -185,9 +211,9 @@ class Transaction implements \JsonSerializable
     private $surchargeAmount = [];
 
     /**
-     * @var string[]|null
+     * @var array
      */
-    private $tags;
+    private $tags = [];
 
     /**
      * @var array
@@ -235,17 +261,42 @@ class Transaction implements \JsonSerializable
     private $bankFundedOnlyOverride;
 
     /**
-     * @var string
+     * @var bool|null
+     */
+    private $allowPartialAuthorizationOverride;
+
+    /**
+     * @var bool|null
+     */
+    private $autoDeclineCvvOverride;
+
+    /**
+     * @var bool|null
+     */
+    private $autoDeclineStreetOverride;
+
+    /**
+     * @var bool|null
+     */
+    private $autoDeclineZipOverride;
+
+    /**
+     * @var array
+     */
+    private $ebtType = [];
+
+    /**
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $modifiedTs;
 
@@ -335,9 +386,9 @@ class Transaction implements \JsonSerializable
     private $entryModeId = [];
 
     /**
-     * @var EmvReceiptData|null
+     * @var array
      */
-    private $emvReceiptData;
+    private $emvReceiptData = [];
 
     /**
      * @var array
@@ -350,7 +401,7 @@ class Transaction implements \JsonSerializable
     private $lastFour = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $paymentMethod;
 
@@ -375,9 +426,9 @@ class Transaction implements \JsonSerializable
     private $isRecurring;
 
     /**
-     * @var array
+     * @var bool|null
      */
-    private $notificationEmailSent = [];
+    private $notificationEmailSent;
 
     /**
      * @var array
@@ -422,6 +473,11 @@ class Transaction implements \JsonSerializable
     /**
      * @var array
      */
+    private $voucherNumber = [];
+
+    /**
+     * @var array
+     */
     private $voidDate = [];
 
     /**
@@ -450,18 +506,94 @@ class Transaction implements \JsonSerializable
     private $trxSourceId = [];
 
     /**
-     * @param string $id
-     * @param int $createdTs
-     * @param int $modifiedTs
-     * @param string $paymentMethod
+     * @var array
      */
-    public function __construct(string $id, int $createdTs, int $modifiedTs, string $paymentMethod)
-    {
-        $this->id = $id;
-        $this->createdTs = $createdTs;
-        $this->modifiedTs = $modifiedTs;
-        $this->paymentMethod = $paymentMethod;
-    }
+    private $routingNumber = [];
+
+    /**
+     * @var array
+     */
+    private $trxSourceCode = [];
+
+    /**
+     * @var array
+     */
+    private $paylinkId = [];
+
+    /**
+     * @var array
+     */
+    private $currencyCode = ['value' => 840];
+
+    /**
+     * @var bool|null
+     */
+    private $isAccountvault;
+
+    /**
+     * @var array
+     */
+    private $createdUserId = [];
+
+    /**
+     * @var string|null
+     */
+    private $modifiedUserId;
+
+    /**
+     * @var array
+     */
+    private $transactionCode = [];
+
+    /**
+     * @var array
+     */
+    private $effectiveDate = [];
+
+    /**
+     * @var array
+     */
+    private $notificationPhone = [];
+
+    /**
+     * @var array
+     */
+    private $cavvResult = [];
+
+    /**
+     * @var bool|null
+     */
+    private $isToken;
+
+    /**
+     * @var array
+     */
+    private $accountVaultId = [];
+
+    /**
+     * @var string|null
+     */
+    private $hostedPaymentPageId;
+
+    /**
+     * @var array
+     */
+    private $stan = [];
+
+    /**
+     * @var array
+     */
+    private $currency = [];
+
+    /**
+     * @var array
+     */
+    private $cardBin = [];
+
+    /**
+     * @var array
+     */
+    private $walletType = [];
 
     /**
      * Returns Additional Amounts.
@@ -491,7 +623,7 @@ class Transaction implements \JsonSerializable
      * Returns Billing Address.
      * Billing Address Object
      */
-    public function getBillingAddress(): ?BillingAddress
+    public function getBillingAddress(): ?BillingAddress1
     {
         return $this->billingAddress;
     }
@@ -502,7 +634,7 @@ class Transaction implements \JsonSerializable
      *
      * @maps billing_address
      */
-    public function setBillingAddress(?BillingAddress $billingAddress): void
+    public function setBillingAddress(?BillingAddress1 $billingAddress): void
     {
         $this->billingAddress = $billingAddress;
     }
@@ -510,7 +642,9 @@ class Transaction implements \JsonSerializable
     /**
      * Returns Checkin Date.
      * Checkin Date - The time difference between checkin_date and checkout_date must be less than or equal
-     * to 99 days.
+     * to 99 days. NOTE: if checkin_date is in the future, set the advance_deposit to 1
+     * >Required if merchant industry type is lodging.
+     * >
      */
     public function getCheckinDate(): ?string
     {
@@ -523,7 +657,9 @@ class Transaction implements \JsonSerializable
     /**
      * Sets Checkin Date.
      * Checkin Date - The time difference between checkin_date and checkout_date must be less than or equal
-     * to 99 days.
+     * to 99 days. NOTE: if checkin_date is in the future, set the advance_deposit to 1
+     * >Required if merchant industry type is lodging.
+     * >
      *
      * @maps checkin_date
      */
@@ -535,7 +671,9 @@ class Transaction implements \JsonSerializable
     /**
      * Unsets Checkin Date.
      * Checkin Date - The time difference between checkin_date and checkout_date must be less than or equal
-     * to 99 days.
+     * to 99 days. NOTE: if checkin_date is in the future, set the advance_deposit to 1
+     * >Required if merchant industry type is lodging.
+     * >
      */
     public function unsetCheckinDate(): void
     {
@@ -546,6 +684,8 @@ class Transaction implements \JsonSerializable
      * Returns Checkout Date.
      * Checkout Date - The time difference between checkin_date and checkout_date must be less than or
      * equal to 99 days.
+     * >Required if merchant industry type is lodging.
+     * >
      */
     public function getCheckoutDate(): ?string
     {
@@ -559,6 +699,8 @@ class Transaction implements \JsonSerializable
      * Sets Checkout Date.
      * Checkout Date - The time difference between checkin_date and checkout_date must be less than or
      * equal to 99 days.
+     * >Required if merchant industry type is lodging.
+     * >
      *
      * @maps checkout_date
      */
@@ -571,6 +713,8 @@ class Transaction implements \JsonSerializable
      * Unsets Checkout Date.
      * Checkout Date - The time difference between checkin_date and checkout_date must be less than or
      * equal to 99 days.
+     * >Required if merchant industry type is lodging.
+     * >
      */
     public function unsetCheckoutDate(): void
     {
@@ -907,7 +1051,7 @@ class Transaction implements \JsonSerializable
      * If this is a fixed installment plan and installment field is being passed as 1, then this field must
      * have a vlue of 1-999 specifying the current installment number that is running.
      */
-    public function getInstallmentNumber(): ?float
+    public function getInstallmentNumber(): ?int
     {
         if (count($this->installmentNumber) == 0) {
             return null;
@@ -922,7 +1066,7 @@ class Transaction implements \JsonSerializable
      *
      * @maps installment_number
      */
-    public function setInstallmentNumber(?float $installmentNumber): void
+    public function setInstallmentNumber(?int $installmentNumber): void
     {
         $this->installmentNumber['value'] = $installmentNumber;
     }
@@ -943,7 +1087,7 @@ class Transaction implements \JsonSerializable
      * have a vlue of 1-999 specifying the total number of installments on the plan. This number must be
      * grater than or equal to installment_number.
      */
-    public function getInstallmentCount(): ?float
+    public function getInstallmentCount(): ?int
     {
         if (count($this->installmentCount) == 0) {
             return null;
@@ -959,7 +1103,7 @@ class Transaction implements \JsonSerializable
      *
      * @maps installment_count
      */
-    public function setInstallmentCount(?float $installmentCount): void
+    public function setInstallmentCount(?int $installmentCount): void
     {
         $this->installmentCount['value'] = $installmentCount;
     }
@@ -973,6 +1117,143 @@ class Transaction implements \JsonSerializable
     public function unsetInstallmentCount(): void
     {
         $this->installmentCount = [];
+    }
+
+    /**
+     * Returns Recurring Flag.
+     * Recurring Flag
+     */
+    public function getRecurringFlag(): ?string
+    {
+        if (count($this->recurringFlag) == 0) {
+            return null;
+        }
+        return $this->recurringFlag['value'];
+    }
+
+    /**
+     * Sets Recurring Flag.
+     * Recurring Flag
+     *
+     * @maps recurring_flag
+     * @factory \FortisAPILib\Models\RecurringFlagEnum::checkValue
+     */
+    public function setRecurringFlag(?string $recurringFlag): void
+    {
+        $this->recurringFlag['value'] = $recurringFlag;
+    }
+
+    /**
+     * Unsets Recurring Flag.
+     * Recurring Flag
+     */
+    public function unsetRecurringFlag(): void
+    {
+        $this->recurringFlag = [];
+    }
+
+    /**
+     * Returns Installment Counter.
+     * Installment Counter
+     */
+    public function getInstallmentCounter(): ?int
+    {
+        if (count($this->installmentCounter) == 0) {
+            return null;
+        }
+        return $this->installmentCounter['value'];
+    }
+
+    /**
+     * Sets Installment Counter.
+     * Installment Counter
+     *
+     * @maps installment_counter
+     */
+    public function setInstallmentCounter(?int $installmentCounter): void
+    {
+        $this->installmentCounter['value'] = $installmentCounter;
+    }
+
+    /**
+     * Unsets Installment Counter.
+     * Installment Counter
+     */
+    public function unsetInstallmentCounter(): void
+    {
+        $this->installmentCounter = [];
+    }
+
+    /**
+     * Returns Installment Total.
+     * Installment Total
+     */
+    public function getInstallmentTotal(): ?int
+    {
+        if (count($this->installmentTotal) == 0) {
+            return null;
+        }
+        return $this->installmentTotal['value'];
+    }
+
+    /**
+     * Sets Installment Total.
+     * Installment Total
+     *
+     * @maps installment_total
+     */
+    public function setInstallmentTotal(?int $installmentTotal): void
+    {
+        $this->installmentTotal['value'] = $installmentTotal;
+    }
+
+    /**
+     * Unsets Installment Total.
+     * Installment Total
+     */
+    public function unsetInstallmentTotal(): void
+    {
+        $this->installmentTotal = [];
+    }
+
+    /**
+     * Returns Subscription.
+     * Subscription
+     */
+    public function getSubscription(): ?bool
+    {
+        return $this->subscription;
+    }
+
+    /**
+     * Sets Subscription.
+     * Subscription
+     *
+     * @maps subscription
+     */
+    public function setSubscription(?bool $subscription): void
+    {
+        $this->subscription = $subscription;
+    }
+
+    /**
+     * Returns Standing Order.
+     * Standing Order
+     */
+    public function getStandingOrder(): ?bool
+    {
+        return $this->standingOrder;
+    }
+
+    /**
+     * Sets Standing Order.
+     * Standing Order
+     *
+     * @maps standing_order
+     */
+    public function setStandingOrder(?bool $standingOrder): void
+    {
+        $this->standingOrder = $standingOrder;
     }
 
     /**
@@ -1280,7 +1561,7 @@ class Transaction implements \JsonSerializable
      * If this is an ongoing recurring and recurring field is being passed as 1, then this field must have
      * a vlue of 1-999 specifying the current recurring number that is running.
      */
-    public function getRecurringNumber(): ?float
+    public function getRecurringNumber(): ?int
     {
         if (count($this->recurringNumber) == 0) {
             return null;
@@ -1295,7 +1576,7 @@ class Transaction implements \JsonSerializable
      *
      * @maps recurring_number
      */
-    public function setRecurringNumber(?float $recurringNumber): void
+    public function setRecurringNumber(?int $recurringNumber): void
     {
         $this->recurringNumber['value'] = $recurringNumber;
     }
@@ -1506,7 +1787,10 @@ class Transaction implements \JsonSerializable
      */
     public function getTags(): ?array
     {
-        return $this->tags;
+        if (count($this->tags) == 0) {
+            return null;
+        }
+        return $this->tags['value'];
     }
 
     /**
@@ -1519,7 +1803,16 @@ class Transaction implements \JsonSerializable
      */
     public function setTags(?array $tags): void
     {
-        $this->tags = $tags;
+        $this->tags['value'] = $tags;
+    }
+
+    /**
+     * Unsets Tags.
+     * Tags
+     */
+    public function unsetTags(): void
+    {
+        $this->tags = [];
     }
 
     /**
@@ -1629,7 +1922,7 @@ class Transaction implements \JsonSerializable
 
     /**
      * Returns Secondary Amount.
-     * Secondary Amount of the transaction. This should always be less than transaction amount. Use only
+     * Retained Amount of the transaction. This should always be less than transaction amount. Use only
      * integer numbers, so $10.99 will be 1099
      */
     public function getSecondaryAmount(): ?int
@@ -1642,7 +1935,7 @@ class Transaction implements \JsonSerializable
 
     /**
      * Sets Secondary Amount.
-     * Secondary Amount of the transaction. This should always be less than transaction amount. Use only
+     * Retained Amount of the transaction. This should always be less than transaction amount. Use only
      * integer numbers, so $10.99 will be 1099
      *
      * @maps secondary_amount
@@ -1654,7 +1947,7 @@ class Transaction implements \JsonSerializable
 
     /**
      * Unsets Secondary Amount.
-     * Secondary Amount of the transaction. This should always be less than transaction amount. Use only
+     * Retained Amount of the transaction. This should always be less than transaction amount. Use only
      * integer numbers, so $10.99 will be 1099
      */
     public function unsetSecondaryAmount(): void
@@ -1811,10 +2104,123 @@ class Transaction implements \JsonSerializable
     }
 
     /**
+     * Returns Allow Partial Authorization Override.
+     * Allow Partial Authorization Override
+     */
+    public function getAllowPartialAuthorizationOverride(): ?bool
+    {
+        return $this->allowPartialAuthorizationOverride;
+    }
+
+    /**
+     * Sets Allow Partial Authorization Override.
+     * Allow Partial Authorization Override
+     *
+     * @maps allow_partial_authorization_override
+     */
+    public function setAllowPartialAuthorizationOverride(?bool $allowPartialAuthorizationOverride): void
+    {
+        $this->allowPartialAuthorizationOverride = $allowPartialAuthorizationOverride;
+    }
+
+    /**
+     * Returns Auto Decline Cvv Override.
+     * Auto Decline CVV Override
+     */
+    public function getAutoDeclineCvvOverride(): ?bool
+    {
+        return $this->autoDeclineCvvOverride;
+    }
+
+    /**
+     * Sets Auto Decline Cvv Override.
+     * Auto Decline CVV Override
+     *
+     * @maps auto_decline_cvv_override
+     */
+    public function setAutoDeclineCvvOverride(?bool $autoDeclineCvvOverride): void
+    {
+        $this->autoDeclineCvvOverride = $autoDeclineCvvOverride;
+    }
+
+    /**
+     * Returns Auto Decline Street Override.
+     * Auto Decline Street Override
+     */
+    public function getAutoDeclineStreetOverride(): ?bool
+    {
+        return $this->autoDeclineStreetOverride;
+    }
+
+    /**
+     * Sets Auto Decline Street Override.
+     * Auto Decline Street Override
+     *
+     * @maps auto_decline_street_override
+     */
+    public function setAutoDeclineStreetOverride(?bool $autoDeclineStreetOverride): void
+    {
+        $this->autoDeclineStreetOverride = $autoDeclineStreetOverride;
+    }
+
+    /**
+     * Returns Auto Decline Zip Override.
+     * Auto Decline Zip Override
+     */
+    public function getAutoDeclineZipOverride(): ?bool
+    {
+        return $this->autoDeclineZipOverride;
+    }
+
+    /**
+     * Sets Auto Decline Zip Override.
+     * Auto Decline Zip Override
+     *
+     * @maps auto_decline_zip_override
+     */
+    public function setAutoDeclineZipOverride(?bool $autoDeclineZipOverride): void
+    {
+        $this->autoDeclineZipOverride = $autoDeclineZipOverride;
+    }
+
+    /**
+     * Returns Ebt Type.
+     * EBT Type
+     */
+    public function getEbtType(): ?string
+    {
+        if (count($this->ebtType) == 0) {
+            return null;
+        }
+        return $this->ebtType['value'];
+    }
+
+    /**
+     * Sets Ebt Type.
+     * EBT Type
+     *
+     * @maps ebt_type
+     * @factory \FortisAPILib\Models\EbtTypeEnum::checkValue
+     */
+    public function setEbtType(?string $ebtType): void
+    {
+        $this->ebtType['value'] = $ebtType;
+    }
+
+    /**
+     * Unsets Ebt Type.
+     * EBT Type
+     */
+    public function unsetEbtType(): void
+    {
+        $this->ebtType = [];
+    }
+
+    /**
      * Returns Id.
      * Transaction ID
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -1823,10 +2229,9 @@ class Transaction implements \JsonSerializable
      * Sets Id.
      * Transaction ID
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -1835,7 +2240,7 @@ class Transaction implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -1844,10 +2249,9 @@ class Transaction implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -1856,7 +2260,7 @@ class Transaction implements \JsonSerializable
      * Returns Modified Ts.
      * Modified Time Stamp
      */
-    public function getModifiedTs(): int
+    public function getModifiedTs(): ?int
     {
         return $this->modifiedTs;
     }
@@ -1865,10 +2269,9 @@ class Transaction implements \JsonSerializable
      * Sets Modified Ts.
      * Modified Time Stamp
      *
-     * @required
      * @maps modified_ts
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setModifiedTs(?int $modifiedTs): void
     {
         $this->modifiedTs = $modifiedTs;
     }
@@ -1908,6 +2311,9 @@ class Transaction implements \JsonSerializable
     /**
      * Returns Account Holder Name.
      * For CC, this is the 'Name (as it appears) on Card'. For ACH, this is the 'Name on Account'.
+     * >Required for ACH transactions if account_vault_id is not provided. For CC transactions that are run
+     * through a terminal, this field may be overwritten by data acquired from the credit card track data.
+     * >
      */
     public function getAccountHolderName(): ?string
     {
@@ -1920,6 +2326,9 @@ class Transaction implements \JsonSerializable
     /**
      * Sets Account Holder Name.
      * For CC, this is the 'Name (as it appears) on Card'. For ACH, this is the 'Name on Account'.
+     * >Required for ACH transactions if account_vault_id is not provided. For CC transactions that are run
+     * through a terminal, this field may be overwritten by data acquired from the credit card track data.
+     * >
      *
      * @maps account_holder_name
      */
@@ -1931,6 +2340,9 @@ class Transaction implements \JsonSerializable
     /**
      * Unsets Account Holder Name.
      * For CC, this is the 'Name (as it appears) on Card'. For ACH, this is the 'Name on Account'.
+     * >Required for ACH transactions if account_vault_id is not provided. For CC transactions that are run
+     * through a terminal, this field may be overwritten by data acquired from the credit card track data.
+     * >
      */
     public function unsetAccountHolderName(): void
     {
@@ -1940,6 +2352,10 @@ class Transaction implements \JsonSerializable
     /**
      * Returns Account Type.
      * Required for ACH transactions if account_vault_id is not provided.
+     * >For ACH, allowed values are 'checking' or 'savings'. For CC, this field is read only. The system
+     * will identify card type and generate a value for this field automatically. possible values are: visa,
+     * mc, disc, amex, jcb, diners, and debit.
+     * >
      */
     public function getAccountType(): ?string
     {
@@ -1952,6 +2368,10 @@ class Transaction implements \JsonSerializable
     /**
      * Sets Account Type.
      * Required for ACH transactions if account_vault_id is not provided.
+     * >For ACH, allowed values are 'checking' or 'savings'. For CC, this field is read only. The system
+     * will identify card type and generate a value for this field automatically. possible values are: visa,
+     * mc, disc, amex, jcb, diners, and debit.
+     * >
      *
      * @maps account_type
      */
@@ -1963,6 +2383,10 @@ class Transaction implements \JsonSerializable
     /**
      * Unsets Account Type.
      * Required for ACH transactions if account_vault_id is not provided.
+     * >For ACH, allowed values are 'checking' or 'savings'. For CC, this field is read only. The system
+     * will identify card type and generate a value for this field automatically. possible values are: visa,
+     * mc, disc, amex, jcb, diners, and debit.
+     * >
      */
     public function unsetAccountType(): void
     {
@@ -2105,7 +2529,7 @@ class Transaction implements \JsonSerializable
      * Returns Auth Amount.
      * Authorization Amount
      */
-    public function getAuthAmount(): ?float
+    public function getAuthAmount(): ?int
     {
         if (count($this->authAmount) == 0) {
             return null;
@@ -2119,7 +2543,7 @@ class Transaction implements \JsonSerializable
      *
      * @maps auth_amount
      */
-    public function setAuthAmount(?float $authAmount): void
+    public function setAuthAmount(?int $authAmount): void
     {
         $this->authAmount['value'] = $authAmount;
     }
@@ -2135,7 +2559,7 @@ class Transaction implements \JsonSerializable
 
     /**
      * Returns Auth Code.
-     * Required on force transactions. Ignored for all other actions.
+     * Required on force transactions and EBT voucher clear sale/refund. Ignored for all other actions.
      */
     public function getAuthCode(): ?string
     {
@@ -2147,7 +2571,7 @@ class Transaction implements \JsonSerializable
 
     /**
      * Sets Auth Code.
-     * Required on force transactions. Ignored for all other actions.
+     * Required on force transactions and EBT voucher clear sale/refund. Ignored for all other actions.
      *
      * @maps auth_code
      */
@@ -2158,7 +2582,7 @@ class Transaction implements \JsonSerializable
 
     /**
      * Unsets Auth Code.
-     * Required on force transactions. Ignored for all other actions.
+     * Required on force transactions and EBT voucher clear sale/refund. Ignored for all other actions.
      */
     public function unsetAuthCode(): void
     {
@@ -2253,6 +2677,11 @@ class Transaction implements \JsonSerializable
     /**
      * Returns Card Present.
      * A POST only field to specify whether or not the card is present.
+     * >This field will be defaulted to '1' for all card present industries (retail, lodging, restaurant)
+     * and '0' for card not present industries (MOTO/e-commerce).
+     * For lodging, if the no_show flag is set to '1', this field will automatically be set to '0'.
+     * For transactions where account_vault_id is used, this filed will be set to '0'.
+     * >
      */
     public function getCardPresent(): ?bool
     {
@@ -2262,6 +2691,11 @@ class Transaction implements \JsonSerializable
     /**
      * Sets Card Present.
      * A POST only field to specify whether or not the card is present.
+     * >This field will be defaulted to '1' for all card present industries (retail, lodging, restaurant)
+     * and '0' for card not present industries (MOTO/e-commerce).
+     * For lodging, if the no_show flag is set to '1', this field will automatically be set to '0'.
+     * For transactions where account_vault_id is used, this filed will be set to '0'.
+     * >
      *
      * @maps card_present
      */
@@ -2407,7 +2841,10 @@ class Transaction implements \JsonSerializable
      */
     public function getEmvReceiptData(): ?EmvReceiptData
     {
-        return $this->emvReceiptData;
+        if (count($this->emvReceiptData) == 0) {
+            return null;
+        }
+        return $this->emvReceiptData['value'];
     }
 
     /**
@@ -2420,7 +2857,18 @@ class Transaction implements \JsonSerializable
      */
     public function setEmvReceiptData(?EmvReceiptData $emvReceiptData): void
     {
-        $this->emvReceiptData = $emvReceiptData;
+        $this->emvReceiptData['value'] = $emvReceiptData;
+    }
+
+    /**
+     * Unsets Emv Receipt Data.
+     * This field is a read only field. This field will only be populated for EMV transactions and will
+     * contain proper JSON formatted data with some or all of the following fields: TC,TVR,AID,TSI,ATC,
+     * APPLAB,APPN,CVM
+     */
+    public function unsetEmvReceiptData(): void
+    {
+        $this->emvReceiptData = [];
     }
 
     /**
@@ -2491,7 +2939,7 @@ class Transaction implements \JsonSerializable
      * Returns Payment Method.
      * 'cc' or 'ach'
      */
-    public function getPaymentMethod(): string
+    public function getPaymentMethod(): ?string
     {
         return $this->paymentMethod;
     }
@@ -2500,11 +2948,10 @@ class Transaction implements \JsonSerializable
      * Sets Payment Method.
      * 'cc' or 'ach'
      *
-     * @required
      * @maps payment_method
-     * @factory \FortisAPILib\Models\PaymentMethod3Enum::checkValue
+     * @factory \FortisAPILib\Models\PaymentMethod9Enum::checkValue
      */
-    public function setPaymentMethod(string $paymentMethod): void
+    public function setPaymentMethod(?string $paymentMethod): void
     {
         $this->paymentMethod = $paymentMethod;
     }
@@ -2634,12 +3081,9 @@ class Transaction implements \JsonSerializable
      * Returns Notification Email Sent.
      * Indicates if email receipt has been sent
      */
-    public function getNotificationEmailSent(): ?string
+    public function getNotificationEmailSent(): ?bool
     {
-        if (count($this->notificationEmailSent) == 0) {
-            return null;
-        }
-        return $this->notificationEmailSent['value'];
+        return $this->notificationEmailSent;
     }
 
     /**
@@ -2648,18 +3092,9 @@ class Transaction implements \JsonSerializable
      *
      * @maps notification_email_sent
      */
-    public function setNotificationEmailSent(?string $notificationEmailSent): void
+    public function setNotificationEmailSent(?bool $notificationEmailSent): void
     {
-        $this->notificationEmailSent['value'] = $notificationEmailSent;
-    }
-
-    /**
-     * Unsets Notification Email Sent.
-     * Indicates if email receipt has been sent
-     */
-    public function unsetNotificationEmailSent(): void
-    {
-        $this->notificationEmailSent = [];
+        $this->notificationEmailSent = $notificationEmailSent;
     }
 
     /**
@@ -3406,7 +3841,7 @@ class Transaction implements \JsonSerializable
      * | 2373 | Rejected-X73 |  | RCK Reject - Payer |  |
      *
      * @maps reason_code_id
-     * @factory \FortisAPILib\Models\ReasonCodeIdEnum::checkValue
+     * @factory \FortisAPILib\Models\ReasonCodeId1Enum::checkValue
      */
     public function setReasonCodeId(?int $reasonCodeId): void
     {
@@ -3897,7 +4332,7 @@ class Transaction implements \JsonSerializable
      * >
      *
      * @maps status_code
-     * @factory \FortisAPILib\Models\StatusCodeEnum::checkValue
+     * @factory \FortisAPILib\Models\StatusCode17Enum::checkValue
      */
     public function setStatusCode(?int $statusCode): void
     {
@@ -4035,6 +4470,38 @@ class Transaction implements \JsonSerializable
     public function unsetVerbiage(): void
     {
         $this->verbiage = [];
+    }
+
+    /**
+     * Returns Voucher Number.
+     * Voucher Number
+     */
+    public function getVoucherNumber(): ?string
+    {
+        if (count($this->voucherNumber) == 0) {
+            return null;
+        }
+        return $this->voucherNumber['value'];
+    }
+
+    /**
+     * Sets Voucher Number.
+     * Voucher Number
+     *
+     * @maps voucher_number
+     */
+    public function setVoucherNumber(?string $voucherNumber): void
+    {
+        $this->voucherNumber['value'] = $voucherNumber;
+    }
+
+    /**
+     * Unsets Voucher Number.
+     * Voucher Number
+     */
+    public function unsetVoucherNumber(): void
+    {
+        $this->voucherNumber = [];
     }
 
     /**
@@ -4188,6 +4655,59 @@ class Transaction implements \JsonSerializable
     /**
      * Returns Trx Source Id.
      * How the transaction was obtained by the API.
+     * >1 - Unknown - The origination of this transaction could not be determined.
+     * >
+     * >2 - Mobile - The origination of this transaction is through the mobile application. This is always
+     * a merchant submitted payment.
+     * >
+     * >3 - Web - The origination of this transaction is through a web browser. This is always a merchant
+     * submitted payment. Examples include Virtual Terminal, Contact Charge, and Transaction Details - Run
+     * Again pages.
+     * >
+     * >4 - IVR Transaction - The origination of this transaction is over the phone. This payment is
+     * submitted by an automated system initiated by the cardholder.
+     * >
+     * >5 - Contact Statement - The orignation of this transaction is through a Vericle statement.
+     * >
+     * >6 - Contact Payment Mobile - The origination of this transaction is through the mobile application.
+     * This is always submitted by a contact user.
+     * >
+     * >7 - Contact Payment - The origination of this transaction is through a web browser. This is always
+     * submitted by a contact user.
+     * >
+     * >8 - Quick Invoice - The orignation of this transaction is through a Quick Invoice. This is
+     * typically submitted by a contact user, however the transaction can also be submitted by a merchant.
+     * >
+     * >9 - Payform - The origination of this transaction is through a Payform. This is typically a
+     * merchant submitted transaction, and is always from an internal developer.
+     * >
+     * >10 - Hosted Payment Page - The orignation of this transaction is through a Hosted Payment Page.
+     * This is typically a cardholder submitted transaction.
+     * >
+     * >11 - Emulator -  The origination of this transaction is through Auth.Net emulator. This is
+     * typically submitted through an integration to a website or a shopping cart.
+     * >
+     * >12 - Integration - The orignation of this transaction is through an integrated solution. This will
+     * always be from an external developer.
+     * >
+     * >13 - Recurring Billing - The orignation of this transaction is through a scheduled recurring
+     * payment. This payment is system-initiated based on a payment schedule that has been configured.
+     * >
+     * >14 - Recurring Secondary - This feature has not been implented yet.
+     * >
+     * >15 - Declined Recurring Email - The orignation of this transaction is through the email
+     * notification sent when a recurring payment has been declined. This is typically submitted by a
+     * cardholder.
+     * >
+     * >16 - Paylink - The orignation of this transaction is through a Paylink. This is typically submitted
+     * by a contact user, however the transaction can also be submitted by a merchant.
+     * >
+     * >17 - Elements - The origination of this transaction is through the Elements payments page. This can
+     * be a cardholder submitted or a merchant submitted transaction.
+     * >
+     * >18 - ACH Import - The origination of this transaction is through an ACH file import. This is a
+     * merchant initiated process.
+     * >
      */
     public function getTrxSourceId(): ?int
     {
@@ -4200,8 +4720,62 @@ class Transaction implements \JsonSerializable
     /**
      * Sets Trx Source Id.
      * How the transaction was obtained by the API.
+     * >1 - Unknown - The origination of this transaction could not be determined.
+     * >
+     * >2 - Mobile - The origination of this transaction is through the mobile application. This is always
+     * a merchant submitted payment.
+     * >
+     * >3 - Web - The origination of this transaction is through a web browser. This is always a merchant
+     * submitted payment. Examples include Virtual Terminal, Contact Charge, and Transaction Details - Run
+     * Again pages.
+     * >
+     * >4 - IVR Transaction - The origination of this transaction is over the phone. This payment is
+     * submitted by an automated system initiated by the cardholder.
+     * >
+     * >5 - Contact Statement - The orignation of this transaction is through a Vericle statement.
+     * >
+     * >6 - Contact Payment Mobile - The origination of this transaction is through the mobile application.
+     * This is always submitted by a contact user.
+     * >
+     * >7 - Contact Payment - The origination of this transaction is through a web browser. This is always
+     * submitted by a contact user.
+     * >
+     * >8 - Quick Invoice - The orignation of this transaction is through a Quick Invoice. This is
+     * typically submitted by a contact user, however the transaction can also be submitted by a merchant.
+     * >
+     * >9 - Payform - The origination of this transaction is through a Payform. This is typically a
+     * merchant submitted transaction, and is always from an internal developer.
+     * >
+     * >10 - Hosted Payment Page - The orignation of this transaction is through a Hosted Payment Page.
+     * This is typically a cardholder submitted transaction.
+     * >
+     * >11 - Emulator -  The origination of this transaction is through Auth.Net emulator. This is
+     * typically submitted through an integration to a website or a shopping cart.
+     * >
+     * >12 - Integration - The orignation of this transaction is through an integrated solution. This will
+     * always be from an external developer.
+     * >
+     * >13 - Recurring Billing - The orignation of this transaction is through a scheduled recurring
+     * payment. This payment is system-initiated based on a payment schedule that has been configured.
+     * >
+     * >14 - Recurring Secondary - This feature has not been implented yet.
+     * >
+     * >15 - Declined Recurring Email - The orignation of this transaction is through the email
+     * notification sent when a recurring payment has been declined. This is typically submitted by a
+     * cardholder.
+     * >
+     * >16 - Paylink - The orignation of this transaction is through a Paylink. This is typically submitted
+     * by a contact user, however the transaction can also be submitted by a merchant.
+     * >
+     * >17 - Elements - The origination of this transaction is through the Elements payments page. This can
+     * be a cardholder submitted or a merchant submitted transaction.
+     * >
+     * >18 - ACH Import - The origination of this transaction is through an ACH file import. This is a
+     * merchant initiated process.
+     * >
      *
      * @maps trx_source_id
+     * @factory \FortisAPILib\Models\TrxSourceIdEnum::checkValue
      */
     public function setTrxSourceId(?int $trxSourceId): void
     {
@@ -4211,10 +4785,913 @@ class Transaction implements \JsonSerializable
     /**
      * Unsets Trx Source Id.
      * How the transaction was obtained by the API.
+     * >1 - Unknown - The origination of this transaction could not be determined.
+     * >
+     * >2 - Mobile - The origination of this transaction is through the mobile application. This is always
+     * a merchant submitted payment.
+     * >
+     * >3 - Web - The origination of this transaction is through a web browser. This is always a merchant
+     * submitted payment. Examples include Virtual Terminal, Contact Charge, and Transaction Details - Run
+     * Again pages.
+     * >
+     * >4 - IVR Transaction - The origination of this transaction is over the phone. This payment is
+     * submitted by an automated system initiated by the cardholder.
+     * >
+     * >5 - Contact Statement - The orignation of this transaction is through a Vericle statement.
+     * >
+     * >6 - Contact Payment Mobile - The origination of this transaction is through the mobile application.
+     * This is always submitted by a contact user.
+     * >
+     * >7 - Contact Payment - The origination of this transaction is through a web browser. This is always
+     * submitted by a contact user.
+     * >
+     * >8 - Quick Invoice - The orignation of this transaction is through a Quick Invoice. This is
+     * typically submitted by a contact user, however the transaction can also be submitted by a merchant.
+     * >
+     * >9 - Payform - The origination of this transaction is through a Payform. This is typically a
+     * merchant submitted transaction, and is always from an internal developer.
+     * >
+     * >10 - Hosted Payment Page - The orignation of this transaction is through a Hosted Payment Page.
+     * This is typically a cardholder submitted transaction.
+     * >
+     * >11 - Emulator -  The origination of this transaction is through Auth.Net emulator. This is
+     * typically submitted through an integration to a website or a shopping cart.
+     * >
+     * >12 - Integration - The orignation of this transaction is through an integrated solution. This will
+     * always be from an external developer.
+     * >
+     * >13 - Recurring Billing - The orignation of this transaction is through a scheduled recurring
+     * payment. This payment is system-initiated based on a payment schedule that has been configured.
+     * >
+     * >14 - Recurring Secondary - This feature has not been implented yet.
+     * >
+     * >15 - Declined Recurring Email - The orignation of this transaction is through the email
+     * notification sent when a recurring payment has been declined. This is typically submitted by a
+     * cardholder.
+     * >
+     * >16 - Paylink - The orignation of this transaction is through a Paylink. This is typically submitted
+     * by a contact user, however the transaction can also be submitted by a merchant.
+     * >
+     * >17 - Elements - The origination of this transaction is through the Elements payments page. This can
+     * be a cardholder submitted or a merchant submitted transaction.
+     * >
+     * >18 - ACH Import - The origination of this transaction is through an ACH file import. This is a
+     * merchant initiated process.
+     * >
      */
     public function unsetTrxSourceId(): void
     {
         $this->trxSourceId = [];
+    }
+
+    /**
+     * Returns Routing Number.
+     * This field is read only for ach on transactions. Must be supplied if account_vault_id is not
+     * provided.
+     */
+    public function getRoutingNumber(): ?string
+    {
+        if (count($this->routingNumber) == 0) {
+            return null;
+        }
+        return $this->routingNumber['value'];
+    }
+
+    /**
+     * Sets Routing Number.
+     * This field is read only for ach on transactions. Must be supplied if account_vault_id is not
+     * provided.
+     *
+     * @maps routing_number
+     */
+    public function setRoutingNumber(?string $routingNumber): void
+    {
+        $this->routingNumber['value'] = $routingNumber;
+    }
+
+    /**
+     * Unsets Routing Number.
+     * This field is read only for ach on transactions. Must be supplied if account_vault_id is not
+     * provided.
+     */
+    public function unsetRoutingNumber(): void
+    {
+        $this->routingNumber = [];
+    }
+
+    /**
+     * Returns Trx Source Code.
+     * How the transaction was obtained by the API.
+     * >1 - Unknown - The origination of this transaction could not be determined.
+     * >
+     * >2 - Mobile - The origination of this transaction is through the mobile application. This is always
+     * a merchant submitted payment.
+     * >
+     * >3 - Web - The origination of this transaction is through a web browser. This is always a merchant
+     * submitted payment. Examples include Virtual Terminal, Contact Charge, and Transaction Details - Run
+     * Again pages.
+     * >
+     * >4 - IVR Transaction - The origination of this transaction is over the phone. This payment is
+     * submitted by an automated system initiated by the cardholder.
+     * >
+     * >5 - Contact Statement - The orignation of this transaction is through a Vericle statement.
+     * >
+     * >6 - Contact Payment Mobile - The origination of this transaction is through the mobile application.
+     * This is always submitted by a contact user.
+     * >
+     * >7 - Contact Payment - The origination of this transaction is through a web browser. This is always
+     * submitted by a contact user.
+     * >
+     * >8 - Quick Invoice - The orignation of this transaction is through a Quick Invoice. This is
+     * typically submitted by a contact user, however the transaction can also be submitted by a merchant.
+     * >
+     * >9 - Payform - The origination of this transaction is through a Payform. This is typically a
+     * merchant submitted transaction, and is always from an internal developer.
+     * >
+     * >10 - Hosted Payment Page - The orignation of this transaction is through a Hosted Payment Page.
+     * This is typically a cardholder submitted transaction.
+     * >
+     * >11 - Emulator -  The origination of this transaction is through Auth.Net emulator. This is
+     * typically submitted through an integration to a website or a shopping cart.
+     * >
+     * >12 - Integration - The orignation of this transaction is through an integrated solution. This will
+     * always be from an external developer.
+     * >
+     * >13 - Recurring Billing - The orignation of this transaction is through a scheduled recurring
+     * payment. This payment is system-initiated based on a payment schedule that has been configured.
+     * >
+     * >14 - Recurring Secondary - This feature has not been implented yet.
+     * >
+     * >15 - Declined Recurring Email - The orignation of this transaction is through the email
+     * notification sent when a recurring payment has been declined. This is typically submitted by a
+     * cardholder.
+     * >
+     * >16 - Paylink - The orignation of this transaction is through a Paylink. This is typically submitted
+     * by a contact user, however the transaction can also be submitted by a merchant.
+     * >
+     * >17 - Elements - The origination of this transaction is through the Elements payments page. This can
+     * be a cardholder submitted or a merchant submitted transaction.
+     * >
+     * >18 - ACH Import - The origination of this transaction is through an ACH file import. This is a
+     * merchant initiated process.
+     * >
+     */
+    public function getTrxSourceCode(): ?int
+    {
+        if (count($this->trxSourceCode) == 0) {
+            return null;
+        }
+        return $this->trxSourceCode['value'];
+    }
+
+    /**
+     * Sets Trx Source Code.
+     * How the transaction was obtained by the API.
+     * >1 - Unknown - The origination of this transaction could not be determined.
+     * >
+     * >2 - Mobile - The origination of this transaction is through the mobile application. This is always
+     * a merchant submitted payment.
+     * >
+     * >3 - Web - The origination of this transaction is through a web browser. This is always a merchant
+     * submitted payment. Examples include Virtual Terminal, Contact Charge, and Transaction Details - Run
+     * Again pages.
+     * >
+     * >4 - IVR Transaction - The origination of this transaction is over the phone. This payment is
+     * submitted by an automated system initiated by the cardholder.
+     * >
+     * >5 - Contact Statement - The orignation of this transaction is through a Vericle statement.
+     * >
+     * >6 - Contact Payment Mobile - The origination of this transaction is through the mobile application.
+     * This is always submitted by a contact user.
+     * >
+     * >7 - Contact Payment - The origination of this transaction is through a web browser. This is always
+     * submitted by a contact user.
+     * >
+     * >8 - Quick Invoice - The orignation of this transaction is through a Quick Invoice. This is
+     * typically submitted by a contact user, however the transaction can also be submitted by a merchant.
+     * >
+     * >9 - Payform - The origination of this transaction is through a Payform. This is typically a
+     * merchant submitted transaction, and is always from an internal developer.
+     * >
+     * >10 - Hosted Payment Page - The orignation of this transaction is through a Hosted Payment Page.
+     * This is typically a cardholder submitted transaction.
+     * >
+     * >11 - Emulator -  The origination of this transaction is through Auth.Net emulator. This is
+     * typically submitted through an integration to a website or a shopping cart.
+     * >
+     * >12 - Integration - The orignation of this transaction is through an integrated solution. This will
+     * always be from an external developer.
+     * >
+     * >13 - Recurring Billing - The orignation of this transaction is through a scheduled recurring
+     * payment. This payment is system-initiated based on a payment schedule that has been configured.
+     * >
+     * >14 - Recurring Secondary - This feature has not been implented yet.
+     * >
+     * >15 - Declined Recurring Email - The orignation of this transaction is through the email
+     * notification sent when a recurring payment has been declined. This is typically submitted by a
+     * cardholder.
+     * >
+     * >16 - Paylink - The orignation of this transaction is through a Paylink. This is typically submitted
+     * by a contact user, however the transaction can also be submitted by a merchant.
+     * >
+     * >17 - Elements - The origination of this transaction is through the Elements payments page. This can
+     * be a cardholder submitted or a merchant submitted transaction.
+     * >
+     * >18 - ACH Import - The origination of this transaction is through an ACH file import. This is a
+     * merchant initiated process.
+     * >
+     *
+     * @maps trx_source_code
+     * @factory \FortisAPILib\Models\TrxSourceCodeEnum::checkValue
+     */
+    public function setTrxSourceCode(?int $trxSourceCode): void
+    {
+        $this->trxSourceCode['value'] = $trxSourceCode;
+    }
+
+    /**
+     * Unsets Trx Source Code.
+     * How the transaction was obtained by the API.
+     * >1 - Unknown - The origination of this transaction could not be determined.
+     * >
+     * >2 - Mobile - The origination of this transaction is through the mobile application. This is always
+     * a merchant submitted payment.
+     * >
+     * >3 - Web - The origination of this transaction is through a web browser. This is always a merchant
+     * submitted payment. Examples include Virtual Terminal, Contact Charge, and Transaction Details - Run
+     * Again pages.
+     * >
+     * >4 - IVR Transaction - The origination of this transaction is over the phone. This payment is
+     * submitted by an automated system initiated by the cardholder.
+     * >
+     * >5 - Contact Statement - The orignation of this transaction is through a Vericle statement.
+     * >
+     * >6 - Contact Payment Mobile - The origination of this transaction is through the mobile application.
+     * This is always submitted by a contact user.
+     * >
+     * >7 - Contact Payment - The origination of this transaction is through a web browser. This is always
+     * submitted by a contact user.
+     * >
+     * >8 - Quick Invoice - The orignation of this transaction is through a Quick Invoice. This is
+     * typically submitted by a contact user, however the transaction can also be submitted by a merchant.
+     * >
+     * >9 - Payform - The origination of this transaction is through a Payform. This is typically a
+     * merchant submitted transaction, and is always from an internal developer.
+     * >
+     * >10 - Hosted Payment Page - The orignation of this transaction is through a Hosted Payment Page.
+     * This is typically a cardholder submitted transaction.
+     * >
+     * >11 - Emulator -  The origination of this transaction is through Auth.Net emulator. This is
+     * typically submitted through an integration to a website or a shopping cart.
+     * >
+     * >12 - Integration - The orignation of this transaction is through an integrated solution. This will
+     * always be from an external developer.
+     * >
+     * >13 - Recurring Billing - The orignation of this transaction is through a scheduled recurring
+     * payment. This payment is system-initiated based on a payment schedule that has been configured.
+     * >
+     * >14 - Recurring Secondary - This feature has not been implented yet.
+     * >
+     * >15 - Declined Recurring Email - The orignation of this transaction is through the email
+     * notification sent when a recurring payment has been declined. This is typically submitted by a
+     * cardholder.
+     * >
+     * >16 - Paylink - The orignation of this transaction is through a Paylink. This is typically submitted
+     * by a contact user, however the transaction can also be submitted by a merchant.
+     * >
+     * >17 - Elements - The origination of this transaction is through the Elements payments page. This can
+     * be a cardholder submitted or a merchant submitted transaction.
+     * >
+     * >18 - ACH Import - The origination of this transaction is through an ACH file import. This is a
+     * merchant initiated process.
+     * >
+     */
+    public function unsetTrxSourceCode(): void
+    {
+        $this->trxSourceCode = [];
+    }
+
+    /**
+     * Returns Paylink Id.
+     * Paylink Id
+     */
+    public function getPaylinkId(): ?string
+    {
+        if (count($this->paylinkId) == 0) {
+            return null;
+        }
+        return $this->paylinkId['value'];
+    }
+
+    /**
+     * Sets Paylink Id.
+     * Paylink Id
+     *
+     * @maps paylink_id
+     */
+    public function setPaylinkId(?string $paylinkId): void
+    {
+        $this->paylinkId['value'] = $paylinkId;
+    }
+
+    /**
+     * Unsets Paylink Id.
+     * Paylink Id
+     */
+    public function unsetPaylinkId(): void
+    {
+        $this->paylinkId = [];
+    }
+
+    /**
+     * Returns Currency Code.
+     * Currency Code
+     */
+    public function getCurrencyCode(): ?float
+    {
+        if (count($this->currencyCode) == 0) {
+            return null;
+        }
+        return $this->currencyCode['value'];
+    }
+
+    /**
+     * Sets Currency Code.
+     * Currency Code
+     *
+     * @maps currency_code
+     */
+    public function setCurrencyCode(?float $currencyCode): void
+    {
+        $this->currencyCode['value'] = $currencyCode;
+    }
+
+    /**
+     * Unsets Currency Code.
+     * Currency Code
+     */
+    public function unsetCurrencyCode(): void
+    {
+        $this->currencyCode = [];
+    }
+
+    /**
+     * Returns Is Accountvault.
+     * Is Token Transaction
+     */
+    public function getIsAccountvault(): ?bool
+    {
+        return $this->isAccountvault;
+    }
+
+    /**
+     * Sets Is Accountvault.
+     * Is Token Transaction
+     *
+     * @maps is_accountvault
+     */
+    public function setIsAccountvault(?bool $isAccountvault): void
+    {
+        $this->isAccountvault = $isAccountvault;
+    }
+
+    /**
+     * Returns Created User Id.
+     * User ID Created the register
+     */
+    public function getCreatedUserId(): ?string
+    {
+        if (count($this->createdUserId) == 0) {
+            return null;
+        }
+        return $this->createdUserId['value'];
+    }
+
+    /**
+     * Sets Created User Id.
+     * User ID Created the register
+     *
+     * @maps created_user_id
+     */
+    public function setCreatedUserId(?string $createdUserId): void
+    {
+        $this->createdUserId['value'] = $createdUserId;
+    }
+
+    /**
+     * Unsets Created User Id.
+     * User ID Created the register
+     */
+    public function unsetCreatedUserId(): void
+    {
+        $this->createdUserId = [];
+    }
+
+    /**
+     * Returns Modified User Id.
+     * Last User ID that updated the register
+     */
+    public function getModifiedUserId(): ?string
+    {
+        return $this->modifiedUserId;
+    }
+
+    /**
+     * Sets Modified User Id.
+     * Last User ID that updated the register
+     *
+     * @maps modified_user_id
+     */
+    public function setModifiedUserId(?string $modifiedUserId): void
+    {
+        $this->modifiedUserId = $modifiedUserId;
+    }
+
+    /**
+     * Returns Transaction Code.
+     * Transaction Code
+     */
+    public function getTransactionCode(): ?string
+    {
+        if (count($this->transactionCode) == 0) {
+            return null;
+        }
+        return $this->transactionCode['value'];
+    }
+
+    /**
+     * Sets Transaction Code.
+     * Transaction Code
+     *
+     * @maps transaction_code
+     */
+    public function setTransactionCode(?string $transactionCode): void
+    {
+        $this->transactionCode['value'] = $transactionCode;
+    }
+
+    /**
+     * Unsets Transaction Code.
+     * Transaction Code
+     */
+    public function unsetTransactionCode(): void
+    {
+        $this->transactionCode = [];
+    }
+
+    /**
+     * Returns Effective Date.
+     * For ACH only, this is optional and defaults to current day.
+     */
+    public function getEffectiveDate(): ?string
+    {
+        if (count($this->effectiveDate) == 0) {
+            return null;
+        }
+        return $this->effectiveDate['value'];
+    }
+
+    /**
+     * Sets Effective Date.
+     * For ACH only, this is optional and defaults to current day.
+     *
+     * @maps effective_date
+     */
+    public function setEffectiveDate(?string $effectiveDate): void
+    {
+        $this->effectiveDate['value'] = $effectiveDate;
+    }
+
+    /**
+     * Unsets Effective Date.
+     * For ACH only, this is optional and defaults to current day.
+     */
+    public function unsetEffectiveDate(): void
+    {
+        $this->effectiveDate = [];
+    }
+
+    /**
+     * Returns Notification Phone.
+     * Notification Phone. Country code not included
+     */
+    public function getNotificationPhone(): ?string
+    {
+        if (count($this->notificationPhone) == 0) {
+            return null;
+        }
+        return $this->notificationPhone['value'];
+    }
+
+    /**
+     * Sets Notification Phone.
+     * Notification Phone. Country code not included
+     *
+     * @maps notification_phone
+     */
+    public function setNotificationPhone(?string $notificationPhone): void
+    {
+        $this->notificationPhone['value'] = $notificationPhone;
+    }
+
+    /**
+     * Unsets Notification Phone.
+     * Notification Phone. Country code not included
+     */
+    public function unsetNotificationPhone(): void
+    {
+        $this->notificationPhone = [];
+    }
+
+    /**
+     * Returns Cavv Result.
+     * Cavv Result
+     */
+    public function getCavvResult(): ?string
+    {
+        if (count($this->cavvResult) == 0) {
+            return null;
+        }
+        return $this->cavvResult['value'];
+    }
+
+    /**
+     * Sets Cavv Result.
+     * Cavv Result
+     *
+     * @maps cavv_result
+     */
+    public function setCavvResult(?string $cavvResult): void
+    {
+        $this->cavvResult['value'] = $cavvResult;
+    }
+
+    /**
+     * Unsets Cavv Result.
+     * Cavv Result
+     */
+    public function unsetCavvResult(): void
+    {
+        $this->cavvResult = [];
+    }
+
+    /**
+     * Returns Is Token.
+     * Is Token Transaction
+     */
+    public function getIsToken(): ?bool
+    {
+        return $this->isToken;
+    }
+
+    /**
+     * Sets Is Token.
+     * Is Token Transaction
+     *
+     * @maps is_token
+     */
+    public function setIsToken(?bool $isToken): void
+    {
+        $this->isToken = $isToken;
+    }
+
+    /**
+     * Returns Account Vault Id.
+     * Token ID
+     */
+    public function getAccountVaultId(): ?string
+    {
+        if (count($this->accountVaultId) == 0) {
+            return null;
+        }
+        return $this->accountVaultId['value'];
+    }
+
+    /**
+     * Sets Account Vault Id.
+     * Token ID
+     *
+     * @maps account_vault_id
+     */
+    public function setAccountVaultId(?string $accountVaultId): void
+    {
+        $this->accountVaultId['value'] = $accountVaultId;
+    }
+
+    /**
+     * Unsets Account Vault Id.
+     * Token ID
+     */
+    public function unsetAccountVaultId(): void
+    {
+        $this->accountVaultId = [];
+    }
+
+    /**
+     * Returns Hosted Payment Page Id.
+     * Hosted Payment Page Id
+     */
+    public function getHostedPaymentPageId(): ?string
+    {
+        return $this->hostedPaymentPageId;
+    }
+
+    /**
+     * Sets Hosted Payment Page Id.
+     * Hosted Payment Page Id
+     *
+     * @maps hosted_payment_page_id
+     */
+    public function setHostedPaymentPageId(?string $hostedPaymentPageId): void
+    {
+        $this->hostedPaymentPageId = $hostedPaymentPageId;
+    }
+
+    /**
+     * Returns Stan.
+     */
+    public function getStan(): ?string
+    {
+        if (count($this->stan) == 0) {
+            return null;
+        }
+        return $this->stan['value'];
+    }
+
+    /**
+     * Sets Stan.
+     *
+     * @maps stan
+     */
+    public function setStan(?string $stan): void
+    {
+        $this->stan['value'] = $stan;
+    }
+
+    /**
+     * Unsets Stan.
+     */
+    public function unsetStan(): void
+    {
+        $this->stan = [];
+    }
+
+    /**
+     * Returns Currency.
+     * Currency
+     */
+    public function getCurrency(): ?string
+    {
+        if (count($this->currency) == 0) {
+            return null;
+        }
+        return $this->currency['value'];
+    }
+
+    /**
+     * Sets Currency.
+     * Currency
+     *
+     * @maps currency
+     */
+    public function setCurrency(?string $currency): void
+    {
+        $this->currency['value'] = $currency;
+    }
+
+    /**
+     * Unsets Currency.
+     * Currency
+     */
+    public function unsetCurrency(): void
+    {
+        $this->currency = [];
+    }
+
+    /**
+     * Returns Card Bin.
+     * Card Bin
+     */
+    public function getCardBin(): ?string
+    {
+        if (count($this->cardBin) == 0) {
+            return null;
+        }
+        return $this->cardBin['value'];
+    }
+
+    /**
+     * Sets Card Bin.
+     * Card Bin
+     *
+     * @maps card_bin
+     */
+    public function setCardBin(?string $cardBin): void
+    {
+        $this->cardBin['value'] = $cardBin;
+    }
+
+    /**
+     * Unsets Card Bin.
+     * Card Bin
+     */
+    public function unsetCardBin(): void
+    {
+        $this->cardBin = [];
+    }
+
+    /**
+     * Returns Wallet Type.
+     * This value provides information from where the transaction was initialized (Such as In-App
+     * provider)
+     */
+    public function getWalletType(): ?string
+    {
+        if (count($this->walletType) == 0) {
+            return null;
+        }
+        return $this->walletType['value'];
+    }
+
+    /**
+     * Sets Wallet Type.
+     * This value provides information from where the transaction was initialized (Such as In-App
+     * provider)
+     *
+     * @maps wallet_type
+     */
+    public function setWalletType(?string $walletType): void
+    {
+        $this->walletType['value'] = $walletType;
+    }
+
+    /**
+     * Unsets Wallet Type.
+     * This value provides information from where the transaction was initialized (Such as In-App
+     * provider)
+     */
+    public function unsetWalletType(): void
+    {
+        $this->walletType = [];
+    }
+
+    /**
+     * Converts the Transaction object to a human-readable string representation.
+     *
+     * @return string The string representation of the Transaction object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Transaction',
+            [
+                'additionalAmounts' => $this->additionalAmounts,
+                'billingAddress' => $this->billingAddress,
+                'checkinDate' => $this->getCheckinDate(),
+                'checkoutDate' => $this->getCheckoutDate(),
+                'clerkNumber' => $this->getClerkNumber(),
+                'contactApiId' => $this->getContactApiId(),
+                'contactId' => $this->getContactId(),
+                'customData' => $this->customData,
+                'customerId' => $this->getCustomerId(),
+                'description' => $this->getDescription(),
+                'identityVerification' => $this->identityVerification,
+                'iiasInd' => $this->getIiasInd(),
+                'imageFront' => $this->getImageFront(),
+                'imageBack' => $this->getImageBack(),
+                'installment' => $this->installment,
+                'installmentNumber' => $this->getInstallmentNumber(),
+                'installmentCount' => $this->getInstallmentCount(),
+                'recurringFlag' => $this->getRecurringFlag(),
+                'installmentCounter' => $this->getInstallmentCounter(),
+                'installmentTotal' => $this->getInstallmentTotal(),
+                'subscription' => $this->subscription,
+                'standingOrder' => $this->standingOrder,
+                'locationApiId' => $this->getLocationApiId(),
+                'locationId' => $this->getLocationId(),
+                'productTransactionId' => $this->getProductTransactionId(),
+                'advanceDeposit' => $this->advanceDeposit,
+                'noShow' => $this->noShow,
+                'notificationEmailAddress' => $this->getNotificationEmailAddress(),
+                'orderNumber' => $this->getOrderNumber(),
+                'poNumber' => $this->getPoNumber(),
+                'quickInvoiceId' => $this->getQuickInvoiceId(),
+                'recurring' => $this->recurring,
+                'recurringNumber' => $this->getRecurringNumber(),
+                'roomNum' => $this->getRoomNum(),
+                'roomRate' => $this->getRoomRate(),
+                'saveAccount' => $this->saveAccount,
+                'saveAccountTitle' => $this->getSaveAccountTitle(),
+                'subtotalAmount' => $this->getSubtotalAmount(),
+                'surchargeAmount' => $this->getSurchargeAmount(),
+                'tags' => $this->getTags(),
+                'tax' => $this->getTax(),
+                'tipAmount' => $this->getTipAmount(),
+                'transactionAmount' => $this->getTransactionAmount(),
+                'secondaryAmount' => $this->getSecondaryAmount(),
+                'transactionApiId' => $this->getTransactionApiId(),
+                'transactionC1' => $this->getTransactionC1(),
+                'transactionC2' => $this->getTransactionC2(),
+                'transactionC3' => $this->getTransactionC3(),
+                'bankFundedOnlyOverride' => $this->bankFundedOnlyOverride,
+                'allowPartialAuthorizationOverride' => $this->allowPartialAuthorizationOverride,
+                'autoDeclineCvvOverride' => $this->autoDeclineCvvOverride,
+                'autoDeclineStreetOverride' => $this->autoDeclineStreetOverride,
+                'autoDeclineZipOverride' => $this->autoDeclineZipOverride,
+                'ebtType' => $this->getEbtType(),
+                'id' => $this->id,
+                'createdTs' => $this->createdTs,
+                'modifiedTs' => $this->modifiedTs,
+                'terminalId' => $this->getTerminalId(),
+                'accountHolderName' => $this->getAccountHolderName(),
+                'accountType' => $this->getAccountType(),
+                'tokenApiId' => $this->getTokenApiId(),
+                'tokenId' => $this->getTokenId(),
+                'achIdentifier' => $this->getAchIdentifier(),
+                'achSecCode' => $this->getAchSecCode(),
+                'authAmount' => $this->getAuthAmount(),
+                'authCode' => $this->getAuthCode(),
+                'avs' => $this->getAvs(),
+                'avsEnhanced' => $this->getAvsEnhanced(),
+                'cardholderPresent' => $this->cardholderPresent,
+                'cardPresent' => $this->cardPresent,
+                'checkNumber' => $this->getCheckNumber(),
+                'customerIp' => $this->getCustomerIp(),
+                'cvvResponse' => $this->getCvvResponse(),
+                'entryModeId' => $this->getEntryModeId(),
+                'emvReceiptData' => $this->getEmvReceiptData(),
+                'firstSix' => $this->getFirstSix(),
+                'lastFour' => $this->getLastFour(),
+                'paymentMethod' => $this->paymentMethod,
+                'terminalSerialNumber' => $this->getTerminalSerialNumber(),
+                'transactionSettlementStatus' => $this->getTransactionSettlementStatus(),
+                'chargeBackDate' => $this->getChargeBackDate(),
+                'isRecurring' => $this->isRecurring,
+                'notificationEmailSent' => $this->notificationEmailSent,
+                'par' => $this->getPar(),
+                'reasonCodeId' => $this->getReasonCodeId(),
+                'recurringId' => $this->getRecurringId(),
+                'settleDate' => $this->getSettleDate(),
+                'statusCode' => $this->getStatusCode(),
+                'transactionBatchId' => $this->getTransactionBatchId(),
+                'typeId' => $this->getTypeId(),
+                'verbiage' => $this->getVerbiage(),
+                'voucherNumber' => $this->getVoucherNumber(),
+                'voidDate' => $this->getVoidDate(),
+                'batch' => $this->getBatch(),
+                'termsAgree' => $this->termsAgree,
+                'responseMessage' => $this->getResponseMessage(),
+                'returnDate' => $this->getReturnDate(),
+                'trxSourceId' => $this->getTrxSourceId(),
+                'routingNumber' => $this->getRoutingNumber(),
+                'trxSourceCode' => $this->getTrxSourceCode(),
+                'paylinkId' => $this->getPaylinkId(),
+                'currencyCode' => $this->getCurrencyCode(),
+                'isAccountvault' => $this->isAccountvault,
+                'createdUserId' => $this->getCreatedUserId(),
+                'modifiedUserId' => $this->modifiedUserId,
+                'transactionCode' => $this->getTransactionCode(),
+                'effectiveDate' => $this->getEffectiveDate(),
+                'notificationPhone' => $this->getNotificationPhone(),
+                'cavvResult' => $this->getCavvResult(),
+                'isToken' => $this->isToken,
+                'accountVaultId' => $this->getAccountVaultId(),
+                'hostedPaymentPageId' => $this->hostedPaymentPageId,
+                'stan' => $this->getStan(),
+                'currency' => $this->getCurrency(),
+                'cardBin' => $this->getCardBin(),
+                'walletType' => $this->getWalletType(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -4230,258 +5707,360 @@ class Transaction implements \JsonSerializable
     {
         $json = [];
         if (isset($this->additionalAmounts)) {
-            $json['additional_amounts']            = $this->additionalAmounts;
+            $json['additional_amounts']                   = $this->additionalAmounts;
         }
         if (isset($this->billingAddress)) {
-            $json['billing_address']               = $this->billingAddress;
+            $json['billing_address']                      = $this->billingAddress;
         }
         if (!empty($this->checkinDate)) {
-            $json['checkin_date']                  = $this->checkinDate['value'];
+            $json['checkin_date']                         = $this->checkinDate['value'];
         }
         if (!empty($this->checkoutDate)) {
-            $json['checkout_date']                 = $this->checkoutDate['value'];
+            $json['checkout_date']                        = $this->checkoutDate['value'];
         }
         if (!empty($this->clerkNumber)) {
-            $json['clerk_number']                  = $this->clerkNumber['value'];
+            $json['clerk_number']                         = $this->clerkNumber['value'];
         }
         if (!empty($this->contactApiId)) {
-            $json['contact_api_id']                = $this->contactApiId['value'];
+            $json['contact_api_id']                       = $this->contactApiId['value'];
         }
         if (!empty($this->contactId)) {
-            $json['contact_id']                    = $this->contactId['value'];
+            $json['contact_id']                           = $this->contactId['value'];
         }
         if (isset($this->customData)) {
-            $json['custom_data']                   = $this->customData;
+            $json['custom_data']                          = $this->customData;
         }
         if (!empty($this->customerId)) {
-            $json['customer_id']                   = $this->customerId['value'];
+            $json['customer_id']                          = $this->customerId['value'];
         }
         if (!empty($this->description)) {
-            $json['description']                   = $this->description['value'];
+            $json['description']                          = $this->description['value'];
         }
         if (isset($this->identityVerification)) {
-            $json['identity_verification']         = $this->identityVerification;
+            $json['identity_verification']                = $this->identityVerification;
         }
         if (!empty($this->iiasInd)) {
-            $json['iias_ind']                      = IiasIndEnum::checkValue($this->iiasInd['value']);
+            $json['iias_ind']                             = IiasIndEnum::checkValue($this->iiasInd['value']);
         }
         if (!empty($this->imageFront)) {
-            $json['image_front']                   = $this->imageFront['value'];
+            $json['image_front']                          = $this->imageFront['value'];
         }
         if (!empty($this->imageBack)) {
-            $json['image_back']                    = $this->imageBack['value'];
+            $json['image_back']                           = $this->imageBack['value'];
         }
         if (isset($this->installment)) {
-            $json['installment']                   = $this->installment;
+            $json['installment']                          = $this->installment;
         }
         if (!empty($this->installmentNumber)) {
-            $json['installment_number']            = $this->installmentNumber['value'];
+            $json['installment_number']                   = $this->installmentNumber['value'];
         }
         if (!empty($this->installmentCount)) {
-            $json['installment_count']             = $this->installmentCount['value'];
+            $json['installment_count']                    = $this->installmentCount['value'];
+        }
+        if (!empty($this->recurringFlag)) {
+            $json['recurring_flag']                       =
+                RecurringFlagEnum::checkValue(
+                    $this->recurringFlag['value']
+                );
+        }
+        if (!empty($this->installmentCounter)) {
+            $json['installment_counter']                  = $this->installmentCounter['value'];
+        }
+        if (!empty($this->installmentTotal)) {
+            $json['installment_total']                    = $this->installmentTotal['value'];
+        }
+        if (isset($this->subscription)) {
+            $json['subscription']                         = $this->subscription;
+        }
+        if (isset($this->standingOrder)) {
+            $json['standing_order']                       = $this->standingOrder;
         }
         if (!empty($this->locationApiId)) {
-            $json['location_api_id']               = $this->locationApiId['value'];
+            $json['location_api_id']                      = $this->locationApiId['value'];
         }
         if (!empty($this->locationId)) {
-            $json['location_id']                   = $this->locationId['value'];
+            $json['location_id']                          = $this->locationId['value'];
         }
         if (!empty($this->productTransactionId)) {
-            $json['product_transaction_id']        = $this->productTransactionId['value'];
+            $json['product_transaction_id']               = $this->productTransactionId['value'];
         }
         if (isset($this->advanceDeposit)) {
-            $json['advance_deposit']               = $this->advanceDeposit;
+            $json['advance_deposit']                      = $this->advanceDeposit;
         }
         if (isset($this->noShow)) {
-            $json['no_show']                       = $this->noShow;
+            $json['no_show']                              = $this->noShow;
         }
         if (!empty($this->notificationEmailAddress)) {
-            $json['notification_email_address']    = $this->notificationEmailAddress['value'];
+            $json['notification_email_address']           = $this->notificationEmailAddress['value'];
         }
         if (!empty($this->orderNumber)) {
-            $json['order_number']                  = $this->orderNumber['value'];
+            $json['order_number']                         = $this->orderNumber['value'];
         }
         if (!empty($this->poNumber)) {
-            $json['po_number']                     = $this->poNumber['value'];
+            $json['po_number']                            = $this->poNumber['value'];
         }
         if (!empty($this->quickInvoiceId)) {
-            $json['quick_invoice_id']              = $this->quickInvoiceId['value'];
+            $json['quick_invoice_id']                     = $this->quickInvoiceId['value'];
         }
         if (isset($this->recurring)) {
-            $json['recurring']                     = $this->recurring;
+            $json['recurring']                            = $this->recurring;
         }
         if (!empty($this->recurringNumber)) {
-            $json['recurring_number']              = $this->recurringNumber['value'];
+            $json['recurring_number']                     = $this->recurringNumber['value'];
         }
         if (!empty($this->roomNum)) {
-            $json['room_num']                      = $this->roomNum['value'];
+            $json['room_num']                             = $this->roomNum['value'];
         }
         if (!empty($this->roomRate)) {
-            $json['room_rate']                     = $this->roomRate['value'];
+            $json['room_rate']                            = $this->roomRate['value'];
         }
         if (isset($this->saveAccount)) {
-            $json['save_account']                  = $this->saveAccount;
+            $json['save_account']                         = $this->saveAccount;
         }
         if (!empty($this->saveAccountTitle)) {
-            $json['save_account_title']            = $this->saveAccountTitle['value'];
+            $json['save_account_title']                   = $this->saveAccountTitle['value'];
         }
         if (!empty($this->subtotalAmount)) {
-            $json['subtotal_amount']               = $this->subtotalAmount['value'];
+            $json['subtotal_amount']                      = $this->subtotalAmount['value'];
         }
         if (!empty($this->surchargeAmount)) {
-            $json['surcharge_amount']              = $this->surchargeAmount['value'];
+            $json['surcharge_amount']                     = $this->surchargeAmount['value'];
         }
-        if (isset($this->tags)) {
-            $json['tags']                          = $this->tags;
+        if (!empty($this->tags)) {
+            $json['tags']                                 = $this->tags['value'];
         }
         if (!empty($this->tax)) {
-            $json['tax']                           = $this->tax['value'];
+            $json['tax']                                  = $this->tax['value'];
         }
         if (!empty($this->tipAmount)) {
-            $json['tip_amount']                    = $this->tipAmount['value'];
+            $json['tip_amount']                           = $this->tipAmount['value'];
         }
         if (!empty($this->transactionAmount)) {
-            $json['transaction_amount']            = $this->transactionAmount['value'];
+            $json['transaction_amount']                   = $this->transactionAmount['value'];
         }
         if (!empty($this->secondaryAmount)) {
-            $json['secondary_amount']              = $this->secondaryAmount['value'];
+            $json['secondary_amount']                     = $this->secondaryAmount['value'];
         }
         if (!empty($this->transactionApiId)) {
-            $json['transaction_api_id']            = $this->transactionApiId['value'];
+            $json['transaction_api_id']                   = $this->transactionApiId['value'];
         }
         if (!empty($this->transactionC1)) {
-            $json['transaction_c1']                = $this->transactionC1['value'];
+            $json['transaction_c1']                       = $this->transactionC1['value'];
         }
         if (!empty($this->transactionC2)) {
-            $json['transaction_c2']                = $this->transactionC2['value'];
+            $json['transaction_c2']                       = $this->transactionC2['value'];
         }
         if (!empty($this->transactionC3)) {
-            $json['transaction_c3']                = $this->transactionC3['value'];
+            $json['transaction_c3']                       = $this->transactionC3['value'];
         }
         if (isset($this->bankFundedOnlyOverride)) {
-            $json['bank_funded_only_override']     = $this->bankFundedOnlyOverride;
+            $json['bank_funded_only_override']            = $this->bankFundedOnlyOverride;
         }
-        $json['id']                                = $this->id;
-        $json['created_ts']                        = $this->createdTs;
-        $json['modified_ts']                       = $this->modifiedTs;
+        if (isset($this->allowPartialAuthorizationOverride)) {
+            $json['allow_partial_authorization_override'] = $this->allowPartialAuthorizationOverride;
+        }
+        if (isset($this->autoDeclineCvvOverride)) {
+            $json['auto_decline_cvv_override']            = $this->autoDeclineCvvOverride;
+        }
+        if (isset($this->autoDeclineStreetOverride)) {
+            $json['auto_decline_street_override']         = $this->autoDeclineStreetOverride;
+        }
+        if (isset($this->autoDeclineZipOverride)) {
+            $json['auto_decline_zip_override']            = $this->autoDeclineZipOverride;
+        }
+        if (!empty($this->ebtType)) {
+            $json['ebt_type']                             = EbtTypeEnum::checkValue($this->ebtType['value']);
+        }
+        if (isset($this->id)) {
+            $json['id']                                   = $this->id;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']                           = $this->createdTs;
+        }
+        if (isset($this->modifiedTs)) {
+            $json['modified_ts']                          = $this->modifiedTs;
+        }
         if (!empty($this->terminalId)) {
-            $json['terminal_id']                   = $this->terminalId['value'];
+            $json['terminal_id']                          = $this->terminalId['value'];
         }
         if (!empty($this->accountHolderName)) {
-            $json['account_holder_name']           = $this->accountHolderName['value'];
+            $json['account_holder_name']                  = $this->accountHolderName['value'];
         }
         if (!empty($this->accountType)) {
-            $json['account_type']                  = $this->accountType['value'];
+            $json['account_type']                         = $this->accountType['value'];
         }
         if (!empty($this->tokenApiId)) {
-            $json['token_api_id']                  = $this->tokenApiId['value'];
+            $json['token_api_id']                         = $this->tokenApiId['value'];
         }
         if (!empty($this->tokenId)) {
-            $json['token_id']                      = $this->tokenId['value'];
+            $json['token_id']                             = $this->tokenId['value'];
         }
         if (!empty($this->achIdentifier)) {
-            $json['ach_identifier']                = $this->achIdentifier['value'];
+            $json['ach_identifier']                       = $this->achIdentifier['value'];
         }
         if (!empty($this->achSecCode)) {
-            $json['ach_sec_code']                  = AchSecCode1Enum::checkValue($this->achSecCode['value']);
+            $json['ach_sec_code']                         = AchSecCode1Enum::checkValue($this->achSecCode['value']);
         }
         if (!empty($this->authAmount)) {
-            $json['auth_amount']                   = $this->authAmount['value'];
+            $json['auth_amount']                          = $this->authAmount['value'];
         }
         if (!empty($this->authCode)) {
-            $json['auth_code']                     = $this->authCode['value'];
+            $json['auth_code']                            = $this->authCode['value'];
         }
         if (!empty($this->avs)) {
-            $json['avs']                           = AvsEnum::checkValue($this->avs['value']);
+            $json['avs']                                  = AvsEnum::checkValue($this->avs['value']);
         }
         if (!empty($this->avsEnhanced)) {
-            $json['avs_enhanced']                  = $this->avsEnhanced['value'];
+            $json['avs_enhanced']                         = $this->avsEnhanced['value'];
         }
         if (isset($this->cardholderPresent)) {
-            $json['cardholder_present']            = $this->cardholderPresent;
+            $json['cardholder_present']                   = $this->cardholderPresent;
         }
         if (isset($this->cardPresent)) {
-            $json['card_present']                  = $this->cardPresent;
+            $json['card_present']                         = $this->cardPresent;
         }
         if (!empty($this->checkNumber)) {
-            $json['check_number']                  = $this->checkNumber['value'];
+            $json['check_number']                         = $this->checkNumber['value'];
         }
         if (!empty($this->customerIp)) {
-            $json['customer_ip']                   = $this->customerIp['value'];
+            $json['customer_ip']                          = $this->customerIp['value'];
         }
         if (!empty($this->cvvResponse)) {
-            $json['cvv_response']                  = $this->cvvResponse['value'];
+            $json['cvv_response']                         = $this->cvvResponse['value'];
         }
         if (!empty($this->entryModeId)) {
-            $json['entry_mode_id']                 = EntryModeIdEnum::checkValue($this->entryModeId['value']);
+            $json['entry_mode_id']                        = EntryModeIdEnum::checkValue($this->entryModeId['value']);
         }
-        if (isset($this->emvReceiptData)) {
-            $json['emv_receipt_data']              = $this->emvReceiptData;
+        if (!empty($this->emvReceiptData)) {
+            $json['emv_receipt_data']                     = $this->emvReceiptData['value'];
         }
         if (!empty($this->firstSix)) {
-            $json['first_six']                     = $this->firstSix['value'];
+            $json['first_six']                            = $this->firstSix['value'];
         }
         if (!empty($this->lastFour)) {
-            $json['last_four']                     = $this->lastFour['value'];
+            $json['last_four']                            = $this->lastFour['value'];
         }
-        $json['payment_method']                    = PaymentMethod3Enum::checkValue($this->paymentMethod);
+        if (isset($this->paymentMethod)) {
+            $json['payment_method']                       = PaymentMethod9Enum::checkValue($this->paymentMethod);
+        }
         if (!empty($this->terminalSerialNumber)) {
-            $json['terminal_serial_number']        = $this->terminalSerialNumber['value'];
+            $json['terminal_serial_number']               = $this->terminalSerialNumber['value'];
         }
         if (!empty($this->transactionSettlementStatus)) {
-            $json['transaction_settlement_status'] = $this->transactionSettlementStatus['value'];
+            $json['transaction_settlement_status']        = $this->transactionSettlementStatus['value'];
         }
         if (!empty($this->chargeBackDate)) {
-            $json['charge_back_date']              = $this->chargeBackDate['value'];
+            $json['charge_back_date']                     = $this->chargeBackDate['value'];
         }
         if (isset($this->isRecurring)) {
-            $json['is_recurring']                  = $this->isRecurring;
+            $json['is_recurring']                         = $this->isRecurring;
         }
-        if (!empty($this->notificationEmailSent)) {
-            $json['notification_email_sent']       = $this->notificationEmailSent['value'];
+        if (isset($this->notificationEmailSent)) {
+            $json['notification_email_sent']              = $this->notificationEmailSent;
         }
         if (!empty($this->par)) {
-            $json['par']                           = $this->par['value'];
+            $json['par']                                  = $this->par['value'];
         }
         if (!empty($this->reasonCodeId)) {
-            $json['reason_code_id']                = ReasonCodeIdEnum::checkValue($this->reasonCodeId['value']);
+            $json['reason_code_id']                       = ReasonCodeId1Enum::checkValue($this->reasonCodeId['value']);
         }
         if (!empty($this->recurringId)) {
-            $json['recurring_id']                  = $this->recurringId['value'];
+            $json['recurring_id']                         = $this->recurringId['value'];
         }
         if (!empty($this->settleDate)) {
-            $json['settle_date']                   = $this->settleDate['value'];
+            $json['settle_date']                          = $this->settleDate['value'];
         }
         if (!empty($this->statusCode)) {
-            $json['status_code']                   = StatusCodeEnum::checkValue($this->statusCode['value']);
+            $json['status_code']                          = StatusCode17Enum::checkValue($this->statusCode['value']);
         }
         if (!empty($this->transactionBatchId)) {
-            $json['transaction_batch_id']          = $this->transactionBatchId['value'];
+            $json['transaction_batch_id']                 = $this->transactionBatchId['value'];
         }
         if (!empty($this->typeId)) {
-            $json['type_id']                       = TypeIdEnum::checkValue($this->typeId['value']);
+            $json['type_id']                              = TypeIdEnum::checkValue($this->typeId['value']);
         }
         if (!empty($this->verbiage)) {
-            $json['verbiage']                      = $this->verbiage['value'];
+            $json['verbiage']                             = $this->verbiage['value'];
+        }
+        if (!empty($this->voucherNumber)) {
+            $json['voucher_number']                       = $this->voucherNumber['value'];
         }
         if (!empty($this->voidDate)) {
-            $json['void_date']                     = $this->voidDate['value'];
+            $json['void_date']                            = $this->voidDate['value'];
         }
         if (!empty($this->batch)) {
-            $json['batch']                         = $this->batch['value'];
+            $json['batch']                                = $this->batch['value'];
         }
         if (isset($this->termsAgree)) {
-            $json['terms_agree']                   = $this->termsAgree;
+            $json['terms_agree']                          = $this->termsAgree;
         }
         if (!empty($this->responseMessage)) {
-            $json['response_message']              = $this->responseMessage['value'];
+            $json['response_message']                     = $this->responseMessage['value'];
         }
         if (!empty($this->returnDate)) {
-            $json['return_date']                   = $this->returnDate['value'];
+            $json['return_date']                          = $this->returnDate['value'];
         }
         if (!empty($this->trxSourceId)) {
-            $json['trx_source_id']                 = $this->trxSourceId['value'];
+            $json['trx_source_id']                        = TrxSourceIdEnum::checkValue($this->trxSourceId['value']);
         }
+        if (!empty($this->routingNumber)) {
+            $json['routing_number']                       = $this->routingNumber['value'];
+        }
+        if (!empty($this->trxSourceCode)) {
+            $json['trx_source_code']                      =
+                TrxSourceCodeEnum::checkValue(
+                    $this->trxSourceCode['value']
+                );
+        }
+        if (!empty($this->paylinkId)) {
+            $json['paylink_id']                           = $this->paylinkId['value'];
+        }
+        if (!empty($this->currencyCode)) {
+            $json['currency_code']                        = $this->currencyCode['value'];
+        }
+        if (isset($this->isAccountvault)) {
+            $json['is_accountvault']                      = $this->isAccountvault;
+        }
+        if (!empty($this->createdUserId)) {
+            $json['created_user_id']                      = $this->createdUserId['value'];
+        }
+        if (isset($this->modifiedUserId)) {
+            $json['modified_user_id']                     = $this->modifiedUserId;
+        }
+        if (!empty($this->transactionCode)) {
+            $json['transaction_code']                     = $this->transactionCode['value'];
+        }
+        if (!empty($this->effectiveDate)) {
+            $json['effective_date']                       = $this->effectiveDate['value'];
+        }
+        if (!empty($this->notificationPhone)) {
+            $json['notification_phone']                   = $this->notificationPhone['value'];
+        }
+        if (!empty($this->cavvResult)) {
+            $json['cavv_result']                          = $this->cavvResult['value'];
+        }
+        if (isset($this->isToken)) {
+            $json['is_token']                             = $this->isToken;
+        }
+        if (!empty($this->accountVaultId)) {
+            $json['account_vault_id']                     = $this->accountVaultId['value'];
+        }
+        if (isset($this->hostedPaymentPageId)) {
+            $json['hosted_payment_page_id']               = $this->hostedPaymentPageId;
+        }
+        if (!empty($this->stan)) {
+            $json['stan']                                 = $this->stan['value'];
+        }
+        if (!empty($this->currency)) {
+            $json['currency']                             = $this->currency['value'];
+        }
+        if (!empty($this->cardBin)) {
+            $json['card_bin']                             = $this->cardBin['value'];
+        }
+        if (!empty($this->walletType)) {
+            $json['wallet_type']                          = $this->walletType['value'];
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

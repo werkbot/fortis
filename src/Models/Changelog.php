@@ -10,12 +10,13 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class Changelog implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
@@ -55,18 +56,10 @@ class Changelog implements \JsonSerializable
     private $user;
 
     /**
-     * @param string $id
-     */
-    public function __construct(string $id)
-    {
-        $this->id = $id;
-    }
-
-    /**
      * Returns Id.
      * Change Log ID
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -75,10 +68,9 @@ class Changelog implements \JsonSerializable
      * Sets Id.
      * Change Log ID
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -288,6 +280,57 @@ class Changelog implements \JsonSerializable
     }
 
     /**
+     * Converts the Changelog object to a human-readable string representation.
+     *
+     * @return string The string representation of the Changelog object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Changelog',
+            [
+                'id' => $this->id,
+                'createdTs' => $this->getCreatedTs(),
+                'action' => $this->getAction(),
+                'model' => $this->getModel(),
+                'modelId' => $this->getModelId(),
+                'userId' => $this->getUserId(),
+                'changelogDetails' => $this->changelogDetails,
+                'user' => $this->user,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -299,7 +342,9 @@ class Changelog implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['id']                    = $this->id;
+        if (isset($this->id)) {
+            $json['id']                = $this->id;
+        }
         if (!empty($this->createdTs)) {
             $json['created_ts']        = $this->createdTs['value'];
         }
@@ -321,6 +366,7 @@ class Changelog implements \JsonSerializable
         if (isset($this->user)) {
             $json['user']              = $this->user;
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

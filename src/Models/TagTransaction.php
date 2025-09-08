@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class TagTransaction implements \JsonSerializable
@@ -20,12 +21,12 @@ class TagTransaction implements \JsonSerializable
     private $id;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $tagId;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $transactionId;
 
@@ -65,16 +66,6 @@ class TagTransaction implements \JsonSerializable
     private $modifiedUserId = [];
 
     /**
-     * @param string $tagId
-     * @param string $transactionId
-     */
-    public function __construct(string $tagId, string $transactionId)
-    {
-        $this->tagId = $tagId;
-        $this->transactionId = $transactionId;
-    }
-
-    /**
      * Returns Id.
      * ID
      */
@@ -98,7 +89,7 @@ class TagTransaction implements \JsonSerializable
      * Returns Tag Id.
      * Tag
      */
-    public function getTagId(): string
+    public function getTagId(): ?string
     {
         return $this->tagId;
     }
@@ -107,10 +98,9 @@ class TagTransaction implements \JsonSerializable
      * Sets Tag Id.
      * Tag
      *
-     * @required
      * @maps tag_id
      */
-    public function setTagId(string $tagId): void
+    public function setTagId(?string $tagId): void
     {
         $this->tagId = $tagId;
     }
@@ -119,7 +109,7 @@ class TagTransaction implements \JsonSerializable
      * Returns Transaction Id.
      * Transaction ID
      */
-    public function getTransactionId(): string
+    public function getTransactionId(): ?string
     {
         return $this->transactionId;
     }
@@ -128,10 +118,9 @@ class TagTransaction implements \JsonSerializable
      * Sets Transaction Id.
      * Transaction ID
      *
-     * @required
      * @maps transaction_id
      */
-    public function setTransactionId(string $transactionId): void
+    public function setTransactionId(?string $transactionId): void
     {
         $this->transactionId = $transactionId;
     }
@@ -361,6 +350,59 @@ class TagTransaction implements \JsonSerializable
     }
 
     /**
+     * Converts the TagTransaction object to a human-readable string representation.
+     *
+     * @return string The string representation of the TagTransaction object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'TagTransaction',
+            [
+                'id' => $this->id,
+                'tagId' => $this->tagId,
+                'transactionId' => $this->transactionId,
+                'paymentMethod' => $this->getPaymentMethod(),
+                'created' => $this->getCreated(),
+                'modified' => $this->getModified(),
+                'createdTs' => $this->getCreatedTs(),
+                'modifiedTs' => $this->getModifiedTs(),
+                'createdUserId' => $this->getCreatedUserId(),
+                'modifiedUserId' => $this->getModifiedUserId(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -375,8 +417,12 @@ class TagTransaction implements \JsonSerializable
         if (isset($this->id)) {
             $json['id']               = $this->id;
         }
-        $json['tag_id']               = $this->tagId;
-        $json['transaction_id']       = $this->transactionId;
+        if (isset($this->tagId)) {
+            $json['tag_id']           = $this->tagId;
+        }
+        if (isset($this->transactionId)) {
+            $json['transaction_id']   = $this->transactionId;
+        }
         if (!empty($this->paymentMethod)) {
             $json['payment_method']   = $this->paymentMethod['value'];
         }
@@ -398,6 +444,7 @@ class TagTransaction implements \JsonSerializable
         if (!empty($this->modifiedUserId)) {
             $json['modified_user_id'] = $this->modifiedUserId['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

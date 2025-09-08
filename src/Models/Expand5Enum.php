@@ -16,20 +16,13 @@ use stdClass;
 
 class Expand5Enum
 {
-    public const CREATED_USER = 'created_user';
+    public const RECURRING = 'recurring';
 
-    public const LOCATION = 'location';
+    public const PAYMENT_TRANSACTION = 'payment_transaction';
 
-    public const TERMINAL = 'terminal';
+    public const DECLINED_TRANSACTION = 'declined_transaction';
 
-    public const CHANGELOGS = 'changelogs';
-
-    public const SIGNATURE = 'signature';
-
-    public const REASON_CODE = 'reason_code';
-
-    private const _ALL_VALUES =
-        [self::CREATED_USER, self::LOCATION, self::TERMINAL, self::CHANGELOGS, self::SIGNATURE, self::REASON_CODE];
+    private const _ALL_VALUES = [self::RECURRING, self::PAYMENT_TRANSACTION, self::DECLINED_TRANSACTION];
 
     /**
      * Ensures that all the given values are present in this Enum.

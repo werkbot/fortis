@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class AdditionalAmount implements \JsonSerializable
@@ -53,7 +54,7 @@ class AdditionalAmount implements \JsonSerializable
      * Vision/Optical(Visa Only), 4W-clinic/other qualified medical(Visa Only) ,4X-Dental(Visa Only)].
      *
      * @maps type
-     * @factory \FortisAPILib\Models\Type1Enum::checkValue
+     * @factory \FortisAPILib\Models\Type60Enum::checkValue
      */
     public function setType(?string $type): void
     {
@@ -168,6 +169,53 @@ class AdditionalAmount implements \JsonSerializable
     }
 
     /**
+     * Converts the AdditionalAmount object to a human-readable string representation.
+     *
+     * @return string The string representation of the AdditionalAmount object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'AdditionalAmount',
+            [
+                'type' => $this->getType(),
+                'amount' => $this->getAmount(),
+                'accountType' => $this->getAccountType(),
+                'currency' => $this->getCurrency(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -180,7 +228,7 @@ class AdditionalAmount implements \JsonSerializable
     {
         $json = [];
         if (!empty($this->type)) {
-            $json['type']         = Type1Enum::checkValue($this->type['value']);
+            $json['type']         = Type60Enum::checkValue($this->type['value']);
         }
         if (!empty($this->amount)) {
             $json['amount']       = $this->amount['value'];
@@ -191,6 +239,7 @@ class AdditionalAmount implements \JsonSerializable
         if (!empty($this->currency)) {
             $json['currency']     = $this->currency['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

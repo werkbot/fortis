@@ -13,6 +13,7 @@ Payment method
 |  --- |
 | `CC` |
 | `ACH` |
+| `CASH` |
 
 ## Example
 

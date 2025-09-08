@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -18,12 +19,12 @@ use stdClass;
 class Domain implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $url;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $title;
 
@@ -38,17 +39,17 @@ class Domain implements \JsonSerializable
     private $supportEmail = [];
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $allowContactSignup;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $allowContactRegistration;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $allowContactLogin;
 
@@ -163,55 +164,30 @@ class Domain implements \JsonSerializable
     private $contactUserDefaultAuthRoles;
 
     /**
-     * @var string
+     * @var array
+     */
+    private $customStylesheetUrl = [];
+
+    /**
+     * @var string|null
      */
     private $id;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $modifiedTs;
-
-    /**
-     * @param string $url
-     * @param string $title
-     * @param bool $allowContactSignup
-     * @param bool $allowContactRegistration
-     * @param bool $allowContactLogin
-     * @param string $id
-     * @param int $createdTs
-     * @param int $modifiedTs
-     */
-    public function __construct(
-        string $url,
-        string $title,
-        bool $allowContactSignup,
-        bool $allowContactRegistration,
-        bool $allowContactLogin,
-        string $id,
-        int $createdTs,
-        int $modifiedTs
-    ) {
-        $this->url = $url;
-        $this->title = $title;
-        $this->allowContactSignup = $allowContactSignup;
-        $this->allowContactRegistration = $allowContactRegistration;
-        $this->allowContactLogin = $allowContactLogin;
-        $this->id = $id;
-        $this->createdTs = $createdTs;
-        $this->modifiedTs = $modifiedTs;
-    }
 
     /**
      * Returns Url.
      * URL
      */
-    public function getUrl(): string
+    public function getUrl(): ?string
     {
         return $this->url;
     }
@@ -220,10 +196,9 @@ class Domain implements \JsonSerializable
      * Sets Url.
      * URL
      *
-     * @required
      * @maps url
      */
-    public function setUrl(string $url): void
+    public function setUrl(?string $url): void
     {
         $this->url = $url;
     }
@@ -232,7 +207,7 @@ class Domain implements \JsonSerializable
      * Returns Title.
      * Domain Name
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -241,10 +216,9 @@ class Domain implements \JsonSerializable
      * Sets Title.
      * Domain Name
      *
-     * @required
      * @maps title
      */
-    public function setTitle(string $title): void
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -317,7 +291,7 @@ class Domain implements \JsonSerializable
      * Returns Allow Contact Signup.
      * Allow Contact Signup.
      */
-    public function getAllowContactSignup(): bool
+    public function getAllowContactSignup(): ?bool
     {
         return $this->allowContactSignup;
     }
@@ -326,10 +300,9 @@ class Domain implements \JsonSerializable
      * Sets Allow Contact Signup.
      * Allow Contact Signup.
      *
-     * @required
      * @maps allow_contact_signup
      */
-    public function setAllowContactSignup(bool $allowContactSignup): void
+    public function setAllowContactSignup(?bool $allowContactSignup): void
     {
         $this->allowContactSignup = $allowContactSignup;
     }
@@ -338,7 +311,7 @@ class Domain implements \JsonSerializable
      * Returns Allow Contact Registration.
      * Allow Contact Registration.
      */
-    public function getAllowContactRegistration(): bool
+    public function getAllowContactRegistration(): ?bool
     {
         return $this->allowContactRegistration;
     }
@@ -347,10 +320,9 @@ class Domain implements \JsonSerializable
      * Sets Allow Contact Registration.
      * Allow Contact Registration.
      *
-     * @required
      * @maps allow_contact_registration
      */
-    public function setAllowContactRegistration(bool $allowContactRegistration): void
+    public function setAllowContactRegistration(?bool $allowContactRegistration): void
     {
         $this->allowContactRegistration = $allowContactRegistration;
     }
@@ -359,7 +331,7 @@ class Domain implements \JsonSerializable
      * Returns Allow Contact Login.
      * Allow Contact Login.
      */
-    public function getAllowContactLogin(): bool
+    public function getAllowContactLogin(): ?bool
     {
         return $this->allowContactLogin;
     }
@@ -368,10 +340,9 @@ class Domain implements \JsonSerializable
      * Sets Allow Contact Login.
      * Allow Contact Login.
      *
-     * @required
      * @maps allow_contact_login
      */
-    public function setAllowContactLogin(bool $allowContactLogin): void
+    public function setAllowContactLogin(?bool $allowContactLogin): void
     {
         $this->allowContactLogin = $allowContactLogin;
     }
@@ -1067,10 +1038,42 @@ class Domain implements \JsonSerializable
     }
 
     /**
+     * Returns Custom Stylesheet Url.
+     * Custom Stylesheet URL
+     */
+    public function getCustomStylesheetUrl(): ?string
+    {
+        if (count($this->customStylesheetUrl) == 0) {
+            return null;
+        }
+        return $this->customStylesheetUrl['value'];
+    }
+
+    /**
+     * Sets Custom Stylesheet Url.
+     * Custom Stylesheet URL
+     *
+     * @maps custom_stylesheet_url
+     */
+    public function setCustomStylesheetUrl(?string $customStylesheetUrl): void
+    {
+        $this->customStylesheetUrl['value'] = $customStylesheetUrl;
+    }
+
+    /**
+     * Unsets Custom Stylesheet Url.
+     * Custom Stylesheet URL
+     */
+    public function unsetCustomStylesheetUrl(): void
+    {
+        $this->customStylesheetUrl = [];
+    }
+
+    /**
      * Returns Id.
      * Id
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -1079,10 +1082,9 @@ class Domain implements \JsonSerializable
      * Sets Id.
      * Id
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -1091,7 +1093,7 @@ class Domain implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -1100,10 +1102,9 @@ class Domain implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -1112,7 +1113,7 @@ class Domain implements \JsonSerializable
      * Returns Modified Ts.
      * Modified Time Stamp
      */
-    public function getModifiedTs(): int
+    public function getModifiedTs(): ?int
     {
         return $this->modifiedTs;
     }
@@ -1121,12 +1122,87 @@ class Domain implements \JsonSerializable
      * Sets Modified Ts.
      * Modified Time Stamp
      *
-     * @required
      * @maps modified_ts
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setModifiedTs(?int $modifiedTs): void
     {
         $this->modifiedTs = $modifiedTs;
+    }
+
+    /**
+     * Converts the Domain object to a human-readable string representation.
+     *
+     * @return string The string representation of the Domain object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Domain',
+            [
+                'url' => $this->url,
+                'title' => $this->title,
+                'logo' => $this->getLogo(),
+                'supportEmail' => $this->getSupportEmail(),
+                'allowContactSignup' => $this->allowContactSignup,
+                'allowContactRegistration' => $this->allowContactRegistration,
+                'allowContactLogin' => $this->allowContactLogin,
+                'registrationFields' => $this->registrationFields,
+                'companyName' => $this->getCompanyName(),
+                'navColor' => $this->getNavColor(),
+                'buttonPrimaryColor' => $this->getButtonPrimaryColor(),
+                'logoBackgroundColor' => $this->getLogoBackgroundColor(),
+                'iconBackgroundColor' => $this->getIconBackgroundColor(),
+                'menuTextBackgroundColor' => $this->getMenuTextBackgroundColor(),
+                'menuTextColor' => $this->getMenuTextColor(),
+                'rightMenuBackgroundColor' => $this->getRightMenuBackgroundColor(),
+                'rightMenuTextColor' => $this->getRightMenuTextColor(),
+                'buttonPrimaryTextColor' => $this->getButtonPrimaryTextColor(),
+                'navLogo' => $this->getNavLogo(),
+                'favIcon' => $this->getFavIcon(),
+                'aesKey' => $this->getAesKey(),
+                'helpText' => $this->getHelpText(),
+                'emailReplyTo' => $this->getEmailReplyTo(),
+                'email' => $this->getEmail(),
+                'customJavascript' => $this->getCustomJavascript(),
+                'customTheme' => $this->getCustomTheme(),
+                'customCss' => $this->getCustomCss(),
+                'contactUserDefaultEntryPage' => $this->getContactUserDefaultEntryPage(),
+                'contactUserDefaultAuthRoles' => $this->contactUserDefaultAuthRoles,
+                'customStylesheetUrl' => $this->getCustomStylesheetUrl(),
+                'id' => $this->id,
+                'createdTs' => $this->createdTs,
+                'modifiedTs' => $this->modifiedTs,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -1141,17 +1217,27 @@ class Domain implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['url']                                 = $this->url;
-        $json['title']                               = $this->title;
+        if (isset($this->url)) {
+            $json['url']                             = $this->url;
+        }
+        if (isset($this->title)) {
+            $json['title']                           = $this->title;
+        }
         if (!empty($this->logo)) {
             $json['logo']                            = $this->logo['value'];
         }
         if (!empty($this->supportEmail)) {
             $json['support_email']                   = $this->supportEmail['value'];
         }
-        $json['allow_contact_signup']                = $this->allowContactSignup;
-        $json['allow_contact_registration']          = $this->allowContactRegistration;
-        $json['allow_contact_login']                 = $this->allowContactLogin;
+        if (isset($this->allowContactSignup)) {
+            $json['allow_contact_signup']            = $this->allowContactSignup;
+        }
+        if (isset($this->allowContactRegistration)) {
+            $json['allow_contact_registration']      = $this->allowContactRegistration;
+        }
+        if (isset($this->allowContactLogin)) {
+            $json['allow_contact_login']             = $this->allowContactLogin;
+        }
         if (isset($this->registrationFields)) {
             $json['registration_fields']             = RegistrationFieldEnum::checkValue($this->registrationFields);
         }
@@ -1221,9 +1307,19 @@ class Domain implements \JsonSerializable
         if (isset($this->contactUserDefaultAuthRoles)) {
             $json['contact_user_default_auth_roles'] = $this->contactUserDefaultAuthRoles;
         }
-        $json['id']                                  = $this->id;
-        $json['created_ts']                          = $this->createdTs;
-        $json['modified_ts']                         = $this->modifiedTs;
+        if (!empty($this->customStylesheetUrl)) {
+            $json['custom_stylesheet_url']           = $this->customStylesheetUrl['value'];
+        }
+        if (isset($this->id)) {
+            $json['id']                              = $this->id;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']                      = $this->createdTs;
+        }
+        if (isset($this->modifiedTs)) {
+            $json['modified_ts']                     = $this->modifiedTs;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

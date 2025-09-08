@@ -11,6 +11,15 @@ declare(strict_types=1);
 namespace FortisAPILib;
 
 use CoreInterfaces\Http\HttpConfigurations;
+use FortisAPILib\Authentication\AccessTokenCredentials;
+use FortisAPILib\Authentication\AccessTokenCredentialsBuilder;
+use FortisAPILib\Authentication\DeveloperIdCredentials;
+use FortisAPILib\Authentication\DeveloperIdCredentialsBuilder;
+use FortisAPILib\Authentication\UserApiKeyCredentials;
+use FortisAPILib\Authentication\UserApiKeyCredentialsBuilder;
+use FortisAPILib\Authentication\UserIdCredentials;
+use FortisAPILib\Authentication\UserIdCredentialsBuilder;
+use FortisAPILib\Proxy\ProxyConfigurationBuilder;
 
 /**
  * An interface for all configuration parameters required by the SDK.
@@ -23,9 +32,49 @@ interface ConfigurationInterface extends HttpConfigurations
     public function getEnvironment(): string;
 
     /**
-     * Get the credentials to use with CustomHeaderAuthentication
+     * Get the credentials to use with UserId
      */
-    public function getCustomHeaderAuthenticationCredentials(): ?CustomHeaderAuthenticationCredentials;
+    public function getUserIdCredentials(): UserIdCredentials;
+
+    /**
+     * Get the credentials builder instance to update credentials for UserId
+     */
+    public function getUserIdCredentialsBuilder(): ?UserIdCredentialsBuilder;
+
+    /**
+     * Get the credentials to use with UserApiKey
+     */
+    public function getUserApiKeyCredentials(): UserApiKeyCredentials;
+
+    /**
+     * Get the credentials builder instance to update credentials for UserApiKey
+     */
+    public function getUserApiKeyCredentialsBuilder(): ?UserApiKeyCredentialsBuilder;
+
+    /**
+     * Get the credentials to use with DeveloperId
+     */
+    public function getDeveloperIdCredentials(): DeveloperIdCredentials;
+
+    /**
+     * Get the credentials builder instance to update credentials for DeveloperId
+     */
+    public function getDeveloperIdCredentialsBuilder(): ?DeveloperIdCredentialsBuilder;
+
+    /**
+     * Get the credentials to use with AccessToken
+     */
+    public function getAccessTokenCredentials(): AccessTokenCredentials;
+
+    /**
+     * Get the credentials builder instance to update credentials for AccessToken
+     */
+    public function getAccessTokenCredentialsBuilder(): ?AccessTokenCredentialsBuilder;
+
+    /**
+     * Represents the proxy configurations for API calls.
+     */
+    public function getProxyConfigurationBuilder(): ProxyConfigurationBuilder;
 
     /**
      * Get the base uri for a given server in the current environment.

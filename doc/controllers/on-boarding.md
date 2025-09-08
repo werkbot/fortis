@@ -32,37 +32,59 @@ function merchantBoarding(V1OnboardingRequest $body): ResponseOnboarding
 ## Example Usage
 
 ```php
-$body_primaryPrincipal_firstName = 'Bob';
-$body_primaryPrincipal_lastName = 'Fairview';
-$body_primaryPrincipal = new Models\PrimaryPrincipal(
-    $body_primaryPrincipal_firstName,
-    $body_primaryPrincipal_lastName
-);
-$body_templateCode = '1234YourTemplateCode';
-$body_email = 'email@domain.com';
-$body_dbaName = 'Discount Home Goods';
-$body_location_phoneNumber = '555-555-1212';
-$body_location = new Models\Location4(
-    $body_location_phoneNumber
-);
-$body_appDelivery = Models\AppDeliveryEnum::DIRECT;
-$body_bankAccount = new Models\BankAccount();
-$body_altBankAccount = new Models\AltBankAccount();
-$body_contact_phoneNumber = '555-555-3456';
-$body_contact = new Models\Contact(
-    $body_contact_phoneNumber
-);
-$body = new Models\V1OnboardingRequest(
-    $body_primaryPrincipal,
-    $body_templateCode,
-    $body_email,
-    $body_dbaName,
-    $body_location,
-    $body_appDelivery,
-    $body_bankAccount,
-    $body_altBankAccount,
-    $body_contact
-);
+$body = V1OnboardingRequestBuilder::init(
+    PrimaryPrincipal1Builder::init(
+        'Bob',
+        'Fairview'
+    )
+        ->middleName('Nathaniel')
+        ->title('Dr')
+        ->dateOfBirth('2021-12-01')
+        ->addressLine1('1354 Oak St.')
+        ->addressLine2('Unit 203')
+        ->city('Dover')
+        ->stateProvince('DE')
+        ->postalCode('55022')
+        ->ownershipPercent(100)
+        ->phoneNumber('555-555-1234')
+        ->build(),
+    '1234YourTemplateCode',
+    'email@domain.com',
+    'Discount Home Goods',
+    Location20Builder::init(
+        '555-555-1212'
+    )
+        ->addressLine1('1200 West Hartford Pkwy')
+        ->addressLine2('Suite 2000')
+        ->city('Dover')
+        ->stateProvince('DE')
+        ->postalCode('55022')
+        ->build(),
+    '',
+    Contact11Builder::init(
+        '555-555-3456'
+    )
+        ->firstName('Jeffery')
+        ->lastName('Todd')
+        ->email('jtodd@example.com')
+        ->build()
+)
+    ->businessCategory(BusinessCategoryEnum::EDUCATION)
+    ->swipedPercent(0)
+    ->keyedPercent(0)
+    ->ecommercePercent(100)
+    ->ownershipType(OwnershipTypeEnum::LLP)
+    ->fedTaxId('0000000000')
+    ->ccAverageTicketRange(5)
+    ->ccMonthlyVolumeRange(1)
+    ->ccHighTicket(1500)
+    ->ecAverageTicketRange(5)
+    ->ecMonthlyVolumeRange(2)
+    ->ecHighTicket(1500)
+    ->website('http://www.example.com')
+    ->legalName('Total Home Goods, LLP')
+    ->clientAppId('ABC123')
+    ->build();
 
 $result = $onBoardingController->merchantBoarding($body);
 ```
@@ -73,7 +95,6 @@ $result = $onBoardingController->merchantBoarding($body);
 {
   "type": "Onboarding",
   "data": {
-    "parent_id": "11e95f8ec39de8fbdb0a4f1a",
     "primary_principal": {
       "first_name": "Bob",
       "last_name": "Fairview",
@@ -131,7 +152,11 @@ $result = $onBoardingController->merchantBoarding($body);
       "email": "jtodd@example.com",
       "phone_number": "555-555-3456"
     },
-    "client_app_id": "ABC123"
+    "client_app_id": "ABC123",
+    "sec_codes": [
+      "WEB"
+    ],
+    "app_link": "https://mpa.example.com/signup/123456788"
   }
 }
 ```

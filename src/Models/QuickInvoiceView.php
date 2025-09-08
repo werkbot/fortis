@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class QuickInvoiceView implements \JsonSerializable
@@ -20,7 +21,7 @@ class QuickInvoiceView implements \JsonSerializable
     private $id;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $quickInvoiceId;
 
@@ -33,14 +34,6 @@ class QuickInvoiceView implements \JsonSerializable
      * @var array
      */
     private $createdTs = [];
-
-    /**
-     * @param string $quickInvoiceId
-     */
-    public function __construct(string $quickInvoiceId)
-    {
-        $this->quickInvoiceId = $quickInvoiceId;
-    }
 
     /**
      * Returns Id.
@@ -66,7 +59,7 @@ class QuickInvoiceView implements \JsonSerializable
      * Returns Quick Invoice Id.
      * Quick Invoice ID
      */
-    public function getQuickInvoiceId(): string
+    public function getQuickInvoiceId(): ?string
     {
         return $this->quickInvoiceId;
     }
@@ -75,10 +68,9 @@ class QuickInvoiceView implements \JsonSerializable
      * Sets Quick Invoice Id.
      * Quick Invoice ID
      *
-     * @required
      * @maps quick_invoice_id
      */
-    public function setQuickInvoiceId(string $quickInvoiceId): void
+    public function setQuickInvoiceId(?string $quickInvoiceId): void
     {
         $this->quickInvoiceId = $quickInvoiceId;
     }
@@ -148,6 +140,53 @@ class QuickInvoiceView implements \JsonSerializable
     }
 
     /**
+     * Converts the QuickInvoiceView object to a human-readable string representation.
+     *
+     * @return string The string representation of the QuickInvoiceView object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'QuickInvoiceView',
+            [
+                'id' => $this->id,
+                'quickInvoiceId' => $this->quickInvoiceId,
+                'remoteIp' => $this->getRemoteIp(),
+                'createdTs' => $this->getCreatedTs(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -160,15 +199,18 @@ class QuickInvoiceView implements \JsonSerializable
     {
         $json = [];
         if (isset($this->id)) {
-            $json['id']           = $this->id;
+            $json['id']               = $this->id;
         }
-        $json['quick_invoice_id'] = $this->quickInvoiceId;
+        if (isset($this->quickInvoiceId)) {
+            $json['quick_invoice_id'] = $this->quickInvoiceId;
+        }
         if (!empty($this->remoteIp)) {
-            $json['remote_ip']    = $this->remoteIp['value'];
+            $json['remote_ip']        = $this->remoteIp['value'];
         }
         if (!empty($this->createdTs)) {
-            $json['created_ts']   = $this->createdTs['value'];
+            $json['created_ts']       = $this->createdTs['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -23,66 +24,44 @@ class QuickInvoiceSetting implements \JsonSerializable
     private $locationApiId = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $locationId;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $quickInvoiceTemplate;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $defaultAllowPartialPay;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $defaultNotificationOnDueDate;
 
     /**
-     * @var float
+     * @var float|null
      */
     private $defaultNotificationDaysAfterDueDate;
 
     /**
-     * @var float
+     * @var float|null
      */
     private $defaultNotificationDaysBeforeDueDate;
 
     /**
-     * @var string
+     * @var bool|null
      */
-    private $id;
+    private $showCustomFields;
 
     /**
-     * @param string $locationId
-     * @param string $quickInvoiceTemplate
-     * @param bool $defaultAllowPartialPay
-     * @param bool $defaultNotificationOnDueDate
-     * @param float $defaultNotificationDaysAfterDueDate
-     * @param float $defaultNotificationDaysBeforeDueDate
-     * @param string $id
+     * @var string|null
      */
-    public function __construct(
-        string $locationId,
-        string $quickInvoiceTemplate,
-        bool $defaultAllowPartialPay,
-        bool $defaultNotificationOnDueDate,
-        float $defaultNotificationDaysAfterDueDate,
-        float $defaultNotificationDaysBeforeDueDate,
-        string $id
-    ) {
-        $this->locationId = $locationId;
-        $this->quickInvoiceTemplate = $quickInvoiceTemplate;
-        $this->defaultAllowPartialPay = $defaultAllowPartialPay;
-        $this->defaultNotificationOnDueDate = $defaultNotificationOnDueDate;
-        $this->defaultNotificationDaysAfterDueDate = $defaultNotificationDaysAfterDueDate;
-        $this->defaultNotificationDaysBeforeDueDate = $defaultNotificationDaysBeforeDueDate;
-        $this->id = $id;
-    }
+    private $id;
 
     /**
      * Returns Location Api Id.
@@ -120,7 +99,7 @@ class QuickInvoiceSetting implements \JsonSerializable
      * Returns Location Id.
      * Location ID
      */
-    public function getLocationId(): string
+    public function getLocationId(): ?string
     {
         return $this->locationId;
     }
@@ -129,10 +108,9 @@ class QuickInvoiceSetting implements \JsonSerializable
      * Sets Location Id.
      * Location ID
      *
-     * @required
      * @maps location_id
      */
-    public function setLocationId(string $locationId): void
+    public function setLocationId(?string $locationId): void
     {
         $this->locationId = $locationId;
     }
@@ -141,7 +119,7 @@ class QuickInvoiceSetting implements \JsonSerializable
      * Returns Quick Invoice Template.
      * Quick Invoice Template
      */
-    public function getQuickInvoiceTemplate(): string
+    public function getQuickInvoiceTemplate(): ?string
     {
         return $this->quickInvoiceTemplate;
     }
@@ -150,10 +128,9 @@ class QuickInvoiceSetting implements \JsonSerializable
      * Sets Quick Invoice Template.
      * Quick Invoice Template
      *
-     * @required
      * @maps quick_invoice_template
      */
-    public function setQuickInvoiceTemplate(string $quickInvoiceTemplate): void
+    public function setQuickInvoiceTemplate(?string $quickInvoiceTemplate): void
     {
         $this->quickInvoiceTemplate = $quickInvoiceTemplate;
     }
@@ -162,7 +139,7 @@ class QuickInvoiceSetting implements \JsonSerializable
      * Returns Default Allow Partial Pay.
      * Default Quick Invoice Allow Partial Pay
      */
-    public function getDefaultAllowPartialPay(): bool
+    public function getDefaultAllowPartialPay(): ?bool
     {
         return $this->defaultAllowPartialPay;
     }
@@ -171,10 +148,9 @@ class QuickInvoiceSetting implements \JsonSerializable
      * Sets Default Allow Partial Pay.
      * Default Quick Invoice Allow Partial Pay
      *
-     * @required
      * @maps default_allow_partial_pay
      */
-    public function setDefaultAllowPartialPay(bool $defaultAllowPartialPay): void
+    public function setDefaultAllowPartialPay(?bool $defaultAllowPartialPay): void
     {
         $this->defaultAllowPartialPay = $defaultAllowPartialPay;
     }
@@ -183,7 +159,7 @@ class QuickInvoiceSetting implements \JsonSerializable
      * Returns Default Notification on Due Date.
      * Default Quick Invoice Notification On Due Date
      */
-    public function getDefaultNotificationOnDueDate(): bool
+    public function getDefaultNotificationOnDueDate(): ?bool
     {
         return $this->defaultNotificationOnDueDate;
     }
@@ -192,10 +168,9 @@ class QuickInvoiceSetting implements \JsonSerializable
      * Sets Default Notification on Due Date.
      * Default Quick Invoice Notification On Due Date
      *
-     * @required
      * @maps default_notification_on_due_date
      */
-    public function setDefaultNotificationOnDueDate(bool $defaultNotificationOnDueDate): void
+    public function setDefaultNotificationOnDueDate(?bool $defaultNotificationOnDueDate): void
     {
         $this->defaultNotificationOnDueDate = $defaultNotificationOnDueDate;
     }
@@ -204,7 +179,7 @@ class QuickInvoiceSetting implements \JsonSerializable
      * Returns Default Notification Days After Due Date.
      * Default Quick Invoice Notification Days After Due Date
      */
-    public function getDefaultNotificationDaysAfterDueDate(): float
+    public function getDefaultNotificationDaysAfterDueDate(): ?float
     {
         return $this->defaultNotificationDaysAfterDueDate;
     }
@@ -213,10 +188,9 @@ class QuickInvoiceSetting implements \JsonSerializable
      * Sets Default Notification Days After Due Date.
      * Default Quick Invoice Notification Days After Due Date
      *
-     * @required
      * @maps default_notification_days_after_due_date
      */
-    public function setDefaultNotificationDaysAfterDueDate(float $defaultNotificationDaysAfterDueDate): void
+    public function setDefaultNotificationDaysAfterDueDate(?float $defaultNotificationDaysAfterDueDate): void
     {
         $this->defaultNotificationDaysAfterDueDate = $defaultNotificationDaysAfterDueDate;
     }
@@ -225,7 +199,7 @@ class QuickInvoiceSetting implements \JsonSerializable
      * Returns Default Notification Days Before Due Date.
      * Default Quick Invoice Notification Days Before Due Date
      */
-    public function getDefaultNotificationDaysBeforeDueDate(): float
+    public function getDefaultNotificationDaysBeforeDueDate(): ?float
     {
         return $this->defaultNotificationDaysBeforeDueDate;
     }
@@ -234,19 +208,38 @@ class QuickInvoiceSetting implements \JsonSerializable
      * Sets Default Notification Days Before Due Date.
      * Default Quick Invoice Notification Days Before Due Date
      *
-     * @required
      * @maps default_notification_days_before_due_date
      */
-    public function setDefaultNotificationDaysBeforeDueDate(float $defaultNotificationDaysBeforeDueDate): void
+    public function setDefaultNotificationDaysBeforeDueDate(?float $defaultNotificationDaysBeforeDueDate): void
     {
         $this->defaultNotificationDaysBeforeDueDate = $defaultNotificationDaysBeforeDueDate;
+    }
+
+    /**
+     * Returns Show Custom Fields.
+     * Show Custom Fields
+     */
+    public function getShowCustomFields(): ?bool
+    {
+        return $this->showCustomFields;
+    }
+
+    /**
+     * Sets Show Custom Fields.
+     * Show Custom Fields
+     *
+     * @maps show_custom_fields
+     */
+    public function setShowCustomFields(?bool $showCustomFields): void
+    {
+        $this->showCustomFields = $showCustomFields;
     }
 
     /**
      * Returns Id.
      * Quick Invoice Settings ID
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -255,12 +248,63 @@ class QuickInvoiceSetting implements \JsonSerializable
      * Sets Id.
      * Quick Invoice Settings ID
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
+    }
+
+    /**
+     * Converts the QuickInvoiceSetting object to a human-readable string representation.
+     *
+     * @return string The string representation of the QuickInvoiceSetting object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'QuickInvoiceSetting',
+            [
+                'locationApiId' => $this->getLocationApiId(),
+                'locationId' => $this->locationId,
+                'quickInvoiceTemplate' => $this->quickInvoiceTemplate,
+                'defaultAllowPartialPay' => $this->defaultAllowPartialPay,
+                'defaultNotificationOnDueDate' => $this->defaultNotificationOnDueDate,
+                'defaultNotificationDaysAfterDueDate' => $this->defaultNotificationDaysAfterDueDate,
+                'defaultNotificationDaysBeforeDueDate' => $this->defaultNotificationDaysBeforeDueDate,
+                'showCustomFields' => $this->showCustomFields,
+                'id' => $this->id,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -276,15 +320,33 @@ class QuickInvoiceSetting implements \JsonSerializable
     {
         $json = [];
         if (!empty($this->locationApiId)) {
-            $json['location_api_id']                       = $this->locationApiId['value'];
+            $json['location_api_id']                           = $this->locationApiId['value'];
         }
-        $json['location_id']                               = $this->locationId;
-        $json['quick_invoice_template']                    = $this->quickInvoiceTemplate;
-        $json['default_allow_partial_pay']                 = $this->defaultAllowPartialPay;
-        $json['default_notification_on_due_date']          = $this->defaultNotificationOnDueDate;
-        $json['default_notification_days_after_due_date']  = $this->defaultNotificationDaysAfterDueDate;
-        $json['default_notification_days_before_due_date'] = $this->defaultNotificationDaysBeforeDueDate;
-        $json['id']                                        = $this->id;
+        if (isset($this->locationId)) {
+            $json['location_id']                               = $this->locationId;
+        }
+        if (isset($this->quickInvoiceTemplate)) {
+            $json['quick_invoice_template']                    = $this->quickInvoiceTemplate;
+        }
+        if (isset($this->defaultAllowPartialPay)) {
+            $json['default_allow_partial_pay']                 = $this->defaultAllowPartialPay;
+        }
+        if (isset($this->defaultNotificationOnDueDate)) {
+            $json['default_notification_on_due_date']          = $this->defaultNotificationOnDueDate;
+        }
+        if (isset($this->defaultNotificationDaysAfterDueDate)) {
+            $json['default_notification_days_after_due_date']  = $this->defaultNotificationDaysAfterDueDate;
+        }
+        if (isset($this->defaultNotificationDaysBeforeDueDate)) {
+            $json['default_notification_days_before_due_date'] = $this->defaultNotificationDaysBeforeDueDate;
+        }
+        if (isset($this->showCustomFields)) {
+            $json['show_custom_fields']                        = $this->showCustomFields;
+        }
+        if (isset($this->id)) {
+            $json['id']                                        = $this->id;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

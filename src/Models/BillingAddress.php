@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -17,16 +18,6 @@ use stdClass;
  */
 class BillingAddress implements \JsonSerializable
 {
-    /**
-     * @var array
-     */
-    private $city = [];
-
-    /**
-     * @var array
-     */
-    private $state = [];
-
     /**
      * @var array
      */
@@ -40,76 +31,22 @@ class BillingAddress implements \JsonSerializable
     /**
      * @var array
      */
+    private $city = [];
+
+    /**
+     * @var array
+     */
+    private $state = [];
+
+    /**
+     * @var array
+     */
     private $phone = [];
 
     /**
      * @var array
      */
     private $country = [];
-
-    /**
-     * Returns City.
-     * The City portion of the address associated with the Credit Card (CC) or Bank Account (ACH).
-     */
-    public function getCity(): ?string
-    {
-        if (count($this->city) == 0) {
-            return null;
-        }
-        return $this->city['value'];
-    }
-
-    /**
-     * Sets City.
-     * The City portion of the address associated with the Credit Card (CC) or Bank Account (ACH).
-     *
-     * @maps city
-     */
-    public function setCity(?string $city): void
-    {
-        $this->city['value'] = $city;
-    }
-
-    /**
-     * Unsets City.
-     * The City portion of the address associated with the Credit Card (CC) or Bank Account (ACH).
-     */
-    public function unsetCity(): void
-    {
-        $this->city = [];
-    }
-
-    /**
-     * Returns State.
-     * The State portion of the address associated with the Credit Card (CC) or Bank Account (ACH).
-     */
-    public function getState(): ?string
-    {
-        if (count($this->state) == 0) {
-            return null;
-        }
-        return $this->state['value'];
-    }
-
-    /**
-     * Sets State.
-     * The State portion of the address associated with the Credit Card (CC) or Bank Account (ACH).
-     *
-     * @maps state
-     */
-    public function setState(?string $state): void
-    {
-        $this->state['value'] = $state;
-    }
-
-    /**
-     * Unsets State.
-     * The State portion of the address associated with the Credit Card (CC) or Bank Account (ACH).
-     */
-    public function unsetState(): void
-    {
-        $this->state = [];
-    }
 
     /**
      * Returns Postal Code.
@@ -179,6 +116,70 @@ class BillingAddress implements \JsonSerializable
     }
 
     /**
+     * Returns City.
+     * The City portion of the address associated with the Credit Card (CC) or Bank Account (ACH).
+     */
+    public function getCity(): ?string
+    {
+        if (count($this->city) == 0) {
+            return null;
+        }
+        return $this->city['value'];
+    }
+
+    /**
+     * Sets City.
+     * The City portion of the address associated with the Credit Card (CC) or Bank Account (ACH).
+     *
+     * @maps city
+     */
+    public function setCity(?string $city): void
+    {
+        $this->city['value'] = $city;
+    }
+
+    /**
+     * Unsets City.
+     * The City portion of the address associated with the Credit Card (CC) or Bank Account (ACH).
+     */
+    public function unsetCity(): void
+    {
+        $this->city = [];
+    }
+
+    /**
+     * Returns State.
+     * The State portion of the address associated with the Credit Card (CC) or Bank Account (ACH).
+     */
+    public function getState(): ?string
+    {
+        if (count($this->state) == 0) {
+            return null;
+        }
+        return $this->state['value'];
+    }
+
+    /**
+     * Sets State.
+     * The State portion of the address associated with the Credit Card (CC) or Bank Account (ACH).
+     *
+     * @maps state
+     */
+    public function setState(?string $state): void
+    {
+        $this->state['value'] = $state;
+    }
+
+    /**
+     * Unsets State.
+     * The State portion of the address associated with the Credit Card (CC) or Bank Account (ACH).
+     */
+    public function unsetState(): void
+    {
+        $this->state = [];
+    }
+
+    /**
      * Returns Phone.
      * The Phone # to be used to contact Payer if there are any issues processing a transaction.
      */
@@ -212,7 +213,7 @@ class BillingAddress implements \JsonSerializable
 
     /**
      * Returns Country.
-     * The Country portion of the address associated with the Credit Card (CC) or Bank Account (ACH).
+     * The alpha 3 format country code.
      */
     public function getCountry(): ?string
     {
@@ -224,7 +225,7 @@ class BillingAddress implements \JsonSerializable
 
     /**
      * Sets Country.
-     * The Country portion of the address associated with the Credit Card (CC) or Bank Account (ACH).
+     * The alpha 3 format country code.
      *
      * @maps country
      */
@@ -235,11 +236,60 @@ class BillingAddress implements \JsonSerializable
 
     /**
      * Unsets Country.
-     * The Country portion of the address associated with the Credit Card (CC) or Bank Account (ACH).
+     * The alpha 3 format country code.
      */
     public function unsetCountry(): void
     {
         $this->country = [];
+    }
+
+    /**
+     * Converts the BillingAddress object to a human-readable string representation.
+     *
+     * @return string The string representation of the BillingAddress object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'BillingAddress',
+            [
+                'postalCode' => $this->getPostalCode(),
+                'street' => $this->getStreet(),
+                'city' => $this->getCity(),
+                'state' => $this->getState(),
+                'phone' => $this->getPhone(),
+                'country' => $this->getCountry(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -254,17 +304,17 @@ class BillingAddress implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        if (!empty($this->city)) {
-            $json['city']        = $this->city['value'];
-        }
-        if (!empty($this->state)) {
-            $json['state']       = $this->state['value'];
-        }
         if (!empty($this->postalCode)) {
             $json['postal_code'] = $this->postalCode['value'];
         }
         if (!empty($this->street)) {
             $json['street']      = $this->street['value'];
+        }
+        if (!empty($this->city)) {
+            $json['city']        = $this->city['value'];
+        }
+        if (!empty($this->state)) {
+            $json['state']       = $this->state['value'];
         }
         if (!empty($this->phone)) {
             $json['phone']       = $this->phone['value'];
@@ -272,6 +322,7 @@ class BillingAddress implements \JsonSerializable
         if (!empty($this->country)) {
             $json['country']     = $this->country['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

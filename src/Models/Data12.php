@@ -10,179 +10,416 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class Data12 implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
-    private $locationId;
+    private $threeDsServerTransId;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private $title;
+    private $acsUrl;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private $id;
+    private $transactionStatus;
 
     /**
-     * @var int
+     * @var string|null
      */
-    private $createdTs;
+    private $authenticationValue;
 
     /**
-     * @var int
+     * @var string|null
      */
-    private $modifiedTs;
+    private $eci;
 
     /**
-     * @var Location|null
+     * @var string|null
      */
-    private $location;
+    private $dsTransId;
 
     /**
-     * @param string $locationId
-     * @param string $title
-     * @param string $id
-     * @param int $createdTs
-     * @param int $modifiedTs
+     * @var string|null
      */
-    public function __construct(string $locationId, string $title, string $id, int $createdTs, int $modifiedTs)
+    private $acsTransId;
+
+    /**
+     * @var string|null
+     */
+    private $messageVersion;
+
+    /**
+     * @var string|null
+     */
+    private $acsChallengeMandated;
+
+    /**
+     * @var string|null
+     */
+    private $purchaseDate;
+
+    /**
+     * @var string|null
+     */
+    private $base64EncodedChallengeRequest;
+
+    /**
+     * Returns Three Ds Server Trans Id.
+     * Universally unique transaction identifier assigned by the 3DS Server to identify a single
+     * transaction. It has the same value as the corresponding received authentication request. This value
+     * has 36 characters in a format defined in IETF RFC 4122.
+     */
+    public function getThreeDsServerTransId(): ?string
     {
-        $this->locationId = $locationId;
-        $this->title = $title;
-        $this->id = $id;
-        $this->createdTs = $createdTs;
-        $this->modifiedTs = $modifiedTs;
+        return $this->threeDsServerTransId;
     }
 
     /**
-     * Returns Location Id.
-     * Location ID
-     */
-    public function getLocationId(): string
-    {
-        return $this->locationId;
-    }
-
-    /**
-     * Sets Location Id.
-     * Location ID
+     * Sets Three Ds Server Trans Id.
+     * Universally unique transaction identifier assigned by the 3DS Server to identify a single
+     * transaction. It has the same value as the corresponding received authentication request. This value
+     * has 36 characters in a format defined in IETF RFC 4122.
      *
-     * @required
-     * @maps location_id
+     * @maps three_ds_server_trans_id
      */
-    public function setLocationId(string $locationId): void
+    public function setThreeDsServerTransId(?string $threeDsServerTransId): void
     {
-        $this->locationId = $locationId;
+        $this->threeDsServerTransId = $threeDsServerTransId;
     }
 
     /**
-     * Returns Title.
-     * Tag Title
-     */
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    /**
-     * Sets Title.
-     * Tag Title
+     * Returns Acs Url.
+     * Fully qualified URL of the ACS in case the authentication response message indicates that further
+     * Cardholder interaction is required to complete the authentication.
      *
-     * @required
-     * @maps title
+     * This field is only present in Browser flow.
      */
-    public function setTitle(string $title): void
+    public function getAcsUrl(): ?string
     {
-        $this->title = $title;
+        return $this->acsUrl;
     }
 
     /**
-     * Returns Id.
-     * Tag ID
-     */
-    public function getId(): string
-    {
-        return $this->id;
-    }
-
-    /**
-     * Sets Id.
-     * Tag ID
+     * Sets Acs Url.
+     * Fully qualified URL of the ACS in case the authentication response message indicates that further
+     * Cardholder interaction is required to complete the authentication.
      *
-     * @required
-     * @maps id
-     */
-    public function setId(string $id): void
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * Returns Created Ts.
-     * Created Time Stamp
-     */
-    public function getCreatedTs(): int
-    {
-        return $this->createdTs;
-    }
-
-    /**
-     * Sets Created Ts.
-     * Created Time Stamp
+     * This field is only present in Browser flow.
      *
-     * @required
-     * @maps created_ts
+     * @maps acs_url
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setAcsUrl(?string $acsUrl): void
     {
-        $this->createdTs = $createdTs;
+        $this->acsUrl = $acsUrl;
     }
 
     /**
-     * Returns Modified Ts.
-     * Modified Time Stamp
+     * Returns Transaction Status.
+     * Indicates whether a transaction qualifies as an authenticated transaction.
+     * >Y - Authentication / Account verification successful
+     * >
+     * >N - Not authenticated / Account not verified; Transaction denied
+     * >
+     * >U - Authentication / Account verification could not be performed; technical or other problem
+     * >
+     * >C - In order to complete the authentication, a challenge is required
+     * >
+     * >R - Authentication / Account verification Rejected. Issuer is rejecting authentication/verification
+     * and request that authorization not be attempted
+     * >
+     * >A - Attempts processing performed; Not authenticated / verified, but a proof of attempt
+     * authentication / verification is provided
+     * >
+     * >D - In order to complete the authentication, a challenge is required. Decoupled Authentication
+     * confirmed. (Only if the 3DS Server has initiated authentication with EMV 3DS 2.2.0 version or
+     * greater)
+     * >
+     * >I - Informational Only; 3DS Requestor challenge preference acknowledged. (Only if the 3DS Server
+     * has initiated authentication with EMV 3DS 2.2.0 version or greater)
+     * >
      */
-    public function getModifiedTs(): int
+    public function getTransactionStatus(): ?string
     {
-        return $this->modifiedTs;
+        return $this->transactionStatus;
     }
 
     /**
-     * Sets Modified Ts.
-     * Modified Time Stamp
+     * Sets Transaction Status.
+     * Indicates whether a transaction qualifies as an authenticated transaction.
+     * >Y - Authentication / Account verification successful
+     * >
+     * >N - Not authenticated / Account not verified; Transaction denied
+     * >
+     * >U - Authentication / Account verification could not be performed; technical or other problem
+     * >
+     * >C - In order to complete the authentication, a challenge is required
+     * >
+     * >R - Authentication / Account verification Rejected. Issuer is rejecting authentication/verification
+     * and request that authorization not be attempted
+     * >
+     * >A - Attempts processing performed; Not authenticated / verified, but a proof of attempt
+     * authentication / verification is provided
+     * >
+     * >D - In order to complete the authentication, a challenge is required. Decoupled Authentication
+     * confirmed. (Only if the 3DS Server has initiated authentication with EMV 3DS 2.2.0 version or
+     * greater)
+     * >
+     * >I - Informational Only; 3DS Requestor challenge preference acknowledged. (Only if the 3DS Server
+     * has initiated authentication with EMV 3DS 2.2.0 version or greater)
+     * >
      *
-     * @required
-     * @maps modified_ts
+     * @maps transaction_status
+     * @factory \FortisAPILib\Models\TransactionStatusEnum::checkValue
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setTransactionStatus(?string $transactionStatus): void
     {
-        $this->modifiedTs = $modifiedTs;
+        $this->transactionStatus = $transactionStatus;
     }
 
     /**
-     * Returns Location.
-     * Location Information on `expand`
+     * Returns Authentication Value.
+     * Payment System-specific value provided as part of the ACS registration for each supported DS.
+     * Authentication Value may be used to provide proof of authentication.
      */
-    public function getLocation(): ?Location
+    public function getAuthenticationValue(): ?string
     {
-        return $this->location;
+        return $this->authenticationValue;
     }
 
     /**
-     * Sets Location.
-     * Location Information on `expand`
+     * Sets Authentication Value.
+     * Payment System-specific value provided as part of the ACS registration for each supported DS.
+     * Authentication Value may be used to provide proof of authentication.
      *
-     * @maps location
+     * @maps authentication_value
      */
-    public function setLocation(?Location $location): void
+    public function setAuthenticationValue(?string $authenticationValue): void
     {
-        $this->location = $location;
+        $this->authenticationValue = $authenticationValue;
+    }
+
+    /**
+     * Returns Eci.
+     * Payment System-specific value provided by the ACS to indicate the results of the attempt to
+     * authenticate the Cardholder.
+     */
+    public function getEci(): ?string
+    {
+        return $this->eci;
+    }
+
+    /**
+     * Sets Eci.
+     * Payment System-specific value provided by the ACS to indicate the results of the attempt to
+     * authenticate the Cardholder.
+     *
+     * @maps eci
+     */
+    public function setEci(?string $eci): void
+    {
+        $this->eci = $eci;
+    }
+
+    /**
+     * Returns Ds Trans Id.
+     * Universally unique transaction identifier assigned by the DS to identify a single transaction.
+     */
+    public function getDsTransId(): ?string
+    {
+        return $this->dsTransId;
+    }
+
+    /**
+     * Sets Ds Trans Id.
+     * Universally unique transaction identifier assigned by the DS to identify a single transaction.
+     *
+     * @maps ds_trans_id
+     */
+    public function setDsTransId(?string $dsTransId): void
+    {
+        $this->dsTransId = $dsTransId;
+    }
+
+    /**
+     * Returns Acs Trans Id.
+     * Universally unique transaction identifier assigned by the ACS to identify a single transaction.
+     */
+    public function getAcsTransId(): ?string
+    {
+        return $this->acsTransId;
+    }
+
+    /**
+     * Sets Acs Trans Id.
+     * Universally unique transaction identifier assigned by the ACS to identify a single transaction.
+     *
+     * @maps acs_trans_id
+     */
+    public function setAcsTransId(?string $acsTransId): void
+    {
+        $this->acsTransId = $acsTransId;
+    }
+
+    /**
+     * Returns Message Version.
+     * Protocol version identifier This shall be the Protocol Version Number of the specification utilised
+     * by the system creating this message.
+     * The Message Version Number is set by the 3DS Server which originates the protocol with the AReq
+     * message. The Message Version Number does not change during a 3DS transaction.
+     */
+    public function getMessageVersion(): ?string
+    {
+        return $this->messageVersion;
+    }
+
+    /**
+     * Sets Message Version.
+     * Protocol version identifier This shall be the Protocol Version Number of the specification utilised
+     * by the system creating this message.
+     * The Message Version Number is set by the 3DS Server which originates the protocol with the AReq
+     * message. The Message Version Number does not change during a 3DS transaction.
+     *
+     * @maps message_version
+     */
+    public function setMessageVersion(?string $messageVersion): void
+    {
+        $this->messageVersion = $messageVersion;
+    }
+
+    /**
+     * Returns Acs Challenge Mandated.
+     * Indication of whether a challenge is required for the transaction to be authorised due to
+     * local/regional mandates or other variable.
+     * >Y - Challenge is mandated
+     * >
+     * >N - Challenge is not mandated
+     * >
+     */
+    public function getAcsChallengeMandated(): ?string
+    {
+        return $this->acsChallengeMandated;
+    }
+
+    /**
+     * Sets Acs Challenge Mandated.
+     * Indication of whether a challenge is required for the transaction to be authorised due to
+     * local/regional mandates or other variable.
+     * >Y - Challenge is mandated
+     * >
+     * >N - Challenge is not mandated
+     * >
+     *
+     * @maps acs_challenge_mandated
+     * @factory \FortisAPILib\Models\AcsChallengeMandatedEnum::checkValue
+     */
+    public function setAcsChallengeMandated(?string $acsChallengeMandated): void
+    {
+        $this->acsChallengeMandated = $acsChallengeMandated;
+    }
+
+    /**
+     * Returns Purchase Date.
+     * Date and time of the purchase, converted into UTC. The field is limited to 14 characters, formatted
+     * as YYYYMMDDHHMMSS.
+     */
+    public function getPurchaseDate(): ?string
+    {
+        return $this->purchaseDate;
+    }
+
+    /**
+     * Sets Purchase Date.
+     * Date and time of the purchase, converted into UTC. The field is limited to 14 characters, formatted
+     * as YYYYMMDDHHMMSS.
+     *
+     * @maps purchase_date
+     */
+    public function setPurchaseDate(?string $purchaseDate): void
+    {
+        $this->purchaseDate = $purchaseDate;
+    }
+
+    /**
+     * Returns Base 64 Encoded Challenge Request.
+     * Base64-encoded Challenge Request object in case the authentication response message indicates that
+     * further Cardholder interaction is required to complete the authentication.
+     */
+    public function getBase64EncodedChallengeRequest(): ?string
+    {
+        return $this->base64EncodedChallengeRequest;
+    }
+
+    /**
+     * Sets Base 64 Encoded Challenge Request.
+     * Base64-encoded Challenge Request object in case the authentication response message indicates that
+     * further Cardholder interaction is required to complete the authentication.
+     *
+     * @maps base64_encoded_challenge_request
+     */
+    public function setBase64EncodedChallengeRequest(?string $base64EncodedChallengeRequest): void
+    {
+        $this->base64EncodedChallengeRequest = $base64EncodedChallengeRequest;
+    }
+
+    /**
+     * Converts the Data12 object to a human-readable string representation.
+     *
+     * @return string The string representation of the Data12 object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Data12',
+            [
+                'threeDsServerTransId' => $this->threeDsServerTransId,
+                'acsUrl' => $this->acsUrl,
+                'transactionStatus' => $this->transactionStatus,
+                'authenticationValue' => $this->authenticationValue,
+                'eci' => $this->eci,
+                'dsTransId' => $this->dsTransId,
+                'acsTransId' => $this->acsTransId,
+                'messageVersion' => $this->messageVersion,
+                'acsChallengeMandated' => $this->acsChallengeMandated,
+                'purchaseDate' => $this->purchaseDate,
+                'base64EncodedChallengeRequest' => $this->base64EncodedChallengeRequest,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -197,14 +434,43 @@ class Data12 implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['location_id']  = $this->locationId;
-        $json['title']        = $this->title;
-        $json['id']           = $this->id;
-        $json['created_ts']   = $this->createdTs;
-        $json['modified_ts']  = $this->modifiedTs;
-        if (isset($this->location)) {
-            $json['location'] = $this->location;
+        if (isset($this->threeDsServerTransId)) {
+            $json['three_ds_server_trans_id']         = $this->threeDsServerTransId;
         }
+        if (isset($this->acsUrl)) {
+            $json['acs_url']                          = $this->acsUrl;
+        }
+        if (isset($this->transactionStatus)) {
+            $json['transaction_status']               = TransactionStatusEnum::checkValue($this->transactionStatus);
+        }
+        if (isset($this->authenticationValue)) {
+            $json['authentication_value']             = $this->authenticationValue;
+        }
+        if (isset($this->eci)) {
+            $json['eci']                              = $this->eci;
+        }
+        if (isset($this->dsTransId)) {
+            $json['ds_trans_id']                      = $this->dsTransId;
+        }
+        if (isset($this->acsTransId)) {
+            $json['acs_trans_id']                     = $this->acsTransId;
+        }
+        if (isset($this->messageVersion)) {
+            $json['message_version']                  = $this->messageVersion;
+        }
+        if (isset($this->acsChallengeMandated)) {
+            $json['acs_challenge_mandated']           =
+                AcsChallengeMandatedEnum::checkValue(
+                    $this->acsChallengeMandated
+                );
+        }
+        if (isset($this->purchaseDate)) {
+            $json['purchase_date']                    = $this->purchaseDate;
+        }
+        if (isset($this->base64EncodedChallengeRequest)) {
+            $json['base64_encoded_challenge_request'] = $this->base64EncodedChallengeRequest;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

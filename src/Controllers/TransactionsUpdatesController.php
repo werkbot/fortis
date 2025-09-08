@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Controllers;
 
+use Core\Authentication\Auth;
 use Core\Request\Parameters\BodyParam;
 use Core\Request\Parameters\HeaderParam;
 use Core\Request\Parameters\QueryParam;
@@ -19,7 +20,7 @@ use CoreInterfaces\Core\Request\RequestMethod;
 use FortisAPILib\Exceptions\ApiException;
 use FortisAPILib\Exceptions\Response401tokenException;
 use FortisAPILib\Exceptions\Response412Exception;
-use FortisAPILib\Models\Expand47Enum;
+use FortisAPILib\Models\Expand60Enum;
 use FortisAPILib\Models\ResponseTransaction;
 use FortisAPILib\Models\V1TransactionsAuthCompleteRequest;
 use FortisAPILib\Models\V1TransactionsAuthIncrementRequest;
@@ -47,14 +48,14 @@ class TransactionsUpdatesController extends BaseController
     public function void(string $transactionId, ?array $expand = null): ResponseTransaction
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::PUT, '/v1/transactions/{transaction_id}/void')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 TemplateParam::init('transaction_id', $transactionId),
-                QueryParam::init('expand', $expand)->serializeBy([Expand47Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
             ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
@@ -81,17 +82,17 @@ class TransactionsUpdatesController extends BaseController
         ?array $expand = null
     ): ResponseTransaction {
         $_reqBuilder = $this->requestBuilder(RequestMethod::PATCH, '/v1/transactions/{transaction_id}/void')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 TemplateParam::init('transaction_id', $transactionId),
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand47Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
@@ -121,17 +122,17 @@ class TransactionsUpdatesController extends BaseController
             RequestMethod::PATCH,
             '/v1/transactions/{transaction_id}/auth-complete'
         )
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 TemplateParam::init('transaction_id', $transactionId),
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand47Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
@@ -161,17 +162,17 @@ class TransactionsUpdatesController extends BaseController
             RequestMethod::PATCH,
             '/v1/transactions/{transaction_id}/auth-increment'
         )
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 TemplateParam::init('transaction_id', $transactionId),
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand47Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
@@ -201,17 +202,17 @@ class TransactionsUpdatesController extends BaseController
             RequestMethod::PATCH,
             '/v1/transactions/{transaction_id}/partial-reversal'
         )
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 TemplateParam::init('transaction_id', $transactionId),
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand47Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
@@ -238,17 +239,17 @@ class TransactionsUpdatesController extends BaseController
         ?array $expand = null
     ): ResponseTransaction {
         $_reqBuilder = $this->requestBuilder(RequestMethod::PATCH, '/v1/transactions/{transaction_id}/refund')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 TemplateParam::init('transaction_id', $transactionId),
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand47Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
@@ -275,17 +276,17 @@ class TransactionsUpdatesController extends BaseController
         ?array $expand = null
     ): ResponseTransaction {
         $_reqBuilder = $this->requestBuilder(RequestMethod::PATCH, '/v1/transactions/{transaction_id}/tip-adjust')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 TemplateParam::init('transaction_id', $transactionId),
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand47Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);

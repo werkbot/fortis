@@ -21,8 +21,6 @@ $webhooksController = $client->getWebhooksController();
 
 # Create a New Transaction Batch Postback Config
 
-Create a new transaction batch postback config
-
 ```php
 function createANewTransactionBatchPostbackConfig(
     V1WebhooksBatchRequest $body,
@@ -35,7 +33,7 @@ function createANewTransactionBatchPostbackConfig(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `body` | [`V1WebhooksBatchRequest`](../../doc/models/v1-webhooks-batch-request.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand83Enum)`](../../doc/models/expand-83-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand117Enum)[])`](../../doc/models/expand-117-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -44,24 +42,25 @@ function createANewTransactionBatchPostbackConfig(
 ## Example Usage
 
 ```php
-$body_isActive = true;
-$body_locationId = '11e95f8ec39de8fbdb0a4f1a';
-$body_onCreate = true;
-$body_onUpdate = true;
-$body_onDelete = true;
-$body_productTransactionId = '11e95f8ec39de8fbdb0a4f1a';
-$body_numberOfAttempts = 1;
-$body_url = 'https://127.0.0.1/receiver';
-$body = new Models\V1WebhooksBatchRequest(
-    $body_isActive,
-    $body_locationId,
-    $body_onCreate,
-    $body_onUpdate,
-    $body_onDelete,
-    $body_productTransactionId,
-    $body_numberOfAttempts,
-    $body_url
-);
+$body = V1WebhooksBatchRequestBuilder::init(
+    true,
+    '11e95f8ec39de8fbdb0a4f1a',
+    true,
+    true,
+    true,
+    '11e95f8ec39de8fbdb0a4f1a',
+    1,
+    'https://127.0.0.1/receiver'
+)
+    ->attemptInterval(300)
+    ->basicAuthUsername('tester')
+    ->basicAuthPassword('Test@522')
+    ->expands('changelogs,tags')
+    ->format(FormatEnum::APIDEFAULT)
+    ->legacy(true)
+    ->postbackConfigId('11e95f8ec39de8fbdb0a4f1a')
+    ->resource(Resource12Enum::CONTACT)
+    ->build();
 
 $result = $webhooksController->createANewTransactionBatchPostbackConfig($body);
 ```
@@ -82,6 +81,7 @@ $result = $webhooksController->createANewTransactionBatchPostbackConfig($body);
     "on_create": true,
     "on_update": true,
     "on_delete": true,
+    "legacy": true,
     "postback_config_id": "11e95f8ec39de8fbdb0a4f1a",
     "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
     "resource": "contact",
@@ -112,8 +112,6 @@ $result = $webhooksController->createANewTransactionBatchPostbackConfig($body);
 
 # Create a New Contact Postback Config
 
-Create a new contact postback config
-
 ```php
 function createANewContactPostbackConfig(V1WebhooksContactRequest $body, ?array $expand = null): ResponseWebhook
 ```
@@ -123,7 +121,7 @@ function createANewContactPostbackConfig(V1WebhooksContactRequest $body, ?array 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `body` | [`V1WebhooksContactRequest`](../../doc/models/v1-webhooks-contact-request.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand83Enum)`](../../doc/models/expand-83-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand117Enum)[])`](../../doc/models/expand-117-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -132,22 +130,25 @@ function createANewContactPostbackConfig(V1WebhooksContactRequest $body, ?array 
 ## Example Usage
 
 ```php
-$body_isActive = true;
-$body_locationId = '11e95f8ec39de8fbdb0a4f1a';
-$body_onCreate = true;
-$body_onUpdate = true;
-$body_onDelete = true;
-$body_numberOfAttempts = 1;
-$body_url = 'https://127.0.0.1/receiver';
-$body = new Models\V1WebhooksContactRequest(
-    $body_isActive,
-    $body_locationId,
-    $body_onCreate,
-    $body_onUpdate,
-    $body_onDelete,
-    $body_numberOfAttempts,
-    $body_url
-);
+$body = V1WebhooksContactRequestBuilder::init(
+    true,
+    '11e95f8ec39de8fbdb0a4f1a',
+    true,
+    true,
+    true,
+    1,
+    'https://127.0.0.1/receiver'
+)
+    ->attemptInterval(300)
+    ->basicAuthUsername('tester')
+    ->basicAuthPassword('Test@522')
+    ->expands('changelogs,tags')
+    ->format(FormatEnum::APIDEFAULT)
+    ->legacy(true)
+    ->postbackConfigId('11e95f8ec39de8fbdb0a4f1a')
+    ->productTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->resource(Resource12Enum::CONTACT)
+    ->build();
 
 $result = $webhooksController->createANewContactPostbackConfig($body);
 ```
@@ -168,6 +169,7 @@ $result = $webhooksController->createANewContactPostbackConfig($body);
     "on_create": true,
     "on_update": true,
     "on_delete": true,
+    "legacy": true,
     "postback_config_id": "11e95f8ec39de8fbdb0a4f1a",
     "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
     "resource": "contact",
@@ -198,8 +200,6 @@ $result = $webhooksController->createANewContactPostbackConfig($body);
 
 # Create a New Transaction Postback Config
 
-Create a new transaction postback config
-
 ```php
 function createANewTransactionPostbackConfig(
     V1WebhooksTransactionRequest $body,
@@ -212,7 +212,7 @@ function createANewTransactionPostbackConfig(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `body` | [`V1WebhooksTransactionRequest`](../../doc/models/v1-webhooks-transaction-request.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand83Enum)`](../../doc/models/expand-83-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand117Enum)[])`](../../doc/models/expand-117-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -221,24 +221,25 @@ function createANewTransactionPostbackConfig(
 ## Example Usage
 
 ```php
-$body_isActive = true;
-$body_locationId = '11e95f8ec39de8fbdb0a4f1a';
-$body_onCreate = true;
-$body_onUpdate = true;
-$body_onDelete = true;
-$body_productTransactionId = '11e95f8ec39de8fbdb0a4f1a';
-$body_numberOfAttempts = 1;
-$body_url = 'https://127.0.0.1/receiver';
-$body = new Models\V1WebhooksTransactionRequest(
-    $body_isActive,
-    $body_locationId,
-    $body_onCreate,
-    $body_onUpdate,
-    $body_onDelete,
-    $body_productTransactionId,
-    $body_numberOfAttempts,
-    $body_url
-);
+$body = V1WebhooksTransactionRequestBuilder::init(
+    true,
+    '11e95f8ec39de8fbdb0a4f1a',
+    true,
+    true,
+    true,
+    '11e95f8ec39de8fbdb0a4f1a',
+    1,
+    'https://127.0.0.1/receiver'
+)
+    ->attemptInterval(300)
+    ->basicAuthUsername('tester')
+    ->basicAuthPassword('Test@522')
+    ->expands('changelogs,tags')
+    ->format(FormatEnum::APIDEFAULT)
+    ->legacy(true)
+    ->postbackConfigId('11e95f8ec39de8fbdb0a4f1a')
+    ->resource(Resource12Enum::CONTACT)
+    ->build();
 
 $result = $webhooksController->createANewTransactionPostbackConfig($body);
 ```
@@ -259,6 +260,7 @@ $result = $webhooksController->createANewTransactionPostbackConfig($body);
     "on_create": true,
     "on_update": true,
     "on_delete": true,
+    "legacy": true,
     "postback_config_id": "11e95f8ec39de8fbdb0a4f1a",
     "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
     "resource": "contact",
@@ -289,8 +291,6 @@ $result = $webhooksController->createANewTransactionPostbackConfig($body);
 
 # Delete a Postback Config
 
-Delete a postback config
-
 ```php
 function deleteAPostbackConfig(string $webhookId): ResponseWebhook
 ```
@@ -299,7 +299,7 @@ function deleteAPostbackConfig(string $webhookId): ResponseWebhook
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `webhookId` | `string` | Template, Required | Postback Config ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `webhookId` | `string` | Template, Required | Postback Config ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
 
 ## Response Type
 
@@ -329,6 +329,7 @@ $result = $webhooksController->deleteAPostbackConfig($webhookId);
     "on_create": true,
     "on_update": true,
     "on_delete": true,
+    "legacy": true,
     "postback_config_id": "11e95f8ec39de8fbdb0a4f1a",
     "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
     "resource": "contact",
@@ -358,8 +359,6 @@ $result = $webhooksController->deleteAPostbackConfig($webhookId);
 
 # Update Transaction Batch Postback Config
 
-Update transaction batch postback config
-
 ```php
 function updateTransactionBatchPostbackConfig(
     string $webhookId,
@@ -372,9 +371,9 @@ function updateTransactionBatchPostbackConfig(
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `webhookId` | `string` | Template, Required | Postback Config ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `webhookId` | `string` | Template, Required | Postback Config ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
 | `body` | [`V1WebhooksBatchRequest1`](../../doc/models/v1-webhooks-batch-request-1.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand83Enum)`](../../doc/models/expand-83-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand117Enum)[])`](../../doc/models/expand-117-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -384,9 +383,30 @@ function updateTransactionBatchPostbackConfig(
 
 ```php
 $webhookId = '11e95f8ec39de8fbdb0a4f1a';
-$body = new Models\V1WebhooksBatchRequest1();
 
-$result = $webhooksController->updateTransactionBatchPostbackConfig($webhookId, $body);
+$body = V1WebhooksBatchRequest1Builder::init()
+    ->attemptInterval(300)
+    ->basicAuthUsername('tester')
+    ->basicAuthPassword('Test@522')
+    ->expands('changelogs,tags')
+    ->format(FormatEnum::APIDEFAULT)
+    ->isActive(true)
+    ->locationId('11e95f8ec39de8fbdb0a4f1a')
+    ->onCreate(true)
+    ->onUpdate(true)
+    ->onDelete(true)
+    ->legacy(true)
+    ->postbackConfigId('11e95f8ec39de8fbdb0a4f1a')
+    ->productTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->resource(Resource12Enum::CONTACT)
+    ->numberOfAttempts(1)
+    ->url('https://127.0.0.1/receiver')
+    ->build();
+
+$result = $webhooksController->updateTransactionBatchPostbackConfig(
+    $webhookId,
+    $body
+);
 ```
 
 ## Example Response *(as JSON)*
@@ -405,6 +425,7 @@ $result = $webhooksController->updateTransactionBatchPostbackConfig($webhookId, 
     "on_create": true,
     "on_update": true,
     "on_delete": true,
+    "legacy": true,
     "postback_config_id": "11e95f8ec39de8fbdb0a4f1a",
     "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
     "resource": "contact",
@@ -435,8 +456,6 @@ $result = $webhooksController->updateTransactionBatchPostbackConfig($webhookId, 
 
 # Update Contact Postback Config
 
-Update contact postback config
-
 ```php
 function updateContactPostbackConfig(
     string $webhookId,
@@ -449,9 +468,9 @@ function updateContactPostbackConfig(
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `webhookId` | `string` | Template, Required | Postback Config ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `webhookId` | `string` | Template, Required | Postback Config ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
 | `body` | [`V1WebhooksContactRequest1`](../../doc/models/v1-webhooks-contact-request-1.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand83Enum)`](../../doc/models/expand-83-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand117Enum)[])`](../../doc/models/expand-117-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -461,9 +480,30 @@ function updateContactPostbackConfig(
 
 ```php
 $webhookId = '11e95f8ec39de8fbdb0a4f1a';
-$body = new Models\V1WebhooksContactRequest1();
 
-$result = $webhooksController->updateContactPostbackConfig($webhookId, $body);
+$body = V1WebhooksContactRequest1Builder::init()
+    ->attemptInterval(300)
+    ->basicAuthUsername('tester')
+    ->basicAuthPassword('Test@522')
+    ->expands('changelogs,tags')
+    ->format(FormatEnum::APIDEFAULT)
+    ->isActive(true)
+    ->locationId('11e95f8ec39de8fbdb0a4f1a')
+    ->onCreate(true)
+    ->onUpdate(true)
+    ->onDelete(true)
+    ->legacy(true)
+    ->postbackConfigId('11e95f8ec39de8fbdb0a4f1a')
+    ->productTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->resource(Resource12Enum::CONTACT)
+    ->numberOfAttempts(1)
+    ->url('https://127.0.0.1/receiver')
+    ->build();
+
+$result = $webhooksController->updateContactPostbackConfig(
+    $webhookId,
+    $body
+);
 ```
 
 ## Example Response *(as JSON)*
@@ -482,6 +522,7 @@ $result = $webhooksController->updateContactPostbackConfig($webhookId, $body);
     "on_create": true,
     "on_update": true,
     "on_delete": true,
+    "legacy": true,
     "postback_config_id": "11e95f8ec39de8fbdb0a4f1a",
     "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
     "resource": "contact",
@@ -512,8 +553,6 @@ $result = $webhooksController->updateContactPostbackConfig($webhookId, $body);
 
 # Update Transaction Postback Config
 
-Update transaction postback config
-
 ```php
 function updateTransactionPostbackConfig(
     string $webhookId,
@@ -526,9 +565,9 @@ function updateTransactionPostbackConfig(
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `webhookId` | `string` | Template, Required | Postback Config ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `webhookId` | `string` | Template, Required | Postback Config ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
 | `body` | [`V1WebhooksTransactionRequest1`](../../doc/models/v1-webhooks-transaction-request-1.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand83Enum)`](../../doc/models/expand-83-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand117Enum)[])`](../../doc/models/expand-117-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -538,9 +577,30 @@ function updateTransactionPostbackConfig(
 
 ```php
 $webhookId = '11e95f8ec39de8fbdb0a4f1a';
-$body = new Models\V1WebhooksTransactionRequest1();
 
-$result = $webhooksController->updateTransactionPostbackConfig($webhookId, $body);
+$body = V1WebhooksTransactionRequest1Builder::init()
+    ->attemptInterval(300)
+    ->basicAuthUsername('tester')
+    ->basicAuthPassword('Test@522')
+    ->expands('changelogs,tags')
+    ->format(FormatEnum::APIDEFAULT)
+    ->isActive(true)
+    ->locationId('11e95f8ec39de8fbdb0a4f1a')
+    ->onCreate(true)
+    ->onUpdate(true)
+    ->onDelete(true)
+    ->legacy(true)
+    ->postbackConfigId('11e95f8ec39de8fbdb0a4f1a')
+    ->productTransactionId('11e95f8ec39de8fbdb0a4f1a')
+    ->resource(Resource12Enum::CONTACT)
+    ->numberOfAttempts(1)
+    ->url('https://127.0.0.1/receiver')
+    ->build();
+
+$result = $webhooksController->updateTransactionPostbackConfig(
+    $webhookId,
+    $body
+);
 ```
 
 ## Example Response *(as JSON)*
@@ -559,6 +619,7 @@ $result = $webhooksController->updateTransactionPostbackConfig($webhookId, $body
     "on_create": true,
     "on_update": true,
     "on_delete": true,
+    "legacy": true,
     "postback_config_id": "11e95f8ec39de8fbdb0a4f1a",
     "product_transaction_id": "11e95f8ec39de8fbdb0a4f1a",
     "resource": "contact",

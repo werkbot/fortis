@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -18,12 +19,12 @@ use stdClass;
 class PrimaryPrincipal implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $firstName;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $lastName;
 
@@ -83,20 +84,10 @@ class PrimaryPrincipal implements \JsonSerializable
     private $phoneNumber = [];
 
     /**
-     * @param string $firstName
-     * @param string $lastName
-     */
-    public function __construct(string $firstName, string $lastName)
-    {
-        $this->firstName = $firstName;
-        $this->lastName = $lastName;
-    }
-
-    /**
      * Returns First Name.
      * Signer's first name
      */
-    public function getFirstName(): string
+    public function getFirstName(): ?string
     {
         return $this->firstName;
     }
@@ -105,10 +96,9 @@ class PrimaryPrincipal implements \JsonSerializable
      * Sets First Name.
      * Signer's first name
      *
-     * @required
      * @maps first_name
      */
-    public function setFirstName(string $firstName): void
+    public function setFirstName(?string $firstName): void
     {
         $this->firstName = $firstName;
     }
@@ -117,7 +107,7 @@ class PrimaryPrincipal implements \JsonSerializable
      * Returns Last Name.
      * Signer's last name
      */
-    public function getLastName(): string
+    public function getLastName(): ?string
     {
         return $this->lastName;
     }
@@ -126,10 +116,9 @@ class PrimaryPrincipal implements \JsonSerializable
      * Sets Last Name.
      * Signer's last name
      *
-     * @required
      * @maps last_name
      */
-    public function setLastName(string $lastName): void
+    public function setLastName(?string $lastName): void
     {
         $this->lastName = $lastName;
     }
@@ -487,6 +476,62 @@ class PrimaryPrincipal implements \JsonSerializable
     }
 
     /**
+     * Converts the PrimaryPrincipal object to a human-readable string representation.
+     *
+     * @return string The string representation of the PrimaryPrincipal object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'PrimaryPrincipal',
+            [
+                'firstName' => $this->firstName,
+                'lastName' => $this->lastName,
+                'middleName' => $this->getMiddleName(),
+                'title' => $this->getTitle(),
+                'dateOfBirth' => $this->getDateOfBirth(),
+                'addressLine1' => $this->getAddressLine1(),
+                'addressLine2' => $this->getAddressLine2(),
+                'city' => $this->getCity(),
+                'stateProvince' => $this->getStateProvince(),
+                'postalCode' => $this->getPostalCode(),
+                'ssn' => $this->getSsn(),
+                'ownershipPercent' => $this->getOwnershipPercent(),
+                'phoneNumber' => $this->getPhoneNumber(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -498,8 +543,12 @@ class PrimaryPrincipal implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['first_name']            = $this->firstName;
-        $json['last_name']             = $this->lastName;
+        if (isset($this->firstName)) {
+            $json['first_name']        = $this->firstName;
+        }
+        if (isset($this->lastName)) {
+            $json['last_name']         = $this->lastName;
+        }
         if (!empty($this->middleName)) {
             $json['middle_name']       = $this->middleName['value'];
         }
@@ -533,6 +582,7 @@ class PrimaryPrincipal implements \JsonSerializable
         if (!empty($this->phoneNumber)) {
             $json['phone_number']      = $this->phoneNumber['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

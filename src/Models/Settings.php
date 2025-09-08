@@ -10,42 +10,31 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class Settings implements \JsonSerializable
 {
     /**
-     * @var bool
+     * @var bool|null
      */
     private $enabled;
 
     /**
-     * @var float
+     * @var float|null
      */
     private $columns;
 
     /**
-     * @var float
+     * @var float|null
      */
     private $rows;
-
-    /**
-     * @param bool $enabled
-     * @param float $columns
-     * @param float $rows
-     */
-    public function __construct(bool $enabled, float $columns, float $rows)
-    {
-        $this->enabled = $enabled;
-        $this->columns = $columns;
-        $this->rows = $rows;
-    }
 
     /**
      * Returns Enabled.
      * Enabled
      */
-    public function getEnabled(): bool
+    public function getEnabled(): ?bool
     {
         return $this->enabled;
     }
@@ -54,10 +43,9 @@ class Settings implements \JsonSerializable
      * Sets Enabled.
      * Enabled
      *
-     * @required
      * @maps enabled
      */
-    public function setEnabled(bool $enabled): void
+    public function setEnabled(?bool $enabled): void
     {
         $this->enabled = $enabled;
     }
@@ -66,7 +54,7 @@ class Settings implements \JsonSerializable
      * Returns Columns.
      * Columns
      */
-    public function getColumns(): float
+    public function getColumns(): ?float
     {
         return $this->columns;
     }
@@ -75,10 +63,9 @@ class Settings implements \JsonSerializable
      * Sets Columns.
      * Columns
      *
-     * @required
      * @maps columns
      */
-    public function setColumns(float $columns): void
+    public function setColumns(?float $columns): void
     {
         $this->columns = $columns;
     }
@@ -87,7 +74,7 @@ class Settings implements \JsonSerializable
      * Returns Rows.
      * Rows
      */
-    public function getRows(): float
+    public function getRows(): ?float
     {
         return $this->rows;
     }
@@ -96,12 +83,57 @@ class Settings implements \JsonSerializable
      * Sets Rows.
      * Rows
      *
-     * @required
      * @maps rows
      */
-    public function setRows(float $rows): void
+    public function setRows(?float $rows): void
     {
         $this->rows = $rows;
+    }
+
+    /**
+     * Converts the Settings object to a human-readable string representation.
+     *
+     * @return string The string representation of the Settings object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Settings',
+            [
+                'enabled' => $this->enabled,
+                'columns' => $this->columns,
+                'rows' => $this->rows,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -116,9 +148,16 @@ class Settings implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['enabled'] = $this->enabled;
-        $json['columns'] = $this->columns;
-        $json['rows']    = $this->rows;
+        if (isset($this->enabled)) {
+            $json['enabled'] = $this->enabled;
+        }
+        if (isset($this->columns)) {
+            $json['columns'] = $this->columns;
+        }
+        if (isset($this->rows)) {
+            $json['rows']    = $this->rows;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

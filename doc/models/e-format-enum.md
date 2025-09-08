@@ -15,6 +15,9 @@ Encrypted Track Data Format.
 | `KSNPIN` |
 | `IDTECH` |
 | `MAGNESAFE` |
+| `MAGTEK` |
+| `FULLTRACK` |
+| `KEYED` |
 
 ## Example
 

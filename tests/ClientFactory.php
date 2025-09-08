@@ -11,26 +11,30 @@ declare(strict_types=1);
 namespace FortisAPILib\Tests;
 
 use Core\Types\CallbackCatcher;
+use FortisAPILib\Authentication\AccessTokenCredentialsBuilder;
+use FortisAPILib\Authentication\DeveloperIdCredentialsBuilder;
+use FortisAPILib\Authentication\UserApiKeyCredentialsBuilder;
+use FortisAPILib\Authentication\UserIdCredentialsBuilder;
+use FortisAPILib\FortisAPIClient;
+use FortisAPILib\FortisAPIClientBuilder;
 
 class ClientFactory
 {
-    public static function create(CallbackCatcher $httpCallback): \FortisAPILib\FortisAPIClient
+    public static function create(CallbackCatcher $httpCallback): FortisAPIClient
     {
-        $clientBuilder = \FortisAPILib\FortisAPIClientBuilder::init();
+        $clientBuilder = FortisAPIClientBuilder::init();
         $clientBuilder = self::addConfigurationFromEnvironment($clientBuilder);
         $clientBuilder = self::addTestConfiguration($clientBuilder);
         return $clientBuilder->httpCallback($httpCallback)->build();
     }
 
-    public static function addTestConfiguration(
-        \FortisAPILib\FortisAPIClientBuilder $builder
-    ): \FortisAPILib\FortisAPIClientBuilder {
+    public static function addTestConfiguration(FortisAPIClientBuilder $builder): FortisAPIClientBuilder
+    {
         return $builder;
     }
 
-    public static function addConfigurationFromEnvironment(
-        \FortisAPILib\FortisAPIClientBuilder $builder
-    ): \FortisAPILib\FortisAPIClientBuilder {
+    public static function addConfigurationFromEnvironment(FortisAPIClientBuilder $builder): FortisAPIClientBuilder
+    {
         $timeout = getenv('FORTIS_API_LIB_TIMEOUT');
         $numberOfRetries = getenv('FORTIS_API_LIB_NUMBER_OF_RETRIES');
         $maximumRetryWaitTime = getenv('FORTIS_API_LIB_MAXIMUM_RETRY_WAIT_TIME');
@@ -38,33 +42,38 @@ class ClientFactory
         $userId = getenv('FORTIS_API_LIB_USER_ID');
         $userApiKey = getenv('FORTIS_API_LIB_USER_API_KEY');
         $developerId = getenv('FORTIS_API_LIB_DEVELOPER_ID');
+        $accessToken = getenv('FORTIS_API_LIB_ACCESS_TOKEN');
 
-        if ($timeout !== false && \is_numeric($timeout)) {
+        if (!empty($timeout) && \is_numeric($timeout)) {
             $builder->timeout(intval($timeout));
         }
 
-        if ($numberOfRetries !== false && \is_numeric($numberOfRetries)) {
+        if (!empty($numberOfRetries) && \is_numeric($numberOfRetries)) {
             $builder->numberOfRetries(intval($numberOfRetries));
         }
 
-        if ($maximumRetryWaitTime !== false && \is_numeric($maximumRetryWaitTime)) {
+        if (!empty($maximumRetryWaitTime) && \is_numeric($maximumRetryWaitTime)) {
             $builder->maximumRetryWaitTime(intval($maximumRetryWaitTime));
         }
 
-        if ($environment !== false) {
+        if (!empty($environment)) {
             $builder->environment($environment);
         }
 
-        if ($userId !== false) {
-            $builder->userId($userId);
+        if (!empty($userId)) {
+            $builder->userIdCredentials(UserIdCredentialsBuilder::init($userId));
         }
 
-        if ($userApiKey !== false) {
-            $builder->userApiKey($userApiKey);
+        if (!empty($userApiKey)) {
+            $builder->userApiKeyCredentials(UserApiKeyCredentialsBuilder::init($userApiKey));
         }
 
-        if ($developerId !== false) {
-            $builder->developerId($developerId);
+        if (!empty($developerId)) {
+            $builder->developerIdCredentials(DeveloperIdCredentialsBuilder::init($developerId));
+        }
+
+        if (!empty($accessToken)) {
+            $builder->accessTokenCredentials(AccessTokenCredentialsBuilder::init($accessToken));
         }
 
         return $builder;

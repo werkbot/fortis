@@ -9,79 +9,25 @@
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `locationId` | `string` | Required | Location ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getLocationId(): string | setLocationId(string locationId): void |
-| `defaultProductTransactionId` | `?string` | Optional | Product Transaction ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getDefaultProductTransactionId(): ?string | setDefaultProductTransactionId(?string defaultProductTransactionId): void |
-| `terminalApplicationId` | `string` | Required | Terminal Application ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getTerminalApplicationId(): string | setTerminalApplicationId(string terminalApplicationId): void |
-| `terminalCvmId` | `?string` | Optional | Terminal CVM ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getTerminalCvmId(): ?string | setTerminalCvmId(?string terminalCvmId): void |
-| `terminalManufacturerCode` | [`int (TerminalManufacturerCodeEnum)`](../../doc/models/terminal-manufacturer-code-enum.md) | Required | Terminal Manufacturer Code | getTerminalManufacturerCode(): int | setTerminalManufacturerCode(int terminalManufacturerCode): void |
-| `title` | `string` | Required | Terminal Name<br>**Constraints**: *Maximum Length*: `64` | getTitle(): string | setTitle(string title): void |
-| `macAddress` | `?string` | Optional | Terminal MAC Address<br>**Constraints**: *Pattern*: `^([0-9a-fA-F]{2}[:-]?){5}([0-9a-fA-F]{2})$` | getMacAddress(): ?string | setMacAddress(?string macAddress): void |
-| `localIpAddress` | `?string` | Optional | Terminal Local IP Address | getLocalIpAddress(): ?string | setLocalIpAddress(?string localIpAddress): void |
-| `port` | `?int` | Optional | Terminal Port<br>**Default**: `10009`<br>**Constraints**: `>= 0`, `<= 65535` | getPort(): ?int | setPort(?int port): void |
-| `serialNumber` | `string` | Required | Terminal Serial Number<br>**Constraints**: *Maximum Length*: `24`, *Pattern*: `^[a-zA-Z0-9]*$` | getSerialNumber(): string | setSerialNumber(string serialNumber): void |
-| `terminalNumber` | `?string` | Optional | Terminal Number<br>**Constraints**: *Minimum Length*: `15`, *Maximum Length*: `15` | getTerminalNumber(): ?string | setTerminalNumber(?string terminalNumber): void |
-| `terminalTimeouts` | [`?TerminalTimeouts`](../../doc/models/terminal-timeouts.md) | Optional | The following options outlines some configurable timeout values that can be used to customize the experience at the terminal for the cardholder. | getTerminalTimeouts(): ?TerminalTimeouts | setTerminalTimeouts(?TerminalTimeouts terminalTimeouts): void |
-| `tipPercents` | [`?TipPercents`](../../doc/models/tip-percents.md) | Optional | A JSON of tip percents the JSON MUST contain only these three fields: percent_1, percent_2, percent_3 | getTipPercents(): ?TipPercents | setTipPercents(?TipPercents tipPercents): void |
-| `locationApiId` | `?string` | Optional | Location Api ID<br>**Constraints**: *Maximum Length*: `64` | getLocationApiId(): ?string | setLocationApiId(?string locationApiId): void |
-| `terminalApiId` | `?string` | Optional | Terminal Api ID<br>**Constraints**: *Maximum Length*: `64` | getTerminalApiId(): ?string | setTerminalApiId(?string terminalApiId): void |
-| `headerLine1` | `?string` | Optional | Header Line 1<br>**Constraints**: *Maximum Length*: `32` | getHeaderLine1(): ?string | setHeaderLine1(?string headerLine1): void |
-| `headerLine2` | `?string` | Optional | Header Line 2<br>**Constraints**: *Maximum Length*: `32` | getHeaderLine2(): ?string | setHeaderLine2(?string headerLine2): void |
-| `headerLine3` | `?string` | Optional | Header Line 3<br>**Constraints**: *Maximum Length*: `32` | getHeaderLine3(): ?string | setHeaderLine3(?string headerLine3): void |
-| `headerLine4` | `?string` | Optional | Header Line 4<br>**Constraints**: *Maximum Length*: `32` | getHeaderLine4(): ?string | setHeaderLine4(?string headerLine4): void |
-| `headerLine5` | `?string` | Optional | Header Line 5<br>**Constraints**: *Maximum Length*: `32` | getHeaderLine5(): ?string | setHeaderLine5(?string headerLine5): void |
-| `trailerLine1` | `?string` | Optional | Trailer Line 1<br>**Constraints**: *Maximum Length*: `32` | getTrailerLine1(): ?string | setTrailerLine1(?string trailerLine1): void |
-| `trailerLine2` | `?string` | Optional | Trailer Line 2<br>**Constraints**: *Maximum Length*: `32` | getTrailerLine2(): ?string | setTrailerLine2(?string trailerLine2): void |
-| `trailerLine3` | `?string` | Optional | Trailer Line 3<br>**Constraints**: *Maximum Length*: `32` | getTrailerLine3(): ?string | setTrailerLine3(?string trailerLine3): void |
-| `trailerLine4` | `?string` | Optional | Trailer Line 4<br>**Constraints**: *Maximum Length*: `32` | getTrailerLine4(): ?string | setTrailerLine4(?string trailerLine4): void |
-| `trailerLine5` | `?string` | Optional | Trailer Line 5<br>**Constraints**: *Maximum Length*: `32` | getTrailerLine5(): ?string | setTrailerLine5(?string trailerLine5): void |
-| `defaultCheckin` | `?string` | Optional | Default Checkin<br>**Constraints**: *Maximum Length*: `10`, *Pattern*: `^[\d]{4}-[\d]{2}-[\d]{2}$` | getDefaultCheckin(): ?string | setDefaultCheckin(?string defaultCheckin): void |
-| `defaultCheckout` | `?string` | Optional | Default Checkout<br>**Constraints**: *Maximum Length*: `10`, *Pattern*: `^[\d]{4}-[\d]{2}-[\d]{2}$` | getDefaultCheckout(): ?string | setDefaultCheckout(?string defaultCheckout): void |
-| `defaultRoomRate` | `?float` | Optional | Default Room Rate<br>**Constraints**: `>= 0`, `<= 100` | getDefaultRoomRate(): ?float | setDefaultRoomRate(?float defaultRoomRate): void |
-| `defaultRoomNumber` | `?string` | Optional | Default Room Number<br>**Constraints**: *Maximum Length*: `12` | getDefaultRoomNumber(): ?string | setDefaultRoomNumber(?string defaultRoomNumber): void |
-| `debit` | `bool` | Required | Debit | getDebit(): bool | setDebit(bool debit): void |
-| `emv` | `bool` | Required | EMV | getEmv(): bool | setEmv(bool emv): void |
-| `cashbackEnable` | `bool` | Required | Cashback Enable | getCashbackEnable(): bool | setCashbackEnable(bool cashbackEnable): void |
-| `printEnable` | `bool` | Required | Print Enable | getPrintEnable(): bool | setPrintEnable(bool printEnable): void |
-| `sigCaptureEnable` | `bool` | Required | Sig Capture Enable | getSigCaptureEnable(): bool | setSigCaptureEnable(bool sigCaptureEnable): void |
-| `isProvisioned` | `?bool` | Optional | Is Provisioned | getIsProvisioned(): ?bool | setIsProvisioned(?bool isProvisioned): void |
-| `tipEnable` | `?bool` | Optional | Tip Enable | getTipEnable(): ?bool | setTipEnable(?bool tipEnable): void |
-| `validatedDecryption` | `?bool` | Optional | Validated Decryption | getValidatedDecryption(): ?bool | setValidatedDecryption(?bool validatedDecryption): void |
-| `communicationType` | [`?string (CommunicationTypeEnum)`](../../doc/models/communication-type-enum.md) | Optional | Communication Type | getCommunicationType(): ?string | setCommunicationType(?string communicationType): void |
-| `id` | `string` | Required | Terminal ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getId(): string | setId(string id): void |
-| `createdTs` | `int` | Required | Created Time Stamp | getCreatedTs(): int | setCreatedTs(int createdTs): void |
-| `modifiedTs` | `int` | Required | Modified Time Stamp | getModifiedTs(): int | setModifiedTs(int modifiedTs): void |
-| `lastRegistrationTs` | `int` | Required | Modified Time Stamp | getLastRegistrationTs(): int | setLastRegistrationTs(int lastRegistrationTs): void |
-| `createdUserId` | `string` | Required | User ID Created the register<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getCreatedUserId(): string | setCreatedUserId(string createdUserId): void |
-| `modifiedUserId` | `string` | Required | Last User ID that updated the register<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getModifiedUserId(): string | setModifiedUserId(string modifiedUserId): void |
-| `location` | [`?Location`](../../doc/models/location.md) | Optional | Location Information on `expand` | getLocation(): ?Location | setLocation(?Location location): void |
-| `createdUser` | [`?CreatedUser`](../../doc/models/created-user.md) | Optional | User Information on `expand` | getCreatedUser(): ?CreatedUser | setCreatedUser(?CreatedUser createdUser): void |
-| `terminalApplication` | [`?TerminalApplication`](../../doc/models/terminal-application.md) | Optional | Terminal Application Information on `expand` | getTerminalApplication(): ?TerminalApplication | setTerminalApplication(?TerminalApplication terminalApplication): void |
-| `changelogs` | [`?(Changelog[])`](../../doc/models/changelog.md) | Optional | Changelog Information on `expand` | getChangelogs(): ?array | setChangelogs(?array changelogs): void |
-| `terminalRouters` | [`?(TerminalRouter[])`](../../doc/models/terminal-router.md) | Optional | Terminal Router Information on `expand` | getTerminalRouters(): ?array | setTerminalRouters(?array terminalRouters): void |
-| `hasTerminalRouters` | `?bool` | Optional | Has Terminal Router Information on `expand` | getHasTerminalRouters(): ?bool | setHasTerminalRouters(?bool hasTerminalRouters): void |
-| `terminalCvm` | [`?TerminalCvm`](../../doc/models/terminal-cvm.md) | Optional | Terminal Cvm Information on `expand` | getTerminalCvm(): ?TerminalCvm | setTerminalCvm(?TerminalCvm terminalCvm): void |
-| `terminalManufacturer` | [`?TerminalManufacturer`](../../doc/models/terminal-manufacturer.md) | Optional | Terminal Manufacturer Information on `expand` | getTerminalManufacturer(): ?TerminalManufacturer | setTerminalManufacturer(?TerminalManufacturer terminalManufacturer): void |
+| `threeDsServerTransId` | `?string` | Optional | Universally unique transaction identifier assigned by the 3DS Server to identify a single transaction. | getThreeDsServerTransId(): ?string | setThreeDsServerTransId(?string threeDsServerTransId): void |
+| `transactionStatus` | `?string` | Optional | Indicates whether a transaction qualifies as an authenticated transaction.  "D" and "I" are also applicable if the 3DS Server has initiated authentication with EMV 3DS 2.2.0 version or greater<br><br>> Y - Authentication / Account verification successful<br>> <br>> N - Not authenticated / Account not verified; Transaction denied<br>> <br>> U - Authentication / Account verification could not be performed; technical or other problem<br>> <br>> C - In order to complete the authentication, a challenge is required<br>> <br>> R - Authentication / Account verification Rejected. Issuer is rejecting authentication/verification and request that authorization not be attempted<br>> <br>> A - Attempts processing performed; Not authenticated / verified, but a proof of attempt authentication / verification is provided<br>> <br>> D - In order to complete the authentication, a challenge is required. Decoupled Authentication confirmed<br>> <br>> I - Informational Only; 3DS Requestor challenge preference acknowledged | getTransactionStatus(): ?string | setTransactionStatus(?string transactionStatus): void |
+| `dsTransId` | `?string` | Optional | Universally unique transaction identifier assigned by the DS to identify a single transaction. | getDsTransId(): ?string | setDsTransId(?string dsTransId): void |
+| `acsTransId` | `?string` | Optional | Universally unique transaction identifier assigned by the ACS to identify a single transaction. | getAcsTransId(): ?string | setAcsTransId(?string acsTransId): void |
+| `messageVersion` | `?string` | Optional | Protocol version identifier This shall be the Protocol Version Number of the specification utilised by the system creating this message.<br><br>The Message Version Number is set by the 3DS Server which originates the protocol with the AReq message. The Message Version Number does not change during a 3DS transaction. | getMessageVersion(): ?string | setMessageVersion(?string messageVersion): void |
+| `authenticationValue` | `?string` | Optional | Payment System-specific value provided as part of the ACS registration for each supported DS. Authentication Value may be used to provide proof of authentication. | getAuthenticationValue(): ?string | setAuthenticationValue(?string authenticationValue): void |
+| `eci` | `?string` | Optional | Payment System-specific value provided by the ACS to indicate the results of the attempt to authenticate the Cardholder. | getEci(): ?string | setEci(?string eci): void |
 
 ## Example (as JSON)
 
 ```json
 {
-  "location_id": "11e95f8ec39de8fbdb0a4f1a",
-  "terminal_application_id": "11e95f8ec39de8fbdb0a4f1a",
-  "terminal_manufacturer_code": 1,
-  "title": "My terminal",
-  "serial_number": "1234567890",
-  "debit": false,
-  "emv": false,
-  "cashback_enable": false,
-  "print_enable": false,
-  "sig_capture_enable": false,
-  "id": "11e95f8ec39de8fbdb0a4f1a",
-  "created_ts": 1422040992,
-  "modified_ts": 1422040992,
-  "last_registration_ts": 1422040992,
-  "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
-  "modified_user_id": "11e95f8ec39de8fbdb0a4f1a"
+  "three_ds_server_trans_id": "516ef0bf-e510-4895-b0a8-c889f2eaf471",
+  "transaction_status": "Y",
+  "ds_trans_id": "f25084f0-5b16-4c0a-ae5d-b24808a95e4b",
+  "acs_trans_id": "d7c1ee99-9478-44a6-b1f2-391e29c6b340",
+  "message_version": "2.2.0",
+  "authentication_value": "MTIzNDU2Nzg5MDA5ODc2NTQzMjE=",
+  "eci": "05"
 }
 ```
 

@@ -10,29 +10,65 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class List5 implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
-    private $locationId;
+    private $id;
 
     /**
-     * @var string
+     * @var int|null
      */
-    private $ccProductTransactionId;
+    private $createdTs;
 
     /**
-     * @var string
+     * @var int|null
      */
-    private $email;
+    private $modifiedTs;
 
     /**
-     * @var float
+     * @var array
      */
-    private $amountDue;
+    private $accountNumber = [];
+
+    /**
+     * @var Address1|null
+     */
+    private $address;
+
+    /**
+     * @var array
+     */
+    private $brandingDomainId = [];
+
+    /**
+     * @var bool|null
+     */
+    private $contactEmailTrxReceiptDefault;
+
+    /**
+     * @var array
+     */
+    private $defaultAch = [];
+
+    /**
+     * @var array
+     */
+    private $defaultCc = [];
+
+    /**
+     * @var array
+     */
+    private $emailReplyTo = [];
+
+    /**
+     * @var array
+     */
+    private $fax = [];
 
     /**
      * @var array
@@ -42,77 +78,57 @@ class List5 implements \JsonSerializable
     /**
      * @var array
      */
-    private $contactId = [];
+    private $locationApiKey = [];
 
     /**
      * @var array
      */
-    private $contactApiId = [];
+    private $locationC1 = [];
 
     /**
      * @var array
      */
-    private $paylinkApiId = [];
+    private $locationC2 = [];
 
     /**
      * @var array
      */
-    private $achProductTransactionId = [];
+    private $locationC3 = [];
+
+    /**
+     * @var string|null
+     */
+    private $name;
 
     /**
      * @var array
      */
-    private $expireDate = [];
+    private $officePhone = [];
+
+    /**
+     * @var array
+     */
+    private $officeExtPhone = [];
+
+    /**
+     * @var array
+     */
+    private $tz = [];
+
+    /**
+     * @var array
+     */
+    private $parentId = [];
 
     /**
      * @var bool|null
      */
-    private $displayProductTransactionReceiptDetails;
+    private $showContactNotes;
 
     /**
      * @var bool|null
      */
-    private $displayBillingFields;
-
-    /**
-     * @var array
-     */
-    private $deliveryMethod = [];
-
-    /**
-     * @var array
-     */
-    private $cellPhone = [];
-
-    /**
-     * @var array
-     */
-    private $description = [];
-
-    /**
-     * @var string
-     */
-    private $id;
-
-    /**
-     * @var bool|null
-     */
-    private $statusId;
-
-    /**
-     * @var bool|null
-     */
-    private $active;
-
-    /**
-     * @var int
-     */
-    private $createdTs;
-
-    /**
-     * @var int
-     */
-    private $modifiedTs;
+    private $showContactFiles;
 
     /**
      * @var array
@@ -122,122 +138,353 @@ class List5 implements \JsonSerializable
     /**
      * @var array
      */
-    private $modifiedUserId = [];
+    private $locationType = [];
 
     /**
-     * @param string $locationId
-     * @param string $ccProductTransactionId
-     * @param string $email
-     * @param float $amountDue
-     * @param string $id
-     * @param int $createdTs
-     * @param int $modifiedTs
+     * @var array
      */
-    public function __construct(
-        string $locationId,
-        string $ccProductTransactionId,
-        string $email,
-        float $amountDue,
-        string $id,
-        int $createdTs,
-        int $modifiedTs
-    ) {
-        $this->locationId = $locationId;
-        $this->ccProductTransactionId = $ccProductTransactionId;
-        $this->email = $email;
-        $this->amountDue = $amountDue;
+    private $brandingDomainUrl = [];
+
+    /**
+     * @var BrandingDomain|null
+     */
+    private $brandingDomain;
+
+    /**
+     * @var ProductTransaction1[]|null
+     */
+    private $productTransactions;
+
+    /**
+     * @var ProductFile|null
+     */
+    private $productFile;
+
+    /**
+     * @var ProductAccountvault|null
+     */
+    private $productAccountvault;
+
+    /**
+     * @var ProductToken|null
+     */
+    private $productToken;
+
+    /**
+     * @var ProductRecurring|null
+     */
+    private $productRecurring;
+
+    /**
+     * @var Tag[]|null
+     */
+    private $tags;
+
+    /**
+     * @var Terminal2[]|null
+     */
+    private $terminals;
+
+    /**
+     * @var AdditionalAccess|null
+     */
+    private $additionalAccess;
+
+    /**
+     * Returns Id.
+     * Location ID
+     */
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
+
+    /**
+     * Sets Id.
+     * Location ID
+     *
+     * @maps id
+     */
+    public function setId(?string $id): void
+    {
         $this->id = $id;
+    }
+
+    /**
+     * Returns Created Ts.
+     * Created Time Stamp
+     */
+    public function getCreatedTs(): ?int
+    {
+        return $this->createdTs;
+    }
+
+    /**
+     * Sets Created Ts.
+     * Created Time Stamp
+     *
+     * @maps created_ts
+     */
+    public function setCreatedTs(?int $createdTs): void
+    {
         $this->createdTs = $createdTs;
+    }
+
+    /**
+     * Returns Modified Ts.
+     * Modified Time Stamp
+     */
+    public function getModifiedTs(): ?int
+    {
+        return $this->modifiedTs;
+    }
+
+    /**
+     * Sets Modified Ts.
+     * Modified Time Stamp
+     *
+     * @maps modified_ts
+     */
+    public function setModifiedTs(?int $modifiedTs): void
+    {
         $this->modifiedTs = $modifiedTs;
     }
 
     /**
-     * Returns Location Id.
-     * Location ID
+     * Returns Account Number.
+     * Account number
      */
-    public function getLocationId(): string
+    public function getAccountNumber(): ?string
     {
-        return $this->locationId;
+        if (count($this->accountNumber) == 0) {
+            return null;
+        }
+        return $this->accountNumber['value'];
     }
 
     /**
-     * Sets Location Id.
-     * Location ID
+     * Sets Account Number.
+     * Account number
      *
-     * @required
-     * @maps location_id
+     * @maps account_number
      */
-    public function setLocationId(string $locationId): void
+    public function setAccountNumber(?string $accountNumber): void
     {
-        $this->locationId = $locationId;
+        $this->accountNumber['value'] = $accountNumber;
     }
 
     /**
-     * Returns Cc Product Transaction Id.
-     * cc_product_transaction_id
+     * Unsets Account Number.
+     * Account number
      */
-    public function getCcProductTransactionId(): string
+    public function unsetAccountNumber(): void
     {
-        return $this->ccProductTransactionId;
+        $this->accountNumber = [];
     }
 
     /**
-     * Sets Cc Product Transaction Id.
-     * cc_product_transaction_id
+     * Returns Address.
+     * Address
+     */
+    public function getAddress(): ?Address1
+    {
+        return $this->address;
+    }
+
+    /**
+     * Sets Address.
+     * Address
      *
-     * @required
-     * @maps cc_product_transaction_id
+     * @maps address
      */
-    public function setCcProductTransactionId(string $ccProductTransactionId): void
+    public function setAddress(?Address1 $address): void
     {
-        $this->ccProductTransactionId = $ccProductTransactionId;
+        $this->address = $address;
     }
 
     /**
-     * Returns Email.
-     * Email
+     * Returns Branding Domain Id.
+     * GUID for Branding Domain
      */
-    public function getEmail(): string
+    public function getBrandingDomainId(): ?string
     {
-        return $this->email;
+        if (count($this->brandingDomainId) == 0) {
+            return null;
+        }
+        return $this->brandingDomainId['value'];
     }
 
     /**
-     * Sets Email.
-     * Email
+     * Sets Branding Domain Id.
+     * GUID for Branding Domain
      *
-     * @required
-     * @maps email
+     * @maps branding_domain_id
      */
-    public function setEmail(string $email): void
+    public function setBrandingDomainId(?string $brandingDomainId): void
     {
-        $this->email = $email;
+        $this->brandingDomainId['value'] = $brandingDomainId;
     }
 
     /**
-     * Returns Amount Due.
-     * Amount Due
+     * Unsets Branding Domain Id.
+     * GUID for Branding Domain
      */
-    public function getAmountDue(): float
+    public function unsetBrandingDomainId(): void
     {
-        return $this->amountDue;
+        $this->brandingDomainId = [];
     }
 
     /**
-     * Sets Amount Due.
-     * Amount Due
+     * Returns Contact Email Trx Receipt Default.
+     * If true, will email contact receipt for any transaction
+     */
+    public function getContactEmailTrxReceiptDefault(): ?bool
+    {
+        return $this->contactEmailTrxReceiptDefault;
+    }
+
+    /**
+     * Sets Contact Email Trx Receipt Default.
+     * If true, will email contact receipt for any transaction
      *
-     * @required
-     * @maps amount_due
+     * @maps contact_email_trx_receipt_default
      */
-    public function setAmountDue(float $amountDue): void
+    public function setContactEmailTrxReceiptDefault(?bool $contactEmailTrxReceiptDefault): void
     {
-        $this->amountDue = $amountDue;
+        $this->contactEmailTrxReceiptDefault = $contactEmailTrxReceiptDefault;
+    }
+
+    /**
+     * Returns Default Ach.
+     * GUID for Location's default ACH Product Transaction
+     */
+    public function getDefaultAch(): ?string
+    {
+        if (count($this->defaultAch) == 0) {
+            return null;
+        }
+        return $this->defaultAch['value'];
+    }
+
+    /**
+     * Sets Default Ach.
+     * GUID for Location's default ACH Product Transaction
+     *
+     * @maps default_ach
+     */
+    public function setDefaultAch(?string $defaultAch): void
+    {
+        $this->defaultAch['value'] = $defaultAch;
+    }
+
+    /**
+     * Unsets Default Ach.
+     * GUID for Location's default ACH Product Transaction
+     */
+    public function unsetDefaultAch(): void
+    {
+        $this->defaultAch = [];
+    }
+
+    /**
+     * Returns Default Cc.
+     * GUID for Location's default CC Product Transaction
+     */
+    public function getDefaultCc(): ?string
+    {
+        if (count($this->defaultCc) == 0) {
+            return null;
+        }
+        return $this->defaultCc['value'];
+    }
+
+    /**
+     * Sets Default Cc.
+     * GUID for Location's default CC Product Transaction
+     *
+     * @maps default_cc
+     */
+    public function setDefaultCc(?string $defaultCc): void
+    {
+        $this->defaultCc['value'] = $defaultCc;
+    }
+
+    /**
+     * Unsets Default Cc.
+     * GUID for Location's default CC Product Transaction
+     */
+    public function unsetDefaultCc(): void
+    {
+        $this->defaultCc = [];
+    }
+
+    /**
+     * Returns Email Reply To.
+     * Used as from email address when sending various notifications
+     */
+    public function getEmailReplyTo(): ?string
+    {
+        if (count($this->emailReplyTo) == 0) {
+            return null;
+        }
+        return $this->emailReplyTo['value'];
+    }
+
+    /**
+     * Sets Email Reply To.
+     * Used as from email address when sending various notifications
+     *
+     * @maps email_reply_to
+     */
+    public function setEmailReplyTo(?string $emailReplyTo): void
+    {
+        $this->emailReplyTo['value'] = $emailReplyTo;
+    }
+
+    /**
+     * Unsets Email Reply To.
+     * Used as from email address when sending various notifications
+     */
+    public function unsetEmailReplyTo(): void
+    {
+        $this->emailReplyTo = [];
+    }
+
+    /**
+     * Returns Fax.
+     * Fax number
+     */
+    public function getFax(): ?string
+    {
+        if (count($this->fax) == 0) {
+            return null;
+        }
+        return $this->fax['value'];
+    }
+
+    /**
+     * Sets Fax.
+     * Fax number
+     *
+     * @maps fax
+     */
+    public function setFax(?string $fax): void
+    {
+        $this->fax['value'] = $fax;
+    }
+
+    /**
+     * Unsets Fax.
+     * Fax number
+     */
+    public function unsetFax(): void
+    {
+        $this->fax = [];
     }
 
     /**
      * Returns Location Api Id.
-     * Location Api Id
+     * Location api ID
      */
     public function getLocationApiId(): ?string
     {
@@ -249,7 +496,7 @@ class List5 implements \JsonSerializable
 
     /**
      * Sets Location Api Id.
-     * Location Api Id
+     * Location api ID
      *
      * @maps location_api_id
      */
@@ -260,7 +507,7 @@ class List5 implements \JsonSerializable
 
     /**
      * Unsets Location Api Id.
-     * Location Api Id
+     * Location api ID
      */
     public function unsetLocationApiId(): void
     {
@@ -268,427 +515,319 @@ class List5 implements \JsonSerializable
     }
 
     /**
-     * Returns Contact Id.
-     * Contact Id
+     * Returns Location Api Key.
+     * Location api key
      */
-    public function getContactId(): ?string
+    public function getLocationApiKey(): ?string
     {
-        if (count($this->contactId) == 0) {
+        if (count($this->locationApiKey) == 0) {
             return null;
         }
-        return $this->contactId['value'];
+        return $this->locationApiKey['value'];
     }
 
     /**
-     * Sets Contact Id.
-     * Contact Id
+     * Sets Location Api Key.
+     * Location api key
      *
-     * @maps contact_id
+     * @maps location_api_key
      */
-    public function setContactId(?string $contactId): void
+    public function setLocationApiKey(?string $locationApiKey): void
     {
-        $this->contactId['value'] = $contactId;
+        $this->locationApiKey['value'] = $locationApiKey;
     }
 
     /**
-     * Unsets Contact Id.
-     * Contact Id
+     * Unsets Location Api Key.
+     * Location api key
      */
-    public function unsetContactId(): void
+    public function unsetLocationApiKey(): void
     {
-        $this->contactId = [];
+        $this->locationApiKey = [];
     }
 
     /**
-     * Returns Contact Api Id.
-     * Contact Api Id
+     * Returns Location C1.
+     * Can be used to store custom information for location.
      */
-    public function getContactApiId(): ?string
+    public function getLocationC1(): ?string
     {
-        if (count($this->contactApiId) == 0) {
+        if (count($this->locationC1) == 0) {
             return null;
         }
-        return $this->contactApiId['value'];
+        return $this->locationC1['value'];
     }
 
     /**
-     * Sets Contact Api Id.
-     * Contact Api Id
+     * Sets Location C1.
+     * Can be used to store custom information for location.
      *
-     * @maps contact_api_id
+     * @maps location_c1
      */
-    public function setContactApiId(?string $contactApiId): void
+    public function setLocationC1(?string $locationC1): void
     {
-        $this->contactApiId['value'] = $contactApiId;
+        $this->locationC1['value'] = $locationC1;
     }
 
     /**
-     * Unsets Contact Api Id.
-     * Contact Api Id
+     * Unsets Location C1.
+     * Can be used to store custom information for location.
      */
-    public function unsetContactApiId(): void
+    public function unsetLocationC1(): void
     {
-        $this->contactApiId = [];
+        $this->locationC1 = [];
     }
 
     /**
-     * Returns Paylink Api Id.
-     * Paylinke Api Id
+     * Returns Location C2.
+     * Can be used to store custom information for location.
      */
-    public function getPaylinkApiId(): ?string
+    public function getLocationC2(): ?string
     {
-        if (count($this->paylinkApiId) == 0) {
+        if (count($this->locationC2) == 0) {
             return null;
         }
-        return $this->paylinkApiId['value'];
+        return $this->locationC2['value'];
     }
 
     /**
-     * Sets Paylink Api Id.
-     * Paylinke Api Id
+     * Sets Location C2.
+     * Can be used to store custom information for location.
      *
-     * @maps paylink_api_id
+     * @maps location_c2
      */
-    public function setPaylinkApiId(?string $paylinkApiId): void
+    public function setLocationC2(?string $locationC2): void
     {
-        $this->paylinkApiId['value'] = $paylinkApiId;
+        $this->locationC2['value'] = $locationC2;
     }
 
     /**
-     * Unsets Paylink Api Id.
-     * Paylinke Api Id
+     * Unsets Location C2.
+     * Can be used to store custom information for location.
      */
-    public function unsetPaylinkApiId(): void
+    public function unsetLocationC2(): void
     {
-        $this->paylinkApiId = [];
+        $this->locationC2 = [];
     }
 
     /**
-     * Returns Ach Product Transaction Id.
-     * Ach Product Transaction Id
+     * Returns Location C3.
+     * Can be used to store custom information for location.
      */
-    public function getAchProductTransactionId(): ?string
+    public function getLocationC3(): ?string
     {
-        if (count($this->achProductTransactionId) == 0) {
+        if (count($this->locationC3) == 0) {
             return null;
         }
-        return $this->achProductTransactionId['value'];
+        return $this->locationC3['value'];
     }
 
     /**
-     * Sets Ach Product Transaction Id.
-     * Ach Product Transaction Id
+     * Sets Location C3.
+     * Can be used to store custom information for location.
      *
-     * @maps ach_product_transaction_id
+     * @maps location_c3
      */
-    public function setAchProductTransactionId(?string $achProductTransactionId): void
+    public function setLocationC3(?string $locationC3): void
     {
-        $this->achProductTransactionId['value'] = $achProductTransactionId;
+        $this->locationC3['value'] = $locationC3;
     }
 
     /**
-     * Unsets Ach Product Transaction Id.
-     * Ach Product Transaction Id
+     * Unsets Location C3.
+     * Can be used to store custom information for location.
      */
-    public function unsetAchProductTransactionId(): void
+    public function unsetLocationC3(): void
     {
-        $this->achProductTransactionId = [];
+        $this->locationC3 = [];
     }
 
     /**
-     * Returns Expire Date.
-     * Expire Date
+     * Returns Name.
+     * Name of the company
      */
-    public function getExpireDate(): ?string
+    public function getName(): ?string
     {
-        if (count($this->expireDate) == 0) {
+        return $this->name;
+    }
+
+    /**
+     * Sets Name.
+     * Name of the company
+     *
+     * @maps name
+     */
+    public function setName(?string $name): void
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * Returns Office Phone.
+     * Office phone number
+     */
+    public function getOfficePhone(): ?string
+    {
+        if (count($this->officePhone) == 0) {
             return null;
         }
-        return $this->expireDate['value'];
+        return $this->officePhone['value'];
     }
 
     /**
-     * Sets Expire Date.
-     * Expire Date
+     * Sets Office Phone.
+     * Office phone number
      *
-     * @maps expire_date
+     * @maps office_phone
      */
-    public function setExpireDate(?string $expireDate): void
+    public function setOfficePhone(?string $officePhone): void
     {
-        $this->expireDate['value'] = $expireDate;
+        $this->officePhone['value'] = $officePhone;
     }
 
     /**
-     * Unsets Expire Date.
-     * Expire Date
+     * Unsets Office Phone.
+     * Office phone number
      */
-    public function unsetExpireDate(): void
+    public function unsetOfficePhone(): void
     {
-        $this->expireDate = [];
+        $this->officePhone = [];
     }
 
     /**
-     * Returns Display Product Transaction Receipt Details.
-     * Display Product Transaction Receipt Details
+     * Returns Office Ext Phone.
+     * Office phone extension number
      */
-    public function getDisplayProductTransactionReceiptDetails(): ?bool
+    public function getOfficeExtPhone(): ?string
     {
-        return $this->displayProductTransactionReceiptDetails;
-    }
-
-    /**
-     * Sets Display Product Transaction Receipt Details.
-     * Display Product Transaction Receipt Details
-     *
-     * @maps display_product_transaction_receipt_details
-     */
-    public function setDisplayProductTransactionReceiptDetails(?bool $displayProductTransactionReceiptDetails): void
-    {
-        $this->displayProductTransactionReceiptDetails = $displayProductTransactionReceiptDetails;
-    }
-
-    /**
-     * Returns Display Billing Fields.
-     * Display Billing Fields
-     */
-    public function getDisplayBillingFields(): ?bool
-    {
-        return $this->displayBillingFields;
-    }
-
-    /**
-     * Sets Display Billing Fields.
-     * Display Billing Fields
-     *
-     * @maps display_billing_fields
-     */
-    public function setDisplayBillingFields(?bool $displayBillingFields): void
-    {
-        $this->displayBillingFields = $displayBillingFields;
-    }
-
-    /**
-     * Returns Delivery Method.
-     * Delivery Method
-     * >0 - Do not send
-     * >
-     * >1 - Email
-     * >
-     * >2 - SMS
-     * >
-     * >3 - Both
-     * >
-     */
-    public function getDeliveryMethod(): ?int
-    {
-        if (count($this->deliveryMethod) == 0) {
+        if (count($this->officeExtPhone) == 0) {
             return null;
         }
-        return $this->deliveryMethod['value'];
+        return $this->officeExtPhone['value'];
     }
 
     /**
-     * Sets Delivery Method.
-     * Delivery Method
-     * >0 - Do not send
-     * >
-     * >1 - Email
-     * >
-     * >2 - SMS
-     * >
-     * >3 - Both
-     * >
+     * Sets Office Ext Phone.
+     * Office phone extension number
      *
-     * @maps delivery_method
-     * @factory \FortisAPILib\Models\DeliveryMethodEnum::checkValue
+     * @maps office_ext_phone
      */
-    public function setDeliveryMethod(?int $deliveryMethod): void
+    public function setOfficeExtPhone(?string $officeExtPhone): void
     {
-        $this->deliveryMethod['value'] = $deliveryMethod;
+        $this->officeExtPhone['value'] = $officeExtPhone;
     }
 
     /**
-     * Unsets Delivery Method.
-     * Delivery Method
-     * >0 - Do not send
-     * >
-     * >1 - Email
-     * >
-     * >2 - SMS
-     * >
-     * >3 - Both
-     * >
+     * Unsets Office Ext Phone.
+     * Office phone extension number
      */
-    public function unsetDeliveryMethod(): void
+    public function unsetOfficeExtPhone(): void
     {
-        $this->deliveryMethod = [];
+        $this->officeExtPhone = [];
     }
 
     /**
-     * Returns Cell Phone.
-     * Cell Phone
+     * Returns Tz.
+     * Time zone
      */
-    public function getCellPhone(): ?string
+    public function getTz(): ?string
     {
-        if (count($this->cellPhone) == 0) {
+        if (count($this->tz) == 0) {
             return null;
         }
-        return $this->cellPhone['value'];
+        return $this->tz['value'];
     }
 
     /**
-     * Sets Cell Phone.
-     * Cell Phone
+     * Sets Tz.
+     * Time zone
      *
-     * @maps cell_phone
+     * @maps tz
      */
-    public function setCellPhone(?string $cellPhone): void
+    public function setTz(?string $tz): void
     {
-        $this->cellPhone['value'] = $cellPhone;
+        $this->tz['value'] = $tz;
     }
 
     /**
-     * Unsets Cell Phone.
-     * Cell Phone
+     * Unsets Tz.
+     * Time zone
      */
-    public function unsetCellPhone(): void
+    public function unsetTz(): void
     {
-        $this->cellPhone = [];
+        $this->tz = [];
     }
 
     /**
-     * Returns Description.
-     * Description
+     * Returns Parent Id.
+     * Location GUID of the parent location
      */
-    public function getDescription(): ?string
+    public function getParentId(): ?string
     {
-        if (count($this->description) == 0) {
+        if (count($this->parentId) == 0) {
             return null;
         }
-        return $this->description['value'];
+        return $this->parentId['value'];
     }
 
     /**
-     * Sets Description.
-     * Description
+     * Sets Parent Id.
+     * Location GUID of the parent location
      *
-     * @maps description
+     * @maps parent_id
      */
-    public function setDescription(?string $description): void
+    public function setParentId(?string $parentId): void
     {
-        $this->description['value'] = $description;
+        $this->parentId['value'] = $parentId;
     }
 
     /**
-     * Unsets Description.
-     * Description
+     * Unsets Parent Id.
+     * Location GUID of the parent location
      */
-    public function unsetDescription(): void
+    public function unsetParentId(): void
     {
-        $this->description = [];
+        $this->parentId = [];
     }
 
     /**
-     * Returns Id.
-     * Paylink Id
+     * Returns Show Contact Notes.
+     * If set to true will show 'Notes' tab on Contact
      */
-    public function getId(): string
+    public function getShowContactNotes(): ?bool
     {
-        return $this->id;
+        return $this->showContactNotes;
     }
 
     /**
-     * Sets Id.
-     * Paylink Id
+     * Sets Show Contact Notes.
+     * If set to true will show 'Notes' tab on Contact
      *
-     * @required
-     * @maps id
+     * @maps show_contact_notes
      */
-    public function setId(string $id): void
+    public function setShowContactNotes(?bool $showContactNotes): void
     {
-        $this->id = $id;
+        $this->showContactNotes = $showContactNotes;
     }
 
     /**
-     * Returns Status Id.
-     * Status Id
+     * Returns Show Contact Files.
+     * If set to true will show 'Files' tab on Contact
      */
-    public function getStatusId(): ?bool
+    public function getShowContactFiles(): ?bool
     {
-        return $this->statusId;
+        return $this->showContactFiles;
     }
 
     /**
-     * Sets Status Id.
-     * Status Id
+     * Sets Show Contact Files.
+     * If set to true will show 'Files' tab on Contact
      *
-     * @maps status_id
+     * @maps show_contact_files
      */
-    public function setStatusId(?bool $statusId): void
+    public function setShowContactFiles(?bool $showContactFiles): void
     {
-        $this->statusId = $statusId;
-    }
-
-    /**
-     * Returns Active.
-     * Active
-     */
-    public function getActive(): ?bool
-    {
-        return $this->active;
-    }
-
-    /**
-     * Sets Active.
-     * Active
-     *
-     * @maps active
-     */
-    public function setActive(?bool $active): void
-    {
-        $this->active = $active;
-    }
-
-    /**
-     * Returns Created Ts.
-     * Created Time Stamp
-     */
-    public function getCreatedTs(): int
-    {
-        return $this->createdTs;
-    }
-
-    /**
-     * Sets Created Ts.
-     * Created Time Stamp
-     *
-     * @required
-     * @maps created_ts
-     */
-    public function setCreatedTs(int $createdTs): void
-    {
-        $this->createdTs = $createdTs;
-    }
-
-    /**
-     * Returns Modified Ts.
-     * Modified Time Stamp
-     */
-    public function getModifiedTs(): int
-    {
-        return $this->modifiedTs;
-    }
-
-    /**
-     * Sets Modified Ts.
-     * Modified Time Stamp
-     *
-     * @required
-     * @maps modified_ts
-     */
-    public function setModifiedTs(int $modifiedTs): void
-    {
-        $this->modifiedTs = $modifiedTs;
+        $this->showContactFiles = $showContactFiles;
     }
 
     /**
@@ -724,35 +863,336 @@ class List5 implements \JsonSerializable
     }
 
     /**
-     * Returns Modified User Id.
-     * Last User ID that updated the register
+     * Returns Location Type.
+     * Location Type
      */
-    public function getModifiedUserId(): ?string
+    public function getLocationType(): ?string
     {
-        if (count($this->modifiedUserId) == 0) {
+        if (count($this->locationType) == 0) {
             return null;
         }
-        return $this->modifiedUserId['value'];
+        return $this->locationType['value'];
     }
 
     /**
-     * Sets Modified User Id.
-     * Last User ID that updated the register
+     * Sets Location Type.
+     * Location Type
      *
-     * @maps modified_user_id
+     * @maps location_type
+     * @factory \FortisAPILib\Models\LocationTypeEnum::checkValue
      */
-    public function setModifiedUserId(?string $modifiedUserId): void
+    public function setLocationType(?string $locationType): void
     {
-        $this->modifiedUserId['value'] = $modifiedUserId;
+        $this->locationType['value'] = $locationType;
     }
 
     /**
-     * Unsets Modified User Id.
-     * Last User ID that updated the register
+     * Unsets Location Type.
+     * Location Type
      */
-    public function unsetModifiedUserId(): void
+    public function unsetLocationType(): void
     {
-        $this->modifiedUserId = [];
+        $this->locationType = [];
+    }
+
+    /**
+     * Returns Branding Domain Url.
+     * Branding domain URL
+     */
+    public function getBrandingDomainUrl(): ?string
+    {
+        if (count($this->brandingDomainUrl) == 0) {
+            return null;
+        }
+        return $this->brandingDomainUrl['value'];
+    }
+
+    /**
+     * Sets Branding Domain Url.
+     * Branding domain URL
+     *
+     * @maps branding_domain_url
+     */
+    public function setBrandingDomainUrl(?string $brandingDomainUrl): void
+    {
+        $this->brandingDomainUrl['value'] = $brandingDomainUrl;
+    }
+
+    /**
+     * Unsets Branding Domain Url.
+     * Branding domain URL
+     */
+    public function unsetBrandingDomainUrl(): void
+    {
+        $this->brandingDomainUrl = [];
+    }
+
+    /**
+     * Returns Branding Domain.
+     * Branding domain array
+     */
+    public function getBrandingDomain(): ?BrandingDomain
+    {
+        return $this->brandingDomain;
+    }
+
+    /**
+     * Sets Branding Domain.
+     * Branding domain array
+     *
+     * @maps branding_domain
+     */
+    public function setBrandingDomain(?BrandingDomain $brandingDomain): void
+    {
+        $this->brandingDomain = $brandingDomain;
+    }
+
+    /**
+     * Returns Product Transactions.
+     * Product Transactions array
+     *
+     * @return ProductTransaction1[]|null
+     */
+    public function getProductTransactions(): ?array
+    {
+        return $this->productTransactions;
+    }
+
+    /**
+     * Sets Product Transactions.
+     * Product Transactions array
+     *
+     * @maps product_transactions
+     *
+     * @param ProductTransaction1[]|null $productTransactions
+     */
+    public function setProductTransactions(?array $productTransactions): void
+    {
+        $this->productTransactions = $productTransactions;
+    }
+
+    /**
+     * Returns Product File.
+     * Product file array
+     */
+    public function getProductFile(): ?ProductFile
+    {
+        return $this->productFile;
+    }
+
+    /**
+     * Sets Product File.
+     * Product file array
+     *
+     * @maps product_file
+     */
+    public function setProductFile(?ProductFile $productFile): void
+    {
+        $this->productFile = $productFile;
+    }
+
+    /**
+     * Returns Product Accountvault.
+     * Product Token array (legacy)
+     */
+    public function getProductAccountvault(): ?ProductAccountvault
+    {
+        return $this->productAccountvault;
+    }
+
+    /**
+     * Sets Product Accountvault.
+     * Product Token array (legacy)
+     *
+     * @maps product_accountvault
+     */
+    public function setProductAccountvault(?ProductAccountvault $productAccountvault): void
+    {
+        $this->productAccountvault = $productAccountvault;
+    }
+
+    /**
+     * Returns Product Token.
+     * Product Token array
+     */
+    public function getProductToken(): ?ProductToken
+    {
+        return $this->productToken;
+    }
+
+    /**
+     * Sets Product Token.
+     * Product Token array
+     *
+     * @maps product_token
+     */
+    public function setProductToken(?ProductToken $productToken): void
+    {
+        $this->productToken = $productToken;
+    }
+
+    /**
+     * Returns Product Recurring.
+     * Product recurring array
+     */
+    public function getProductRecurring(): ?ProductRecurring
+    {
+        return $this->productRecurring;
+    }
+
+    /**
+     * Sets Product Recurring.
+     * Product recurring array
+     *
+     * @maps product_recurring
+     */
+    public function setProductRecurring(?ProductRecurring $productRecurring): void
+    {
+        $this->productRecurring = $productRecurring;
+    }
+
+    /**
+     * Returns Tags.
+     * Tags array
+     *
+     * @return Tag[]|null
+     */
+    public function getTags(): ?array
+    {
+        return $this->tags;
+    }
+
+    /**
+     * Sets Tags.
+     * Tags array
+     *
+     * @maps tags
+     *
+     * @param Tag[]|null $tags
+     */
+    public function setTags(?array $tags): void
+    {
+        $this->tags = $tags;
+    }
+
+    /**
+     * Returns Terminals.
+     * Terminals array
+     *
+     * @return Terminal2[]|null
+     */
+    public function getTerminals(): ?array
+    {
+        return $this->terminals;
+    }
+
+    /**
+     * Sets Terminals.
+     * Terminals array
+     *
+     * @maps terminals
+     *
+     * @param Terminal2[]|null $terminals
+     */
+    public function setTerminals(?array $terminals): void
+    {
+        $this->terminals = $terminals;
+    }
+
+    /**
+     * Returns Additional Access.
+     */
+    public function getAdditionalAccess(): ?AdditionalAccess
+    {
+        return $this->additionalAccess;
+    }
+
+    /**
+     * Sets Additional Access.
+     *
+     * @maps additional_access
+     */
+    public function setAdditionalAccess(?AdditionalAccess $additionalAccess): void
+    {
+        $this->additionalAccess = $additionalAccess;
+    }
+
+    /**
+     * Converts the List5 object to a human-readable string representation.
+     *
+     * @return string The string representation of the List5 object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'List5',
+            [
+                'id' => $this->id,
+                'createdTs' => $this->createdTs,
+                'modifiedTs' => $this->modifiedTs,
+                'accountNumber' => $this->getAccountNumber(),
+                'address' => $this->address,
+                'brandingDomainId' => $this->getBrandingDomainId(),
+                'contactEmailTrxReceiptDefault' => $this->contactEmailTrxReceiptDefault,
+                'defaultAch' => $this->getDefaultAch(),
+                'defaultCc' => $this->getDefaultCc(),
+                'emailReplyTo' => $this->getEmailReplyTo(),
+                'fax' => $this->getFax(),
+                'locationApiId' => $this->getLocationApiId(),
+                'locationApiKey' => $this->getLocationApiKey(),
+                'locationC1' => $this->getLocationC1(),
+                'locationC2' => $this->getLocationC2(),
+                'locationC3' => $this->getLocationC3(),
+                'name' => $this->name,
+                'officePhone' => $this->getOfficePhone(),
+                'officeExtPhone' => $this->getOfficeExtPhone(),
+                'tz' => $this->getTz(),
+                'parentId' => $this->getParentId(),
+                'showContactNotes' => $this->showContactNotes,
+                'showContactFiles' => $this->showContactFiles,
+                'createdUserId' => $this->getCreatedUserId(),
+                'locationType' => $this->getLocationType(),
+                'brandingDomainUrl' => $this->getBrandingDomainUrl(),
+                'brandingDomain' => $this->brandingDomain,
+                'productTransactions' => $this->productTransactions,
+                'productFile' => $this->productFile,
+                'productAccountvault' => $this->productAccountvault,
+                'productToken' => $this->productToken,
+                'productRecurring' => $this->productRecurring,
+                'tags' => $this->tags,
+                'terminals' => $this->terminals,
+                'additionalAccess' => $this->additionalAccess,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -767,61 +1207,112 @@ class List5 implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['location_id']                                     = $this->locationId;
-        $json['cc_product_transaction_id']                       = $this->ccProductTransactionId;
-        $json['email']                                           = $this->email;
-        $json['amount_due']                                      = $this->amountDue;
+        if (isset($this->id)) {
+            $json['id']                                = $this->id;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']                        = $this->createdTs;
+        }
+        if (isset($this->modifiedTs)) {
+            $json['modified_ts']                       = $this->modifiedTs;
+        }
+        if (!empty($this->accountNumber)) {
+            $json['account_number']                    = $this->accountNumber['value'];
+        }
+        if (isset($this->address)) {
+            $json['address']                           = $this->address;
+        }
+        if (!empty($this->brandingDomainId)) {
+            $json['branding_domain_id']                = $this->brandingDomainId['value'];
+        }
+        if (isset($this->contactEmailTrxReceiptDefault)) {
+            $json['contact_email_trx_receipt_default'] = $this->contactEmailTrxReceiptDefault;
+        }
+        if (!empty($this->defaultAch)) {
+            $json['default_ach']                       = $this->defaultAch['value'];
+        }
+        if (!empty($this->defaultCc)) {
+            $json['default_cc']                        = $this->defaultCc['value'];
+        }
+        if (!empty($this->emailReplyTo)) {
+            $json['email_reply_to']                    = $this->emailReplyTo['value'];
+        }
+        if (!empty($this->fax)) {
+            $json['fax']                               = $this->fax['value'];
+        }
         if (!empty($this->locationApiId)) {
-            $json['location_api_id']                             = $this->locationApiId['value'];
+            $json['location_api_id']                   = $this->locationApiId['value'];
         }
-        if (!empty($this->contactId)) {
-            $json['contact_id']                                  = $this->contactId['value'];
+        if (!empty($this->locationApiKey)) {
+            $json['location_api_key']                  = $this->locationApiKey['value'];
         }
-        if (!empty($this->contactApiId)) {
-            $json['contact_api_id']                              = $this->contactApiId['value'];
+        if (!empty($this->locationC1)) {
+            $json['location_c1']                       = $this->locationC1['value'];
         }
-        if (!empty($this->paylinkApiId)) {
-            $json['paylink_api_id']                              = $this->paylinkApiId['value'];
+        if (!empty($this->locationC2)) {
+            $json['location_c2']                       = $this->locationC2['value'];
         }
-        if (!empty($this->achProductTransactionId)) {
-            $json['ach_product_transaction_id']                  = $this->achProductTransactionId['value'];
+        if (!empty($this->locationC3)) {
+            $json['location_c3']                       = $this->locationC3['value'];
         }
-        if (!empty($this->expireDate)) {
-            $json['expire_date']                                 = $this->expireDate['value'];
+        if (isset($this->name)) {
+            $json['name']                              = $this->name;
         }
-        if (isset($this->displayProductTransactionReceiptDetails)) {
-            $json['display_product_transaction_receipt_details'] = $this->displayProductTransactionReceiptDetails;
+        if (!empty($this->officePhone)) {
+            $json['office_phone']                      = $this->officePhone['value'];
         }
-        if (isset($this->displayBillingFields)) {
-            $json['display_billing_fields']                      = $this->displayBillingFields;
+        if (!empty($this->officeExtPhone)) {
+            $json['office_ext_phone']                  = $this->officeExtPhone['value'];
         }
-        if (!empty($this->deliveryMethod)) {
-            $json['delivery_method']                             =
-                DeliveryMethodEnum::checkValue(
-                    $this->deliveryMethod['value']
-                );
+        if (!empty($this->tz)) {
+            $json['tz']                                = $this->tz['value'];
         }
-        if (!empty($this->cellPhone)) {
-            $json['cell_phone']                                  = $this->cellPhone['value'];
+        if (!empty($this->parentId)) {
+            $json['parent_id']                         = $this->parentId['value'];
         }
-        if (!empty($this->description)) {
-            $json['description']                                 = $this->description['value'];
+        if (isset($this->showContactNotes)) {
+            $json['show_contact_notes']                = $this->showContactNotes;
         }
-        $json['id']                                              = $this->id;
-        if (isset($this->statusId)) {
-            $json['status_id']                                   = $this->statusId;
+        if (isset($this->showContactFiles)) {
+            $json['show_contact_files']                = $this->showContactFiles;
         }
-        if (isset($this->active)) {
-            $json['active']                                      = $this->active;
-        }
-        $json['created_ts']                                      = $this->createdTs;
-        $json['modified_ts']                                     = $this->modifiedTs;
         if (!empty($this->createdUserId)) {
-            $json['created_user_id']                             = $this->createdUserId['value'];
+            $json['created_user_id']                   = $this->createdUserId['value'];
         }
-        if (!empty($this->modifiedUserId)) {
-            $json['modified_user_id']                            = $this->modifiedUserId['value'];
+        if (!empty($this->locationType)) {
+            $json['location_type']                     = LocationTypeEnum::checkValue($this->locationType['value']);
         }
+        if (!empty($this->brandingDomainUrl)) {
+            $json['branding_domain_url']               = $this->brandingDomainUrl['value'];
+        }
+        if (isset($this->brandingDomain)) {
+            $json['branding_domain']                   = $this->brandingDomain;
+        }
+        if (isset($this->productTransactions)) {
+            $json['product_transactions']              = $this->productTransactions;
+        }
+        if (isset($this->productFile)) {
+            $json['product_file']                      = $this->productFile;
+        }
+        if (isset($this->productAccountvault)) {
+            $json['product_accountvault']              = $this->productAccountvault;
+        }
+        if (isset($this->productToken)) {
+            $json['product_token']                     = $this->productToken;
+        }
+        if (isset($this->productRecurring)) {
+            $json['product_recurring']                 = $this->productRecurring;
+        }
+        if (isset($this->tags)) {
+            $json['tags']                              = $this->tags;
+        }
+        if (isset($this->terminals)) {
+            $json['terminals']                         = $this->terminals;
+        }
+        if (isset($this->additionalAccess)) {
+            $json['additional_access']                 = $this->additionalAccess;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

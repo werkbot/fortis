@@ -9,8 +9,8 @@
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `type` | `string` | Required, Constant | Resource Type<br>**Default**: `'UsersCollection'` | getType(): string | setType(string type): void |
-| `mList` | [`List13[]`](../../doc/models/list-13.md) | Required | Resource Members | getMList(): array | setMList(array mList): void |
+| `type` | [`?string(Type130Enum)`](../../doc/models/type-130-enum.md) | Optional | Resource Type<br><br>**Default**: `Type130Enum::USERSCOLLECTION` | getType(): ?string | setType(?string type): void |
+| `list` | [`?(List20[])`](../../doc/models/list-20.md) | Optional | Resource Members | getList(): ?array | setList(?array list): void |
 | `links` | [`?Links`](../../doc/models/links.md) | Optional | Pagination page links | getLinks(): ?Links | setLinks(?Links links): void |
 | `pagination` | [`?Pagination`](../../doc/models/pagination.md) | Optional | Pagination info | getPagination(): ?Pagination | setPagination(?Pagination pagination): void |
 | `sort` | [`?Sort`](../../doc/models/sort.md) | Optional | Sort information used on the results | getSort(): ?Sort | setSort(?Sort sort): void |
@@ -20,21 +20,52 @@
 ```json
 {
   "type": "UsersCollection",
-  "list": {
-    "email": "email@domain.com",
-    "last_name": "Smith",
-    "primary_location_id": "11e95f8ec39de8fbdb0a4f1a",
-    "tz": "America/New_York",
-    "username": "{user_name}",
-    "user_type_code": 100,
-    "id": "11e95f8ec39de8fbdb0a4f1a",
-    "status": true,
-    "login_attempts": 0,
-    "last_login_ts": 1422040992,
-    "created_ts": 1422040992,
-    "modified_ts": 1422040992,
-    "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
-    "current_date_time": "03/11/2019 17:38:26"
+  "list": [
+    {
+      "account_number": "account_number2",
+      "branding_domain_url": "branding_domain_url8",
+      "cell_phone": "cell_phone8",
+      "company_name": "company_name8",
+      "contact_id": "contact_id2"
+    },
+    {
+      "account_number": "account_number2",
+      "branding_domain_url": "branding_domain_url8",
+      "cell_phone": "cell_phone8",
+      "company_name": "company_name8",
+      "contact_id": "contact_id2"
+    }
+  ],
+  "links": {
+    "type": "Links",
+    "first": "first0",
+    "previous": "previous2",
+    "next": "next2",
+    "last": "last4"
+  },
+  "pagination": {
+    "type": "Pagination",
+    "total_count": 100,
+    "page_count": 212,
+    "page_number": 28,
+    "page_size": 6
+  },
+  "sort": {
+    "type": "Sorting",
+    "fields": [
+      {
+        "field": "field2",
+        "order": "asc"
+      },
+      {
+        "field": "field2",
+        "order": "asc"
+      },
+      {
+        "field": "field2",
+        "order": "asc"
+      }
+    ]
   }
 }
 ```

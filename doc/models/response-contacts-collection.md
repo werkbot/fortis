@@ -9,8 +9,8 @@
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `type` | `string` | Required, Constant | Resource Type<br>**Default**: `'ContactsCollection'` | getType(): string | setType(string type): void |
-| `mList` | [`List1[]`](../../doc/models/list-1.md) | Required | Resource Members | getMList(): array | setMList(array mList): void |
+| `type` | [`?string(Type11Enum)`](../../doc/models/type-11-enum.md) | Optional | Resource Type<br><br>**Default**: `Type11Enum::CONTACTSCOLLECTION` | getType(): ?string | setType(?string type): void |
+| `list` | [`?(List1[])`](../../doc/models/list-1.md) | Optional | Resource Members | getList(): ?array | setList(?array list): void |
 | `links` | [`?Links`](../../doc/models/links.md) | Optional | Pagination page links | getLinks(): ?Links | setLinks(?Links links): void |
 | `pagination` | [`?Pagination`](../../doc/models/pagination.md) | Optional | Pagination info | getPagination(): ?Pagination | setPagination(?Pagination pagination): void |
 | `sort` | [`?Sort`](../../doc/models/sort.md) | Optional | Sort information used on the results | getSort(): ?Sort | setSort(?Sort sort): void |
@@ -20,15 +20,59 @@
 ```json
 {
   "type": "ContactsCollection",
-  "list": {
-    "location_id": "11e95f8ec39de8fbdb0a4f1a",
-    "last_name": "Smith",
-    "email_trx_receipt": true,
-    "header_message_type": 0,
-    "id": "11e95f8ec39de8fbdb0a4f1a",
-    "created_ts": 1422040992,
-    "modified_ts": 1422040992,
-    "active": true
+  "list": [
+    {
+      "location_id": "location_id6",
+      "account_number": "account_number2",
+      "contact_api_id": "contact_api_id2",
+      "first_name": "first_name2",
+      "last_name": "last_name0"
+    },
+    {
+      "location_id": "location_id6",
+      "account_number": "account_number2",
+      "contact_api_id": "contact_api_id2",
+      "first_name": "first_name2",
+      "last_name": "last_name0"
+    },
+    {
+      "location_id": "location_id6",
+      "account_number": "account_number2",
+      "contact_api_id": "contact_api_id2",
+      "first_name": "first_name2",
+      "last_name": "last_name0"
+    }
+  ],
+  "links": {
+    "type": "Links",
+    "first": "first0",
+    "previous": "previous2",
+    "next": "next2",
+    "last": "last4"
+  },
+  "pagination": {
+    "type": "Pagination",
+    "total_count": 100,
+    "page_count": 212,
+    "page_number": 28,
+    "page_size": 6
+  },
+  "sort": {
+    "type": "Sorting",
+    "fields": [
+      {
+        "field": "field2",
+        "order": "asc"
+      },
+      {
+        "field": "field2",
+        "order": "asc"
+      },
+      {
+        "field": "field2",
+        "order": "asc"
+      }
+    ]
   }
 }
 ```

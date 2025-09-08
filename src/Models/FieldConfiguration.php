@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -18,12 +19,12 @@ use stdClass;
 class FieldConfiguration implements \JsonSerializable
 {
     /**
-     * @var bool
+     * @var bool|null
      */
     private $cssMini;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $stack;
 
@@ -33,34 +34,20 @@ class FieldConfiguration implements \JsonSerializable
     private $header;
 
     /**
-     * @var Body
+     * @var Body|null
      */
     private $body;
 
     /**
-     * @var Footer
+     * @var Footer|null
      */
     private $footer;
-
-    /**
-     * @param bool $cssMini
-     * @param string $stack
-     * @param Body $body
-     * @param Footer $footer
-     */
-    public function __construct(bool $cssMini, string $stack, Body $body, Footer $footer)
-    {
-        $this->cssMini = $cssMini;
-        $this->stack = $stack;
-        $this->body = $body;
-        $this->footer = $footer;
-    }
 
     /**
      * Returns Css Mini.
      * CSS Mini
      */
-    public function getCssMini(): bool
+    public function getCssMini(): ?bool
     {
         return $this->cssMini;
     }
@@ -69,10 +56,9 @@ class FieldConfiguration implements \JsonSerializable
      * Sets Css Mini.
      * CSS Mini
      *
-     * @required
      * @maps css_mini
      */
-    public function setCssMini(bool $cssMini): void
+    public function setCssMini(?bool $cssMini): void
     {
         $this->cssMini = $cssMini;
     }
@@ -81,7 +67,7 @@ class FieldConfiguration implements \JsonSerializable
      * Returns Stack.
      * Stack
      */
-    public function getStack(): string
+    public function getStack(): ?string
     {
         return $this->stack;
     }
@@ -90,11 +76,10 @@ class FieldConfiguration implements \JsonSerializable
      * Sets Stack.
      * Stack
      *
-     * @required
      * @maps stack
      * @factory \FortisAPILib\Models\StackEnum::checkValue
      */
-    public function setStack(string $stack): void
+    public function setStack(?string $stack): void
     {
         $this->stack = $stack;
     }
@@ -123,7 +108,7 @@ class FieldConfiguration implements \JsonSerializable
      * Returns Body.
      * Body
      */
-    public function getBody(): Body
+    public function getBody(): ?Body
     {
         return $this->body;
     }
@@ -132,10 +117,9 @@ class FieldConfiguration implements \JsonSerializable
      * Sets Body.
      * Body
      *
-     * @required
      * @maps body
      */
-    public function setBody(Body $body): void
+    public function setBody(?Body $body): void
     {
         $this->body = $body;
     }
@@ -144,7 +128,7 @@ class FieldConfiguration implements \JsonSerializable
      * Returns Footer.
      * Footer
      */
-    public function getFooter(): Footer
+    public function getFooter(): ?Footer
     {
         return $this->footer;
     }
@@ -153,12 +137,59 @@ class FieldConfiguration implements \JsonSerializable
      * Sets Footer.
      * Footer
      *
-     * @required
      * @maps footer
      */
-    public function setFooter(Footer $footer): void
+    public function setFooter(?Footer $footer): void
     {
         $this->footer = $footer;
+    }
+
+    /**
+     * Converts the FieldConfiguration object to a human-readable string representation.
+     *
+     * @return string The string representation of the FieldConfiguration object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'FieldConfiguration',
+            [
+                'cssMini' => $this->cssMini,
+                'stack' => $this->stack,
+                'header' => $this->header,
+                'body' => $this->body,
+                'footer' => $this->footer,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 
     /**
@@ -173,13 +204,22 @@ class FieldConfiguration implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['css_mini']   = $this->cssMini;
-        $json['stack']      = StackEnum::checkValue($this->stack);
-        if (isset($this->header)) {
-            $json['header'] = $this->header;
+        if (isset($this->cssMini)) {
+            $json['css_mini'] = $this->cssMini;
         }
-        $json['body']       = $this->body;
-        $json['footer']     = $this->footer;
+        if (isset($this->stack)) {
+            $json['stack']    = StackEnum::checkValue($this->stack);
+        }
+        if (isset($this->header)) {
+            $json['header']   = $this->header;
+        }
+        if (isset($this->body)) {
+            $json['body']     = $this->body;
+        }
+        if (isset($this->footer)) {
+            $json['footer']   = $this->footer;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

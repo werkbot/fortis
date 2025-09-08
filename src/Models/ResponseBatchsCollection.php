@@ -10,17 +10,18 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class ResponseBatchsCollection implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
-    private $type;
+    private $type = Type1Enum::BATCHSCOLLECTION;
 
     /**
-     * @var MList[]
+     * @var MList[]|null
      */
     private $list;
 
@@ -40,18 +41,10 @@ class ResponseBatchsCollection implements \JsonSerializable
     private $sort;
 
     /**
-     * @param MList[] $list
-     */
-    public function __construct(array $list)
-    {
-        $this->list = $list;
-    }
-
-    /**
      * Returns Type.
      * Resource Type
      */
-    public function getType(): string
+    public function getType(): ?string
     {
         return $this->type;
     }
@@ -61,8 +54,9 @@ class ResponseBatchsCollection implements \JsonSerializable
      * Resource Type
      *
      * @maps type
+     * @factory \FortisAPILib\Models\Type1Enum::checkValue
      */
-    public function setType(string $type): void
+    public function setType(?string $type): void
     {
         $this->type = $type;
     }
@@ -71,9 +65,9 @@ class ResponseBatchsCollection implements \JsonSerializable
      * Returns List.
      * Resource Members
      *
-     * @return MList[]
+     * @return MList[]|null
      */
-    public function getList(): array
+    public function getList(): ?array
     {
         return $this->list;
     }
@@ -82,12 +76,11 @@ class ResponseBatchsCollection implements \JsonSerializable
      * Sets List.
      * Resource Members
      *
-     * @required
      * @maps list
      *
-     * @param MList[] $list
+     * @param MList[]|null $list
      */
-    public function setList(array $list): void
+    public function setList(?array $list): void
     {
         $this->list = $list;
     }
@@ -153,6 +146,54 @@ class ResponseBatchsCollection implements \JsonSerializable
     }
 
     /**
+     * Converts the ResponseBatchsCollection object to a human-readable string representation.
+     *
+     * @return string The string representation of the ResponseBatchsCollection object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'ResponseBatchsCollection',
+            [
+                'type' => $this->type,
+                'list' => $this->list,
+                'links' => $this->links,
+                'pagination' => $this->pagination,
+                'sort' => $this->sort,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -164,8 +205,12 @@ class ResponseBatchsCollection implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['type']           = $this->type;
-        $json['list']           = $this->list;
+        if (isset($this->type)) {
+            $json['type']       = Type1Enum::checkValue($this->type);
+        }
+        if (isset($this->list)) {
+            $json['list']       = $this->list;
+        }
         if (isset($this->links)) {
             $json['links']      = $this->links;
         }
@@ -175,6 +220,7 @@ class ResponseBatchsCollection implements \JsonSerializable
         if (isset($this->sort)) {
             $json['sort']       = $this->sort;
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

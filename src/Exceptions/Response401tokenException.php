@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Exceptions;
 
+use FortisAPILib\ApiHelper;
+
 class Response401tokenException extends ApiException
 {
     /**
@@ -85,5 +87,52 @@ class Response401tokenException extends ApiException
     public function setMessageProperty(?string $messageProperty): void
     {
         $this->messageProperty = $messageProperty;
+    }
+
+    /**
+     * Converts the Response401tokenException object to a human-readable string representation.
+     *
+     * @return string The string representation of the Response401tokenException object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Response401tokenException',
+            [
+                'statusCode' => $this->statusCode,
+                'error' => $this->error,
+                'messageProperty' => $this->messageProperty,
+                'additionalProperties' => $this->additionalProperties
+            ],
+            parent::__toString()
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
     }
 }

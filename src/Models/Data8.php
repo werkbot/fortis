@@ -10,34 +10,45 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class Data8 implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var array
      */
-    private $locationId;
+    private $action = ['value' => ActionEnum::SALE];
 
     /**
-     * @var string
+     * @var bool|null
      */
-    private $ccProductTransactionId;
+    private $digitalWalletsOnly = false;
 
     /**
-     * @var string
+     * @var Method3[]|null
      */
-    private $email;
+    private $methods;
 
     /**
-     * @var float
+     * @var int|null
      */
-    private $amountDue;
+    private $amount;
+
+    /**
+     * @var int|null
+     */
+    private $taxAmount;
+
+    /**
+     * @var int|null
+     */
+    private $secondaryAmount;
 
     /**
      * @var array
      */
-    private $locationApiId = [];
+    private $locationId = [];
 
     /**
      * @var array
@@ -45,231 +56,236 @@ class Data8 implements \JsonSerializable
     private $contactId = [];
 
     /**
-     * @var array
+     * @var bool|null
      */
-    private $contactApiId = [];
+    private $saveAccount;
+
+    /**
+     * @var string|null
+     */
+    private $saveAccountTitle;
+
+    /**
+     * @var string|null
+     */
+    private $title;
 
     /**
      * @var array
      */
-    private $paylinkApiId = [];
-
-    /**
-     * @var array
-     */
-    private $achProductTransactionId = [];
-
-    /**
-     * @var array
-     */
-    private $expireDate = [];
+    private $achSecCode = ['value' => AchSecCodeEnum::WEB];
 
     /**
      * @var bool|null
      */
-    private $displayProductTransactionReceiptDetails;
+    private $bankFundedOnlyOverride;
 
     /**
      * @var bool|null
      */
-    private $displayBillingFields;
-
-    /**
-     * @var array
-     */
-    private $deliveryMethod = [];
-
-    /**
-     * @var array
-     */
-    private $cellPhone = [];
-
-    /**
-     * @var array
-     */
-    private $description = [];
-
-    /**
-     * @var string
-     */
-    private $id;
+    private $allowPartialAuthorizationOverride;
 
     /**
      * @var bool|null
      */
-    private $statusId;
+    private $autoDeclineCvvOverride;
 
     /**
      * @var bool|null
      */
-    private $active;
+    private $autoDeclineStreetOverride;
 
     /**
-     * @var int
+     * @var bool|null
      */
-    private $createdTs;
-
-    /**
-     * @var int
-     */
-    private $modifiedTs;
+    private $autoDeclineZipOverride;
 
     /**
      * @var array
      */
-    private $createdUserId = [];
+    private $message = [];
 
     /**
-     * @var array
+     * @var string|null
      */
-    private $modifiedUserId = [];
+    private $clientToken;
 
     /**
-     * @param string $locationId
-     * @param string $ccProductTransactionId
-     * @param string $email
-     * @param float $amountDue
-     * @param string $id
-     * @param int $createdTs
-     * @param int $modifiedTs
+     * Returns Action.
+     * The action to be performed
      */
-    public function __construct(
-        string $locationId,
-        string $ccProductTransactionId,
-        string $email,
-        float $amountDue,
-        string $id,
-        int $createdTs,
-        int $modifiedTs
-    ) {
-        $this->locationId = $locationId;
-        $this->ccProductTransactionId = $ccProductTransactionId;
-        $this->email = $email;
-        $this->amountDue = $amountDue;
-        $this->id = $id;
-        $this->createdTs = $createdTs;
-        $this->modifiedTs = $modifiedTs;
+    public function getAction(): ?string
+    {
+        if (count($this->action) == 0) {
+            return null;
+        }
+        return $this->action['value'];
+    }
+
+    /**
+     * Sets Action.
+     * The action to be performed
+     *
+     * @maps action
+     * @factory \FortisAPILib\Models\ActionEnum::checkValue
+     */
+    public function setAction(?string $action): void
+    {
+        $this->action['value'] = $action;
+    }
+
+    /**
+     * Unsets Action.
+     * The action to be performed
+     */
+    public function unsetAction(): void
+    {
+        $this->action = [];
+    }
+
+    /**
+     * Returns Digital Wallets Only.
+     */
+    public function getDigitalWalletsOnly(): ?bool
+    {
+        return $this->digitalWalletsOnly;
+    }
+
+    /**
+     * Sets Digital Wallets Only.
+     *
+     * @maps digitalWalletsOnly
+     */
+    public function setDigitalWalletsOnly(?bool $digitalWalletsOnly): void
+    {
+        $this->digitalWalletsOnly = $digitalWalletsOnly;
+    }
+
+    /**
+     * Returns Methods.
+     * By default the system will try to offer all the availables payment methods from your account. But if
+     * you like, you can specify exactly what services you want to use.
+     *
+     * @return Method3[]|null
+     */
+    public function getMethods(): ?array
+    {
+        return $this->methods;
+    }
+
+    /**
+     * Sets Methods.
+     * By default the system will try to offer all the availables payment methods from your account. But if
+     * you like, you can specify exactly what services you want to use.
+     *
+     * @maps methods
+     *
+     * @param Method3[]|null $methods
+     */
+    public function setMethods(?array $methods): void
+    {
+        $this->methods = $methods;
+    }
+
+    /**
+     * Returns Amount.
+     * The total amount to be charged. Allowed on the actions: `sale`, `auth-only`, `refund`
+     */
+    public function getAmount(): ?int
+    {
+        return $this->amount;
+    }
+
+    /**
+     * Sets Amount.
+     * The total amount to be charged. Allowed on the actions: `sale`, `auth-only`, `refund`
+     *
+     * @maps amount
+     */
+    public function setAmount(?int $amount): void
+    {
+        $this->amount = $amount;
+    }
+
+    /**
+     * Returns Tax Amount.
+     * Amount of Sales Tax. If supplied, this amount should be already included in the transaction amount.
+     * Allowed on the actions: `sale`, `auth-only`, `refund`
+     */
+    public function getTaxAmount(): ?int
+    {
+        return $this->taxAmount;
+    }
+
+    /**
+     * Sets Tax Amount.
+     * Amount of Sales Tax. If supplied, this amount should be already included in the transaction amount.
+     * Allowed on the actions: `sale`, `auth-only`, `refund`
+     *
+     * @maps tax_amount
+     * @mapsBy anyOf(anyOf(anyOf(int)),null)
+     */
+    public function setTaxAmount(?int $taxAmount): void
+    {
+        $this->taxAmount = $taxAmount;
+    }
+
+    /**
+     * Returns Secondary Amount.
+     * Retained Amount. Allowed on the actions: `sale`, `auth-only`, `refund`
+     */
+    public function getSecondaryAmount(): ?int
+    {
+        return $this->secondaryAmount;
+    }
+
+    /**
+     * Sets Secondary Amount.
+     * Retained Amount. Allowed on the actions: `sale`, `auth-only`, `refund`
+     *
+     * @maps secondary_amount
+     * @mapsBy anyOf(anyOf(anyOf(int)),null)
+     */
+    public function setSecondaryAmount(?int $secondaryAmount): void
+    {
+        $this->secondaryAmount = $secondaryAmount;
     }
 
     /**
      * Returns Location Id.
      * Location ID
      */
-    public function getLocationId(): string
+    public function getLocationId(): ?string
     {
-        return $this->locationId;
+        if (count($this->locationId) == 0) {
+            return null;
+        }
+        return $this->locationId['value'];
     }
 
     /**
      * Sets Location Id.
      * Location ID
      *
-     * @required
      * @maps location_id
      */
-    public function setLocationId(string $locationId): void
+    public function setLocationId(?string $locationId): void
     {
-        $this->locationId = $locationId;
+        $this->locationId['value'] = $locationId;
     }
 
     /**
-     * Returns Cc Product Transaction Id.
-     * cc_product_transaction_id
+     * Unsets Location Id.
+     * Location ID
      */
-    public function getCcProductTransactionId(): string
+    public function unsetLocationId(): void
     {
-        return $this->ccProductTransactionId;
-    }
-
-    /**
-     * Sets Cc Product Transaction Id.
-     * cc_product_transaction_id
-     *
-     * @required
-     * @maps cc_product_transaction_id
-     */
-    public function setCcProductTransactionId(string $ccProductTransactionId): void
-    {
-        $this->ccProductTransactionId = $ccProductTransactionId;
-    }
-
-    /**
-     * Returns Email.
-     * Email
-     */
-    public function getEmail(): string
-    {
-        return $this->email;
-    }
-
-    /**
-     * Sets Email.
-     * Email
-     *
-     * @required
-     * @maps email
-     */
-    public function setEmail(string $email): void
-    {
-        $this->email = $email;
-    }
-
-    /**
-     * Returns Amount Due.
-     * Amount Due
-     */
-    public function getAmountDue(): float
-    {
-        return $this->amountDue;
-    }
-
-    /**
-     * Sets Amount Due.
-     * Amount Due
-     *
-     * @required
-     * @maps amount_due
-     */
-    public function setAmountDue(float $amountDue): void
-    {
-        $this->amountDue = $amountDue;
-    }
-
-    /**
-     * Returns Location Api Id.
-     * Location Api Id
-     */
-    public function getLocationApiId(): ?string
-    {
-        if (count($this->locationApiId) == 0) {
-            return null;
-        }
-        return $this->locationApiId['value'];
-    }
-
-    /**
-     * Sets Location Api Id.
-     * Location Api Id
-     *
-     * @maps location_api_id
-     */
-    public function setLocationApiId(?string $locationApiId): void
-    {
-        $this->locationApiId['value'] = $locationApiId;
-    }
-
-    /**
-     * Unsets Location Api Id.
-     * Location Api Id
-     */
-    public function unsetLocationApiId(): void
-    {
-        $this->locationApiId = [];
+        $this->locationId = [];
     }
 
     /**
      * Returns Contact Id.
-     * Contact Id
+     * Contact ID
      */
     public function getContactId(): ?string
     {
@@ -281,7 +297,7 @@ class Data8 implements \JsonSerializable
 
     /**
      * Sets Contact Id.
-     * Contact Id
+     * Contact ID
      *
      * @maps contact_id
      */
@@ -292,7 +308,7 @@ class Data8 implements \JsonSerializable
 
     /**
      * Unsets Contact Id.
-     * Contact Id
+     * Contact ID
      */
     public function unsetContactId(): void
     {
@@ -300,459 +316,326 @@ class Data8 implements \JsonSerializable
     }
 
     /**
-     * Returns Contact Api Id.
-     * Contact Api Id
+     * Returns Save Account.
+     * Specifies to tokenize card/bank information within the transaction. Allowed on the actions: `sale`,
+     * `auth-only`, `avs-only`, `refund`
      */
-    public function getContactApiId(): ?string
+    public function getSaveAccount(): ?bool
     {
-        if (count($this->contactApiId) == 0) {
+        return $this->saveAccount;
+    }
+
+    /**
+     * Sets Save Account.
+     * Specifies to tokenize card/bank information within the transaction. Allowed on the actions: `sale`,
+     * `auth-only`, `avs-only`, `refund`
+     *
+     * @maps save_account
+     * @mapsBy anyOf(anyOf(bool),null)
+     */
+    public function setSaveAccount(?bool $saveAccount): void
+    {
+        $this->saveAccount = $saveAccount;
+    }
+
+    /**
+     * Returns Save Account Title.
+     * Specifies to tokenize card/bank information within the transaction. Allowed on the actions: `sale`,
+     * `auth-only`, `avs-only`, `refund`
+     */
+    public function getSaveAccountTitle(): ?string
+    {
+        return $this->saveAccountTitle;
+    }
+
+    /**
+     * Sets Save Account Title.
+     * Specifies to tokenize card/bank information within the transaction. Allowed on the actions: `sale`,
+     * `auth-only`, `avs-only`, `refund`
+     *
+     * @maps save_account_title
+     * @mapsBy anyOf(anyOf(string),null)
+     */
+    public function setSaveAccountTitle(?string $saveAccountTitle): void
+    {
+        $this->saveAccountTitle = $saveAccountTitle;
+    }
+
+    /**
+     * Returns Title.
+     * A title for the token.
+     */
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    /**
+     * Sets Title.
+     * A title for the token.
+     *
+     * @maps title
+     * @mapsBy anyOf(anyOf(string),null)
+     */
+    public function setTitle(?string $title): void
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * Returns Ach Sec Code.
+     * SEC code for the transaction if it's an ACH transaction
+     */
+    public function getAchSecCode(): ?string
+    {
+        if (count($this->achSecCode) == 0) {
             return null;
         }
-        return $this->contactApiId['value'];
+        return $this->achSecCode['value'];
     }
 
     /**
-     * Sets Contact Api Id.
-     * Contact Api Id
+     * Sets Ach Sec Code.
+     * SEC code for the transaction if it's an ACH transaction
      *
-     * @maps contact_api_id
+     * @maps ach_sec_code
+     * @factory \FortisAPILib\Models\AchSecCodeEnum::checkValue
      */
-    public function setContactApiId(?string $contactApiId): void
+    public function setAchSecCode(?string $achSecCode): void
     {
-        $this->contactApiId['value'] = $contactApiId;
+        $this->achSecCode['value'] = $achSecCode;
     }
 
     /**
-     * Unsets Contact Api Id.
-     * Contact Api Id
+     * Unsets Ach Sec Code.
+     * SEC code for the transaction if it's an ACH transaction
      */
-    public function unsetContactApiId(): void
+    public function unsetAchSecCode(): void
     {
-        $this->contactApiId = [];
+        $this->achSecCode = [];
     }
 
     /**
-     * Returns Paylink Api Id.
-     * Paylinke Api Id
+     * Returns Bank Funded Only Override.
+     * Bank Funded Only Override
      */
-    public function getPaylinkApiId(): ?string
+    public function getBankFundedOnlyOverride(): ?bool
     {
-        if (count($this->paylinkApiId) == 0) {
+        return $this->bankFundedOnlyOverride;
+    }
+
+    /**
+     * Sets Bank Funded Only Override.
+     * Bank Funded Only Override
+     *
+     * @maps bank_funded_only_override
+     * @mapsBy anyOf(anyOf(bool),null)
+     */
+    public function setBankFundedOnlyOverride(?bool $bankFundedOnlyOverride): void
+    {
+        $this->bankFundedOnlyOverride = $bankFundedOnlyOverride;
+    }
+
+    /**
+     * Returns Allow Partial Authorization Override.
+     * Allow partial Authorization Override
+     */
+    public function getAllowPartialAuthorizationOverride(): ?bool
+    {
+        return $this->allowPartialAuthorizationOverride;
+    }
+
+    /**
+     * Sets Allow Partial Authorization Override.
+     * Allow partial Authorization Override
+     *
+     * @maps allow_partial_authorization_override
+     * @mapsBy anyOf(anyOf(bool),null)
+     */
+    public function setAllowPartialAuthorizationOverride(?bool $allowPartialAuthorizationOverride): void
+    {
+        $this->allowPartialAuthorizationOverride = $allowPartialAuthorizationOverride;
+    }
+
+    /**
+     * Returns Auto Decline Cvv Override.
+     * Auto Decline Cvv Override
+     */
+    public function getAutoDeclineCvvOverride(): ?bool
+    {
+        return $this->autoDeclineCvvOverride;
+    }
+
+    /**
+     * Sets Auto Decline Cvv Override.
+     * Auto Decline Cvv Override
+     *
+     * @maps auto_decline_cvv_override
+     * @mapsBy anyOf(anyOf(bool),null)
+     */
+    public function setAutoDeclineCvvOverride(?bool $autoDeclineCvvOverride): void
+    {
+        $this->autoDeclineCvvOverride = $autoDeclineCvvOverride;
+    }
+
+    /**
+     * Returns Auto Decline Street Override.
+     * Auto Decline Street Override
+     */
+    public function getAutoDeclineStreetOverride(): ?bool
+    {
+        return $this->autoDeclineStreetOverride;
+    }
+
+    /**
+     * Sets Auto Decline Street Override.
+     * Auto Decline Street Override
+     *
+     * @maps auto_decline_street_override
+     * @mapsBy anyOf(anyOf(bool),null)
+     */
+    public function setAutoDeclineStreetOverride(?bool $autoDeclineStreetOverride): void
+    {
+        $this->autoDeclineStreetOverride = $autoDeclineStreetOverride;
+    }
+
+    /**
+     * Returns Auto Decline Zip Override.
+     * Auto Decline Zip Override
+     */
+    public function getAutoDeclineZipOverride(): ?bool
+    {
+        return $this->autoDeclineZipOverride;
+    }
+
+    /**
+     * Sets Auto Decline Zip Override.
+     * Auto Decline Zip Override
+     *
+     * @maps auto_decline_zip_override
+     * @mapsBy anyOf(anyOf(bool),null)
+     */
+    public function setAutoDeclineZipOverride(?bool $autoDeclineZipOverride): void
+    {
+        $this->autoDeclineZipOverride = $autoDeclineZipOverride;
+    }
+
+    /**
+     * Returns Message.
+     * A custom text message that displays after the payment is processed.
+     */
+    public function getMessage(): ?string
+    {
+        if (count($this->message) == 0) {
             return null;
         }
-        return $this->paylinkApiId['value'];
+        return $this->message['value'];
     }
 
     /**
-     * Sets Paylink Api Id.
-     * Paylinke Api Id
+     * Sets Message.
+     * A custom text message that displays after the payment is processed.
      *
-     * @maps paylink_api_id
+     * @maps message
      */
-    public function setPaylinkApiId(?string $paylinkApiId): void
+    public function setMessage(?string $message): void
     {
-        $this->paylinkApiId['value'] = $paylinkApiId;
+        $this->message['value'] = $message;
     }
 
     /**
-     * Unsets Paylink Api Id.
-     * Paylinke Api Id
+     * Unsets Message.
+     * A custom text message that displays after the payment is processed.
      */
-    public function unsetPaylinkApiId(): void
+    public function unsetMessage(): void
     {
-        $this->paylinkApiId = [];
+        $this->message = [];
     }
 
     /**
-     * Returns Ach Product Transaction Id.
-     * Ach Product Transaction Id
+     * Returns Client Token.
+     * A JWT to be used to create the elements.
+     * > This is a one-time only use token.
+     * > Do not store for long term use, it expires after 48 hours.
      */
-    public function getAchProductTransactionId(): ?string
+    public function getClientToken(): ?string
     {
-        if (count($this->achProductTransactionId) == 0) {
-            return null;
+        return $this->clientToken;
+    }
+
+    /**
+     * Sets Client Token.
+     * A JWT to be used to create the elements.
+     * > This is a one-time only use token.
+     * > Do not store for long term use, it expires after 48 hours.
+     *
+     * @maps client_token
+     */
+    public function setClientToken(?string $clientToken): void
+    {
+        $this->clientToken = $clientToken;
+    }
+
+    /**
+     * Converts the Data8 object to a human-readable string representation.
+     *
+     * @return string The string representation of the Data8 object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Data8',
+            [
+                'action' => $this->getAction(),
+                'digitalWalletsOnly' => $this->digitalWalletsOnly,
+                'methods' => $this->methods,
+                'amount' => $this->amount,
+                'taxAmount' => $this->taxAmount,
+                'secondaryAmount' => $this->secondaryAmount,
+                'locationId' => $this->getLocationId(),
+                'contactId' => $this->getContactId(),
+                'saveAccount' => $this->saveAccount,
+                'saveAccountTitle' => $this->saveAccountTitle,
+                'title' => $this->title,
+                'achSecCode' => $this->getAchSecCode(),
+                'bankFundedOnlyOverride' => $this->bankFundedOnlyOverride,
+                'allowPartialAuthorizationOverride' => $this->allowPartialAuthorizationOverride,
+                'autoDeclineCvvOverride' => $this->autoDeclineCvvOverride,
+                'autoDeclineStreetOverride' => $this->autoDeclineStreetOverride,
+                'autoDeclineZipOverride' => $this->autoDeclineZipOverride,
+                'message' => $this->getMessage(),
+                'clientToken' => $this->clientToken,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
         }
-        return $this->achProductTransactionId['value'];
-    }
-
-    /**
-     * Sets Ach Product Transaction Id.
-     * Ach Product Transaction Id
-     *
-     * @maps ach_product_transaction_id
-     */
-    public function setAchProductTransactionId(?string $achProductTransactionId): void
-    {
-        $this->achProductTransactionId['value'] = $achProductTransactionId;
-    }
-
-    /**
-     * Unsets Ach Product Transaction Id.
-     * Ach Product Transaction Id
-     */
-    public function unsetAchProductTransactionId(): void
-    {
-        $this->achProductTransactionId = [];
-    }
-
-    /**
-     * Returns Expire Date.
-     * Expire Date
-     */
-    public function getExpireDate(): ?string
-    {
-        if (count($this->expireDate) == 0) {
-            return null;
-        }
-        return $this->expireDate['value'];
-    }
-
-    /**
-     * Sets Expire Date.
-     * Expire Date
-     *
-     * @maps expire_date
-     */
-    public function setExpireDate(?string $expireDate): void
-    {
-        $this->expireDate['value'] = $expireDate;
-    }
-
-    /**
-     * Unsets Expire Date.
-     * Expire Date
-     */
-    public function unsetExpireDate(): void
-    {
-        $this->expireDate = [];
-    }
-
-    /**
-     * Returns Display Product Transaction Receipt Details.
-     * Display Product Transaction Receipt Details
-     */
-    public function getDisplayProductTransactionReceiptDetails(): ?bool
-    {
-        return $this->displayProductTransactionReceiptDetails;
-    }
-
-    /**
-     * Sets Display Product Transaction Receipt Details.
-     * Display Product Transaction Receipt Details
-     *
-     * @maps display_product_transaction_receipt_details
-     */
-    public function setDisplayProductTransactionReceiptDetails(?bool $displayProductTransactionReceiptDetails): void
-    {
-        $this->displayProductTransactionReceiptDetails = $displayProductTransactionReceiptDetails;
-    }
-
-    /**
-     * Returns Display Billing Fields.
-     * Display Billing Fields
-     */
-    public function getDisplayBillingFields(): ?bool
-    {
-        return $this->displayBillingFields;
-    }
-
-    /**
-     * Sets Display Billing Fields.
-     * Display Billing Fields
-     *
-     * @maps display_billing_fields
-     */
-    public function setDisplayBillingFields(?bool $displayBillingFields): void
-    {
-        $this->displayBillingFields = $displayBillingFields;
-    }
-
-    /**
-     * Returns Delivery Method.
-     * Delivery Method
-     * >0 - Do not send
-     * >
-     * >1 - Email
-     * >
-     * >2 - SMS
-     * >
-     * >3 - Both
-     * >
-     */
-    public function getDeliveryMethod(): ?int
-    {
-        if (count($this->deliveryMethod) == 0) {
-            return null;
-        }
-        return $this->deliveryMethod['value'];
-    }
-
-    /**
-     * Sets Delivery Method.
-     * Delivery Method
-     * >0 - Do not send
-     * >
-     * >1 - Email
-     * >
-     * >2 - SMS
-     * >
-     * >3 - Both
-     * >
-     *
-     * @maps delivery_method
-     * @factory \FortisAPILib\Models\DeliveryMethodEnum::checkValue
-     */
-    public function setDeliveryMethod(?int $deliveryMethod): void
-    {
-        $this->deliveryMethod['value'] = $deliveryMethod;
-    }
-
-    /**
-     * Unsets Delivery Method.
-     * Delivery Method
-     * >0 - Do not send
-     * >
-     * >1 - Email
-     * >
-     * >2 - SMS
-     * >
-     * >3 - Both
-     * >
-     */
-    public function unsetDeliveryMethod(): void
-    {
-        $this->deliveryMethod = [];
-    }
-
-    /**
-     * Returns Cell Phone.
-     * Cell Phone
-     */
-    public function getCellPhone(): ?string
-    {
-        if (count($this->cellPhone) == 0) {
-            return null;
-        }
-        return $this->cellPhone['value'];
-    }
-
-    /**
-     * Sets Cell Phone.
-     * Cell Phone
-     *
-     * @maps cell_phone
-     */
-    public function setCellPhone(?string $cellPhone): void
-    {
-        $this->cellPhone['value'] = $cellPhone;
-    }
-
-    /**
-     * Unsets Cell Phone.
-     * Cell Phone
-     */
-    public function unsetCellPhone(): void
-    {
-        $this->cellPhone = [];
-    }
-
-    /**
-     * Returns Description.
-     * Description
-     */
-    public function getDescription(): ?string
-    {
-        if (count($this->description) == 0) {
-            return null;
-        }
-        return $this->description['value'];
-    }
-
-    /**
-     * Sets Description.
-     * Description
-     *
-     * @maps description
-     */
-    public function setDescription(?string $description): void
-    {
-        $this->description['value'] = $description;
-    }
-
-    /**
-     * Unsets Description.
-     * Description
-     */
-    public function unsetDescription(): void
-    {
-        $this->description = [];
-    }
-
-    /**
-     * Returns Id.
-     * Paylink Id
-     */
-    public function getId(): string
-    {
-        return $this->id;
-    }
-
-    /**
-     * Sets Id.
-     * Paylink Id
-     *
-     * @required
-     * @maps id
-     */
-    public function setId(string $id): void
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * Returns Status Id.
-     * Status Id
-     */
-    public function getStatusId(): ?bool
-    {
-        return $this->statusId;
-    }
-
-    /**
-     * Sets Status Id.
-     * Status Id
-     *
-     * @maps status_id
-     */
-    public function setStatusId(?bool $statusId): void
-    {
-        $this->statusId = $statusId;
-    }
-
-    /**
-     * Returns Active.
-     * Active
-     */
-    public function getActive(): ?bool
-    {
-        return $this->active;
-    }
-
-    /**
-     * Sets Active.
-     * Active
-     *
-     * @maps active
-     */
-    public function setActive(?bool $active): void
-    {
-        $this->active = $active;
-    }
-
-    /**
-     * Returns Created Ts.
-     * Created Time Stamp
-     */
-    public function getCreatedTs(): int
-    {
-        return $this->createdTs;
-    }
-
-    /**
-     * Sets Created Ts.
-     * Created Time Stamp
-     *
-     * @required
-     * @maps created_ts
-     */
-    public function setCreatedTs(int $createdTs): void
-    {
-        $this->createdTs = $createdTs;
-    }
-
-    /**
-     * Returns Modified Ts.
-     * Modified Time Stamp
-     */
-    public function getModifiedTs(): int
-    {
-        return $this->modifiedTs;
-    }
-
-    /**
-     * Sets Modified Ts.
-     * Modified Time Stamp
-     *
-     * @required
-     * @maps modified_ts
-     */
-    public function setModifiedTs(int $modifiedTs): void
-    {
-        $this->modifiedTs = $modifiedTs;
-    }
-
-    /**
-     * Returns Created User Id.
-     * User ID Created the register
-     */
-    public function getCreatedUserId(): ?string
-    {
-        if (count($this->createdUserId) == 0) {
-            return null;
-        }
-        return $this->createdUserId['value'];
-    }
-
-    /**
-     * Sets Created User Id.
-     * User ID Created the register
-     *
-     * @maps created_user_id
-     */
-    public function setCreatedUserId(?string $createdUserId): void
-    {
-        $this->createdUserId['value'] = $createdUserId;
-    }
-
-    /**
-     * Unsets Created User Id.
-     * User ID Created the register
-     */
-    public function unsetCreatedUserId(): void
-    {
-        $this->createdUserId = [];
-    }
-
-    /**
-     * Returns Modified User Id.
-     * Last User ID that updated the register
-     */
-    public function getModifiedUserId(): ?string
-    {
-        if (count($this->modifiedUserId) == 0) {
-            return null;
-        }
-        return $this->modifiedUserId['value'];
-    }
-
-    /**
-     * Sets Modified User Id.
-     * Last User ID that updated the register
-     *
-     * @maps modified_user_id
-     */
-    public function setModifiedUserId(?string $modifiedUserId): void
-    {
-        $this->modifiedUserId['value'] = $modifiedUserId;
-    }
-
-    /**
-     * Unsets Modified User Id.
-     * Last User ID that updated the register
-     */
-    public function unsetModifiedUserId(): void
-    {
-        $this->modifiedUserId = [];
+        return false;
     }
 
     /**
@@ -767,61 +650,104 @@ class Data8 implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['location_id']                                     = $this->locationId;
-        $json['cc_product_transaction_id']                       = $this->ccProductTransactionId;
-        $json['email']                                           = $this->email;
-        $json['amount_due']                                      = $this->amountDue;
-        if (!empty($this->locationApiId)) {
-            $json['location_api_id']                             = $this->locationApiId['value'];
+        if (!empty($this->action)) {
+            $json['action']                               = ActionEnum::checkValue($this->action['value']);
         }
-        if (!empty($this->contactId)) {
-            $json['contact_id']                                  = $this->contactId['value'];
+        if (isset($this->digitalWalletsOnly)) {
+            $json['digitalWalletsOnly']                   = $this->digitalWalletsOnly;
         }
-        if (!empty($this->contactApiId)) {
-            $json['contact_api_id']                              = $this->contactApiId['value'];
+        if (isset($this->methods)) {
+            $json['methods']                              = $this->methods;
         }
-        if (!empty($this->paylinkApiId)) {
-            $json['paylink_api_id']                              = $this->paylinkApiId['value'];
+        if (isset($this->amount)) {
+            $json['amount']                               = $this->amount;
         }
-        if (!empty($this->achProductTransactionId)) {
-            $json['ach_product_transaction_id']                  = $this->achProductTransactionId['value'];
-        }
-        if (!empty($this->expireDate)) {
-            $json['expire_date']                                 = $this->expireDate['value'];
-        }
-        if (isset($this->displayProductTransactionReceiptDetails)) {
-            $json['display_product_transaction_receipt_details'] = $this->displayProductTransactionReceiptDetails;
-        }
-        if (isset($this->displayBillingFields)) {
-            $json['display_billing_fields']                      = $this->displayBillingFields;
-        }
-        if (!empty($this->deliveryMethod)) {
-            $json['delivery_method']                             =
-                DeliveryMethodEnum::checkValue(
-                    $this->deliveryMethod['value']
+        if (isset($this->taxAmount)) {
+            $json['tax_amount']                           =
+                ApiHelper::getJsonHelper()->verifyTypes(
+                    $this->taxAmount,
+                    'anyOf(anyOf(anyOf(int)),null)'
                 );
         }
-        if (!empty($this->cellPhone)) {
-            $json['cell_phone']                                  = $this->cellPhone['value'];
+        if (isset($this->secondaryAmount)) {
+            $json['secondary_amount']                     =
+                ApiHelper::getJsonHelper()->verifyTypes(
+                    $this->secondaryAmount,
+                    'anyOf(anyOf(anyOf(int)),null)'
+                );
         }
-        if (!empty($this->description)) {
-            $json['description']                                 = $this->description['value'];
+        if (!empty($this->locationId)) {
+            $json['location_id']                          = $this->locationId['value'];
         }
-        $json['id']                                              = $this->id;
-        if (isset($this->statusId)) {
-            $json['status_id']                                   = $this->statusId;
+        if (!empty($this->contactId)) {
+            $json['contact_id']                           = $this->contactId['value'];
         }
-        if (isset($this->active)) {
-            $json['active']                                      = $this->active;
+        if (isset($this->saveAccount)) {
+            $json['save_account']                         =
+                ApiHelper::getJsonHelper()->verifyTypes(
+                    $this->saveAccount,
+                    'anyOf(anyOf(bool),null)'
+                );
         }
-        $json['created_ts']                                      = $this->createdTs;
-        $json['modified_ts']                                     = $this->modifiedTs;
-        if (!empty($this->createdUserId)) {
-            $json['created_user_id']                             = $this->createdUserId['value'];
+        if (isset($this->saveAccountTitle)) {
+            $json['save_account_title']                   =
+                ApiHelper::getJsonHelper()->verifyTypes(
+                    $this->saveAccountTitle,
+                    'anyOf(anyOf(string),null)'
+                );
         }
-        if (!empty($this->modifiedUserId)) {
-            $json['modified_user_id']                            = $this->modifiedUserId['value'];
+        if (isset($this->title)) {
+            $json['title']                                =
+                ApiHelper::getJsonHelper()->verifyTypes(
+                    $this->title,
+                    'anyOf(anyOf(string),null)'
+                );
         }
+        if (!empty($this->achSecCode)) {
+            $json['ach_sec_code']                         = AchSecCodeEnum::checkValue($this->achSecCode['value']);
+        }
+        if (isset($this->bankFundedOnlyOverride)) {
+            $json['bank_funded_only_override']            =
+                ApiHelper::getJsonHelper()->verifyTypes(
+                    $this->bankFundedOnlyOverride,
+                    'anyOf(anyOf(bool),null)'
+                );
+        }
+        if (isset($this->allowPartialAuthorizationOverride)) {
+            $json['allow_partial_authorization_override'] =
+                ApiHelper::getJsonHelper()->verifyTypes(
+                    $this->allowPartialAuthorizationOverride,
+                    'anyOf(anyOf(bool),null)'
+                );
+        }
+        if (isset($this->autoDeclineCvvOverride)) {
+            $json['auto_decline_cvv_override']            =
+                ApiHelper::getJsonHelper()->verifyTypes(
+                    $this->autoDeclineCvvOverride,
+                    'anyOf(anyOf(bool),null)'
+                );
+        }
+        if (isset($this->autoDeclineStreetOverride)) {
+            $json['auto_decline_street_override']         =
+                ApiHelper::getJsonHelper()->verifyTypes(
+                    $this->autoDeclineStreetOverride,
+                    'anyOf(anyOf(bool),null)'
+                );
+        }
+        if (isset($this->autoDeclineZipOverride)) {
+            $json['auto_decline_zip_override']            =
+                ApiHelper::getJsonHelper()->verifyTypes(
+                    $this->autoDeclineZipOverride,
+                    'anyOf(anyOf(bool),null)'
+                );
+        }
+        if (!empty($this->message)) {
+            $json['message']                              = $this->message['value'];
+        }
+        if (isset($this->clientToken)) {
+            $json['client_token']                         = $this->clientToken;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

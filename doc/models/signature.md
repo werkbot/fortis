@@ -11,12 +11,12 @@ Signature Information on `expand`
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `signature` | `string` | Required | Signature | getSignature(): string | setSignature(string signature): void |
-| `resource` | [`string (ResourceEnum)`](../../doc/models/resource-enum.md) | Required | Resource | getResource(): string | setResource(string resource): void |
-| `resourceId` | `string` | Required | Resource ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getResourceId(): string | setResourceId(string resourceId): void |
-| `id` | `string` | Required | Signature ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getId(): string | setId(string id): void |
-| `createdTs` | `int` | Required | Created Time Stamp | getCreatedTs(): int | setCreatedTs(int createdTs): void |
-| `modifiedTs` | `int` | Required | Modified Time Stamp | getModifiedTs(): int | setModifiedTs(int modifiedTs): void |
+| `signature` | `?string` | Optional | Signature | getSignature(): ?string | setSignature(?string signature): void |
+| `resource` | [`?string(ResourceEnum)`](../../doc/models/resource-enum.md) | Optional | Resource<br><br>> Recurring, Transaction, AccountVault, DeviceTerm | getResource(): ?string | setResource(?string resource): void |
+| `resourceId` | `?string` | Optional | Resource ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getResourceId(): ?string | setResourceId(?string resourceId): void |
+| `id` | `?string` | Optional | Signature ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getId(): ?string | setId(?string id): void |
+| `createdTs` | `?int` | Optional | Created Time Stamp | getCreatedTs(): ?int | setCreatedTs(?int createdTs): void |
+| `modifiedTs` | `?int` | Optional | Modified Time Stamp | getModifiedTs(): ?int | setModifiedTs(?int modifiedTs): void |
 
 ## Example (as JSON)
 

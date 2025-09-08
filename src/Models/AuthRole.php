@@ -10,32 +10,33 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class AuthRole implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $userId;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $authRoleCode;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $code;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $createdTs;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $modifiedTs;
 
@@ -50,26 +51,10 @@ class AuthRole implements \JsonSerializable
     private $modifiedUserId = [];
 
     /**
-     * @param string $userId
-     * @param int $authRoleCode
-     * @param int $code
-     * @param int $createdTs
-     * @param int $modifiedTs
-     */
-    public function __construct(string $userId, int $authRoleCode, int $code, int $createdTs, int $modifiedTs)
-    {
-        $this->userId = $userId;
-        $this->authRoleCode = $authRoleCode;
-        $this->code = $code;
-        $this->createdTs = $createdTs;
-        $this->modifiedTs = $modifiedTs;
-    }
-
-    /**
      * Returns User Id.
      * User ID
      */
-    public function getUserId(): string
+    public function getUserId(): ?string
     {
         return $this->userId;
     }
@@ -78,10 +63,9 @@ class AuthRole implements \JsonSerializable
      * Sets User Id.
      * User ID
      *
-     * @required
      * @maps user_id
      */
-    public function setUserId(string $userId): void
+    public function setUserId(?string $userId): void
     {
         $this->userId = $userId;
     }
@@ -90,7 +74,7 @@ class AuthRole implements \JsonSerializable
      * Returns Auth Role Code.
      * Auth Role Code
      */
-    public function getAuthRoleCode(): int
+    public function getAuthRoleCode(): ?int
     {
         return $this->authRoleCode;
     }
@@ -99,10 +83,9 @@ class AuthRole implements \JsonSerializable
      * Sets Auth Role Code.
      * Auth Role Code
      *
-     * @required
      * @maps auth_role_code
      */
-    public function setAuthRoleCode(int $authRoleCode): void
+    public function setAuthRoleCode(?int $authRoleCode): void
     {
         $this->authRoleCode = $authRoleCode;
     }
@@ -111,7 +94,7 @@ class AuthRole implements \JsonSerializable
      * Returns Code.
      * Auth Role User Code
      */
-    public function getCode(): int
+    public function getCode(): ?int
     {
         return $this->code;
     }
@@ -120,10 +103,9 @@ class AuthRole implements \JsonSerializable
      * Sets Code.
      * Auth Role User Code
      *
-     * @required
      * @maps code
      */
-    public function setCode(int $code): void
+    public function setCode(?int $code): void
     {
         $this->code = $code;
     }
@@ -132,7 +114,7 @@ class AuthRole implements \JsonSerializable
      * Returns Created Ts.
      * Created Time Stamp
      */
-    public function getCreatedTs(): int
+    public function getCreatedTs(): ?int
     {
         return $this->createdTs;
     }
@@ -141,10 +123,9 @@ class AuthRole implements \JsonSerializable
      * Sets Created Ts.
      * Created Time Stamp
      *
-     * @required
      * @maps created_ts
      */
-    public function setCreatedTs(int $createdTs): void
+    public function setCreatedTs(?int $createdTs): void
     {
         $this->createdTs = $createdTs;
     }
@@ -153,7 +134,7 @@ class AuthRole implements \JsonSerializable
      * Returns Modified Ts.
      * Modified Time Stamp
      */
-    public function getModifiedTs(): int
+    public function getModifiedTs(): ?int
     {
         return $this->modifiedTs;
     }
@@ -162,10 +143,9 @@ class AuthRole implements \JsonSerializable
      * Sets Modified Ts.
      * Modified Time Stamp
      *
-     * @required
      * @maps modified_ts
      */
-    public function setModifiedTs(int $modifiedTs): void
+    public function setModifiedTs(?int $modifiedTs): void
     {
         $this->modifiedTs = $modifiedTs;
     }
@@ -235,6 +215,56 @@ class AuthRole implements \JsonSerializable
     }
 
     /**
+     * Converts the AuthRole object to a human-readable string representation.
+     *
+     * @return string The string representation of the AuthRole object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'AuthRole',
+            [
+                'userId' => $this->userId,
+                'authRoleCode' => $this->authRoleCode,
+                'code' => $this->code,
+                'createdTs' => $this->createdTs,
+                'modifiedTs' => $this->modifiedTs,
+                'createdUserId' => $this->getCreatedUserId(),
+                'modifiedUserId' => $this->getModifiedUserId(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -246,17 +276,28 @@ class AuthRole implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['user_id']              = $this->userId;
-        $json['auth_role_code']       = $this->authRoleCode;
-        $json['code']                 = $this->code;
-        $json['created_ts']           = $this->createdTs;
-        $json['modified_ts']          = $this->modifiedTs;
+        if (isset($this->userId)) {
+            $json['user_id']          = $this->userId;
+        }
+        if (isset($this->authRoleCode)) {
+            $json['auth_role_code']   = $this->authRoleCode;
+        }
+        if (isset($this->code)) {
+            $json['code']             = $this->code;
+        }
+        if (isset($this->createdTs)) {
+            $json['created_ts']       = $this->createdTs;
+        }
+        if (isset($this->modifiedTs)) {
+            $json['modified_ts']      = $this->modifiedTs;
+        }
         if (!empty($this->createdUserId)) {
             $json['created_user_id']  = $this->createdUserId['value'];
         }
         if (!empty($this->modifiedUserId)) {
             $json['modified_user_id'] = $this->modifiedUserId['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

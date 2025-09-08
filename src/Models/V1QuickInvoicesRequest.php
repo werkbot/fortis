@@ -10,14 +10,15 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 class V1QuickInvoicesRequest implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var array
      */
-    private $locationId;
+    private $locationId = [];
 
     /**
      * @var string
@@ -25,9 +26,9 @@ class V1QuickInvoicesRequest implements \JsonSerializable
     private $title;
 
     /**
-     * @var string
+     * @var array
      */
-    private $ccProductTransactionId;
+    private $ccProductTransactionId = [];
 
     /**
      * @var array
@@ -40,7 +41,7 @@ class V1QuickInvoicesRequest implements \JsonSerializable
     private $dueDate;
 
     /**
-     * @var ItemList[]
+     * @var ItemList4[]
      */
     private $itemList;
 
@@ -48,6 +49,11 @@ class V1QuickInvoicesRequest implements \JsonSerializable
      * @var bool|null
      */
     private $allowOverpayment;
+
+    /**
+     * @var array
+     */
+    private $bankFundedOnlyOverride = [];
 
     /**
      * @var array
@@ -63,6 +69,11 @@ class V1QuickInvoicesRequest implements \JsonSerializable
      * @var array
      */
     private $contactApiId = [];
+
+    /**
+     * @var array
+     */
+    private $quickInvoiceApiId = [];
 
     /**
      * @var array
@@ -117,12 +128,12 @@ class V1QuickInvoicesRequest implements \JsonSerializable
     /**
      * @var array
      */
-    private $paymentStatusId = [];
+    private $statusId = [];
 
     /**
      * @var array
      */
-    private $statusId = [];
+    private $statusCode = [];
 
     /**
      * @var array
@@ -150,7 +161,7 @@ class V1QuickInvoicesRequest implements \JsonSerializable
     private $sendTextToPay;
 
     /**
-     * @var array[]|null
+     * @var File2[]|null
      */
     private $files;
 
@@ -167,7 +178,7 @@ class V1QuickInvoicesRequest implements \JsonSerializable
     /**
      * @var array
      */
-    private $singlePaymentMaxAmount = ['value' => 9999999.99];
+    private $singlePaymentMaxAmount = ['value' => 999999999];
 
     /**
      * @var array
@@ -175,22 +186,38 @@ class V1QuickInvoicesRequest implements \JsonSerializable
     private $cellPhone = [];
 
     /**
-     * @param string $locationId
-     * @param string $title
-     * @param string $ccProductTransactionId
-     * @param string $dueDate
-     * @param ItemList[] $itemList
+     * @var array
      */
-    public function __construct(
-        string $locationId,
-        string $title,
-        string $ccProductTransactionId,
-        string $dueDate,
-        array $itemList
-    ) {
-        $this->locationId = $locationId;
+    private $tags = [];
+
+    /**
+     * @var array
+     */
+    private $quickInvoiceC1 = [];
+
+    /**
+     * @var array
+     */
+    private $quickInvoiceC2 = [];
+
+    /**
+     * @var array
+     */
+    private $quickInvoiceC3 = [];
+
+    /**
+     * @var bool|null
+     */
+    private $autoReopen;
+
+    /**
+     * @param string $title
+     * @param string $dueDate
+     * @param ItemList4[] $itemList
+     */
+    public function __construct(string $title, string $dueDate, array $itemList)
+    {
         $this->title = $title;
-        $this->ccProductTransactionId = $ccProductTransactionId;
         $this->dueDate = $dueDate;
         $this->itemList = $itemList;
     }
@@ -199,21 +226,32 @@ class V1QuickInvoicesRequest implements \JsonSerializable
      * Returns Location Id.
      * Location ID
      */
-    public function getLocationId(): string
+    public function getLocationId(): ?string
     {
-        return $this->locationId;
+        if (count($this->locationId) == 0) {
+            return null;
+        }
+        return $this->locationId['value'];
     }
 
     /**
      * Sets Location Id.
      * Location ID
      *
-     * @required
      * @maps location_id
      */
-    public function setLocationId(string $locationId): void
+    public function setLocationId(?string $locationId): void
     {
-        $this->locationId = $locationId;
+        $this->locationId['value'] = $locationId;
+    }
+
+    /**
+     * Unsets Location Id.
+     * Location ID
+     */
+    public function unsetLocationId(): void
+    {
+        $this->locationId = [];
     }
 
     /**
@@ -241,21 +279,32 @@ class V1QuickInvoicesRequest implements \JsonSerializable
      * Returns Cc Product Transaction Id.
      * Transaction ID
      */
-    public function getCcProductTransactionId(): string
+    public function getCcProductTransactionId(): ?string
     {
-        return $this->ccProductTransactionId;
+        if (count($this->ccProductTransactionId) == 0) {
+            return null;
+        }
+        return $this->ccProductTransactionId['value'];
     }
 
     /**
      * Sets Cc Product Transaction Id.
      * Transaction ID
      *
-     * @required
      * @maps cc_product_transaction_id
      */
-    public function setCcProductTransactionId(string $ccProductTransactionId): void
+    public function setCcProductTransactionId(?string $ccProductTransactionId): void
     {
-        $this->ccProductTransactionId = $ccProductTransactionId;
+        $this->ccProductTransactionId['value'] = $ccProductTransactionId;
+    }
+
+    /**
+     * Unsets Cc Product Transaction Id.
+     * Transaction ID
+     */
+    public function unsetCcProductTransactionId(): void
+    {
+        $this->ccProductTransactionId = [];
     }
 
     /**
@@ -315,7 +364,7 @@ class V1QuickInvoicesRequest implements \JsonSerializable
      * Returns Item List.
      * Item List
      *
-     * @return ItemList[]
+     * @return ItemList4[]
      */
     public function getItemList(): array
     {
@@ -329,7 +378,7 @@ class V1QuickInvoicesRequest implements \JsonSerializable
      * @required
      * @maps item_list
      *
-     * @param ItemList[] $itemList
+     * @param ItemList4[] $itemList
      */
     public function setItemList(array $itemList): void
     {
@@ -354,6 +403,38 @@ class V1QuickInvoicesRequest implements \JsonSerializable
     public function setAllowOverpayment(?bool $allowOverpayment): void
     {
         $this->allowOverpayment = $allowOverpayment;
+    }
+
+    /**
+     * Returns Bank Funded Only Override.
+     * Bank Funded Only override
+     */
+    public function getBankFundedOnlyOverride(): ?bool
+    {
+        if (count($this->bankFundedOnlyOverride) == 0) {
+            return null;
+        }
+        return $this->bankFundedOnlyOverride['value'];
+    }
+
+    /**
+     * Sets Bank Funded Only Override.
+     * Bank Funded Only override
+     *
+     * @maps bank_funded_only_override
+     */
+    public function setBankFundedOnlyOverride(?bool $bankFundedOnlyOverride): void
+    {
+        $this->bankFundedOnlyOverride['value'] = $bankFundedOnlyOverride;
+    }
+
+    /**
+     * Unsets Bank Funded Only Override.
+     * Bank Funded Only override
+     */
+    public function unsetBankFundedOnlyOverride(): void
+    {
+        $this->bankFundedOnlyOverride = [];
     }
 
     /**
@@ -450,6 +531,38 @@ class V1QuickInvoicesRequest implements \JsonSerializable
     public function unsetContactApiId(): void
     {
         $this->contactApiId = [];
+    }
+
+    /**
+     * Returns Quick Invoice Api Id.
+     * Quick Invoice API Id
+     */
+    public function getQuickInvoiceApiId(): ?string
+    {
+        if (count($this->quickInvoiceApiId) == 0) {
+            return null;
+        }
+        return $this->quickInvoiceApiId['value'];
+    }
+
+    /**
+     * Sets Quick Invoice Api Id.
+     * Quick Invoice API Id
+     *
+     * @maps quick_invoice_api_id
+     */
+    public function setQuickInvoiceApiId(?string $quickInvoiceApiId): void
+    {
+        $this->quickInvoiceApiId['value'] = $quickInvoiceApiId;
+    }
+
+    /**
+     * Unsets Quick Invoice Api Id.
+     * Quick Invoice API Id
+     */
+    public function unsetQuickInvoiceApiId(): void
+    {
+        $this->quickInvoiceApiId = [];
     }
 
     /**
@@ -676,7 +789,7 @@ class V1QuickInvoicesRequest implements \JsonSerializable
      * Returns Amount Due.
      * Amount Due
      */
-    public function getAmountDue(): ?float
+    public function getAmountDue(): ?int
     {
         if (count($this->amountDue) == 0) {
             return null;
@@ -690,7 +803,7 @@ class V1QuickInvoicesRequest implements \JsonSerializable
      *
      * @maps amount_due
      */
-    public function setAmountDue(?float $amountDue): void
+    public function setAmountDue(?int $amountDue): void
     {
         $this->amountDue['value'] = $amountDue;
     }
@@ -737,42 +850,10 @@ class V1QuickInvoicesRequest implements \JsonSerializable
     }
 
     /**
-     * Returns Payment Status Id.
-     * Payment Status Id
-     */
-    public function getPaymentStatusId(): ?float
-    {
-        if (count($this->paymentStatusId) == 0) {
-            return null;
-        }
-        return $this->paymentStatusId['value'];
-    }
-
-    /**
-     * Sets Payment Status Id.
-     * Payment Status Id
-     *
-     * @maps payment_status_id
-     */
-    public function setPaymentStatusId(?float $paymentStatusId): void
-    {
-        $this->paymentStatusId['value'] = $paymentStatusId;
-    }
-
-    /**
-     * Unsets Payment Status Id.
-     * Payment Status Id
-     */
-    public function unsetPaymentStatusId(): void
-    {
-        $this->paymentStatusId = [];
-    }
-
-    /**
      * Returns Status Id.
-     * Status Id
+     * (DEPRECATED) Status Id
      */
-    public function getStatusId(): ?float
+    public function getStatusId(): ?int
     {
         if (count($this->statusId) == 0) {
             return null;
@@ -782,22 +863,54 @@ class V1QuickInvoicesRequest implements \JsonSerializable
 
     /**
      * Sets Status Id.
-     * Status Id
+     * (DEPRECATED) Status Id
      *
      * @maps status_id
      */
-    public function setStatusId(?float $statusId): void
+    public function setStatusId(?int $statusId): void
     {
         $this->statusId['value'] = $statusId;
     }
 
     /**
      * Unsets Status Id.
-     * Status Id
+     * (DEPRECATED) Status Id
      */
     public function unsetStatusId(): void
     {
         $this->statusId = [];
+    }
+
+    /**
+     * Returns Status Code.
+     * Status Code
+     */
+    public function getStatusCode(): ?int
+    {
+        if (count($this->statusCode) == 0) {
+            return null;
+        }
+        return $this->statusCode['value'];
+    }
+
+    /**
+     * Sets Status Code.
+     * Status Code
+     *
+     * @maps status_code
+     */
+    public function setStatusCode(?int $statusCode): void
+    {
+        $this->statusCode['value'] = $statusCode;
+    }
+
+    /**
+     * Unsets Status Code.
+     * Status Code
+     */
+    public function unsetStatusCode(): void
+    {
+        $this->statusCode = [];
     }
 
     /**
@@ -939,8 +1052,10 @@ class V1QuickInvoicesRequest implements \JsonSerializable
     /**
      * Returns Files.
      * Files
+     * >Maximum of 4 files & maximum size of 5MB per file.
+     * >
      *
-     * @return array[]|null
+     * @return File2[]|null
      */
     public function getFiles(): ?array
     {
@@ -950,10 +1065,12 @@ class V1QuickInvoicesRequest implements \JsonSerializable
     /**
      * Sets Files.
      * Files
+     * >Maximum of 4 files & maximum size of 5MB per file.
+     * >
      *
      * @maps files
      *
-     * @param array[]|null $files
+     * @param File2[]|null $files
      */
     public function setFiles(?array $files): void
     {
@@ -964,7 +1081,7 @@ class V1QuickInvoicesRequest implements \JsonSerializable
      * Returns Remaining Balance.
      * Remaining Balance
      */
-    public function getRemainingBalance(): ?float
+    public function getRemainingBalance(): ?int
     {
         if (count($this->remainingBalance) == 0) {
             return null;
@@ -978,7 +1095,7 @@ class V1QuickInvoicesRequest implements \JsonSerializable
      *
      * @maps remaining_balance
      */
-    public function setRemainingBalance(?float $remainingBalance): void
+    public function setRemainingBalance(?int $remainingBalance): void
     {
         $this->remainingBalance['value'] = $remainingBalance;
     }
@@ -996,7 +1113,7 @@ class V1QuickInvoicesRequest implements \JsonSerializable
      * Returns Single Payment Min Amount.
      * Single Payment Min Amount
      */
-    public function getSinglePaymentMinAmount(): ?float
+    public function getSinglePaymentMinAmount(): ?int
     {
         if (count($this->singlePaymentMinAmount) == 0) {
             return null;
@@ -1010,7 +1127,7 @@ class V1QuickInvoicesRequest implements \JsonSerializable
      *
      * @maps single_payment_min_amount
      */
-    public function setSinglePaymentMinAmount(?float $singlePaymentMinAmount): void
+    public function setSinglePaymentMinAmount(?int $singlePaymentMinAmount): void
     {
         $this->singlePaymentMinAmount['value'] = $singlePaymentMinAmount;
     }
@@ -1028,7 +1145,7 @@ class V1QuickInvoicesRequest implements \JsonSerializable
      * Returns Single Payment Max Amount.
      * Single Payment Max Amount
      */
-    public function getSinglePaymentMaxAmount(): ?float
+    public function getSinglePaymentMaxAmount(): ?int
     {
         if (count($this->singlePaymentMaxAmount) == 0) {
             return null;
@@ -1042,7 +1159,7 @@ class V1QuickInvoicesRequest implements \JsonSerializable
      *
      * @maps single_payment_max_amount
      */
-    public function setSinglePaymentMaxAmount(?float $singlePaymentMaxAmount): void
+    public function setSinglePaymentMaxAmount(?int $singlePaymentMaxAmount): void
     {
         $this->singlePaymentMaxAmount['value'] = $singlePaymentMaxAmount;
     }
@@ -1089,6 +1206,242 @@ class V1QuickInvoicesRequest implements \JsonSerializable
     }
 
     /**
+     * Returns Tags.
+     * Tags
+     *
+     * @return string[]|null
+     */
+    public function getTags(): ?array
+    {
+        if (count($this->tags) == 0) {
+            return null;
+        }
+        return $this->tags['value'];
+    }
+
+    /**
+     * Sets Tags.
+     * Tags
+     *
+     * @maps tags
+     *
+     * @param string[]|null $tags
+     */
+    public function setTags(?array $tags): void
+    {
+        $this->tags['value'] = $tags;
+    }
+
+    /**
+     * Unsets Tags.
+     * Tags
+     */
+    public function unsetTags(): void
+    {
+        $this->tags = [];
+    }
+
+    /**
+     * Returns Quick Invoice C1.
+     * Custom field 1 for api users to store custom data
+     */
+    public function getQuickInvoiceC1(): ?string
+    {
+        if (count($this->quickInvoiceC1) == 0) {
+            return null;
+        }
+        return $this->quickInvoiceC1['value'];
+    }
+
+    /**
+     * Sets Quick Invoice C1.
+     * Custom field 1 for api users to store custom data
+     *
+     * @maps quick_invoice_c1
+     */
+    public function setQuickInvoiceC1(?string $quickInvoiceC1): void
+    {
+        $this->quickInvoiceC1['value'] = $quickInvoiceC1;
+    }
+
+    /**
+     * Unsets Quick Invoice C1.
+     * Custom field 1 for api users to store custom data
+     */
+    public function unsetQuickInvoiceC1(): void
+    {
+        $this->quickInvoiceC1 = [];
+    }
+
+    /**
+     * Returns Quick Invoice C2.
+     * Custom field 2 for api users to store custom data
+     */
+    public function getQuickInvoiceC2(): ?string
+    {
+        if (count($this->quickInvoiceC2) == 0) {
+            return null;
+        }
+        return $this->quickInvoiceC2['value'];
+    }
+
+    /**
+     * Sets Quick Invoice C2.
+     * Custom field 2 for api users to store custom data
+     *
+     * @maps quick_invoice_c2
+     */
+    public function setQuickInvoiceC2(?string $quickInvoiceC2): void
+    {
+        $this->quickInvoiceC2['value'] = $quickInvoiceC2;
+    }
+
+    /**
+     * Unsets Quick Invoice C2.
+     * Custom field 2 for api users to store custom data
+     */
+    public function unsetQuickInvoiceC2(): void
+    {
+        $this->quickInvoiceC2 = [];
+    }
+
+    /**
+     * Returns Quick Invoice C3.
+     * Custom field 1 for api users to store custom data
+     */
+    public function getQuickInvoiceC3(): ?string
+    {
+        if (count($this->quickInvoiceC3) == 0) {
+            return null;
+        }
+        return $this->quickInvoiceC3['value'];
+    }
+
+    /**
+     * Sets Quick Invoice C3.
+     * Custom field 1 for api users to store custom data
+     *
+     * @maps quick_invoice_c3
+     */
+    public function setQuickInvoiceC3(?string $quickInvoiceC3): void
+    {
+        $this->quickInvoiceC3['value'] = $quickInvoiceC3;
+    }
+
+    /**
+     * Unsets Quick Invoice C3.
+     * Custom field 1 for api users to store custom data
+     */
+    public function unsetQuickInvoiceC3(): void
+    {
+        $this->quickInvoiceC3 = [];
+    }
+
+    /**
+     * Returns Auto Reopen.
+     * Auto Reopen. If set to true, a void, refund or detachment of a Transaction Payment will cause the
+     * QuickInvoice to be opened again
+     */
+    public function getAutoReopen(): ?bool
+    {
+        return $this->autoReopen;
+    }
+
+    /**
+     * Sets Auto Reopen.
+     * Auto Reopen. If set to true, a void, refund or detachment of a Transaction Payment will cause the
+     * QuickInvoice to be opened again
+     *
+     * @maps auto_reopen
+     */
+    public function setAutoReopen(?bool $autoReopen): void
+    {
+        $this->autoReopen = $autoReopen;
+    }
+
+    /**
+     * Converts the V1QuickInvoicesRequest object to a human-readable string representation.
+     *
+     * @return string The string representation of the V1QuickInvoicesRequest object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'V1QuickInvoicesRequest',
+            [
+                'locationId' => $this->getLocationId(),
+                'title' => $this->title,
+                'ccProductTransactionId' => $this->getCcProductTransactionId(),
+                'achProductTransactionId' => $this->getAchProductTransactionId(),
+                'dueDate' => $this->dueDate,
+                'itemList' => $this->itemList,
+                'allowOverpayment' => $this->allowOverpayment,
+                'bankFundedOnlyOverride' => $this->getBankFundedOnlyOverride(),
+                'email' => $this->getEmail(),
+                'contactId' => $this->getContactId(),
+                'contactApiId' => $this->getContactApiId(),
+                'quickInvoiceApiId' => $this->getQuickInvoiceApiId(),
+                'customerId' => $this->getCustomerId(),
+                'expireDate' => $this->getExpireDate(),
+                'allowPartialPay' => $this->allowPartialPay,
+                'attachFilesToEmail' => $this->attachFilesToEmail,
+                'sendEmail' => $this->sendEmail,
+                'invoiceNumber' => $this->getInvoiceNumber(),
+                'itemHeader' => $this->getItemHeader(),
+                'itemFooter' => $this->getItemFooter(),
+                'amountDue' => $this->getAmountDue(),
+                'notificationEmail' => $this->getNotificationEmail(),
+                'statusId' => $this->getStatusId(),
+                'statusCode' => $this->getStatusCode(),
+                'note' => $this->getNote(),
+                'notificationDaysBeforeDueDate' => $this->getNotificationDaysBeforeDueDate(),
+                'notificationDaysAfterDueDate' => $this->getNotificationDaysAfterDueDate(),
+                'notificationOnDueDate' => $this->notificationOnDueDate,
+                'sendTextToPay' => $this->sendTextToPay,
+                'files' => $this->files,
+                'remainingBalance' => $this->getRemainingBalance(),
+                'singlePaymentMinAmount' => $this->getSinglePaymentMinAmount(),
+                'singlePaymentMaxAmount' => $this->getSinglePaymentMaxAmount(),
+                'cellPhone' => $this->getCellPhone(),
+                'tags' => $this->getTags(),
+                'quickInvoiceC1' => $this->getQuickInvoiceC1(),
+                'quickInvoiceC2' => $this->getQuickInvoiceC2(),
+                'quickInvoiceC3' => $this->getQuickInvoiceC3(),
+                'autoReopen' => $this->autoReopen,
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -1100,9 +1453,13 @@ class V1QuickInvoicesRequest implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['location_id']                           = $this->locationId;
+        if (!empty($this->locationId)) {
+            $json['location_id']                       = $this->locationId['value'];
+        }
         $json['title']                                 = $this->title;
-        $json['cc_product_transaction_id']             = $this->ccProductTransactionId;
+        if (!empty($this->ccProductTransactionId)) {
+            $json['cc_product_transaction_id']         = $this->ccProductTransactionId['value'];
+        }
         if (!empty($this->achProductTransactionId)) {
             $json['ach_product_transaction_id']        = $this->achProductTransactionId['value'];
         }
@@ -1110,6 +1467,9 @@ class V1QuickInvoicesRequest implements \JsonSerializable
         $json['item_list']                             = $this->itemList;
         if (isset($this->allowOverpayment)) {
             $json['allow_overpayment']                 = $this->allowOverpayment;
+        }
+        if (!empty($this->bankFundedOnlyOverride)) {
+            $json['bank_funded_only_override']         = $this->bankFundedOnlyOverride['value'];
         }
         if (!empty($this->email)) {
             $json['email']                             = $this->email['value'];
@@ -1119,6 +1479,9 @@ class V1QuickInvoicesRequest implements \JsonSerializable
         }
         if (!empty($this->contactApiId)) {
             $json['contact_api_id']                    = $this->contactApiId['value'];
+        }
+        if (!empty($this->quickInvoiceApiId)) {
+            $json['quick_invoice_api_id']              = $this->quickInvoiceApiId['value'];
         }
         if (!empty($this->customerId)) {
             $json['customer_id']                       = $this->customerId['value'];
@@ -1150,11 +1513,11 @@ class V1QuickInvoicesRequest implements \JsonSerializable
         if (!empty($this->notificationEmail)) {
             $json['notification_email']                = $this->notificationEmail['value'];
         }
-        if (!empty($this->paymentStatusId)) {
-            $json['payment_status_id']                 = $this->paymentStatusId['value'];
-        }
         if (!empty($this->statusId)) {
             $json['status_id']                         = $this->statusId['value'];
+        }
+        if (!empty($this->statusCode)) {
+            $json['status_code']                       = $this->statusCode['value'];
         }
         if (!empty($this->note)) {
             $json['note']                              = $this->note['value'];
@@ -1186,6 +1549,22 @@ class V1QuickInvoicesRequest implements \JsonSerializable
         if (!empty($this->cellPhone)) {
             $json['cell_phone']                        = $this->cellPhone['value'];
         }
+        if (!empty($this->tags)) {
+            $json['tags']                              = $this->tags['value'];
+        }
+        if (!empty($this->quickInvoiceC1)) {
+            $json['quick_invoice_c1']                  = $this->quickInvoiceC1['value'];
+        }
+        if (!empty($this->quickInvoiceC2)) {
+            $json['quick_invoice_c2']                  = $this->quickInvoiceC2['value'];
+        }
+        if (!empty($this->quickInvoiceC3)) {
+            $json['quick_invoice_c3']                  = $this->quickInvoiceC3['value'];
+        }
+        if (isset($this->autoReopen)) {
+            $json['auto_reopen']                       = $this->autoReopen;
+        }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

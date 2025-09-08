@@ -9,14 +9,17 @@
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `type` | `string` | Required, Constant | Resource Type<br>**Default**: `'UserApiKey'` | getType(): string | setType(string type): void |
-| `data` | [`?Data20`](../../doc/models/data-20.md) | Optional | - | getData(): ?Data20 | setData(?Data20 data): void |
+| `type` | [`?string(Type128Enum)`](../../doc/models/type-128-enum.md) | Optional | Resource Type<br><br>**Default**: `Type128Enum::USERAPIKEY` | getType(): ?string | setType(?string type): void |
+| `data` | [`?Data33`](../../doc/models/data-33.md) | Optional | - | getData(): ?Data33 | setData(?Data33 data): void |
 
 ## Example (as JSON)
 
 ```json
 {
-  "type": "UserApiKey"
+  "type": "UserApiKey",
+  "data": {
+    "user_api_key": "user_api_key2"
+  }
 }
 ```
 

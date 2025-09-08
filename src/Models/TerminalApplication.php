@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
 /**
@@ -18,42 +19,42 @@ use stdClass;
 class TerminalApplication implements \JsonSerializable
 {
     /**
-     * @var bool
+     * @var bool|null
      */
     private $standalone;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $emvCapable;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $nfcCapable;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $pinCapable;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $printCapable;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $msrCapable;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $sigCaptureCapable;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $mposTerminal;
 
@@ -68,7 +69,7 @@ class TerminalApplication implements \JsonSerializable
     private $description = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
@@ -88,43 +89,10 @@ class TerminalApplication implements \JsonSerializable
     private $createdUserId = [];
 
     /**
-     * @param bool $standalone
-     * @param bool $emvCapable
-     * @param bool $nfcCapable
-     * @param bool $pinCapable
-     * @param bool $printCapable
-     * @param bool $msrCapable
-     * @param bool $sigCaptureCapable
-     * @param bool $mposTerminal
-     * @param string $id
-     */
-    public function __construct(
-        bool $standalone,
-        bool $emvCapable,
-        bool $nfcCapable,
-        bool $pinCapable,
-        bool $printCapable,
-        bool $msrCapable,
-        bool $sigCaptureCapable,
-        bool $mposTerminal,
-        string $id
-    ) {
-        $this->standalone = $standalone;
-        $this->emvCapable = $emvCapable;
-        $this->nfcCapable = $nfcCapable;
-        $this->pinCapable = $pinCapable;
-        $this->printCapable = $printCapable;
-        $this->msrCapable = $msrCapable;
-        $this->sigCaptureCapable = $sigCaptureCapable;
-        $this->mposTerminal = $mposTerminal;
-        $this->id = $id;
-    }
-
-    /**
      * Returns Standalone.
      * Standalone
      */
-    public function getStandalone(): bool
+    public function getStandalone(): ?bool
     {
         return $this->standalone;
     }
@@ -133,10 +101,9 @@ class TerminalApplication implements \JsonSerializable
      * Sets Standalone.
      * Standalone
      *
-     * @required
      * @maps standalone
      */
-    public function setStandalone(bool $standalone): void
+    public function setStandalone(?bool $standalone): void
     {
         $this->standalone = $standalone;
     }
@@ -145,7 +112,7 @@ class TerminalApplication implements \JsonSerializable
      * Returns Emv Capable.
      * Emv Capable
      */
-    public function getEmvCapable(): bool
+    public function getEmvCapable(): ?bool
     {
         return $this->emvCapable;
     }
@@ -154,10 +121,9 @@ class TerminalApplication implements \JsonSerializable
      * Sets Emv Capable.
      * Emv Capable
      *
-     * @required
      * @maps emv_capable
      */
-    public function setEmvCapable(bool $emvCapable): void
+    public function setEmvCapable(?bool $emvCapable): void
     {
         $this->emvCapable = $emvCapable;
     }
@@ -166,7 +132,7 @@ class TerminalApplication implements \JsonSerializable
      * Returns Nfc Capable.
      * Nfc Capable
      */
-    public function getNfcCapable(): bool
+    public function getNfcCapable(): ?bool
     {
         return $this->nfcCapable;
     }
@@ -175,10 +141,9 @@ class TerminalApplication implements \JsonSerializable
      * Sets Nfc Capable.
      * Nfc Capable
      *
-     * @required
      * @maps nfc_capable
      */
-    public function setNfcCapable(bool $nfcCapable): void
+    public function setNfcCapable(?bool $nfcCapable): void
     {
         $this->nfcCapable = $nfcCapable;
     }
@@ -187,7 +152,7 @@ class TerminalApplication implements \JsonSerializable
      * Returns Pin Capable.
      * Pin Capable
      */
-    public function getPinCapable(): bool
+    public function getPinCapable(): ?bool
     {
         return $this->pinCapable;
     }
@@ -196,10 +161,9 @@ class TerminalApplication implements \JsonSerializable
      * Sets Pin Capable.
      * Pin Capable
      *
-     * @required
      * @maps pin_capable
      */
-    public function setPinCapable(bool $pinCapable): void
+    public function setPinCapable(?bool $pinCapable): void
     {
         $this->pinCapable = $pinCapable;
     }
@@ -208,7 +172,7 @@ class TerminalApplication implements \JsonSerializable
      * Returns Print Capable.
      * Print Capable
      */
-    public function getPrintCapable(): bool
+    public function getPrintCapable(): ?bool
     {
         return $this->printCapable;
     }
@@ -217,10 +181,9 @@ class TerminalApplication implements \JsonSerializable
      * Sets Print Capable.
      * Print Capable
      *
-     * @required
      * @maps print_capable
      */
-    public function setPrintCapable(bool $printCapable): void
+    public function setPrintCapable(?bool $printCapable): void
     {
         $this->printCapable = $printCapable;
     }
@@ -229,7 +192,7 @@ class TerminalApplication implements \JsonSerializable
      * Returns Msr Capable.
      * Msr Capable
      */
-    public function getMsrCapable(): bool
+    public function getMsrCapable(): ?bool
     {
         return $this->msrCapable;
     }
@@ -238,10 +201,9 @@ class TerminalApplication implements \JsonSerializable
      * Sets Msr Capable.
      * Msr Capable
      *
-     * @required
      * @maps msr_capable
      */
-    public function setMsrCapable(bool $msrCapable): void
+    public function setMsrCapable(?bool $msrCapable): void
     {
         $this->msrCapable = $msrCapable;
     }
@@ -250,7 +212,7 @@ class TerminalApplication implements \JsonSerializable
      * Returns Sig Capture Capable.
      * Sig Capture Capable
      */
-    public function getSigCaptureCapable(): bool
+    public function getSigCaptureCapable(): ?bool
     {
         return $this->sigCaptureCapable;
     }
@@ -259,10 +221,9 @@ class TerminalApplication implements \JsonSerializable
      * Sets Sig Capture Capable.
      * Sig Capture Capable
      *
-     * @required
      * @maps sig_capture_capable
      */
-    public function setSigCaptureCapable(bool $sigCaptureCapable): void
+    public function setSigCaptureCapable(?bool $sigCaptureCapable): void
     {
         $this->sigCaptureCapable = $sigCaptureCapable;
     }
@@ -271,7 +232,7 @@ class TerminalApplication implements \JsonSerializable
      * Returns Mpos Terminal.
      * Mpos Terminal
      */
-    public function getMposTerminal(): bool
+    public function getMposTerminal(): ?bool
     {
         return $this->mposTerminal;
     }
@@ -280,10 +241,9 @@ class TerminalApplication implements \JsonSerializable
      * Sets Mpos Terminal.
      * Mpos Terminal
      *
-     * @required
      * @maps mpos_terminal
      */
-    public function setMposTerminal(bool $mposTerminal): void
+    public function setMposTerminal(?bool $mposTerminal): void
     {
         $this->mposTerminal = $mposTerminal;
     }
@@ -356,7 +316,7 @@ class TerminalApplication implements \JsonSerializable
      * Returns Id.
      * Terminal Application Id
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -365,10 +325,9 @@ class TerminalApplication implements \JsonSerializable
      * Sets Id.
      * Terminal Application Id
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -470,6 +429,63 @@ class TerminalApplication implements \JsonSerializable
     }
 
     /**
+     * Converts the TerminalApplication object to a human-readable string representation.
+     *
+     * @return string The string representation of the TerminalApplication object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'TerminalApplication',
+            [
+                'standalone' => $this->standalone,
+                'emvCapable' => $this->emvCapable,
+                'nfcCapable' => $this->nfcCapable,
+                'pinCapable' => $this->pinCapable,
+                'printCapable' => $this->printCapable,
+                'msrCapable' => $this->msrCapable,
+                'sigCaptureCapable' => $this->sigCaptureCapable,
+                'mposTerminal' => $this->mposTerminal,
+                'title' => $this->getTitle(),
+                'description' => $this->getDescription(),
+                'id' => $this->id,
+                'createdTs' => $this->getCreatedTs(),
+                'modifiedTs' => $this->getModifiedTs(),
+                'createdUserId' => $this->getCreatedUserId(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -481,30 +497,49 @@ class TerminalApplication implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['standalone']          = $this->standalone;
-        $json['emv_capable']         = $this->emvCapable;
-        $json['nfc_capable']         = $this->nfcCapable;
-        $json['pin_capable']         = $this->pinCapable;
-        $json['print_capable']       = $this->printCapable;
-        $json['msr_capable']         = $this->msrCapable;
-        $json['sig_capture_capable'] = $this->sigCaptureCapable;
-        $json['mpos_terminal']       = $this->mposTerminal;
+        if (isset($this->standalone)) {
+            $json['standalone']          = $this->standalone;
+        }
+        if (isset($this->emvCapable)) {
+            $json['emv_capable']         = $this->emvCapable;
+        }
+        if (isset($this->nfcCapable)) {
+            $json['nfc_capable']         = $this->nfcCapable;
+        }
+        if (isset($this->pinCapable)) {
+            $json['pin_capable']         = $this->pinCapable;
+        }
+        if (isset($this->printCapable)) {
+            $json['print_capable']       = $this->printCapable;
+        }
+        if (isset($this->msrCapable)) {
+            $json['msr_capable']         = $this->msrCapable;
+        }
+        if (isset($this->sigCaptureCapable)) {
+            $json['sig_capture_capable'] = $this->sigCaptureCapable;
+        }
+        if (isset($this->mposTerminal)) {
+            $json['mpos_terminal']       = $this->mposTerminal;
+        }
         if (!empty($this->title)) {
-            $json['title']           = $this->title['value'];
+            $json['title']               = $this->title['value'];
         }
         if (!empty($this->description)) {
-            $json['description']     = $this->description['value'];
+            $json['description']         = $this->description['value'];
         }
-        $json['id']                  = $this->id;
+        if (isset($this->id)) {
+            $json['id']                  = $this->id;
+        }
         if (!empty($this->createdTs)) {
-            $json['created_ts']      = $this->createdTs['value'];
+            $json['created_ts']          = $this->createdTs['value'];
         }
         if (!empty($this->modifiedTs)) {
-            $json['modified_ts']     = $this->modifiedTs['value'];
+            $json['modified_ts']         = $this->modifiedTs['value'];
         }
         if (!empty($this->createdUserId)) {
-            $json['created_user_id'] = $this->createdUserId['value'];
+            $json['created_user_id']     = $this->createdUserId['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

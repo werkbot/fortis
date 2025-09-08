@@ -9,67 +9,92 @@
 
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
-| `accountVaultId` | `string` | Required | Token ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getAccountVaultId(): string | setAccountVaultId(string accountVaultId): void |
-| `active` | `bool` | Required | Active | getActive(): bool | setActive(bool active): void |
-| `description` | `?string` | Optional | Description<br>**Constraints**: *Maximum Length*: `36` | getDescription(): ?string | setDescription(?string description): void |
-| `endDate` | `?string` | Optional | End date<br>**Constraints**: *Maximum Length*: `10`, *Pattern*: `^[\d]{4}-[\d]{2}-[\d]{2}$` | getEndDate(): ?string | setEndDate(?string endDate): void |
-| `installmentTotalCount` | `?int` | Optional | Installment Total Count<br>**Constraints**: `>= 1`, `<= 999` | getInstallmentTotalCount(): ?int | setInstallmentTotalCount(?int installmentTotalCount): void |
-| `interval` | `int` | Required | Interval<br>**Constraints**: `>= 0`, `<= 365` | getInterval(): int | setInterval(int interval): void |
-| `intervalType` | [`string (IntervalTypeEnum)`](../../doc/models/interval-type-enum.md) | Required | Interval Type | getIntervalType(): string | setIntervalType(string intervalType): void |
-| `locationId` | `string` | Required | Location ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getLocationId(): string | setLocationId(string locationId): void |
-| `notificationDays` | `?int` | Optional | Notification Days<br>**Constraints**: `>= 0`, `<= 365` | getNotificationDays(): ?int | setNotificationDays(?int notificationDays): void |
-| `paymentMethod` | [`string (PaymentMethod1Enum)`](../../doc/models/payment-method-1-enum.md) | Required | Payment Method | getPaymentMethod(): string | setPaymentMethod(string paymentMethod): void |
-| `productTransactionId` | `?string` | Optional | Product Transaction ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getProductTransactionId(): ?string | setProductTransactionId(?string productTransactionId): void |
-| `recurringId` | `?string` | Optional | Recurring ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getRecurringId(): ?string | setRecurringId(?string recurringId): void |
-| `recurringApiId` | `?string` | Optional | Recurring Api ID<br>**Constraints**: *Maximum Length*: `64` | getRecurringApiId(): ?string | setRecurringApiId(?string recurringApiId): void |
-| `startDate` | `string` | Required | Start date<br>**Constraints**: *Maximum Length*: `10`, *Pattern*: `^[\d]{4}-[\d]{2}-[\d]{2}$` | getStartDate(): string | setStartDate(string startDate): void |
-| `status` | [`string (StatusEnum)`](../../doc/models/status-enum.md) | Required | Status | getStatus(): string | setStatus(string status): void |
-| `transactionAmount` | `float` | Required | Transaction amount | getTransactionAmount(): float | setTransactionAmount(float transactionAmount): void |
-| `termsAgree` | `?bool` | Optional | Terms Agree | getTermsAgree(): ?bool | setTermsAgree(?bool termsAgree): void |
-| `termsAgreeIp` | `?string` | Optional | Terms Agree Ip | getTermsAgreeIp(): ?string | setTermsAgreeIp(?string termsAgreeIp): void |
-| `recurringC1` | `?string` | Optional | Custom field used for integrations<br>**Constraints**: *Maximum Length*: `128` | getRecurringC1(): ?string | setRecurringC1(?string recurringC1): void |
-| `recurringC2` | `?string` | Optional | Custom field used for integrations<br>**Constraints**: *Maximum Length*: `128` | getRecurringC2(): ?string | setRecurringC2(?string recurringC2): void |
-| `recurringC3` | `?string` | Optional | Custom field used for integrations<br>**Constraints**: *Maximum Length*: `128` | getRecurringC3(): ?string | setRecurringC3(?string recurringC3): void |
-| `sendToProcAsRecur` | `?bool` | Optional | Send To Proc As Recur | getSendToProcAsRecur(): ?bool | setSendToProcAsRecur(?bool sendToProcAsRecur): void |
-| `id` | `string` | Required | Recurring ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getId(): string | setId(string id): void |
-| `nextRunDate` | `string` | Required | Next Run Date<br>**Constraints**: *Maximum Length*: `10`, *Pattern*: `^[\d]{4}-[\d]{2}-[\d]{2}$` | getNextRunDate(): string | setNextRunDate(string nextRunDate): void |
-| `createdTs` | `int` | Required | Created Time Stamp | getCreatedTs(): int | setCreatedTs(int createdTs): void |
-| `modifiedTs` | `int` | Required | Modified Time Stamp | getModifiedTs(): int | setModifiedTs(int modifiedTs): void |
-| `recurringTypeId` | [`string (RecurringTypeIdEnum)`](../../doc/models/recurring-type-id-enum.md) | Required | Recurring Type | getRecurringTypeId(): string | setRecurringTypeId(string recurringTypeId): void |
-| `logEmails` | [`?(LogEmail[])`](../../doc/models/log-email.md) | Optional | Log Email Information on `expand` | getLogEmails(): ?array | setLogEmails(?array logEmails): void |
-| `contact` | [`?Contact1`](../../doc/models/contact-1.md) | Optional | Contact Information on `expand` | getContact(): ?Contact1 | setContact(?Contact1 contact): void |
-| `accountVault` | [`?AccountVault`](../../doc/models/account-vault.md) | Optional | Token Information on `expand` | getAccountVault(): ?AccountVault | setAccountVault(?AccountVault accountVault): void |
+| `id` | `?string` | Optional | Location ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getId(): ?string | setId(?string id): void |
+| `createdTs` | `?int` | Optional | Created Time Stamp | getCreatedTs(): ?int | setCreatedTs(?int createdTs): void |
+| `modifiedTs` | `?int` | Optional | Modified Time Stamp | getModifiedTs(): ?int | setModifiedTs(?int modifiedTs): void |
+| `accountNumber` | `?string` | Optional | Account number<br><br>**Constraints**: *Maximum Length*: `32`, *Pattern*: `^[a-zA-Z0-9\-_]+$` | getAccountNumber(): ?string | setAccountNumber(?string accountNumber): void |
+| `address` | [`?Address1`](../../doc/models/address-1.md) | Optional | Address | getAddress(): ?Address1 | setAddress(?Address1 address): void |
+| `brandingDomainId` | `?string` | Optional | GUID for Branding Domain<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getBrandingDomainId(): ?string | setBrandingDomainId(?string brandingDomainId): void |
+| `contactEmailTrxReceiptDefault` | `?bool` | Optional | If true, will email contact receipt for any transaction | getContactEmailTrxReceiptDefault(): ?bool | setContactEmailTrxReceiptDefault(?bool contactEmailTrxReceiptDefault): void |
+| `defaultAch` | `?string` | Optional | GUID for Location's default ACH Product Transaction<br><br>**Constraints**: *Minimum Length*: `24`, *Maximum Length*: `36` | getDefaultAch(): ?string | setDefaultAch(?string defaultAch): void |
+| `defaultCc` | `?string` | Optional | GUID for Location's default CC Product Transaction<br><br>**Constraints**: *Minimum Length*: `24`, *Maximum Length*: `36` | getDefaultCc(): ?string | setDefaultCc(?string defaultCc): void |
+| `emailReplyTo` | `?string` | Optional | Used as from email address when sending various notifications<br><br>**Constraints**: *Maximum Length*: `64` | getEmailReplyTo(): ?string | setEmailReplyTo(?string emailReplyTo): void |
+| `fax` | `?string` | Optional | Fax number<br><br>**Constraints**: *Minimum Length*: `10`, *Maximum Length*: `10`, *Pattern*: `^\d{10}$` | getFax(): ?string | setFax(?string fax): void |
+| `locationApiId` | `?string` | Optional | Location api ID<br><br>**Constraints**: *Maximum Length*: `36` | getLocationApiId(): ?string | setLocationApiId(?string locationApiId): void |
+| `locationApiKey` | `?string` | Optional | Location api key<br><br>**Constraints**: *Maximum Length*: `36` | getLocationApiKey(): ?string | setLocationApiKey(?string locationApiKey): void |
+| `locationC1` | `?string` | Optional | Can be used to store custom information for location.<br><br>**Constraints**: *Maximum Length*: `128` | getLocationC1(): ?string | setLocationC1(?string locationC1): void |
+| `locationC2` | `?string` | Optional | Can be used to store custom information for location.<br><br>**Constraints**: *Maximum Length*: `128` | getLocationC2(): ?string | setLocationC2(?string locationC2): void |
+| `locationC3` | `?string` | Optional | Can be used to store custom information for location.<br><br>**Constraints**: *Maximum Length*: `128` | getLocationC3(): ?string | setLocationC3(?string locationC3): void |
+| `name` | `?string` | Optional | Name of the company<br><br>**Constraints**: *Minimum Length*: `1`, *Maximum Length*: `64` | getName(): ?string | setName(?string name): void |
+| `officePhone` | `?string` | Optional | Office phone number<br><br>**Constraints**: *Minimum Length*: `10`, *Maximum Length*: `10` | getOfficePhone(): ?string | setOfficePhone(?string officePhone): void |
+| `officeExtPhone` | `?string` | Optional | Office phone extension number<br><br>**Constraints**: *Maximum Length*: `10` | getOfficeExtPhone(): ?string | setOfficeExtPhone(?string officeExtPhone): void |
+| `tz` | `?string` | Optional | Time zone<br><br>**Constraints**: *Maximum Length*: `30` | getTz(): ?string | setTz(?string tz): void |
+| `parentId` | `?string` | Optional | Location GUID of the parent location<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getParentId(): ?string | setParentId(?string parentId): void |
+| `showContactNotes` | `?bool` | Optional | If set to true will show 'Notes' tab on Contact | getShowContactNotes(): ?bool | setShowContactNotes(?bool showContactNotes): void |
+| `showContactFiles` | `?bool` | Optional | If set to true will show 'Files' tab on Contact | getShowContactFiles(): ?bool | setShowContactFiles(?bool showContactFiles): void |
+| `createdUserId` | `?string` | Optional | User ID Created the register<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` | getCreatedUserId(): ?string | setCreatedUserId(?string createdUserId): void |
+| `locationType` | [`?string(LocationTypeEnum)`](../../doc/models/location-type-enum.md) | Optional | Location Type | getLocationType(): ?string | setLocationType(?string locationType): void |
+| `parentName` | `?string` | Optional | Name of the parent location | getParentName(): ?string | setParentName(?string parentName): void |
+| `ticketHashKey` | `?string` | Optional | Ticket Hash Key<br><br>**Constraints**: *Maximum Length*: `36` | getTicketHashKey(): ?string | setTicketHashKey(?string ticketHashKey): void |
+| `additionalAccess` | [`?AdditionalAccess`](../../doc/models/additional-access.md) | Optional | - | getAdditionalAccess(): ?AdditionalAccess | setAdditionalAccess(?AdditionalAccess additionalAccess): void |
+| `parent` | [`?Parent3`](../../doc/models/parent-3.md) | Optional | Parent Information on `expand` | getParent(): ?Parent3 | setParent(?Parent3 parent): void |
+| `users` | [`?(User9[])`](../../doc/models/user-9.md) | Optional | User Information on `expand` | getUsers(): ?array | setUsers(?array users): void |
+| `isDeletable` | `?bool` | Optional | Is Deletable Information on `expand` | getIsDeletable(): ?bool | setIsDeletable(?bool isDeletable): void |
+| `terminals` | [`?(Terminal2[])`](../../doc/models/terminal-2.md) | Optional | Terminal Information on `expand` | getTerminals(): ?array | setTerminals(?array terminals): void |
+| `brandingDomain` | [`?BrandingDomain1`](../../doc/models/branding-domain-1.md) | Optional | Branding Domain Information on `expand` | getBrandingDomain(): ?BrandingDomain1 | setBrandingDomain(?BrandingDomain1 brandingDomain): void |
+| `productInvoice` | [`?ProductInvoice`](../../doc/models/product-invoice.md) | Optional | Product Invoice Information on `expand` | getProductInvoice(): ?ProductInvoice | setProductInvoice(?ProductInvoice productInvoice): void |
+| `productFiles` | [`?(ProductFile1[])`](../../doc/models/product-file-1.md) | Optional | Product File Information on `expand` | getProductFiles(): ?array | setProductFiles(?array productFiles): void |
 | `createdUser` | [`?CreatedUser`](../../doc/models/created-user.md) | Optional | User Information on `expand` | getCreatedUser(): ?CreatedUser | setCreatedUser(?CreatedUser createdUser): void |
-| `signature` | [`?Signature`](../../doc/models/signature.md) | Optional | Signature Information on `expand` | getSignature(): ?Signature | setSignature(?Signature signature): void |
-| `paymentSchedule` | `?(string[])` | Optional | Payment Schedule Information on `expand`<br>**Constraints**: *Maximum Length*: `10`, *Pattern*: `^[\d]{4}-[\d]{2}-[\d]{2}$` | getPaymentSchedule(): ?array | setPaymentSchedule(?array paymentSchedule): void |
-| `location` | [`?Location`](../../doc/models/location.md) | Optional | Location Information on `expand` | getLocation(): ?Location | setLocation(?Location location): void |
-| `productTransaction` | [`?ProductTransaction`](../../doc/models/product-transaction.md) | Optional | Product Transaction Information on `expand` | getProductTransaction(): ?ProductTransaction | setProductTransaction(?ProductTransaction productTransaction): void |
-| `nextRunDateMin` | `?string` | Optional | Next Run Date Min Information on `expand`<br>**Constraints**: *Maximum Length*: `10`, *Pattern*: `^[\d]{4}-[\d]{2}-[\d]{2}$` | getNextRunDateMin(): ?string | setNextRunDateMin(?string nextRunDateMin): void |
-| `nextRunDateMax` | `?string` | Optional | Next Run Date Max Information on `expand`<br>**Constraints**: *Maximum Length*: `10`, *Pattern*: `^[\d]{4}-[\d]{2}-[\d]{2}$` | getNextRunDateMax(): ?string | setNextRunDateMax(?string nextRunDateMax): void |
-| `tags` | [`?(Tag[])`](../../doc/models/tag.md) | Optional | Tag Information on `expand` | getTags(): ?array | setTags(?array tags): void |
-| `allTags` | [`?(AllTag[])`](../../doc/models/all-tag.md) | Optional | All Tag Information on `expand` | getAllTags(): ?array | setAllTags(?array allTags): void |
 | `changelogs` | [`?(Changelog[])`](../../doc/models/changelog.md) | Optional | Changelog Information on `expand` | getChangelogs(): ?array | setChangelogs(?array changelogs): void |
-| `forecast` | [`?Forecast`](../../doc/models/forecast.md) | Optional | Forecast Information on `expand` | getForecast(): ?Forecast | setForecast(?Forecast forecast): void |
-| `recurringSplits` | [`?(RecurringSplit[])`](../../doc/models/recurring-split.md) | Optional | Recurring Split Information on `expand` | getRecurringSplits(): ?array | setRecurringSplits(?array recurringSplits): void |
+| `productTransactions` | [`?(ProductTransaction1[])`](../../doc/models/product-transaction-1.md) | Optional | Product Transaction Information on `expand` | getProductTransactions(): ?array | setProductTransactions(?array productTransactions): void |
+| `terminalRouters` | [`?(TerminalRouter[])`](../../doc/models/terminal-router.md) | Optional | Terminal Router Information on `expand` | getTerminalRouters(): ?array | setTerminalRouters(?array terminalRouters): void |
+| `developerCompany` | [`?DeveloperCompany`](../../doc/models/developer-company.md) | Optional | Developer Company Information on `expand` | getDeveloperCompany(): ?DeveloperCompany | setDeveloperCompany(?DeveloperCompany developerCompany): void |
+| `developerCompanyId` | `?string` | Optional | Developer Company Id Information on `expand` | getDeveloperCompanyId(): ?string | setDeveloperCompanyId(?string developerCompanyId): void |
+| `helppages` | [`?(Helppage[])`](../../doc/models/helppage.md) | Optional | Helppage Information on `expand` | getHelppages(): ?array | setHelppages(?array helppages): void |
+| `quickInvoiceSetting` | [`?QuickInvoiceSetting`](../../doc/models/quick-invoice-setting.md) | Optional | Quick Invoice Setting Information on `expand` | getQuickInvoiceSetting(): ?QuickInvoiceSetting | setQuickInvoiceSetting(?QuickInvoiceSetting quickInvoiceSetting): void |
+| `locationBillingAccounts` | [`?(LocationBillingAccount[])`](../../doc/models/location-billing-account.md) | Optional | Location Billing Account Information on `expand` | getLocationBillingAccounts(): ?array | setLocationBillingAccounts(?array locationBillingAccounts): void |
+| `marketplaces` | [`?(Marketplace[])`](../../doc/models/marketplace.md) | Optional | Marketplace Information on `expand` | getMarketplaces(): ?array | setMarketplaces(?array marketplaces): void |
+| `locationmarketplaces` | [`?(Locationmarketplace[])`](../../doc/models/locationmarketplace.md) | Optional | Locationmarketplaces Information on `expand` | getLocationmarketplaces(): ?array | setLocationmarketplaces(?array locationmarketplaces): void |
+| `addons` | [`?(Addon[])`](../../doc/models/addon.md) | Optional | Addons Information on `expand` | getAddons(): ?array | setAddons(?array addons): void |
 
 ## Example (as JSON)
 
 ```json
 {
-  "account_vault_id": "11e95f8ec39de8fbdb0a4f1a",
-  "active": true,
-  "interval": 1,
-  "interval_type": "d",
-  "location_id": "11e95f8ec39de8fbdb0a4f1a",
-  "payment_method": "cc",
-  "start_date": "2021-12-01",
-  "status": "active",
-  "transaction_amount": 3,
   "id": "11e95f8ec39de8fbdb0a4f1a",
-  "next_run_date": "2021-12-01",
   "created_ts": 1422040992,
   "modified_ts": 1422040992,
-  "recurring_type_id": "i"
+  "account_number": "5454545454545454",
+  "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
+  "contact_email_trx_receipt_default": true,
+  "default_ach": "11e608a7d515f1e093242bb2",
+  "default_cc": "11e608a442a5f1e092242dda",
+  "email_reply_to": "email@domain.com",
+  "fax": "3339998822",
+  "location_api_id": "location-111111",
+  "location_api_key": "AE34BBCAADF4AE34BBCAADF4",
+  "location_c1": "custom 1",
+  "location_c2": "custom 2",
+  "location_c3": "custom data 3",
+  "name": "Sample Company Headquarters",
+  "office_phone": "2481234567",
+  "office_ext_phone": "1021021209",
+  "tz": "America/New_York",
+  "parent_id": "11e95f8ec39de8fbdb0a4f1a",
+  "show_contact_notes": true,
+  "show_contact_files": true,
+  "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+  "location_type": "merchant",
+  "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+  "is_deletable": true,
+  "developer_company_id": "sample developer company id",
+  "address": {
+    "city": "city6",
+    "state": "state2",
+    "postal_code": "postal_code8",
+    "country": "US",
+    "street": "street6"
+  }
 }
 ```
 

@@ -10,17 +10,18 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Models;
 
+use FortisAPILib\ApiHelper;
 use stdClass;
 
-class LocationMarketplace implements \JsonSerializable
+class Locationmarketplace implements \JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $locationId;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $marketplaceId;
 
@@ -35,7 +36,7 @@ class LocationMarketplace implements \JsonSerializable
     private $userId = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $id;
 
@@ -50,22 +51,10 @@ class LocationMarketplace implements \JsonSerializable
     private $createdUserId = [];
 
     /**
-     * @param string $locationId
-     * @param string $marketplaceId
-     * @param string $id
-     */
-    public function __construct(string $locationId, string $marketplaceId, string $id)
-    {
-        $this->locationId = $locationId;
-        $this->marketplaceId = $marketplaceId;
-        $this->id = $id;
-    }
-
-    /**
      * Returns Location Id.
      * Location ID
      */
-    public function getLocationId(): string
+    public function getLocationId(): ?string
     {
         return $this->locationId;
     }
@@ -74,10 +63,9 @@ class LocationMarketplace implements \JsonSerializable
      * Sets Location Id.
      * Location ID
      *
-     * @required
      * @maps location_id
      */
-    public function setLocationId(string $locationId): void
+    public function setLocationId(?string $locationId): void
     {
         $this->locationId = $locationId;
     }
@@ -86,7 +74,7 @@ class LocationMarketplace implements \JsonSerializable
      * Returns Marketplace Id.
      * Marketplacec ID
      */
-    public function getMarketplaceId(): string
+    public function getMarketplaceId(): ?string
     {
         return $this->marketplaceId;
     }
@@ -95,10 +83,9 @@ class LocationMarketplace implements \JsonSerializable
      * Sets Marketplace Id.
      * Marketplacec ID
      *
-     * @required
      * @maps marketplace_id
      */
-    public function setMarketplaceId(string $marketplaceId): void
+    public function setMarketplaceId(?string $marketplaceId): void
     {
         $this->marketplaceId = $marketplaceId;
     }
@@ -171,7 +158,7 @@ class LocationMarketplace implements \JsonSerializable
      * Returns Id.
      * Location Marketplace ID
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -180,10 +167,9 @@ class LocationMarketplace implements \JsonSerializable
      * Sets Id.
      * Location Marketplace ID
      *
-     * @required
      * @maps id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -253,6 +239,56 @@ class LocationMarketplace implements \JsonSerializable
     }
 
     /**
+     * Converts the Locationmarketplace object to a human-readable string representation.
+     *
+     * @return string The string representation of the Locationmarketplace object.
+     */
+    public function __toString(): string
+    {
+        return ApiHelper::stringify(
+            'Locationmarketplace',
+            [
+                'locationId' => $this->locationId,
+                'marketplaceId' => $this->marketplaceId,
+                'locationApiId' => $this->getLocationApiId(),
+                'userId' => $this->getUserId(),
+                'id' => $this->id,
+                'createdTs' => $this->getCreatedTs(),
+                'createdUserId' => $this->getCreatedUserId(),
+                'additionalProperties' => $this->additionalProperties
+            ]
+        );
+    }
+
+    private $additionalProperties = [];
+
+    /**
+     * Add an additional property to this model.
+     *
+     * @param string $name Name of property.
+     * @param mixed $value Value of property.
+     */
+    public function addAdditionalProperty(string $name, $value)
+    {
+        $this->additionalProperties[$name] = $value;
+    }
+
+    /**
+     * Find an additional property by name in this model or false if property does not exist.
+     *
+     * @param string $name Name of property.
+     *
+     * @return mixed|false Value of the property.
+     */
+    public function findAdditionalProperty(string $name)
+    {
+        if (isset($this->additionalProperties[$name])) {
+            return $this->additionalProperties[$name];
+        }
+        return false;
+    }
+
+    /**
      * Encode this object to JSON
      *
      * @param bool $asArrayWhenEmpty Whether to serialize this model as an array whenever no fields
@@ -264,21 +300,28 @@ class LocationMarketplace implements \JsonSerializable
     public function jsonSerialize(bool $asArrayWhenEmpty = false)
     {
         $json = [];
-        $json['location_id']         = $this->locationId;
-        $json['marketplace_id']      = $this->marketplaceId;
+        if (isset($this->locationId)) {
+            $json['location_id']     = $this->locationId;
+        }
+        if (isset($this->marketplaceId)) {
+            $json['marketplace_id']  = $this->marketplaceId;
+        }
         if (!empty($this->locationApiId)) {
             $json['location_api_id'] = $this->locationApiId['value'];
         }
         if (!empty($this->userId)) {
             $json['user_id']         = $this->userId['value'];
         }
-        $json['id']                  = $this->id;
+        if (isset($this->id)) {
+            $json['id']              = $this->id;
+        }
         if (!empty($this->createdTs)) {
             $json['created_ts']      = $this->createdTs['value'];
         }
         if (!empty($this->createdUserId)) {
             $json['created_user_id'] = $this->createdUserId['value'];
         }
+        $json = array_merge($json, $this->additionalProperties);
 
         return (!$asArrayWhenEmpty && empty($json)) ? new stdClass() : $json;
     }

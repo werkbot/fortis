@@ -13,4 +13,5 @@ Default Transaction Type
 |  --- |
 | `DEBIT` |
 | `SALE` |
+| `AUTHONLY` |
 

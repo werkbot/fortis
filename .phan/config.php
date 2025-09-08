@@ -27,10 +27,10 @@ return [
     'directory_list' => [
         'src',
         'tests',
+        $vendor_dir . '/phpunit/phpunit',
         $vendor_dir . '/apimatic/unirest-php',
         $vendor_dir . '/apimatic/core',
-        $vendor_dir . '/apimatic/core-interfaces',
-        $vendor_dir . '/phpunit/phpunit'
+        $vendor_dir . '/apimatic/core-interfaces'
     ],
 
     // A directory list that defines files that will be excluded

@@ -29,7 +29,9 @@ class ProcessorEnum
 
     public const FORTISACH = 'fortisach';
 
-    private const _ALL_VALUES = [self::ZGATE, self::ZGATE2, self::ZACH, self::ACH, self::FORTISACH];
+    public const CASH = 'cash';
+
+    private const _ALL_VALUES = [self::ZGATE, self::ZGATE2, self::ZACH, self::ACH, self::FORTISACH, self::CASH];
 
     /**
      * Ensures that all the given values are present in this Enum.

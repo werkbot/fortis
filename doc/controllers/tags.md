@@ -19,8 +19,6 @@ $tagsController = $client->getTagsController();
 
 # Create a New Tag
 
-Create a new tag
-
 ```php
 function createANewTag(V1TagsRequest $body, ?array $expand = null): ResponseTag
 ```
@@ -30,7 +28,7 @@ function createANewTag(V1TagsRequest $body, ?array $expand = null): ResponseTag
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `body` | [`V1TagsRequest`](../../doc/models/v1-tags-request.md) | Body, Required | - |
-| `expand` | [`?(string[]) (Expand31Enum)`](../../doc/models/expand-31-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `expand` | [`?(string(Expand37Enum)[])`](../../doc/models/expand-37-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
 
 ## Response Type
 
@@ -39,12 +37,10 @@ function createANewTag(V1TagsRequest $body, ?array $expand = null): ResponseTag
 ## Example Usage
 
 ```php
-$body_locationId = '11e95f8ec39de8fbdb0a4f1a';
-$body_title = 'My terminal';
-$body = new Models\V1TagsRequest(
-    $body_locationId,
-    $body_title
-);
+$body = V1TagsRequestBuilder::init(
+    '11e95f8ec39de8fbdb0a4f1a',
+    'My terminal'
+)->build();
 
 $result = $tagsController->createANewTag($body);
 ```
@@ -69,15 +65,12 @@ $result = $tagsController->createANewTag($body);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -88,10 +81,14 @@ $result = $tagsController->createANewTag($body);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     }
   }
 }
@@ -107,14 +104,15 @@ $result = $tagsController->createANewTag($body);
 
 # List All Tags Related
 
-List all tags related
-
 ```php
 function listAllTagsRelated(
     ?Page $page = null,
-    ?Sort23 $sort = null,
-    ?Filter9 $filter = null,
-    ?array $expand = null
+    ?array $order = null,
+    ?array $filterBy = null,
+    ?array $expand = null,
+    ?string $format = null,
+    ?string $typeahead = null,
+    ?array $fields = null
 ): ResponseTagsCollection
 ```
 
@@ -123,9 +121,12 @@ function listAllTagsRelated(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `page` | [`?Page`](../../doc/models/page.md) | Query, Optional | Use this field to specify paginate your results, by using page size and number. You can use one of the following methods:<br><br>> /endpoint?page={ "number": 1, "size": 50 }<br>> <br>> /endpoint?page[number]=1&page[size]=50 |
-| `sort` | [`?Sort23`](../../doc/models/sort-23.md) | Query, Optional | You can use any `field_name` from this endpoint results, and you can combine more than one field for more complex sorting. You can use one of the following methods:<br><br>> /endpoint?sort={ "field_name": "asc", "field_name2": "desc" }<br>> <br>> /endpoint?sort[field_name]=asc&sort[field_name2]=desc |
-| `filter` | [`?Filter9`](../../doc/models/filter-9.md) | Query, Optional | You can use any `field_name` from this endpoint results as a filter, and you can also use more than one field to create AND conditions. For date fields (ended with `_ts`), you can also search for ranges using the `$gte` (Greater than or equal to) and/or  `$lte` (Lower than or equal to). You can use one of the following methods:<br><br>> /endpoint?filter={ "field_name": "Value" }<br>> <br>> /endpoint?filter[field_name]=Value<br>> <br>> /endpoint?filter={ "created_ts": "today" }<br>> <br>> /endpoint?filter[created_ts]=today<br>> <br>> /endpoint?filter={ "created_ts": { "$gte": "yesterday", "$lte": "today" } }<br>> <br>> /endpoint?filter[created_ts][$gte]=yesterday&filter[created_ts][$lte]=today |
-| `expand` | [`?(string[]) (Expand31Enum)`](../../doc/models/expand-31-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `order` | [`?(Order21[])`](../../doc/models/order-21.md) | Query, Optional | Criteria used in query string parameters to order results.  Most fields from the endpoint results can be used as a `key`.  Unsupported fields or operators will return a `412`.  Must be encoded, or use syntax that does not require encoding.<br><br>> /endpoint?order[0][key]=created_ts&order[0][operator]=asc<br>> <br>> /endpoint?order=[{ "key": "created_ts", "operator": "asc"}]<br>> <br>> /endpoint?order=[{ "key": "balance", "operator": "desc"},{ "key": "created_ts", "operator": "asc"}]<br><br>**Constraints**: *Minimum Items*: `1` |
+| `filterBy` | [`?(FilterBy[])`](../../doc/models/filter-by.md) | Query, Optional | Filter criteria that can be used in query string parameters.  Most fields from the endpoint results can be used as a `key`.  Unsupported fields or operators will return a `412`. Must be encoded, or use syntax that does not require encoding.<br><br>> ?filter_by[0][key]=first_name&filter_by[0][operator]==&filter_by[0][value]=Steve<br>> <br>> /endpoint?filter_by=[{ "key": "first_name", "operator": "=", "value": "Fred" }]<br>> <br>> /endpoint?filter_by=[{ "key": "account_type", "operator": "=", "value": "VISA" }]<br>> <br>> /endpoint?filter_by=[{ "key": "created_ts", "operator": ">=", "value": "946702799" }, { "key": "created_ts", "operator": "<=", value: "1695061891" }]<br>> <br>> /endpoint?filter_by=[{ "key": "last_name", "operator": "IN", "value": "Williams,Brown,Allman" }]<br><br>**Constraints**: *Minimum Items*: `1` |
+| `expand` | [`?(string(Expand37Enum)[])`](../../doc/models/expand-37-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `format` | [`?string(Format1Enum)`](../../doc/models/format-1-enum.md) | Query, Optional | Reporting format, valid values: csv, tsv |
+| `typeahead` | `?string` | Query, Optional | You can use any `field_name` from this endpoint results to order the list using the value provided as filter for the same `field_name`. It will be ordered using the following rules: 1) Exact match, 2) Starts with, 3) Contains.<br><br>> /endpoint?filter={ "field_name": "Value" }&_typeahead=field_name |
+| `fields` | [`?(string(Field47Enum)[])`](../../doc/models/field-47-enum.md) | Query, Optional | You can use any `field_name` from this endpoint results to filter the list of fields returned on the response. |
 
 ## Response Type
 
@@ -134,7 +135,31 @@ function listAllTagsRelated(
 ## Example Usage
 
 ```php
-$result = $tagsController->listAllTagsRelated();
+$page = PageBuilder::init()
+    ->number(1)
+    ->size(50)
+    ->build();
+
+$order = [
+    Order21Builder::init(
+        'first_name',
+        OperatorEnum::ASC
+    )->build()
+];
+
+$filterBy = [
+    FilterByBuilder::init(
+        'first_name',
+        Operator1Enum::ENUM_1,
+        'Fred'
+    )->build()
+];
+
+$result = $tagsController->listAllTagsRelated(
+    $page,
+    $order,
+    $filterBy
+);
 ```
 
 ## Example Response *(as JSON)*
@@ -158,15 +183,12 @@ $result = $tagsController->listAllTagsRelated();
           "city": "Novi",
           "state": "MI",
           "postal_code": "48375",
-          "country": "US",
-          "street": "43155 Main Street STE 2310-C",
-          "street2": "43155 Main Street STE 2310-C"
+          "country": "US"
         },
         "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
         "contact_email_trx_receipt_default": true,
         "default_ach": "11e608a7d515f1e093242bb2",
         "default_cc": "11e608a442a5f1e092242dda",
-        "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
         "email_reply_to": "email@domain.com",
         "fax": "3339998822",
         "location_api_id": "location-111111",
@@ -177,10 +199,14 @@ $result = $tagsController->listAllTagsRelated();
         "name": "Sample Company Headquarters",
         "office_phone": "2481234567",
         "office_ext_phone": "1021021209",
-        "recurring_notification_days_default": 0,
         "tz": "America/New_York",
         "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+        "show_contact_notes": true,
+        "show_contact_files": true,
+        "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+        "location_type": "merchant",
+        "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+        "additional_access": {}
       }
     }
   ],
@@ -188,6 +214,7 @@ $result = $tagsController->listAllTagsRelated();
     "type": "Links",
     "first": "/v1/endpoint?page[size]=10&page[number]=1",
     "previous": "/v1/endpoint?page[size]=10&page[number]=5",
+    "next": "/v1/endpoint?page[size]=10&page[number]=7",
     "last": "/v1/endpoint?page[size]=10&page[number]=42"
   },
   "pagination": {
@@ -218,8 +245,6 @@ $result = $tagsController->listAllTagsRelated();
 
 # Delete Tag Record
 
-Delete tag record
-
 ```php
 function deleteTagRecord(string $tagId): ResponseTag
 ```
@@ -228,7 +253,7 @@ function deleteTagRecord(string $tagId): ResponseTag
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `tagId` | `string` | Template, Required | Tag ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `tagId` | `string` | Template, Required | Tag ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
 
 ## Response Type
 
@@ -262,15 +287,12 @@ $result = $tagsController->deleteTagRecord($tagId);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -281,10 +303,14 @@ $result = $tagsController->deleteTagRecord($tagId);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     }
   }
 }
@@ -299,18 +325,17 @@ $result = $tagsController->deleteTagRecord($tagId);
 
 # View Single Tags Record
 
-View single tags record
-
 ```php
-function viewSingleTagsRecord(string $tagId, ?array $expand = null): ResponseTag
+function viewSingleTagsRecord(string $tagId, ?array $expand = null, ?array $fields = null): ResponseTag
 ```
 
 ## Parameters
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `tagId` | `string` | Template, Required | Tag ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
-| `expand` | [`?(string[]) (Expand31Enum)`](../../doc/models/expand-31-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `tagId` | `string` | Template, Required | Tag ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `expand` | [`?(string(Expand37Enum)[])`](../../doc/models/expand-37-enum.md) | Query, Optional | Most endpoints in the API have a way to retrieve extra data related to the current record being retrieved. For example, if the API request is for the accountvaults endpoint, and the end user also needs to know which contact the token belongs to, this data can be returned in the accountvaults endpoint request.<br><br>**Constraints**: *Unique Items Required*, *Pattern*: `^[\w]+$` |
+| `fields` | [`?(string(Field47Enum)[])`](../../doc/models/field-47-enum.md) | Query, Optional | You can use any `field_name` from this endpoint results to filter the list of fields returned on the response. |
 
 ## Response Type
 
@@ -344,15 +369,12 @@ $result = $tagsController->viewSingleTagsRecord($tagId);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -363,10 +385,14 @@ $result = $tagsController->viewSingleTagsRecord($tagId);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     }
   }
 }
@@ -381,8 +407,6 @@ $result = $tagsController->viewSingleTagsRecord($tagId);
 
 # Update Tag Record
 
-Update tag record
-
 ```php
 function updateTagRecord(string $tagId, V1TagsRequest1 $body): ResponseTag
 ```
@@ -391,7 +415,7 @@ function updateTagRecord(string $tagId, V1TagsRequest1 $body): ResponseTag
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `tagId` | `string` | Template, Required | Tag ID<br>**Constraints**: *Pattern*: `^(([0-9a-fA-F]{24})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
+| `tagId` | `string` | Template, Required | Tag ID<br><br>**Constraints**: *Pattern*: `^(([0-9a-fA-F\-]{24,36})\|(([0-9a-fA-F]{8})-(([0-9a-fA-F]{4}\-){3})([0-9a-fA-F]{12})))$` |
 | `body` | [`V1TagsRequest1`](../../doc/models/v1-tags-request-1.md) | Body, Required | - |
 
 ## Response Type
@@ -402,9 +426,16 @@ function updateTagRecord(string $tagId, V1TagsRequest1 $body): ResponseTag
 
 ```php
 $tagId = '11e95f8ec39de8fbdb0a4f1a';
-$body = new Models\V1TagsRequest1();
 
-$result = $tagsController->updateTagRecord($tagId, $body);
+$body = V1TagsRequest1Builder::init()
+    ->locationId('11e95f8ec39de8fbdb0a4f1a')
+    ->title('My terminal')
+    ->build();
+
+$result = $tagsController->updateTagRecord(
+    $tagId,
+    $body
+);
 ```
 
 ## Example Response *(as JSON)*
@@ -427,15 +458,12 @@ $result = $tagsController->updateTagRecord($tagId, $body);
         "city": "Novi",
         "state": "MI",
         "postal_code": "48375",
-        "country": "US",
-        "street": "43155 Main Street STE 2310-C",
-        "street2": "43155 Main Street STE 2310-C"
+        "country": "US"
       },
       "branding_domain_id": "11e95f8ec39de8fbdb0a4f1a",
       "contact_email_trx_receipt_default": true,
       "default_ach": "11e608a7d515f1e093242bb2",
       "default_cc": "11e608a442a5f1e092242dda",
-      "developer_company_id": "11e95f8ec39de8fbdb0a4f1a",
       "email_reply_to": "email@domain.com",
       "fax": "3339998822",
       "location_api_id": "location-111111",
@@ -446,10 +474,14 @@ $result = $tagsController->updateTagRecord($tagId, $body);
       "name": "Sample Company Headquarters",
       "office_phone": "2481234567",
       "office_ext_phone": "1021021209",
-      "recurring_notification_days_default": 0,
       "tz": "America/New_York",
       "parent_id": "11e95f8ec39de8fbdb0a4f1a",
-      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4"
+      "show_contact_notes": true,
+      "show_contact_files": true,
+      "created_user_id": "11e95f8ec39de8fbdb0a4f1a",
+      "location_type": "merchant",
+      "ticket_hash_key": "A5F443CADF4AE34BBCAADF4",
+      "additional_access": {}
     }
   }
 }

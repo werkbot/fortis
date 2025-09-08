@@ -30,7 +30,7 @@ class WebhooksControllerTest extends BaseTestController
         self::$controller = parent::getClient()->getWebhooksController();
     }
 
-    public function testTestDeleteAPostbackConfig()
+    public function testDeleteAPostbackConfig()
     {
         // Parameters for the API call
         $webhookId = '11e95f8ec39de8fbdb0a4f1a';
@@ -54,13 +54,13 @@ class WebhooksControllerTest extends BaseTestController
                 '{"type":"Webhook","data":{"attempt_interval":300,"basic_auth_username":"userna' .
                 'me","basic_auth_password":"password","expands":"changelogs,tags","format":"api-' .
                 'default","is_active":true,"location_id":"11e95f8ec39de8fbdb0a4f1a","on_create":' .
-                'true,"on_update":true,"on_delete":true,"postback_config_id":"11e95f8ec39de8fbdb' .
-                '0a4f1a","product_transaction_id":"11e95f8ec39de8fbdb0a4f1a","resource":"contact' .
-                '","number_of_attempts":1,"url":"https://127.0.0.1/receiver","id":"11e95f8ec39de' .
-                '8fbdb0a4f1a","postback_logs":[{"id":"11e95f8ec39de8fbdb0a4f1a","postback_config' .
-                '_id":"11e95f8ec39de8fbdb0a4f1a","changelog_id":"11e95f8ec39de8fbdb0a4f1a","next' .
-                '_run_ts":1422040992,"created_ts":1422040992,"model_id":"11e95f8ec39de8fbdb0a4f1' .
-                'a"}]}}'
+                'true,"on_update":true,"on_delete":true,"legacy":true,"postback_config_id":"11e9' .
+                '5f8ec39de8fbdb0a4f1a","product_transaction_id":"11e95f8ec39de8fbdb0a4f1a","reso' .
+                'urce":"contact","number_of_attempts":1,"url":"https://127.0.0.1/receiver","id":' .
+                '"11e95f8ec39de8fbdb0a4f1a","postback_logs":[{"id":"11e95f8ec39de8fbdb0a4f1a","p' .
+                'ostback_config_id":"11e95f8ec39de8fbdb0a4f1a","changelog_id":"11e95f8ec39de8fbd' .
+                'b0a4f1a","next_run_ts":1422040992,"created_ts":1422040992,"model_id":"11e95f8ec' .
+                '39de8fbdb0a4f1a"}]}}'
             )))
             ->assert();
     }

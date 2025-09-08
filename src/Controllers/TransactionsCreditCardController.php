@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace FortisAPILib\Controllers;
 
+use Core\Authentication\Auth;
 use Core\Request\Parameters\BodyParam;
 use Core\Request\Parameters\HeaderParam;
 use Core\Request\Parameters\QueryParam;
@@ -18,28 +19,47 @@ use CoreInterfaces\Core\Request\RequestMethod;
 use FortisAPILib\Exceptions\ApiException;
 use FortisAPILib\Exceptions\Response401tokenException;
 use FortisAPILib\Exceptions\Response412Exception;
-use FortisAPILib\Models\Expand47Enum;
-use FortisAPILib\Models\ResponseAsyncProcessing;
+use FortisAPILib\Models\Expand60Enum;
 use FortisAPILib\Models\ResponseTransaction;
+use FortisAPILib\Models\ResponseTransactionProcessing;
 use FortisAPILib\Models\V1TransactionsCcAuthOnlyKeyedRequest;
 use FortisAPILib\Models\V1TransactionsCcAuthOnlyPrevTrxnRequest;
+use FortisAPILib\Models\V1TransactionsCcAuthOnlyTaptopayRequest;
 use FortisAPILib\Models\V1TransactionsCcAuthOnlyTerminalRequest;
+use FortisAPILib\Models\V1TransactionsCcAuthOnlyTicketRequest;
 use FortisAPILib\Models\V1TransactionsCcAuthOnlyTokenRequest;
+use FortisAPILib\Models\V1TransactionsCcAuthOnlyWalletRequest;
 use FortisAPILib\Models\V1TransactionsCcAvsOnlyKeyedRequest;
 use FortisAPILib\Models\V1TransactionsCcAvsOnlyPrevTrxnRequest;
 use FortisAPILib\Models\V1TransactionsCcAvsOnlyTerminalRequest;
+use FortisAPILib\Models\V1TransactionsCcAvsOnlyTicketRequest;
 use FortisAPILib\Models\V1TransactionsCcAvsOnlyTokenRequest;
+use FortisAPILib\Models\V1TransactionsCcAvsOnlyWalletRequest;
+use FortisAPILib\Models\V1TransactionsCcBalanceInquiryKeyedRequest;
+use FortisAPILib\Models\V1TransactionsCcBalanceInquiryPrevTrxnRequest;
+use FortisAPILib\Models\V1TransactionsCcBalanceInquiryTerminalRequest;
+use FortisAPILib\Models\V1TransactionsCcBalanceInquiryTicketRequest;
+use FortisAPILib\Models\V1TransactionsCcBalanceInquiryTokenRequest;
+use FortisAPILib\Models\V1TransactionsCcBalanceInquiryWalletRequest;
 use FortisAPILib\Models\V1TransactionsCcForceKeyedRequest;
 use FortisAPILib\Models\V1TransactionsCcForcePrevTrxnRequest;
+use FortisAPILib\Models\V1TransactionsCcForceTicketRequest;
 use FortisAPILib\Models\V1TransactionsCcForceTokenRequest;
+use FortisAPILib\Models\V1TransactionsCcForceWalletRequest;
 use FortisAPILib\Models\V1TransactionsCcRefundKeyedRequest;
 use FortisAPILib\Models\V1TransactionsCcRefundPrevTrxnRequest;
+use FortisAPILib\Models\V1TransactionsCcRefundTaptopayRequest;
 use FortisAPILib\Models\V1TransactionsCcRefundTerminalRequest;
+use FortisAPILib\Models\V1TransactionsCcRefundTicketRequest;
 use FortisAPILib\Models\V1TransactionsCcRefundTokenRequest;
+use FortisAPILib\Models\V1TransactionsCcRefundWalletRequest;
 use FortisAPILib\Models\V1TransactionsCcSaleKeyedRequest;
 use FortisAPILib\Models\V1TransactionsCcSalePrevTrxnRequest;
+use FortisAPILib\Models\V1TransactionsCcSaleTaptopayRequest;
 use FortisAPILib\Models\V1TransactionsCcSaleTerminalRequest;
+use FortisAPILib\Models\V1TransactionsCcSaleTicketRequest;
 use FortisAPILib\Models\V1TransactionsCcSaleTokenRequest;
+use FortisAPILib\Models\V1TransactionsCcSaleWalletRequest;
 
 class TransactionsCreditCardController extends BaseController
 {
@@ -60,16 +80,16 @@ class TransactionsCreditCardController extends BaseController
     public function cCAuthOnly(V1TransactionsCcAuthOnlyKeyedRequest $body, ?array $expand = null): ResponseTransaction
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/auth-only/keyed')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand47Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
@@ -94,16 +114,50 @@ class TransactionsCreditCardController extends BaseController
         ?array $expand = null
     ): ResponseTransaction {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/auth-only/prev-trxn')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand47Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTransaction::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
+    /**
+     * Create a new Tap To Pay Credit Card authorization only transaction
+     *
+     * @param V1TransactionsCcAuthOnlyTaptopayRequest $body
+     * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
+     *        related to the current record being retrieved. For example, if the API request is
+     *        for the accountvaults endpoint, and the end user also needs to know which contact
+     *        the token belongs to, this data can be returned in the accountvaults endpoint
+     *        request.
+     *
+     * @return ResponseTransaction Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function cCAuthOnlyTapToPay(
+        V1TransactionsCcAuthOnlyTaptopayRequest $body,
+        ?array $expand = null
+    ): ResponseTransaction {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/auth-only/taptopay')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(
+                HeaderParam::init('Content-Type', 'application/json'),
+                BodyParam::init($body),
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
+            );
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
@@ -114,20 +168,54 @@ class TransactionsCreditCardController extends BaseController
      *
      * @param V1TransactionsCcAuthOnlyTerminalRequest $body
      *
-     * @return ResponseAsyncProcessing Response from the API call
+     * @return ResponseTransactionProcessing Response from the API call
      *
      * @throws ApiException Thrown if API call fails
      */
-    public function cCAuthOnlyTerminal(V1TransactionsCcAuthOnlyTerminalRequest $body): ResponseAsyncProcessing
+    public function cCAuthOnlyTerminal(V1TransactionsCcAuthOnlyTerminalRequest $body): ResponseTransactionProcessing
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/auth-only/terminal')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(HeaderParam::init('Content-Type', 'application/json'), BodyParam::init($body));
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
-            ->type(ResponseAsyncProcessing::class);
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTransactionProcessing::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
+    /**
+     * Create a new ticket Credit Card authorization only transaction
+     *
+     * @param V1TransactionsCcAuthOnlyTicketRequest $body
+     * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
+     *        related to the current record being retrieved. For example, if the API request is
+     *        for the accountvaults endpoint, and the end user also needs to know which contact
+     *        the token belongs to, this data can be returned in the accountvaults endpoint
+     *        request.
+     *
+     * @return ResponseTransaction Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function cCAuthOnlyTicket(
+        V1TransactionsCcAuthOnlyTicketRequest $body,
+        ?array $expand = null
+    ): ResponseTransaction {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/auth-only/ticket')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(
+                HeaderParam::init('Content-Type', 'application/json'),
+                BodyParam::init($body),
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
+            );
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
@@ -151,16 +239,50 @@ class TransactionsCreditCardController extends BaseController
         ?array $expand = null
     ): ResponseTransaction {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/auth-only/token')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand47Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTransaction::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
+    /**
+     * Create a new Wallet Credit Card authorization only transaction
+     *
+     * @param V1TransactionsCcAuthOnlyWalletRequest $body
+     * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
+     *        related to the current record being retrieved. For example, if the API request is
+     *        for the accountvaults endpoint, and the end user also needs to know which contact
+     *        the token belongs to, this data can be returned in the accountvaults endpoint
+     *        request.
+     *
+     * @return ResponseTransaction Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function cCAuthOnlyWallet(
+        V1TransactionsCcAuthOnlyWalletRequest $body,
+        ?array $expand = null
+    ): ResponseTransaction {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/auth-only/wallet')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(
+                HeaderParam::init('Content-Type', 'application/json'),
+                BodyParam::init($body),
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
+            );
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
@@ -183,16 +305,16 @@ class TransactionsCreditCardController extends BaseController
     public function cCAVS(V1TransactionsCcAvsOnlyKeyedRequest $body, ?array $expand = null): ResponseTransaction
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/avs-only/keyed')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand47Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
@@ -217,16 +339,16 @@ class TransactionsCreditCardController extends BaseController
         ?array $expand = null
     ): ResponseTransaction {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/avs-only/prev-trxn')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand47Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
@@ -237,20 +359,52 @@ class TransactionsCreditCardController extends BaseController
      *
      * @param V1TransactionsCcAvsOnlyTerminalRequest $body
      *
-     * @return ResponseAsyncProcessing Response from the API call
+     * @return ResponseTransactionProcessing Response from the API call
      *
      * @throws ApiException Thrown if API call fails
      */
-    public function cCAVSTerminal(V1TransactionsCcAvsOnlyTerminalRequest $body): ResponseAsyncProcessing
+    public function cCAVSTerminal(V1TransactionsCcAvsOnlyTerminalRequest $body): ResponseTransactionProcessing
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/avs-only/terminal')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(HeaderParam::init('Content-Type', 'application/json'), BodyParam::init($body));
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
-            ->type(ResponseAsyncProcessing::class);
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTransactionProcessing::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
+    /**
+     * Create a new ticket Credit Card AVS only transaction
+     *
+     * @param V1TransactionsCcAvsOnlyTicketRequest $body
+     * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
+     *        related to the current record being retrieved. For example, if the API request is
+     *        for the accountvaults endpoint, and the end user also needs to know which contact
+     *        the token belongs to, this data can be returned in the accountvaults endpoint
+     *        request.
+     *
+     * @return ResponseTransaction Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function cCAVSTicket(V1TransactionsCcAvsOnlyTicketRequest $body, ?array $expand = null): ResponseTransaction
+    {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/avs-only/ticket')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(
+                HeaderParam::init('Content-Type', 'application/json'),
+                BodyParam::init($body),
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
+            );
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
@@ -274,16 +428,242 @@ class TransactionsCreditCardController extends BaseController
         ?array $expand = null
     ): ResponseTransaction {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/avs-only/token')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand47Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTransaction::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
+    /**
+     * Create a new Wallet Credit Card AVS only transaction
+     *
+     * @param V1TransactionsCcAvsOnlyWalletRequest $body
+     * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
+     *        related to the current record being retrieved. For example, if the API request is
+     *        for the accountvaults endpoint, and the end user also needs to know which contact
+     *        the token belongs to, this data can be returned in the accountvaults endpoint
+     *        request.
+     *
+     * @return ResponseTransaction Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function cCAVSWallet(V1TransactionsCcAvsOnlyWalletRequest $body, ?array $expand = null): ResponseTransaction
+    {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/avs-only/wallet')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(
+                HeaderParam::init('Content-Type', 'application/json'),
+                BodyParam::init($body),
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
+            );
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTransaction::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
+    /**
+     * Create a new keyed Credit Card balance inquiry transaction
+     *
+     * @param V1TransactionsCcBalanceInquiryKeyedRequest $body
+     * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
+     *        related to the current record being retrieved. For example, if the API request is
+     *        for the accountvaults endpoint, and the end user also needs to know which contact
+     *        the token belongs to, this data can be returned in the accountvaults endpoint
+     *        request.
+     *
+     * @return ResponseTransaction Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function cCBalanceInquiry(
+        V1TransactionsCcBalanceInquiryKeyedRequest $body,
+        ?array $expand = null
+    ): ResponseTransaction {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/balance-inquiry/keyed')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(
+                HeaderParam::init('Content-Type', 'application/json'),
+                BodyParam::init($body),
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
+            );
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTransaction::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
+    /**
+     * Create a new Credit Card balance inquiry transaction using previous transaction id
+     *
+     * @param V1TransactionsCcBalanceInquiryPrevTrxnRequest $body
+     * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
+     *        related to the current record being retrieved. For example, if the API request is
+     *        for the accountvaults endpoint, and the end user also needs to know which contact
+     *        the token belongs to, this data can be returned in the accountvaults endpoint
+     *        request.
+     *
+     * @return ResponseTransaction Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function cCBalanceInquiryPreviousTransaction(
+        V1TransactionsCcBalanceInquiryPrevTrxnRequest $body,
+        ?array $expand = null
+    ): ResponseTransaction {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/balance-inquiry/prev-trxn')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(
+                HeaderParam::init('Content-Type', 'application/json'),
+                BodyParam::init($body),
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
+            );
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTransaction::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
+    /**
+     * Create a new terminal Credit Card balance inquiry transaction
+     *
+     * @param V1TransactionsCcBalanceInquiryTerminalRequest $body
+     *
+     * @return ResponseTransactionProcessing Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function cCBalanceInquiryTerminal(
+        V1TransactionsCcBalanceInquiryTerminalRequest $body
+    ): ResponseTransactionProcessing {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/balance-inquiry/terminal')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(HeaderParam::init('Content-Type', 'application/json'), BodyParam::init($body));
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTransactionProcessing::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
+    /**
+     * Create a new Ticket Credit Card balance inquiry transaction
+     *
+     * @param V1TransactionsCcBalanceInquiryTicketRequest $body
+     * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
+     *        related to the current record being retrieved. For example, if the API request is
+     *        for the accountvaults endpoint, and the end user also needs to know which contact
+     *        the token belongs to, this data can be returned in the accountvaults endpoint
+     *        request.
+     *
+     * @return ResponseTransaction Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function cCBalanceInquiryTicket(
+        V1TransactionsCcBalanceInquiryTicketRequest $body,
+        ?array $expand = null
+    ): ResponseTransaction {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/balance-inquiry/ticket')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(
+                HeaderParam::init('Content-Type', 'application/json'),
+                BodyParam::init($body),
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
+            );
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTransaction::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
+    /**
+     * Create a new tokenized Credit Card balance inquiry transaction
+     *
+     * @param V1TransactionsCcBalanceInquiryTokenRequest $body
+     * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
+     *        related to the current record being retrieved. For example, if the API request is
+     *        for the accountvaults endpoint, and the end user also needs to know which contact
+     *        the token belongs to, this data can be returned in the accountvaults endpoint
+     *        request.
+     *
+     * @return ResponseTransaction Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function cCBalanceInquiryTokenized(
+        V1TransactionsCcBalanceInquiryTokenRequest $body,
+        ?array $expand = null
+    ): ResponseTransaction {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/balance-inquiry/token')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(
+                HeaderParam::init('Content-Type', 'application/json'),
+                BodyParam::init($body),
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
+            );
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTransaction::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
+    /**
+     * Create a new Wallet Credit Card balance inquiry transaction
+     *
+     * @param V1TransactionsCcBalanceInquiryWalletRequest $body
+     * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
+     *        related to the current record being retrieved. For example, if the API request is
+     *        for the accountvaults endpoint, and the end user also needs to know which contact
+     *        the token belongs to, this data can be returned in the accountvaults endpoint
+     *        request.
+     *
+     * @return ResponseTransaction Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function cCBalanceInquiryWallet(
+        V1TransactionsCcBalanceInquiryWalletRequest $body,
+        ?array $expand = null
+    ): ResponseTransaction {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/balance-inquiry/wallet')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(
+                HeaderParam::init('Content-Type', 'application/json'),
+                BodyParam::init($body),
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
+            );
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
@@ -306,16 +686,16 @@ class TransactionsCreditCardController extends BaseController
     public function cCForce(V1TransactionsCcForceKeyedRequest $body, ?array $expand = null): ResponseTransaction
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/force/keyed')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand47Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
@@ -340,16 +720,48 @@ class TransactionsCreditCardController extends BaseController
         ?array $expand = null
     ): ResponseTransaction {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/force/prev-trxn')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand47Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTransaction::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
+    /**
+     * Create a new ticket Credit Card force transaction
+     *
+     * @param V1TransactionsCcForceTicketRequest $body
+     * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
+     *        related to the current record being retrieved. For example, if the API request is
+     *        for the accountvaults endpoint, and the end user also needs to know which contact
+     *        the token belongs to, this data can be returned in the accountvaults endpoint
+     *        request.
+     *
+     * @return ResponseTransaction Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function cCForceTicket(V1TransactionsCcForceTicketRequest $body, ?array $expand = null): ResponseTransaction
+    {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/force/ticket')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(
+                HeaderParam::init('Content-Type', 'application/json'),
+                BodyParam::init($body),
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
+            );
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
@@ -374,16 +786,48 @@ class TransactionsCreditCardController extends BaseController
         ?array $expand = null
     ): ResponseTransaction {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/force/token')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand47Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTransaction::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
+    /**
+     * Create a new Wallet Credit Card force transaction
+     *
+     * @param V1TransactionsCcForceWalletRequest $body
+     * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
+     *        related to the current record being retrieved. For example, if the API request is
+     *        for the accountvaults endpoint, and the end user also needs to know which contact
+     *        the token belongs to, this data can be returned in the accountvaults endpoint
+     *        request.
+     *
+     * @return ResponseTransaction Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function cCForceWallet(V1TransactionsCcForceWalletRequest $body, ?array $expand = null): ResponseTransaction
+    {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/force/wallet')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(
+                HeaderParam::init('Content-Type', 'application/json'),
+                BodyParam::init($body),
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
+            );
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
@@ -406,16 +850,16 @@ class TransactionsCreditCardController extends BaseController
     public function cCRefund(V1TransactionsCcRefundKeyedRequest $body, ?array $expand = null): ResponseTransaction
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/refund/keyed')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand47Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
@@ -440,16 +884,50 @@ class TransactionsCreditCardController extends BaseController
         ?array $expand = null
     ): ResponseTransaction {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/refund/prev-trxn')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand47Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTransaction::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
+    /**
+     * Create a new Tap To Pay Credit Card refund transaction
+     *
+     * @param V1TransactionsCcRefundTaptopayRequest $body
+     * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
+     *        related to the current record being retrieved. For example, if the API request is
+     *        for the accountvaults endpoint, and the end user also needs to know which contact
+     *        the token belongs to, this data can be returned in the accountvaults endpoint
+     *        request.
+     *
+     * @return ResponseTransaction Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function cCRefundTapToPay(
+        V1TransactionsCcRefundTaptopayRequest $body,
+        ?array $expand = null
+    ): ResponseTransaction {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/refund/taptopay')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(
+                HeaderParam::init('Content-Type', 'application/json'),
+                BodyParam::init($body),
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
+            );
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
@@ -460,20 +938,54 @@ class TransactionsCreditCardController extends BaseController
      *
      * @param V1TransactionsCcRefundTerminalRequest $body
      *
-     * @return ResponseAsyncProcessing Response from the API call
+     * @return ResponseTransactionProcessing Response from the API call
      *
      * @throws ApiException Thrown if API call fails
      */
-    public function cCRefundTerminal(V1TransactionsCcRefundTerminalRequest $body): ResponseAsyncProcessing
+    public function cCRefundTerminal(V1TransactionsCcRefundTerminalRequest $body): ResponseTransactionProcessing
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/refund/terminal')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(HeaderParam::init('Content-Type', 'application/json'), BodyParam::init($body));
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
-            ->type(ResponseAsyncProcessing::class);
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTransactionProcessing::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
+    /**
+     * Create a new ticket Credit Card refund transaction
+     *
+     * @param V1TransactionsCcRefundTicketRequest $body
+     * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
+     *        related to the current record being retrieved. For example, if the API request is
+     *        for the accountvaults endpoint, and the end user also needs to know which contact
+     *        the token belongs to, this data can be returned in the accountvaults endpoint
+     *        request.
+     *
+     * @return ResponseTransaction Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function cCRefundTicket(
+        V1TransactionsCcRefundTicketRequest $body,
+        ?array $expand = null
+    ): ResponseTransaction {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/refund/ticket')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(
+                HeaderParam::init('Content-Type', 'application/json'),
+                BodyParam::init($body),
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
+            );
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
@@ -497,16 +1009,50 @@ class TransactionsCreditCardController extends BaseController
         ?array $expand = null
     ): ResponseTransaction {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/refund/token')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand47Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTransaction::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
+    /**
+     * Create a new Wallet Credit Card refund transaction
+     *
+     * @param V1TransactionsCcRefundWalletRequest $body
+     * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
+     *        related to the current record being retrieved. For example, if the API request is
+     *        for the accountvaults endpoint, and the end user also needs to know which contact
+     *        the token belongs to, this data can be returned in the accountvaults endpoint
+     *        request.
+     *
+     * @return ResponseTransaction Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function cCRefundWallet(
+        V1TransactionsCcRefundWalletRequest $body,
+        ?array $expand = null
+    ): ResponseTransaction {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/refund/wallet')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(
+                HeaderParam::init('Content-Type', 'application/json'),
+                BodyParam::init($body),
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
+            );
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
@@ -529,16 +1075,16 @@ class TransactionsCreditCardController extends BaseController
     public function cCSale(V1TransactionsCcSaleKeyedRequest $body, ?array $expand = null): ResponseTransaction
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/sale/keyed')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand47Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
@@ -563,16 +1109,50 @@ class TransactionsCreditCardController extends BaseController
         ?array $expand = null
     ): ResponseTransaction {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/sale/prev-trxn')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand47Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTransaction::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
+    /**
+     * Create a new Tap To Pay Credit card sale transaction
+     *
+     * @param V1TransactionsCcSaleTaptopayRequest $body
+     * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
+     *        related to the current record being retrieved. For example, if the API request is
+     *        for the accountvaults endpoint, and the end user also needs to know which contact
+     *        the token belongs to, this data can be returned in the accountvaults endpoint
+     *        request.
+     *
+     * @return ResponseTransaction Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function cCSaleTapToPay(
+        V1TransactionsCcSaleTaptopayRequest $body,
+        ?array $expand = null
+    ): ResponseTransaction {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/sale/taptopay')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(
+                HeaderParam::init('Content-Type', 'application/json'),
+                BodyParam::init($body),
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
+            );
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
@@ -583,20 +1163,52 @@ class TransactionsCreditCardController extends BaseController
      *
      * @param V1TransactionsCcSaleTerminalRequest $body
      *
-     * @return ResponseAsyncProcessing Response from the API call
+     * @return ResponseTransactionProcessing Response from the API call
      *
      * @throws ApiException Thrown if API call fails
      */
-    public function cCSaleTerminal(V1TransactionsCcSaleTerminalRequest $body): ResponseAsyncProcessing
+    public function cCSaleTerminal(V1TransactionsCcSaleTerminalRequest $body): ResponseTransactionProcessing
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/sale/terminal')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(HeaderParam::init('Content-Type', 'application/json'), BodyParam::init($body));
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
-            ->type(ResponseAsyncProcessing::class);
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTransactionProcessing::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
+    /**
+     * Create a new Ticket Credit Card sale transaction
+     *
+     * @param V1TransactionsCcSaleTicketRequest $body
+     * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
+     *        related to the current record being retrieved. For example, if the API request is
+     *        for the accountvaults endpoint, and the end user also needs to know which contact
+     *        the token belongs to, this data can be returned in the accountvaults endpoint
+     *        request.
+     *
+     * @return ResponseTransaction Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function cCSaleTicket(V1TransactionsCcSaleTicketRequest $body, ?array $expand = null): ResponseTransaction
+    {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/sale/ticket')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(
+                HeaderParam::init('Content-Type', 'application/json'),
+                BodyParam::init($body),
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
+            );
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
     }
@@ -618,16 +1230,48 @@ class TransactionsCreditCardController extends BaseController
     public function cCSaleTokenized(V1TransactionsCcSaleTokenRequest $body, ?array $expand = null): ResponseTransaction
     {
         $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/sale/token')
-            ->auth('global')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
             ->parameters(
                 HeaderParam::init('Content-Type', 'application/json'),
                 BodyParam::init($body),
-                QueryParam::init('expand', $expand)->serializeBy([Expand47Enum::class, 'checkValue'])
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
             );
 
         $_resHandler = $this->responseHandler()
-            ->throwErrorOn(401, ErrorType::init('Unauthorized', Response401tokenException::class))
-            ->throwErrorOn(412, ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
+            ->type(ResponseTransaction::class);
+
+        return $this->execute($_reqBuilder, $_resHandler);
+    }
+
+    /**
+     * Create a new Wallet Credit Card sale transaction
+     *
+     * @param V1TransactionsCcSaleWalletRequest $body
+     * @param string[]|null $expand Most endpoints in the API have a way to retrieve extra data
+     *        related to the current record being retrieved. For example, if the API request is
+     *        for the accountvaults endpoint, and the end user also needs to know which contact
+     *        the token belongs to, this data can be returned in the accountvaults endpoint
+     *        request.
+     *
+     * @return ResponseTransaction Response from the API call
+     *
+     * @throws ApiException Thrown if API call fails
+     */
+    public function cCSaleWallet(V1TransactionsCcSaleWalletRequest $body, ?array $expand = null): ResponseTransaction
+    {
+        $_reqBuilder = $this->requestBuilder(RequestMethod::POST, '/v1/transactions/cc/sale/wallet')
+            ->auth(Auth::and('user-id', 'user-api-key', 'developer-id'))
+            ->parameters(
+                HeaderParam::init('Content-Type', 'application/json'),
+                BodyParam::init($body),
+                QueryParam::init('expand', $expand)->serializeBy([Expand60Enum::class, 'checkValue'])
+            );
+
+        $_resHandler = $this->responseHandler()
+            ->throwErrorOn('401', ErrorType::init('Unauthorized', Response401tokenException::class))
+            ->throwErrorOn('412', ErrorType::init('Precondition Failed', Response412Exception::class))
             ->type(ResponseTransaction::class);
 
         return $this->execute($_reqBuilder, $_resHandler);
